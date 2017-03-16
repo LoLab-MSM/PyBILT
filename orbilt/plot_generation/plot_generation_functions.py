@@ -281,7 +281,7 @@ def plot_density_profile(dp_out_list, save=True, filename='density_profile.eps',
     for item in dp_out_list:
         if label_list is not None:
 
-            plt.plot(item[1], item[0], linewidth=2.0, label=label_list[i])
+            plt.plot(item[0], item[1], linewidth=2.0, label=label_list[i])
         else:
             plt.plot(item[0], item[1], linewidth=2.0)
         i+=1
@@ -289,8 +289,8 @@ def plot_density_profile(dp_out_list, save=True, filename='density_profile.eps',
         plt.legend(loc=0)
     plt.ylabel(ylabel)
     plt.xlabel('Position Along the Normal')   
-    plt.xlabel(ylabel)
-    plt.ylabel('Position Along the Normal')  
+    #plt.xlabel(ylabel)
+    #plt.ylabel('Position Along the Normal')  
     if save:
         plt.savefig(filename)
     if show:
@@ -375,3 +375,49 @@ def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.eps',tim
     plt.close()
     return
 
+def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thickness.eps',time_in='ps',time_out='ns',show=False, interval=1,save=True):
+    '''
+    Generates a single plot with bilayer thickness curves
+    Takes outputs from:
+        
+    The outputs are passed to function in a list input: bt_dat_list
+    '''
+#    params = {
+#    'axes.labelsize': 20,
+#    'text.fontsize': 20,
+#    'legend.fontsize': 20,
+#    'xtick.labelsize': 16,
+#    'ytick.labelsize': 16,
+#    'text.usetex': False,
+#    'figure.figsize': [8.0, 6.0]
+#    }
+#    params = {'figure.figsize': [10.0, 8.0]}
+#    mpl.rcParams.update(params)
+#        
+    i = 0
+    for bt_dat in bt_dat_list:
+        bt_d = bt_dat.copy()
+        t = bt_d[::interval,0]
+        if time_in == 'ps' and time_out == 'ns':
+            t/=1000.0
+        elif time_in == 'ns' and time_out == 'ps':
+            t*=1000.0
+        bt = bt_d[::interval,1]
+        error = bt_d[::interval,2]
+        if name_list is not None:
+            plt.errorbar(t, bt, yerr=error,linewidth=2.0,label=name_list[i])
+        else:
+            plt.errorbar(t, bt, yerr=error,linewidth=2.0)
+        i+=1
+        #plt.title("Mean Sqared Displacement vs. Time")
+    xlabel = "Time ("+time_out+")"
+    plt.xlabel(xlabel)
+    plt.ylabel("Bilayer thickness ($\AA$)")
+    if name_list is not None:
+        plt.legend(loc=0)
+    if save:    
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
