@@ -17,13 +17,13 @@ import mda_data as md
 # import the coordinate wrapping function--for unwrapping
 from orbilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
 
-
+default_compute_commands = [['msd', 'msd_1']]
 
 #the main analyzer class
 
 class BilayerAnalyzer:
     #for the input script parser
-    valid_commands = ["psf", "trajectory", "compute", "selection", "frames", "com_frame", "lipid_grid", "plot"]
+    valid_commands = ["psf", "trajectory", "compute", "selection", "frames", "plot"]
     required_commands = ['psf','trajectory', 'selection']
     required_command_error_strings = {'psf':"the psf file needs to specified with command: \"psf path/psf_file_name\""}
     required_command_error_strings['trajectory']="the trajectory file needs to specified with command: \"trajectory path/trajectory_file_name\""
@@ -72,6 +72,11 @@ class BilayerAnalyzer:
         self.lateral_dimension = "xy"
         self.normal_dimension = "z"
         self.current_mda_frame = None
+
+        #settings for frame loop
+        # frame_range[0]=first,frame_range[1]=last,frame_range[2]=interval
+        self.frame_range = [0,-1,1]
+        self.frame_index = 0
         #buildable objects
         # com frame
         self.com_frame = None
@@ -87,6 +92,19 @@ class BilayerAnalyzer:
         self.lg_nybins = 10
         self.dump_lipid_grid = False
         self.dump_lipid_grid_path = "./"
+
+        #parse 'frames' input key-- for setting the frame range of the anlaysis
+        if 'frames' in self.commands.keys():
+            f_args = self.commands['frames']
+            for i in range(0,len(lg_args),2):
+                arg_key = lg_args[i]
+                arg_value = lg_args[i+1]
+                if arg_key == 'first':
+                    self.frame_range[0]=arg_value
+                elif arg_key == 'last':
+                    self.frame_range[1] = arg_value
+                elif arg_key == 'interval':
+                    self.frame_range[2] = arg_value                                        
 
         # parse inputs for lipid_grid settings
         if 'lipid_grid' in self.commands.keys():
@@ -169,7 +187,7 @@ class BilayerAnalyzer:
         return
 
     def add_plot(self, plot_string):
-        self.plot_protocol.add_plot(compute_string)
+        self.plot_protocol.add_plot(plot_string, self.compute_protocol)
         return
 
     def remove_plot(self, plot_id):
@@ -219,6 +237,21 @@ class BilayerAnalyzer:
         if path != self.dump_lipid_grid_path:
             self.dump_lipid_grid_path=path
         return
+
+    def set_frame_range(first=0, last=-1, interval=1):
+        if first != self.frame_range[0]:
+            self.frame_range[0] = first
+        if last != self.frame_range[1]:
+            self.frame_range[1] = last
+        if interval != self.frame_range[2]:
+            self.frame_range[2] = interval
+        return
+
+
+    def reset(self):
+        self.compute_protocol.reset()
+        return
+
     #analysis     
     def run_analysis(self, nprocs=1):
         parallel = False
@@ -233,7 +266,8 @@ class BilayerAnalyzer:
         index = self.mda_data.bilayer_sel.indices
         firstframe = True
         first_com = True
-        for frame in self.mda_data.mda_trajectory:
+        self.frame_index = self.frame_range[0]
+        for frame in self.mda_data.mda_trajectory[self.frame_range[0]:self.frame_range[1]:self.frame_range[2]]:
             self.current_mda_frame = frame
             currcoord = frame._pos[index]
             if firstframe:
@@ -310,6 +344,7 @@ class BilayerAnalyzer:
                # print (comp_out)
              #   compute_out[i].append(comp_out)
                 i+=1
-            print(" ")    
+            print(" ")   
+            self.frame_index +=self.frame_range[2] 
             #print ('compute_out:')     
             #print (compute_out)    

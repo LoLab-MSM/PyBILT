@@ -3,8 +3,8 @@ import MDAnalysis as mda
 import numpy as np
 
 #ORBILT imports
-from running_stats import *
-
+from orbilt.common.running_stats import *
+import orbilt.mda_tools.mda_density_profile as mda_dp
 
 
 command_protocols = {}
@@ -13,9 +13,6 @@ compute_obj_name_dict = {}
 #obj_dict = {"com_frame":COMFrame}
 
 use_objects = {"mda_frame":True,"com_frame":False,"lipid_grid":False}
-
-
-default_compute_commands = [['msd', 'msd_1']]
 
 
 #protocol for the computes to run during the frame loop
@@ -111,6 +108,11 @@ class ComputeProtocol:
         for compute_id in self.compute_ids:
             print ("compute id: "+compute_id+" ---> "+self.command_protocol[compute_id].save_file_name)
             self.command_protocol[compute_id].save_data()
+    
+    def reset(self):
+        for compute_id in self.compute_ids:
+            self.command_protocol[compute_id].reset()
+        return        
 
 
 class ComputeFunctionProtocol:
@@ -165,6 +167,10 @@ class ComputeFunctionProtocol:
     def get_data(self):
         return np.array(self.compute_output)
 
+    def reset(self):
+        self.compute_output = []
+        return
+
 
 
 #define a new compute 'msd'
@@ -186,6 +192,7 @@ class MSDProtocol(ComputeFunctionProtocol):
         self.save_file_name = self.compute_id+".pickle"
         self.first_frame = True
         self.ref_coords = None
+        self.indices = []
         #parse input arguments if given
         if len(msd_args) > 1:
             self.parse_args(msd_args)
@@ -216,24 +223,28 @@ class MSDProtocol(ComputeFunctionProtocol):
     def run_compute(self, bilayer_analyzer):
         leaflet = self.leaflet
         group = self.resname
-        # parse the leaflet and group inputs
-        if leaflet == "both":
-            for leaflets in bilayer_analyzer.leaflets:
-                curr_leaf = bilayer_analyzer.leaflets[leaflets]
-                indices+=curr_leaf.get_group_indices(group)
-        elif leaflet == "upper":
-            curr_leaf = bilayer_analyzer.leaflets[leaflet]
-            indices=curr_leaf.get_group_indices(group)
-        elif leaflet == "lower":
-            curr_leaf = bilayer_analyzer.leaflets[leaflet]
-            indices=curr_leaf.get_group_indices(group)
-        else:
-            #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
-            for leaflets in bilayer_analyzer.leaflets:
-                curr_leaf = bilayer_analyzer.leaflets[leaflets]
-                indices+=curr_leaf.get_group_indices(group)
+        if self.first_frame:
+            indices = []
+            # parse the leaflet and group inputs
+            if leaflet == "both":
+                for leaflets in bilayer_analyzer.leaflets:
+                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                    indices+=curr_leaf.get_group_indices(group)
+            elif leaflet == "upper":
+                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                indices=curr_leaf.get_group_indices(group)
+            elif leaflet == "lower":
+                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                indices=curr_leaf.get_group_indices(group)
+            else:
+                #unknown option--use default "both"
+                print "!! Warning - request for unknown leaflet name \'",leaflet
+                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                for leaflets in bilayer_analyzer.leaflets:
+                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                    indices+=curr_leaf.get_group_indices(group)
+            self.indices = indices
+        indices = self.indices    
         n_com = len(indices)
         selcoords = np.zeros((n_com,2))
         
@@ -330,6 +341,10 @@ class APLBoxProtocol(ComputeFunctionProtocol):
 
         return
 
+    def reset(self):
+        self.running.reset()
+        self.compute_output = []
+        return
 
 command_protocols['apl_box'] = APLBoxProtocol
 
@@ -381,6 +396,10 @@ class BTGridProtocol(ComputeFunctionProtocol):
 
         return
 
+    def reset(self):
+        self.running.reset()
+        self.compute_output = []
+        return
 
 command_protocols['bilayer_thickness'] = BTGridProtocol
 
@@ -465,10 +484,17 @@ class APLGridProtocol(ComputeFunctionProtocol):
             self.compute_output[key] = np.array(self.compute_output[key])
         return self.compute_output
 
+    def reset(self):
+        self.running.reset()
+        self.compute_output = []
+        self.first_comp = True
+        self.running_res = {}
+        return    
+
 command_protocols['apl_grid'] = APLGridProtocol
 
 
-#define a new compute 'apl_grid'
+#define a new compute 'disp_vec'
 valid_computes.append('disp_vec')
 compute_obj_name_dict['disp_vec'] = 'com_frame'
 
@@ -524,6 +550,14 @@ class DispVecProtocol(ComputeFunctionProtocol):
     #required - a check protocol function which reports relevant settings    
     def print_protocol(self):
         print ("\'"+self.compute_id+"\': displacement vectors for "+str(self.interval)+" frame intervals")
+        return
+
+    def reset(self):
+        self.compute_output = []
+        self.first_comp = True
+        self.last_com_frame = None
+        self.last_frame = 0
+
         return
 
     def run_compute(self, bilayer_analyzer):
@@ -605,3 +639,104 @@ class DispVecProtocol(ComputeFunctionProtocol):
         return self.compute_output
 
 command_protocols['disp_vec'] = DispVecProtocol
+
+#define a new compute 
+valid_computes.append('mass_dens')
+compute_obj_name_dict['mass_dens'] = 'mda_frame'
+                              
+class MassDensProtocol(ComputeFunctionProtocol):
+
+    def __init__(self, args):
+
+        #required
+        self.valid_args = ['selection','n_bins']
+        self.return_length = None
+        self.compute_key = 'mass_dens'
+        self.compute_id = args[0]
+        #default function settings
+        self.save_file_name = self.compute_id+".pickle"
+        self.selection_string = 'all'
+        self.n_bins = 25
+        #parse input arguments if given
+        if len(args)>1:
+            self.parse_args(args)
+
+        #storage for output
+        self.centers = None
+        self.n_frames = 0
+        self.compute_output = [] 
+        self.first_comp = True
+        self.selection = None
+
+        return
+
+    #required- function to parse the input arguments    
+    def parse_args(self, args):
+        #print args
+        nargs = len(args)
+        read_sel_string = False
+        for i in range(1,nargs,1):
+            arg_key = args[i]
+            
+            print ('arg_key: ',arg_key)
+            if arg_key in self.valid_args:
+                if arg_key == 'n_bins':
+                    arg_arg = args[i+1]
+                    self.n_bins = int(arg_arg)
+                    read_sel_string = False
+                elif arg_key == 'selection':
+                    selection_words = [args[j] for j in range(i+1,nargs) if (args[j] not in self.valid_args)]
+                    i+=len(selection_words)
+                    selection_string = ""
+                    for word in selection_words:
+                        selection_string+=" "+word
+                    self.selection_string=selection_string
+                    read_sel_string = True
+            elif not read_sel_string:
+                raise RuntimeWarning("ignoring invalid argument key "+arg_key+" for compute "+self.compute_id)
+        return 
+    #required - a check protocol function which reports relevant settings    
+    def print_protocol(self):
+        print ("\'"+self.compute_id+"\': mass density compute for selection \'"+self.selection_string+"\' ")
+        return
+
+    def reset(self):
+        self.centers = None
+        self.n_frames = 0
+        self.compute_output = []
+        self.first_comp = True
+        self.selection = None
+
+        return
+
+    def run_compute(self, bilayer_analyzer):
+        first = self.first_comp
+        if self.first_comp:
+            self.selection = bilayer_analyzer.mda_data.mda_universe.select_atoms(self.selection_string)
+            self.first_comp = False
+
+        #print "there are ",len(indices)," members"
+        
+        norm_axis = bilayer_analyzer.normal_dimension
+        ref_sel = bilayer_analyzer.mda_data.bilayer_sel
+        #mda_density_profile
+        centers_density = mda_dp.mass_density_profile(bilayer_analyzer.mda_data.mda_trajectory,self.selection, fstart=bilayer_analyzer.frame_index,fend=bilayer_analyzer.frame_index+1, axis=norm_axis,nbins=self.n_bins,refsel=ref_sel)
+        if first:
+            self.centers = centers_density[0]
+            self.compute_output = np.zeros(len(self.centers))
+        self.compute_output+=centers_density[1]
+        self.n_frames+=1
+        return
+        
+
+    def save_data(self):
+        centers_density = (self.centers, self.compute_output/self.n_frames)
+        with open(self.save_file_name,'wb') as outfile:
+            pickle.dump(centers_density,outfile)
+            outfile.close()
+        return
+
+    def get_data(self):
+        return (self.centers, self.compute_output/self.n_frames)
+
+command_protocols['mass_dens'] = MassDensProtocol
