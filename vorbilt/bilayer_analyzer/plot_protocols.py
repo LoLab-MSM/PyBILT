@@ -1,5 +1,5 @@
 import numpy as np
-import orbilt.plot_generation.plot_generation_functions as pgf 
+import vorbilt.plot_generation.plot_generation_functions as pgf 
 import compute_protocols as cp
 
 command_protocols = {}

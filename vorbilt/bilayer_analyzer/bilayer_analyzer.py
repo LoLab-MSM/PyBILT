@@ -8,14 +8,14 @@ import pickle
 #ORBILT imports
 import com_frame as cf
 import leaflet as lf 
-import orbilt.lipid_grid.lipid_grid as lg
+import vorbilt.lipid_grid.lipid_grid as lg
 import compute_protocols as cp
 import plot_protocols as pp
-from orbilt.common.running_stats import *
+from vorbilt.common.running_stats import *
 import mda_data as md
 
 # import the coordinate wrapping function--for unwrapping
-from orbilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
+from vorbilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
 
 default_compute_commands = [['msd', 'msd_1']]
 

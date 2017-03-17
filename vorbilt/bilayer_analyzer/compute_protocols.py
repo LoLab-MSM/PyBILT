@@ -3,8 +3,8 @@ import MDAnalysis as mda
 import numpy as np
 
 #ORBILT imports
-from orbilt.common.running_stats import *
-import orbilt.mda_tools.mda_density_profile as mda_dp
+from vorbilt.common.running_stats import *
+import vorbilt.mda_tools.mda_density_profile as mda_dp
 
 
 command_protocols = {}

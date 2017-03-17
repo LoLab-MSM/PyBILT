@@ -1,4 +1,4 @@
-# VORBILT - Vanderbilt-Oak Ridge BILayer analysis Toolkit
+# VOR-BILT - Vanderbilt Oak Ridge - BILayer analysis Toolkit
 
 
 
