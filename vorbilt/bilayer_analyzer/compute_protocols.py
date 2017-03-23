@@ -675,6 +675,7 @@ class MassDensProtocol(ComputeFunctionProtocol):
         #print args
         nargs = len(args)
         read_sel_string = False
+        n_bins_arg = False
         for i in range(1,nargs,1):
             arg_key = args[i]
             
@@ -684,6 +685,7 @@ class MassDensProtocol(ComputeFunctionProtocol):
                     arg_arg = args[i+1]
                     self.n_bins = int(arg_arg)
                     read_sel_string = False
+                    n_bins_arg = True
                 elif arg_key == 'selection':
                     selection_words = [args[j] for j in range(i+1,nargs) if (args[j] not in self.valid_args)]
                     i+=len(selection_words)
@@ -692,7 +694,8 @@ class MassDensProtocol(ComputeFunctionProtocol):
                         selection_string+=" "+word
                     self.selection_string=selection_string
                     read_sel_string = True
-            elif not read_sel_string:
+                    n_bins_arg = False
+            elif not (read_sel_string or n_bins_arg):
                 raise RuntimeWarning("ignoring invalid argument key "+arg_key+" for compute "+self.compute_id)
         return 
     #required - a check protocol function which reports relevant settings    
@@ -712,7 +715,11 @@ class MassDensProtocol(ComputeFunctionProtocol):
     def run_compute(self, bilayer_analyzer):
         first = self.first_comp
         if self.first_comp:
-            self.selection = bilayer_analyzer.mda_data.mda_universe.select_atoms(self.selection_string)
+            #print self.selection_string
+            if self.selection_string == ' BILAYER':
+                self.selection = bilayer_analyzer.mda_data.bilayer_sel
+            else:
+                self.selection = bilayer_analyzer.mda_data.mda_universe.select_atoms(self.selection_string)
             self.first_comp = False
 
         #print "there are ",len(indices)," members"

@@ -1,5 +1,5 @@
 import numpy as np
-
+import vorbilt.common.gaussian as gauss
 #dictionary of elements and their valence electron counts - used for electron profile density
 valence_dict = {'H':1,'C':4,'N':5,'O':6,'P':5}
 #dictionary of elements and their atomic numbers - used for electron profile density
@@ -9,109 +9,9 @@ LJ_dict = {'H':1.25,'C':2.00,'N':1.85,'O':1.70,'P':2.15}
 
 
 
-class GaussianRange:
-    def __init__(self,lower,upper,mean,std,npoints=200):
-        x_p = np.linspace(lower,upper,npoints,endpoint=True)
-        y_p = np.zeros(npoints)
-        yc = 0
-        stdinv = 1.0/std
-        stdinvsq = stdinv**2
-        normalc = stdinv*(1.0/np.sqrt(np.pi))
-        for x in x_p:
-            expon = -(x - mean)**2 * (0.5*stdinvsq)
-            y = normalc * np.exp(expon)
-            y_p[yc]=y
-            yc+=1
-        self.x = x_p
-        self.y = y_p
-        self.sigma = std
-        self.mean = mean
-        self.normconst = normalc
-        self.upper = upper
-        self.lower = lower
-        self.dx = x_p[1]-x_p[0]
-        self.npoints = npoints
-        return
-
-    def GetValues(self):
-        return (self.x,self.y)
-    
-    def Eval(self,x_in):
-        stdinv = 1.0/self.sigma
-        stdinvsq = stdinv**2
-        normalc = self.normconst
-        expon = -(x_in - self.mean)**2 * (0.5*stdinvsq)
-        y = normalc * np.exp(expon)
-        return y
-
-    def IntegrateRange(self, lower, upper):
-        if upper>self.upper:
-            upper=self.upper
-        if lower<self.lower:
-            lower = self.lower
-        
-        i_l = int(np.floor((lower-self.lower)/self.dx)) 
-        i_u = int(np.floor((upper-self.lower)/self.dx))
-        #print "i_l ",i_l," i_u ",i_u
-        total = 0.0
-        for i in xrange(i_l,i_u):
-             total+= self.y[i]*self.dx
-        return total
-    
-    def SumRange(self, lower, upper):
-        if upper>self.upper:
-            upper=self.upper
-        if lower<self.lower:
-            lower = self.lower
-        
-        i_l = int(np.floor((lower-self.lower)/self.dx)) 
-        i_u = int(np.floor((upper-self.lower)/self.dx))
-        total = 0.0
-        for i in xrange(i_l,i_u):
-             total+= self.y[i]
-        return total
-
-    def Normalize(self):
-        total = 0.0
-        for i in xrange(0,self.npoints):
-            total+=self.y[i]*self.dx
-        for i in xrange(0,self.npoints):
-            self.y[i]/=total
-        return
-
-    def ResetMean(self,new_mean):
-        return
-    
-
-class Gaussian:
-    def __init__(self, mean,std):
-        
-        stdinv = 1.0/std
-        stdinvsq = stdinv**2
-        normalc = stdinv*(1.0/np.sqrt(np.pi))
-        
-        self.sigma = std
-        self.mean = mean
-        self.normconst = normalc
-
-        return
-
-    
-    def Eval(self,x_in):
-        stdinv = 1.0/self.sigma
-        stdinvsq = stdinv**2
-        normalc = self.normconst
-        expon = -(x_in - self.mean)**2 * (0.5*stdinvsq)
-        y = normalc * np.exp(expon)
-        return y
-
-    def ResetMean(self,new_mean):
-        self.mean = new_mean
-        return
 
 
-
-def ElectronDensityProfile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None,valence=True):
+def electron_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None,valence=True):
     lat_ind = [0,1]
     dir_ind = 2
     ec_dict = valence_dict
@@ -217,7 +117,7 @@ def ElectronDensityProfile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, a
     return (centers, counts)
 
 #assigns the charge of each atom as a gaussian along the profile direction
-def ElectronDensityProfile_gaussians(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None,valence=True,size_to_sigma=2.0):
+def electron_density_profile_gaussians(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None,valence=True,size_to_sigma=2.0):
     lat_ind = [0,1]
     dir_ind = 2
     ec_dict = valence_dict
@@ -311,13 +211,13 @@ def ElectronDensityProfile_gaussians(trajectory,mda_selection, fstart=0,fend=-1,
         j=0
         for z in zpos:
             sigma = sizes[j]/size_to_sigma
-            gc = GaussianRange(minz,maxz,z,sigma,npoints=(2*nbins))
+            gc = gauss.GaussianRange(minz,maxz,z,sigma,npoints=(2*nbins))
             #now loop over the edges of the profile axis
             for i in xrange(1,nbins+1):
                 zl = edges[i-1]
                 zu = edges[i]
                 
-                counts_f[i-1]+= (charges[j]*gc.IntegrateRange(zl,zu))
+                counts_f[i-1]+= (charges[j]*gc.integrate_range(zl,zu))
             j+=1
             
             
@@ -329,7 +229,7 @@ def ElectronDensityProfile_gaussians(trajectory,mda_selection, fstart=0,fend=-1,
     return (centers, counts)
 
 
-def MassDensityProfile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None):
+def mass_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None):
     lat_ind = [0,1]
     dir_ind = 2
     if    axis is 'x':
@@ -432,7 +332,7 @@ class SizeError(Exception):
         return repr(self.value) 
     
     
-def GetIntersections(x, y1, y2):
+def get_intersections(x, y1, y2):
 
     nx = len(x)
     ny1 = len(y1)
