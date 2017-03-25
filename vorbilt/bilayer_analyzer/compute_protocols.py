@@ -14,6 +14,9 @@ compute_obj_name_dict = {}
 
 use_objects = {"mda_frame":True,"com_frame":False,"lipid_grid":False}
 
+#TO DO:
+#have protocols parse dictionaries as well as strings, which is more Pythonic
+
 
 #protocol for the computes to run during the frame loop
 class ComputeProtocol:

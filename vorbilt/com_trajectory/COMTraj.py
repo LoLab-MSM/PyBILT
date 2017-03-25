@@ -27,35 +27,9 @@ from scipy.spatial import Delaunay
 #import copy
 
 #import running stats class
-from orbilt.common.running_stats import *
+from vorbilt.common.running_stats import *
 # import the coordinate wrapping function--for unwrapping
-from orbilt.mda_tools.mda_unwrap import mda_wrap_coordinates,mda_wrap_coordinates_parallel
-
-# assumes that a 1d numpy array of floats is pass as input, but 
-# does not check this
-def gen_running_average(onednparray):
-    """ Generates a running average 
-                 
-    Args:
-    onednparray (numpy.array): A 1d numpy array of measurements (e.g. over time)     
-    
-    Returns:
-    numpy.array: 2d array of dim len(onednparray)x2
-        2dnparray[i][0] = running average at i
-        2dnparray[i][1] = running standard deviation at i    
-        for i in range(0,len(onednparray))
-    """
-    averager = RunningStats()
-    nele = len(onednparray)
-    output = np.zeros((nele,2))
-    for i in xrange(nele):
-        averager.push(onednparray[i])
-        run_avg = averager.mean()
-        run_dev = averager.deviation()
-       # print run_avg, run_dev, averager.mean(), onednparray[i]
-        output[i,0] = run_avg
-        output[i,1] = run_dev
-    return output
+from vorbilt.mda_tools.mda_unwrap import mda_wrap_coordinates,mda_wrap_coordinates_parallel
 
 # This function is incomplete!
 def colorize_step_vector_clusters(vectors):
@@ -276,7 +250,7 @@ class FrameShelve:
     _type_error ="Instance of object MemSys.FrameShelve only excepts instances of MemSys.Frame."
     
     def __init__(self,prefix='/tmp/',save=False):
-        r""" Initialization of the frames object.  
+        """ Initialization of the frames object.  
 
         Args:
             prefix (str, optional): The location/path to store the "shelve"d Frame data.   

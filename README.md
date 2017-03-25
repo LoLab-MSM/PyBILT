@@ -1,7 +1,7 @@
 # VORBILT - Vanderbilt-Oak Ridge BILayer analysis Toolkit
 
 
-Developed using Anaconda 4.3.1 with Python 2.7				
+Developed using Anaconda 4.3.1 Python 2.7				
 # Dependencies:
    * NumPy  1.11.1
    * SciPy 0.17.1

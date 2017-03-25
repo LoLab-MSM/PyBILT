@@ -62,22 +62,29 @@ class LipidCOM:
 
 # a Center of Mass frame object 
 class COMFrame:
-    """ A molecular dynamics style Frame object. """    
+    """ A molecular dynamics style Frame object for LipidCOM objects.
+
+    Atrributes:
+        lipidcom (list of obj:LipidCOM): A list of the LipidCOM objects assigned to the COMFrame.
+        box (np.array): A 3 element vector containing the (rectangular) xyz box edge lengths.
+        time (float): The simulation time that this Frame represents.
+        number (int): The frame number of this Frame.
+        mdnumber (int): The corresponding frame number in the original MD trajectory
+
+
+    """
                 
     # does not check that nlipids is an int
-    def __init__(self, mda_frame, mda_bilayer_selection, wrap_coords):
-        """ Frame initialization.    
+    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords):
+        """ Frame initialization.
 
         Args:
-            nlipids (int): The number of lipids (LipidCOM objects) that this frame will hold
-
-        Atrributes:
-            lipidcom (list of obj:LipidCOM): A list of the LipidCOM objects assigned to the Frame.
-            box (np.array): A 3 element vector containing the (rectangular) xyz box edge lengths. 
-            time (float): The simulation time that this Frame represents.
-            number (int): The frame number of this Frame.
-            mdnumber (int): The corresponding frame number in the original MD trajectory
-            
+            mda_frame (MDAnalysis.Timestep): The MDAnalysis frame for the coordinates to use in computing the
+                lipid centers of mass.
+            mda_bilayer_selection (MDAnalysis.AtomSelection): The MDAnalsysis atom selection object for the
+                containing the atoms in the bilayer.
+            unwrap_coords (numpy.Array): A numpy array containing the the unwrapped coordinates of the bilayer selection
+                atoms.
         """
         # list to store the nlipids LipidCOM objects
         self.lipidcom = []
@@ -110,9 +117,9 @@ class COMFrame:
         #now wrapped coordinates
         #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
         # to remove center of mass motion of the membrane
-        mda_frame._pos[index] = wrap_coords[:]
+        mda_frame._pos[index] = unwrap_coords[:]
 
-        mem_com = wrap_coords.mean(axis=0)
+        mem_com = unwrap_coords.mean(axis=0)
         mda_frame._pos[index] -= mem_com
         r=0            
         for res in mda_bilayer_selection.residues:
@@ -163,7 +170,7 @@ class COMFrame:
         """ Computes the center of mass (COM) for the Frame    
         
         This member function is used to compute the overall center of mass (COM) of the 
-        Frame using the LipidCOM object coordinates and masses. 
+        COMFrame using the LipidCOM object coordinates and masses.
 
         Args: 
             wrapped (bool, optional): Define which set of coordinates to use in the computation.

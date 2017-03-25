@@ -1,6 +1,13 @@
+"""Defines the MDAData class that is used to store the MDAnalysis objects built from the structure and trajectory file.
+"""
+
 import MDAnalysis as mda
 
 class MDAData:
+    """Store the MDAnalysis objects used in the analyses.
+     Attributes:
+         mda_universe (
+    """
     def __init__(self,psf, trajectory, bilayer_sel_string):
         self.mda_universe = mda.Universe(psf, trajectory)
         self.mda_trajectory = self.mda_universe.trajectory

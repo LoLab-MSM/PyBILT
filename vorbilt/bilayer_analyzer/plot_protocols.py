@@ -8,7 +8,7 @@ plot_func_dict = {}
 plot_compute_dict = {}
 
 
-#protocol for the computes to run during the frame loop
+#protocol for the  plots to run after the frame loop
 class PlotProtocol:
 
     def __init__(self, plot_commands, compute_protocol):

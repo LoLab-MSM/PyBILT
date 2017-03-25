@@ -1,11 +1,22 @@
+"""The bilayer_analyzer module.
 
+This module defines the BilayerAnalyzer class that can be used to build protocols for analyzing and generating plots
+for the analysis of a lipid bilayer trajectory.
+
+Example:
+    >> import vorbilt.bilayer_analyzer as ba
+    >> analyzer = ba.BilayerAnalyzer(input_file="setup.in")
+    >> analyzer.run_analysis()
+    >> analyzer.dump_data()
+    >> analyzer.save_all_plots()
+"""
 
 
 #imports
 import MDAnalysis as mda
 import numpy as np
 import pickle
-#ORBILT imports
+#VORBILT imports
 import com_frame as cf
 import leaflet as lf 
 import vorbilt.lipid_grid.lipid_grid as lg
@@ -22,6 +33,69 @@ default_compute_commands = [['msd', 'msd_1']]
 #the main analyzer class
 
 class BilayerAnalyzer:
+    """An analyzer class to facilitate building analyses of the bilayers
+
+    Attributes:
+        valid_commands (list of str): A list of acceptable commands that can parsed from an input script.
+        required_commands (list of str): A list of the commands that are required when parsing an input script.
+        required_command_error_strings (dict): A dictionary of error messages to print when required commands are
+            missing in an input script.
+        input_script_name (str): The name of the input script if one was supplied.
+        commands (dict): A dictionary of lists keyed to the setup commands.
+        compute_protocol (obj:ComputeProtocol): An instance of ComputeProtocol used to setup and store the defined
+            compute operations to perform during analysis.
+        plot_protocol (obj:PlotProtocol): An instance of PlotProtocol used to setup and store the defined plotting
+            operations to perform after the analysis is done.
+        mda_data (obj:MDAData): An object used to store all the MDAnalysis object data for the input structure and
+            trajectory.
+        norm (int): An integer representing the index of 3 element xyz coordinate arrays for the bilayer normal
+            dimension.
+            Default: 2
+        lateral (list): A two element list of integers representing the indices of 3 element xyz coordinate arrays for
+            the bilayer lateral dimensions.
+            Default: [0, 1]
+        normal_dimension (str): A string representing the bilayer's normal dimension (i.e. 'x', 'y', or 'z').
+            Default: 'z'
+        lateral_dimension (str): A string representing the bilayer's lateral dimensions (i.e. 'xy', 'yz', 'xz', etc.).
+            Default: 'xy'
+        current_mda_frame (obj:MDAnalsysis-->Timestep): This variable is used during the analysis loop to store a copy
+            of current frame in the MDAnalysis trajectory.
+        frame_range (list): A three element list containing the range of frames and the skipping interval for the
+            analysis (i.e. which frames to include in the loop over the trajectory).
+            Structure: [first_frame, last_frame, interval]
+            Default: [0, -1, 1]
+        frame_index (int): An integer used to store the index of the current frame in the trajectory during the analysis
+            loop.
+        com_frame (obj:COMFrame): This variable is used to store an instance of the COMFrame object for the current
+            frame during the analysis loop.
+        dump_com_frame (bool): A boolean that is used to determine if the COMFrame objects should be dumped ater each
+            iteraction of the analysis loop. The objects are dumped as pickle files.
+            Default: False
+        dump_com_frame_path (str): A string file path for where COMFrame objects are dumped.
+            Default: './'
+        leaflets: (dict): A dictionary of the Leaflet objects extracted from the bilayer at each frame of the analysis.
+            The keys are 'upper' and 'lower' corresponding to the upper and lower leaflets of the bilayer.
+        dump_leaflet (bool): Determines whether the leaflets are dumped (as pickles) after each frame in the analysis
+            loop.
+            Default: False
+        dump_leaflet_path (str): A string file path for where the leaflet object dictionaries are dumped.
+            Default: './'
+        lipid_grid (obj:LipidGrids): An instance of the LipidGrids object for the current frame of the trajectory
+            (analysis) loop.
+        lg_nxbins (int): An integer defining the number of bins to use in the 'x' dimension of the LipidGrid
+            objects.
+            Default: 10
+        lg_nybins (int): An integer defining the number of bins to use in the 'y' dimension of the LipidGrid
+            objects.
+            Default: 10
+        dump_lipid_grid (bool): Determines wheter the LipidGrids objects built during interations of the analysis loop
+            are dumped as pickle files.
+            Default: False
+        dump_lipid_grid_path (str): A string containing the path where dumped LipidGrids should be dumped.
+            Default: './'
+        first_com_frame (obj:COMFrame): Stores an instance of the COMFrame object from the first frame of the analysis
+            loop.
+    """
     #for the input script parser
     valid_commands = ["psf", "trajectory", "compute", "selection", "frames", "plot"]
     required_commands = ['psf','trajectory', 'selection']
@@ -31,7 +105,15 @@ class BilayerAnalyzer:
 
 
     def __init__(self, psf_file = None, trajectory=None, selection=None, input_file=None):
-
+        """BilayerAnalyzer initialization.
+        The initialization initialially parses all the inputs and sets some the attribute values. It also calls the
+        initialization of the ComputeProtocol and PlotProtocol objects and builds the MDAData object.
+        Args:
+            psf_file (str):
+            trajectory (str):
+            selection (str):
+            input_file (str):
+        """
         self.input_script_name = input_file
         if input_file is not None:
             print ("parsing input file \'"+input_file+"\'...")
@@ -42,18 +124,21 @@ class BilayerAnalyzer:
             self.commands['psf'] = [psf_file]
             self.commands['trajectory'] = [trajectory]  
             self.commands['selection'] = [selection]
+        #set up the compute protocol
         print ("setting up compute protocol:")
         if 'compute' in self.commands.keys():
             self.compute_protocol = cp.ComputeProtocol(self.commands['compute'])
         else:
             self.compute_protocol = cp.ComputeProtocol(default_compute_commands)
-        self.print_compute_protocol()   
+        self.print_compute_protocol()
+        #set up the plot protocol
         print ("setting up plot protocol")
         if "plot" in self.commands.keys():
             self.plot_protocol = pp.PlotProtocol(self.commands['plot'], self.compute_protocol)
         else:
-            self.plot_protocol = pp.PlotProtocol(None, self.compute_protocol)     
-        #build selection string
+            self.plot_protocol = pp.PlotProtocol(None, self.compute_protocol)
+
+        #build selection string for the MDAData object
         sel_string = ""
         for item in self.commands['selection'][0]:
             word = ""
@@ -65,8 +150,10 @@ class BilayerAnalyzer:
         #sel_string = "not resname CLA and not resname TIP3 and not resname POT"    
         #print "bilayer selection string:"
         #print sel_string
+        #build the MDAData object
         print ('building the MDAnalysis objects...')
         self.mda_data = md.MDAData(self.commands['psf'][0][0],self.commands['trajectory'][0][0],sel_string)
+        #analysis defaults
         self.norm = 2
         self.lateral = [0,1]
         self.lateral_dimension = "xy"
@@ -121,7 +208,17 @@ class BilayerAnalyzer:
         return  
 
     def parse_input_script(self, input_script_name):
-        
+        """Parses input setup scripts.
+        Args:
+            input_script_name (str): A string with the file path and name of the input script to be parsed.
+
+        Returns:
+            (dict): A dictionary containing lists of commands for each type of command key (e.g. compute, plot
+                etc.).
+        Raises:
+            RuntimeError: A runtime error is given if there is an invalid command key in the input script. A runtime
+            error is also raised if the required commands are not provided in the input script.
+        """
         commands = {}
         #args = {}
         with open(input_script_name) as ifile:
@@ -149,96 +246,207 @@ class BilayerAnalyzer:
 
     ### compute data/access
     def print_available_computes():
+        """Prints the keys of computes that can initialized.
+
+        """
         print (cp.command_protocols.keys())
         return
+
     def available_computes():
+        """ Returns the available computes.
+        Returns:
+            (list): A list of string keys corresponding to the available computes.
+
+        """
         return cp.command_protocols.keys()
 
     def print_compute_protocol(self):
+        """Print the compute protocol."""
         self.compute_protocol.print_protocol()
         return
+
     def add_compute(self, compute_string):
+        """Add a compute to the compute protocol.
+        Args:
+            compute_string (str): A string defining the compute key, compute id, and arguments for the new compute.
+
+        """
         self.compute_protocol.add_compute(compute_string)
         return
+
     def remove_compute(self, compute_id):
+        """Remove a specified compute from the comptue protocol.
+        Args:
+            compute_id (str): The string compute id of the compute to be removed from the protocol.
+
+        """
         self.compute_protocol.remove_compute(compute_id)
         return
 
     def get_compute_ids(self):
+        """Return the ids of currently initialized computes in the compute protocol.
+        Returns:
+            (list): A list string compute ids.
+
+        """
         return self.compute_protocol.compute_ids
 
     def get_compute_data(self, compute_id):
+        """Return the analysis output for the specified compute.
+        Args:
+            compute_id (str): A string compute id.
+
+        Returns:
+            Variable: The analysis output of the specified compute. The type/structure will depend on the compute.
+
+        """
         return self.compute_protocol.command_protocol[compute_id].get_data()
     
     def dump_data():
+        """Dump all the anlysis outputs from the computes as pickle files."""
         self.compute_protocol.dump_data()
         return    
     
     ## plot data/access   
     def print_available_plots():
+        """Prints a list of the keys of the available plot types.        """
         print (pp.command_protocols.keys())
         return
 
     def available_computes():
+        """Returns the list of the keys of the available plot types.
+
+        Returns:
+            (list): A list of string keys for available plot types.
+
+        """
         return pp.command_protocols.keys()
 
     def print_plot_protocol(self):
+        """Print the protocol for the plots that have initialized."""
         self.plot_protocol.print_protocol()
         return
 
     def add_plot(self, plot_string):
+        """Add a new plot to the plot protocol.
+        Args:
+            plot_string (str): A string with the plot key, id, and arguments.
+
+        """
         self.plot_protocol.add_plot(plot_string, self.compute_protocol)
         return
 
     def remove_plot(self, plot_id):
+        """Remove the specified plot from the protocol.
+        Args:
+            plot_id (str): Plot id of the plot to be removed.
+
+        """
         self.plot_protocol.remove_plot(plot_id)
         return
 
     def print_plot_ids(self):
+        """Print the ids of initialized plots in the plot protocol."""
         print (self.plot_protocol.plot_ids)
 
 
     def get_plot_ids(self):
+        """Return the ids of the plots in the plot protocol.
+
+        Returns:
+            (list): A list of string plot ids that have been initialized in the plot protocol.
+        """
          return self.plot_protocol.plot_ids
 
     def show_plot(self, plot_id):
+        """Show the specified plot via matplotlibs .show() function.
+        Args:
+            plot_id (str): The string plot id to generate and show the plot for.
+
+        """
         self.plot_protocol.command_protocol[plot_id].show_plot(self.compute_protocol)
         return     
 
     def generate_plot(self, plot_id):
+        """Generate the plot image file (.eps) for the specified plot.
+        Args:
+            plot_id (str): The string plot id for the plot generate.
+
+        """
         self.plot_protocol.command_protocol[plot_id].generate_plot(self.compute_protocol)
         return
 
     def save_all_plots():
+        """Generates all the plot image files (.eps) for all the plots in the plot protocol."""
         self.plot_protocol.save_plots(self.compute_protocol)
         return
 
     #mda_trajectory data/access
     def update_mda_trajectory(self, new_trajectory):
+        """Set a new trajectory file to read frames from.
+        Args:
+            new_trajectory (str): A file path and file name for the new trajectory.
+
+        """
         print ("updating mda trajectory to:",new_trajectory)
         self.commands['trajectory'] = [new_trajectory]
         self.mda_data.update_trajectory(new_trajectory)
         return
 
     #buildable objects functions
-    def dump_com_frame(on=True, path="./"):
+    def dump_com_frame(self, on=True, path="./"):
+        """Turn on (or off) the dumping of COMFrame objects built during analysis.
+        Args:
+            on (bool, optional): Defines whether the COMFrame objects should be dumped (as pickle files) after each
+                frame in the analysis loop.
+                Default: True
+            path (str, optional): Sets the path where the COMFrame objects are dumped.
+                Default: "./"
+
+        """
         self.dump_com_frame=on
         if path != self.dump_com_frame_path:
             self.dump_com_frame_path = path
         return
 
-    def dump_leaflet(on=True, path="./"):
+    def dump_leaflet(self, on=True, path="./"):
+        """Turn on (or off) the dumping of leaflet objects built during analysis.
+        Args:
+            on (bool, optional): Defines whether the COMFrame objects should be dumped (as pickle files) after each
+                frame in the analysis loop.
+                Default: True
+            path (str, optional): Sets the path where the COMFrame objects are dumped.
+                Default: "./"
+
+        """
         self.dump_leaflet=on 
         if path != self.dump_leaflet_path:
             self.dump_leaflet_path = path
         return
+
     def dump_lipid_grid(on=True, path="./"):
+        """Turn on (or off) the dumping of LipidGrid objects built during analysis.
+        Args:
+            on (bool, optional): Defines whether the COMFrame objects should be dumped (as pickle files) after each
+                frame in the analysis loop.
+                Default: True
+            path (str, optional): Sets the path where the COMFrame objects are dumped.
+                Default: "./"
+
+        """
         self.dump_lipid_grid=on
         if path != self.dump_lipid_grid_path:
             self.dump_lipid_grid_path=path
         return
 
-    def set_frame_range(first=0, last=-1, interval=1):
+    def set_frame_range(self, first=0, last=-1, interval=1):
+        """Set the frame range and interval to use in the analysis.
+        Args:
+            first (int): The first frame.
+            last (int): The last frame.
+            interval (int): The interval to skip between frames in the analysis loop.
+
+        """
         if first != self.frame_range[0]:
             self.frame_range[0] = first
         if last != self.frame_range[1]:
@@ -249,14 +457,25 @@ class BilayerAnalyzer:
 
 
     def reset(self):
+        """ Clears the analysis output stored in the computes.
+        """
         self.compute_protocol.reset()
         return
 
     #analysis     
     def run_analysis(self, nprocs=1):
+        """ Runs the analsysis.
+        The function performs the loop over the trajectory. At each frame it builds the necessary objects
+            (e.g. COMFrame) and then executes the analysis of each compute that was initialized in the setup.
+        Args:
+            nprocs (int): An integer specifying the number of cores to use in multithreaded parallelelization.
+
+        """
+
         parallel = False
         if nprocs>1:
             parallel=True
+
         #now we need to unwrap the coordinates
         natoms = self.mda_data.natoms
         oldcoord = np.zeros((natoms,3))
