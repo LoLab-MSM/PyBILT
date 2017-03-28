@@ -122,14 +122,19 @@ class BilayerAnalyzer:
         if input_file is not None:
             print ("parsing input file \'" + input_file + "\'...")
             self.commands = self.parse_input_script(input_file)
-        elif (psf_file is not None) and (
-            (trajectory is not None) and (selection is not None)):
+        elif (psf_file is not None) and ((trajectory is not None) and
+                                             (selection is not None)):
             print ("parsing inputs...")
-            self.commands = {}
-            self.commands['psf'] = [psf_file]
-            self.commands['trajectory'] = [trajectory]
-            self.commands['selection'] = [selection]
-        # set up the compute protocol
+            self.commands = dict()
+            self.commands['psf'] = psf_file
+            self.commands['trajectory'] = trajectory
+            self.commands['selection'] = selection
+        else:
+            error = 'Must provide input_file or all three options for' \
+                    '"psf_file", "trajectory", and "selection"'
+            raise RuntimeError(error)
+
+            # set up the compute protocol
         print ("setting up compute protocol:")
         if 'compute' in self.commands.keys():
             self.compute_protocol = cp.ComputeProtocol(
@@ -145,23 +150,20 @@ class BilayerAnalyzer:
                                                  self.compute_protocol)
         else:
             self.plot_protocol = pp.PlotProtocol(None, self.compute_protocol)
-
+        for i in self.commands:
+            print(i, self.commands[i])
         # build selection string for the MDAData object
-        sel_string = ""
-        for item in self.commands['selection'][0]:
-            word = ""
-            for char in item:
-                if char != "\"":
-                    word += char
-            sel_string += " " + word
+        sel_string = self.commands['selection']
+
         # print (item)
         # sel_string = "not resname CLA and not resname TIP3 and not resname POT"
         # print "bilayer selection string:"
         # print sel_string
         # build the MDAData object
         print ('building the MDAnalysis objects...')
-        self.mda_data = md.MDAData(self.commands['psf'][0][0],
-                                   self.commands['trajectory'][0][0],
+
+        self.mda_data = md.MDAData(self.commands['psf'],
+                                   self.commands['trajectory'],
                                    sel_string)
         # analysis defaults
         self.norm = 2
@@ -237,22 +239,31 @@ class BilayerAnalyzer:
         # args = {}
         with open(input_script_name) as ifile:
             for line in ifile:
+                line = line[:-1]
                 words = line.split()
-                skip_line = (len(words) <= 1) or (
-                (words[0] == '#') or (words[0][0] == '#'))
-                if not skip_line:
-                    if words[0] in self.valid_commands:
-                        if words[0] in commands.keys():
-                            commands[words[0]].append(words[1:])
+
+                skip_line = (len(words) <= 1) or ((words[0] == '#') or
+                                                  (words[0][0] == '#'))
+                if skip_line:
+                    continue
+                key = words[0]
+                if key in ['psf', 'trajectory', 'selection']:
+                    second_term = line.replace(key, '', 1).strip()
+                    if key == 'selection':
+                        second_term = eval(second_term)
+                    commands[key] = second_term
+                else:
+                    if key in self.valid_commands:
+                        if key in commands.keys():
+                            commands[key].append(words[1:])
                         else:
-                            commands[words[0]] = []
-                            commands[words[0]].append(words[1:])
+                            commands[key] = []
+                            commands[key].append(words[1:])
                     else:
-                        print (
-                        "input command ", words[0], " is not a valid command")
-                        error_string = "invalid input command \"" + words[
-                            0] + "\""
-                        raise RuntimeError(error_string)
+                        print("input command {} is not a valid"
+                              " command".format(key))
+                        error_str = "invalid input command '{}'".format(key)
+                        raise RuntimeError(error_str)
         for required in self.required_commands:
             if required not in commands.keys():
                 error_string = self.required_command_error_strings[required]
@@ -260,23 +271,6 @@ class BilayerAnalyzer:
                 exit
 
         return commands
-
-    ### compute data/access
-    def print_available_computes(self):
-        """Prints the keys of computes that can initialized.
-
-        """
-        print (cp.command_protocols.keys())
-        return
-
-    def available_computes(self):
-        """ Returns the available computes.
-        Returns:
-            (list): A list of string keys corresponding to the available
-            computes.
-
-        """
-        return cp.command_protocols.keys()
 
     def print_compute_protocol(self):
         """Print the compute protocol."""
@@ -330,22 +324,6 @@ class BilayerAnalyzer:
         return
 
         ## plot data/access
-
-    @staticmethod
-    def print_available_plots():
-        """Prints a list of the keys of the available plot types.        """
-        print (pp.command_protocols.keys())
-        return
-
-    @staticmethod
-    def available_computes():
-        """Returns the list of the keys of the available plot types.
-
-        Returns:
-            (list): A list of string keys for available plot types.
-
-        """
-        return pp.command_protocols.keys()
 
     def print_plot_protocol(self):
         """Print the protocol for the plots that have initialized."""
@@ -614,3 +592,37 @@ class BilayerAnalyzer:
             self.frame_index += self.frame_range[2]
             # print ('compute_out:')
             # print (compute_out)
+
+    @staticmethod
+    def print_available_computes():
+        """Prints the keys of computes that can initialized.
+
+        """
+        print(cp.command_protocols.keys())
+        return
+
+    @staticmethod
+    def print_available_plots():
+        """Prints a list of the keys of the available plot types.        """
+        print (pp.command_protocols.keys())
+        return
+
+    @staticmethod
+    def available_computes():
+        """Returns the list of the keys of the available plot types.
+
+        Returns:
+            (list): A list of string keys for available plot types.
+
+        """
+        return pp.command_protocols.keys()
+
+    @staticmethod
+    def available_computes():
+        """ Returns the available computes.
+        Returns:
+            (list): A list of string keys corresponding to the available
+            computes.
+
+        """
+        return cp.command_protocols.keys()
