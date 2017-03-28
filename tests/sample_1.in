@@ -1,0 +1,18 @@
+#set the structure file (psf) for the system
+psf ../vorbilt/sample_bilayer/sample_bilayer.psf
+
+#set the trajectory file
+trajectory ../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd
+
+#MDAnalysis syntax selection text to select the bilayer
+selection "not resname CLA and not resname TIP3 and not resname POT"
+#define a compute for mean squared displacement (msd): named 'msd_1'
+compute msd msd_1
+
+#define a compute for mean squared displacement (msd) for (resname) POPC lipids in the
+#   upper leaflet of the bilayer: named 'msd_2' 
+compute msd msd_2 leaflet upper resname POPC
+
+#define a plot for mean squared displacement data (msd) including computes 'msd_1' and 'msd_2': named 'msd_p'
+plot msd msd_p msd_1 DOPE-U msd_2 POPC-U
+
