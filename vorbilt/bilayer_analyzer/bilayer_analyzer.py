@@ -14,7 +14,10 @@ Example:
 # imports
 import MDAnalysis as mda
 import numpy as np
-import pickle
+try:
+    import cPickle as pickle
+except:
+    import pickle
 # VORBILT imports
 import com_frame as cf
 import leaflet as lf

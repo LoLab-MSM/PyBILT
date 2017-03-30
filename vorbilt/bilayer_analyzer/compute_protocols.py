@@ -1,4 +1,6 @@
 # imports
+import scipy.constants as scicon
+
 try:
     import cPickle as pickle
 except:
@@ -177,7 +179,7 @@ class ComputeFunctionProtocol:
     def save_data(self):
         with open(self.save_file_name, 'wb') as outfile:
             pickle.dump(np.array(self.compute_output), outfile)
-            outfile.close()
+
         return
 
     def get_data(self):
@@ -235,7 +237,7 @@ class MSDProtocol(ComputeFunctionProtocol):
 
     def print_protocol(self):
         print (
-        "\'" + self.compute_id + "\': msd analysis of " + self.resname + " lipids in " + self.leaflet + " leaflet(s).")
+            "\'" + self.compute_id + "\': msd analysis of " + self.resname + " lipids in " + self.leaflet + " leaflet(s).")
         return
 
     def run_compute(self, bilayer_analyzer):
@@ -283,8 +285,8 @@ class MSDProtocol(ComputeFunctionProtocol):
             count = 0
             for i in indices:
                 com_curr = \
-                bilayer_analyzer.first_com_frame.lipidcom[i].com_unwrap[
-                    bilayer_analyzer.lateral]
+                    bilayer_analyzer.first_com_frame.lipidcom[i].com_unwrap[
+                        bilayer_analyzer.lateral]
                 ref_coords[count] = com_curr[:]
                 count += 1
             self.ref_coords = ref_coords[:]
@@ -404,7 +406,7 @@ class BTGridProtocol(ComputeFunctionProtocol):
     # required - a check protocol function which reports relevant settings
     def print_protocol(self):
         print (
-        "\'" + self.compute_id + "\': bilayer thickness using lipid_grid")
+            "\'" + self.compute_id + "\': bilayer thickness using lipid_grid")
         return
 
     def run_compute(self, bilayer_analyzer):
@@ -504,7 +506,7 @@ class APLGridProtocol(ComputeFunctionProtocol):
             self.compute_output[key] = np.array(self.compute_output[key])
         with open(self.save_file_name, 'wb') as outfile:
             pickle.dump(self.compute_output, outfile)
-            outfile.close()
+
         return
 
     def get_data(self):
@@ -666,7 +668,7 @@ class DispVecProtocol(ComputeFunctionProtocol):
 
         with open(self.save_file_name, 'wb') as outfile:
             pickle.dump(self.compute_output, outfile)
-            outfile.close()
+
         return
 
     def get_data(self):
@@ -739,7 +741,7 @@ class MassDensProtocol(ComputeFunctionProtocol):
 
     def print_protocol(self):
         print (
-        "\'" + self.compute_id + "\': mass density compute for selection \'" + self.selection_string + "\' ")
+            "\'" + self.compute_id + "\': mass density compute for selection \'" + self.selection_string + "\' ")
         return
 
     def reset(self):
@@ -783,7 +785,7 @@ class MassDensProtocol(ComputeFunctionProtocol):
         centers_density = (self.centers, self.compute_output / self.n_frames)
         with open(self.save_file_name, 'wb') as outfile:
             pickle.dump(centers_density, outfile)
-            outfile.close()
+
         return
 
     def get_data(self):
@@ -791,3 +793,112 @@ class MassDensProtocol(ComputeFunctionProtocol):
 
 
 command_protocols['mass_dens'] = MassDensProtocol
+
+
+# define a new compute
+valid_computes.append('acm')
+compute_obj_name_dict['acm'] = 'mda_frame'
+
+
+class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
+    def __init__(self, args):
+
+        # required
+        self.valid_args = ['temperature']
+        self.return_length = 4
+        self.compute_key = 'acm'
+        self.compute_id = args[0]
+        # default function settings
+        self.save_file_name = self.compute_id + ".pickle"
+        # parse input arguments if given
+        if len(args) > 1:
+            self.parse_args(args)
+
+        # storage for output
+        self.temperature = 298.15
+        self.n_frames = 0
+        self.area = []
+        self.apl = []
+        self.times = []
+        self.compute_output = []
+        self.first_comp = True
+        self.per_leaflet = 1
+        return
+
+    # required- function to parse the input arguments
+    def parse_args(self, args):
+        # print args
+        nargs = len(args)
+        for i in range(1, nargs, 2):
+            arg_key = args[i]
+
+            # print('arg_key: ', arg_key)
+            if arg_key in self.valid_args:
+                if arg_key == 'temperature':
+                    arg_arg = args[i + 1]
+                    self.temperature = float(arg_arg)
+            else:
+                raise RuntimeWarning(
+                    "ignoring invalid argument key " + arg_key + " for compute " + self.compute_id)
+        return
+        # required - a check protocol function which reports relevant settings
+
+    def print_protocol(self):
+        print("\'" + self.compute_id + "\': area compressibility modulus compute for selection \'")
+        return
+
+    def reset(self):
+        self.area_run.reset()
+        self.area = []
+        self.apl = []
+        self.n_frames = 0
+        self.compute_output = []
+        self.first_comp = True
+        return
+
+    def run_compute(self, bilayer_analyzer):
+
+        if self.first_comp:
+            nlipids = bilayer_analyzer.mda_data.n_residues
+            per_leaflet = nlipids / 2
+            self.per_leaflet = per_leaflet
+            self.first_comp = False
+        lateral_indices = bilayer_analyzer.lateral
+        dimensions = bilayer_analyzer.current_mda_frame.dimensions[0:3]
+        lateral_dim = dimensions[lateral_indices]
+        area = lateral_dim.prod()
+        print(area)
+        self.area.append(area)
+        apl = area / self.per_leaflet
+        print(apl)
+        self.apl.append(apl)
+        time = bilayer_analyzer.current_mda_frame.time
+        self.times.append(time)
+        self.n_frames += 1
+        return
+
+    def save_data(self):
+        data = self.get_data()
+        with open(self.save_file_name, 'wb') as outfile:
+            pickle.dump(data, outfile)
+        return
+
+    def get_data(self):
+        area_eq = np.array(self.area).mean()
+        apl = np.array(self.apl)
+        apl_run = gen_running_average(apl)
+        apl_minus_area = (apl - area_eq)**2
+        apl_minus_area_run = gen_running_average(apl_minus_area)
+        acm = scicon.k * self.temperature * apl_run[:,0] / ( self.per_leaflet * apl_minus_area_run[:,0])
+        #conversion factor for Joules/Angstron^2 to milliNewtons/meter
+        acm*=10.0**23
+        acm_run = gen_running_average(acm)
+        times = np.array(self.times)
+        npoints = len(times)
+        output = np.zeros((npoints, 4))
+        output[:, 0] = times[:]
+        output[:, 1] = acm[:]
+        output[:, 2] = acm_run[:, 0]
+        output[:, 3] = acm_run[:, 1]
+        return output
+command_protocols['acm'] = AreaCompressibilityModulusProtocol
