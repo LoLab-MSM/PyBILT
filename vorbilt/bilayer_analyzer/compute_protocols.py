@@ -902,3 +902,245 @@ class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
         output[:, 3] = acm_run[:, 1]
         return output
 command_protocols['acm'] = AreaCompressibilityModulusProtocol
+
+# define a new compute 'nnf'
+valid_computes.append('nnf')
+compute_obj_name_dict['nnf'] = 'com_frame'
+
+
+class NNFProtocol(ComputeFunctionProtocol):
+    def __init__(self, args):
+
+        # required
+        self.valid_args = ['leaflet', 'resname_1', 'resname_2', 'n_neighbors']
+        self.return_length = 2
+        self.compute_key = 'nnf'
+        self.compute_id = args[0]
+        # default function settings
+        self.leaflet = 'both'
+        self.n_neighbors = 5
+        self.rname_1 = 'first'
+        self.rname_2 = 'first'
+        self.save_file_name = self.compute_id + ".pickle"
+        self.first_frame = True
+        self.ref_coords = None
+        self.indices = []
+        self.running = RunningStats()
+        # parse input arguments if given
+        if len(args) > 1:
+            self.parse_args(args)
+        else:
+            raise RuntimeError('wrong number of arguments given to nnf compute. You must specifiy ')
+        # storage for output
+        self.compute_output = []
+        return
+
+    def reset(self):
+        self.running.reset()
+        self.compute_output = []
+        self.first_frame = True
+        return
+
+    # required- function to parse the input arguments
+    def parse_args(self, args):
+        # print args
+        nargs = len(args)
+        res1 = False
+        res2 = False
+        for i in range(1, nargs, 2):
+            arg_key = args[i]
+            arg_arg = args[i + 1]
+            if arg_key in self.valid_args:
+                if arg_key == 'leaflet':
+                    self.leaflet = arg_arg
+                elif arg_key == 'resname_1':
+                    self.rname_1 = arg_arg
+                    res1 = True
+                elif arg_key == 'resname_2':
+                    self.rname_2 = arg_arg
+                    res2 = True
+                elif arg_key == 'n_neighbors':
+                    self.n_neighbors = int(arg_arg)
+            else:
+                raise RuntimeError(
+                    "ignoring invalid argument key " + arg_key + " for compute \'nnf\'")
+        #if res1 and res2:
+        #    return
+        #else:
+        #   raise RuntimeError("must specify target types by arg_keys \'resname_1\' and \'resname_2\'")
+        return
+        # required - a check protocol function which reports relevant settings
+
+    def print_protocol(self):
+        print (
+            "\'" + self.compute_id + "\': lateral order nearest neighbor fraction (nnf) analysis")
+        return
+
+
+    def run_compute(self, bilayer_analyzer):
+        do_leaflet = []
+        if self.leaflet == 'both':
+            do_leaflet = ['upper', 'lower']
+        else:
+            do_leaflet = [self.leaflet]
+
+        if self.first_frame:
+            #pass
+            # build group/resname/lipid type list
+            lipid_types = []
+            nlipids = 0
+            for leaflet_name in do_leaflet:
+                leaflet = bilayer_analyzer.leaflets[leaflet_name]
+                groups = leaflet.get_group_names()
+                nlipids += len(leaflet.get_member_indices())
+                for group in groups:
+                    if group not in lipid_types:
+                        lipid_types.append(group)
+            if self.rname_1 == 'first':
+                self.rname_1 =  lipid_types[0]
+            if self.rname_2 == 'first':
+                self.rname_2 = lipid_types[0]
+            if self.n_neighbors > nlipids:
+                self.n_neighbors = nlipids-1
+
+            n_ltypes = len(lipid_types)
+            self.lipid_types = lipid_types
+            self.n_ltypes = n_ltypes
+
+        lipid_types = self.lipid_types
+        n_ltypes = self.n_ltypes
+        #print lipid_types
+        x_index = bilayer_analyzer.lateral[0]
+        y_index = bilayer_analyzer.lateral[1]
+        box = bilayer_analyzer.current_mda_frame.dimensions[0:3]
+        box_x = box[x_index]
+        box_y = box[y_index]
+        box_x_h = box_x / 2.0
+        box_y_h = box_y / 2.0
+        ltype_a = self.rname_1
+        ltype_b = self.rname_2
+        #print "ltype_a: ",ltype_a," ltype_b: ",ltype_b
+        avg_frac = RunningStats()
+        for leaflet_name in do_leaflet:
+            leaflet = bilayer_analyzer.leaflets[leaflet_name]
+
+            if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
+                ltype_a_indices = leaflet.get_group_indices(ltype_a)
+                ltype_b_indices = leaflet.get_group_indices(ltype_b)
+                all_index = leaflet.get_member_indices()
+                for i in ltype_a_indices:
+                    neighbors = []
+                    for j in all_index:
+                        if i != j:
+                            pos_a = bilayer_analyzer.com_frame.lipidcom[i].com
+                            pos_b = bilayer_analyzer.com_frame.lipidcom[j].com
+                            dx = np.abs(pos_a[x_index] - pos_b[x_index])
+                            dy = np.abs(pos_a[y_index] - pos_b[y_index])
+                            # minimum image for wrapped coordinates
+                            if dx > box_x_h:
+                                dx = box_x - np.absolute(pos_a[x_index] - box_x_h) - np.absolute(
+                                    pos_b[x_index] - box_x_h)
+
+                            if dy > box_y_h:
+                                dy = box_y - np.absolute(pos_a[y_index] - box_y_h) - np.absolute(
+                                    pos_b[y_index] - box_y_h)
+                            dist = np.sqrt(dx ** 2 + dy ** 2)
+                            ltype = bilayer_analyzer.com_frame.lipidcom[j].type
+                            #print "ltype: ",ltype," dist ",dist
+                            neighbors.append([j, dist, ltype])
+                    neighbors.sort(key=lambda x: x[1])
+                    nn_neighbors = neighbors[0:self.n_neighbors]
+                    #print neighbors
+                    #print nn_neighbors
+                    #quit()
+                    n_type_b = 0.0
+                    for neighbor in nn_neighbors:
+                        ntype = neighbor[2]
+                        if ntype == ltype_b:
+                            n_type_b += 1.0
+                    frac = n_type_b/self.n_neighbors
+                    #print "frac ",frac
+                    avg_frac.push(frac)
+
+        f_current = avg_frac.mean()
+        self.running.push(f_current)
+        f_run = self.running.mean()
+        f_run_dev = self.running.deviation()
+        tc = bilayer_analyzer.com_frame.time
+        self.compute_output.append([tc, f_current, f_run, f_run_dev])
+        return
+
+    # def run_compute(self, bilayer_analyzer):
+    #
+    #     if self.first_frame:
+    #         pass
+    #         #build group/resname/lipid type list
+    #         lipid_types = []
+    #         for leaflet in bilayer_analyzer.leaflets:
+    #             groups = leaflet.get_group_names()
+    #             for group in groups:
+    #                 if group not in lipid_types:
+    #                     lipid_types.append(group)
+    #         n_ltypes = len(lipid_types)
+    #         self.lipid_types = lipid_types
+    #         self.n_ltypes = n_ltypes
+    #
+    #     lipid_types = self.lipid_types
+    #     n_ltypes = self.n_ltypes
+    #
+    #     x_index = bilayer_analyzer.lateral[0]
+    #     y_index = bilayer_analyzer.lateral[1]
+    #     box = bilayer_analyzer.current_mda_frame.dimensions[0:3]
+    #     box_x = box[x_index]
+    #     box_y = box[y_index]
+    #     box_x_h = box_x/2.0
+    #     box_y_h = box_y/2.0
+    #
+    #     for leaflet in bilayer_analyzer.leaflets:
+    #         all_indices = leaflet.get_member_indices()
+    #
+    #         #X-X types
+    #         for lipid_type in lipid_types:
+    #             if leaflet.has_group(lipid_type):
+    #                 ltype_indices = leaflet.get_group_indices(lipid_type)
+    #                 nlip = len(ltype_indices)
+    #                 neigbors = dict()
+    #                 for lindex in ltype_indices:
+    #                     neigbors[lindex] = []
+    #                     for lindex_b in ltype_indices:
+    #
+    #                         if lindex_b != lindex:
+    #                             pos_a = bilayer_analyzer.com_frame.lipidcom[lindex].com
+    #                             pos_b = bilayer_analyzer.com_frame.lipidcom[lindex_b].com
+    #                             dx = np.abs(pos_a[x_index] - pos_b[x_index])
+    #                             dy = np.abs(pos_a[y_index] - pos_b[y_index])
+    #                             #minimum image for wrapped coordinates
+    #                             if dx > box_x_h:
+    #                                dx = box_x - np.absolute(pos_a[x_index]-box_x_h) - np.absolute(pos_b[x_index]-box_x_h)
+    #
+    #                             if dy > box_yy_h:
+    #                                dy = box_y - np.absolute(pos_a[y_index]-box_y_h) - np.absolute(pos_b[y_index]-box_y_h)
+    #                             dist = np.sqrt(dx**2 + dy**2)
+    #                             neigbors[lindex_b].append([lindex_b, dist])
+    #
+    #
+    #
+    #         #X-Y types
+    #         for i in range(n_ltypes-1):
+    #             for j in range(i+1, n_ltypes):
+    #             ltype_i = lipid_types[i]
+    #             ltype_j = lipid_types[j]
+    #             if leaflet.has_group(ltype_i) and leaflet.has_group(ltype_j):
+    #
+    #                 ltype_indices = leaflet.get_group_indices()
+    #                 for lipid_type_b in lipid_types:
+    #                     if leaflet.has_group(lipid_type_b):
+    #                         ltype_b_indices
+    #     tc = bilayer_analyzer.com_frame.time
+    #
+    #
+    #     return
+
+
+# update the command_protocols dictionary
+command_protocols['nnf'] = NNFProtocol
