@@ -51,22 +51,23 @@ class Leaflet:
         return len(self.members)
 
     #consider changing var name of input 'resname' to something that doesn't conflict with LipidCOM.type  
-    def add_member(self, index, resname):
+    def add_member(self, com_index, resname, resid):
         """ Add new lipids to the Leaflet.
            
         This function is meant to be used to add new lipids according to their Frame.lipidcom index
         to the Leaflet and to a LipidGroup according resname/type/name. 
         Args:  
-            index (int): The index of the lipid being added to the Leaflet.
+            com_index (int): The COMFrame.lipidcom index of the lipid being added to the Leaflet.
             resname (str): The resname (or LipidCOM.type) of the lipid being added.
+            resid (int): The topological resid of the lipid being added to the leaflet.
         """
         if len(self.members) == 0:
-            self.members.append([index, resname])
+            self.members.append([com_index, resname, resid])
             self.groups.append(LipidGroup(resname))
-            self.groups[0].add_member(index)
+            self.groups[0].add_member(com_index)
             self.group_dict.update({resname: 0})
         else:
-            self.members.append([index, resname])
+            self.members.append([com_index, resname])
             addgroup = True
             group_ind = 0
             for rn in self.groups:
@@ -77,10 +78,10 @@ class Leaflet:
             if addgroup:
                 self.groups.append(LipidGroup(resname))
                 ng = len(self.groups)
-                self.groups[ng-1].add_member(index)
+                self.groups[ng-1].add_member(com_index)
                 self.group_dict.update({resname: ng-1})
             else:
-                self.groups[group_ind].add_member(index)
+                self.groups[group_ind].add_member(com_index)
             
             #self.members=sorted(self.members,key=lambda self.members:self.members[1])  
         return
@@ -128,6 +129,19 @@ class Leaflet:
             indices.append(element[0])
 
         return list(indices)
+
+    def get_member_resids(self):
+        """ Get the 'resid's of all lipids in the Leaflet.
+        This member function Returns: the list of resid for the lipids grouped in the Leaflet instance.
+
+        Returns:
+            list of int: A list of integer 'resid's of the lipids associated with the Leaflet instance.
+        """
+        return [element[2] for element in self.members]
+
+    def get_member_resname_from_resid(self):
+        pass
+
 
     def has_group(self, group_name):
         """ Check if there is a LipidGroup with the specified name.  
@@ -195,3 +209,6 @@ class LipidGroup:
             str: The name of the lipid group (i.e. lg_name) 
         """
         return self.lg_name
+
+#@classmethod
+#def leaflet_from_mda_frame
