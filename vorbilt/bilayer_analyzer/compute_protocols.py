@@ -15,7 +15,7 @@ valid_computes = []
 compute_obj_name_dict = {}
 # obj_dict = {"com_frame":COMFrame}
 
-use_objects = {"mda_frame": True, "com_frame": False, "lipid_grid": False}
+use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 
 
 # TO DO:

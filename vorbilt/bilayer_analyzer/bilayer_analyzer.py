@@ -524,47 +524,48 @@ class BilayerAnalyzer:
                 oldcoord = np.copy(wrapcoord)
                 # print ("wrapped coords:")
             # print (wrapcoord)
-            if self.compute_protocol.use_objects['com_frame']:
-                # now build the COMFrame
-                self.com_frame = cf.COMFrame(frame, self.mda_data.bilayer_sel,
-                                             wrapcoord)
-                if first_com:
-                    self.first_com_frame = self.com_frame
-                    first_com = False
-                # now we can assign the lipids to the leaflets 
-                self.leaflets = {'upper': lf.Leaflet('upper'),
-                                 'lower': lf.Leaflet('lower')}
-                if self.dump_com_frame:
-                    ofname = self.dump_com_frame_path + "com_frame_" + str(
-                        frame.frame) + ".pickle"
-                    with open(ofname, 'wb') as ofile:
-                        pickle.dump(self.com_frame, ofile)
-                if self.dump_leaflet:
-                    ofname = self.dump_leaflet_path + "leaflets_" + str(
-                        frame.frame) + ".pickle"
-                    with open(ofname, 'wb') as ofile:
-                        pickle.dump(self.leaflets, ofile)
+            #if self.compute_protocol.use_objects['com_frame']:
+            # now build the COMFrame
+            self.com_frame = cf.COMFrame(frame, self.mda_data.bilayer_sel,
+                                         wrapcoord)
+            if first_com:
+                self.first_com_frame = self.com_frame
+                first_com = False
+            # now we can assign the lipids to the leaflets
+            self.leaflets = {'upper': lf.Leaflet('upper'),
+                             'lower': lf.Leaflet('lower')}
+            if self.dump_com_frame:
+                ofname = self.dump_com_frame_path + "com_frame_" + str(
+                    frame.frame) + ".pickle"
+                with open(ofname, 'wb') as ofile:
+                    pickle.dump(self.com_frame, ofile)
+            if self.dump_leaflet:
+                ofname = self.dump_leaflet_path + "leaflets_" + str(
+                    frame.frame) + ".pickle"
+                with open(ofname, 'wb') as ofile:
+                    pickle.dump(self.leaflets, ofile)
 
-                # first compute the average position along the normal direction
-                zstat = RunningStats()
-                for lipcom in self.com_frame.lipidcom:
-                    zstat.push(lipcom.com_unwrap[self.norm])
-                zavg = zstat.mean()
-                # now loop over the lipids
-                l = 0
-                for lipcom in self.com_frame.lipidcom:
-                    pos = ""
-                    # decide which leaflet
-                    #    print (lipcom.com_unwrap)
-                    #    print (lipcom.com)
-                    if lipcom.com_unwrap[self.norm] > zavg:
-                        pos = 'upper'
-                    elif lipcom.com_unwrap[self.norm] < zavg:
-                        pos = 'lower'
-                    # add to the chosen leaflet
-                    self.com_frame.lipidcom[l].leaflet = pos
-                    self.leaflets[pos].add_member(l, lipcom.type)
-                    l += 1
+            # first compute the average position along the normal direction
+            zstat = RunningStats()
+            for lipcom in self.com_frame.lipidcom:
+                zstat.push(lipcom.com_unwrap[self.norm])
+            zavg = zstat.mean()
+            # now loop over the lipids
+            l = 0
+            for lipcom in self.com_frame.lipidcom:
+                pos = ""
+                # decide which leaflet
+                #    print (lipcom.com_unwrap)
+                #    print (lipcom.com)
+                if lipcom.com_unwrap[self.norm] > zavg:
+                    pos = 'upper'
+                elif lipcom.com_unwrap[self.norm] < zavg:
+                    pos = 'lower'
+                # add to the chosen leaflet
+                self.com_frame.lipidcom[l].leaflet = pos
+                self.leaflets[pos].add_member(l, lipcom.type, lipcom.resid)
+                l += 1
+
             if self.compute_protocol.use_objects['lipid_grid']:
                 self.lipid_grid = lg.LipidGrids(self.com_frame, self.leaflets,
                                                 self.lateral,
