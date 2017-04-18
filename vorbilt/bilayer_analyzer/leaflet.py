@@ -139,8 +139,22 @@ class Leaflet:
         """
         return [element[2] for element in self.members]
 
-    def get_member_resname_from_resid(self):
-        pass
+    def get_member_resnames(self):
+        """ Get the 'resname's of all lipids in the Leaflet.
+        This member function Returns: the list of resnames for the lipids grouped in the Leaflet instance.
+
+        Returns:
+            list of int: A list of 'resname's of the lipids associated with the Leaflet instance.
+        """
+        return [element[1] for element in self.members]
+
+    def get_member_resname_from_resid(self, resid):
+        resids = self.get_member_resids()
+        if resid in resids:
+            index = resids.index(resid)
+            return self.get_member_resnames()[index]
+        else
+            raise ValueError('resid is not in this leaflet')
 
 
     def has_group(self, group_name):

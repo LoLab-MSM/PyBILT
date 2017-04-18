@@ -101,7 +101,14 @@ class LipidGrid_2d:
 
     def get_z_at(self,ix,iy):
         return self.lipid_grid_z[ix,iy]
-            
+
+    def z_perturb_grid(self):
+        z_grid = self.lipid_grid_z
+        z_avg = z_grid.mean()
+        z_pert = z_grid - z_avg
+        return z_pert
+
+
     #Outputs the grid as an xyz coordinate file
     def write_xyz(self, xyz_name):
         # Open up the file to write to
