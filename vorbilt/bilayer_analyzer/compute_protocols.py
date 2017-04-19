@@ -1144,3 +1144,348 @@ class NNFProtocol(ComputeFunctionProtocol):
 
 # update the command_protocols dictionary
 command_protocols['nnf'] = NNFProtocol
+
+# define a new compute 'disp_vec'
+valid_computes.append('disp_vec_corr')
+compute_obj_name_dict['disp_vec_corr'] = 'com_frame'
+
+
+class DispVecCorrelationProtocol(ComputeFunctionProtocol):
+    def __init__(self, args):
+
+        # required
+        self.valid_args = ['interval', 'leaflet', 'resname', "wrapped"]
+        self.return_length = 4
+        self.compute_key = 'disp_vec'
+        self.compute_id = args[0]
+        # default function settings
+        self.save_file_name = self.compute_id + ".pickle"
+        self.leaflet = 'both'
+        self.group = 'all'
+        self.wrapped = False
+        self.interval = 10
+        # parse input arguments if given
+        if len(args) > 1:
+            self.parse_args(args)
+
+        # storage for output
+        self.compute_output = []
+        self.first_comp = True
+        self.last_com_frame = None
+        self.last_frame = 0
+
+        return
+
+    # required- function to parse the input arguments
+    def parse_args(self, args):
+        # print args
+        nargs = len(args)
+        for i in range(1, nargs, 2):
+            arg_key = args[i]
+            arg_arg = args[i + 1]
+            print ('arg_key: ', arg_key)
+            if arg_key in self.valid_args:
+                if arg_key == 'interval':
+                    self.interval = int(arg_arg)
+                elif arg_key == 'leaflet':
+                    if arg_arg in ['upper', 'lower', 'both']:
+                        self.leaflet = arg_arg
+                elif arg_key == 'resname':
+                    self.group = arg_arg
+                elif arg_key == 'wrapped':
+                    if arg_arg in ['True', 'true']:
+                        self.wrapped = arg_arg
+            else:
+                raise RuntimeWarning(
+                    "ignoring invalid argument key " + arg_key + " for compute" + self.compute_id)
+        return
+        # required - a check protocol function which reports relevant settings
+
+    def print_protocol(self):
+        print ("\'" + self.compute_id + "\': displacement vectors for " + str(
+            self.interval) + " frame intervals")
+        return
+
+    def reset(self):
+        self.compute_output = []
+        self.first_comp = True
+        self.last_com_frame = None
+        self.last_frame = 0
+
+        return
+
+    def run_compute(self, bilayer_analyzer):
+
+        if self.first_comp:
+            self.last_com_frame = bilayer_analyzer.com_frame
+            self.first_comp = False
+            return
+        current_frame = bilayer_analyzer.current_mda_frame.frame
+
+        interval = (current_frame) - (self.last_frame)
+        print (interval, " ", self.interval)
+        if interval == self.interval:
+            indices = []
+            if self.leaflet == "both":
+                for leaflets in bilayer_analyzer.leaflets:
+                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                    indices += curr_leaf.get_group_indices(self.group)
+            elif self.leaflet == "upper":
+                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                indices = curr_leaf.get_group_indices(self.group)
+
+            elif self.leaflet == "lower":
+                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                indices = curr_leaf.get_group_indices(self.group)
+            else:
+                # unknown option--use default "both"
+                raise RuntimeWarning(
+                    "bad setting for \'leaflet\' in " + self.compute_id + ". Using default \'both\'")
+                self.leaflet = 'both'
+                for leaflets in bilayer_analyzer.leaflets:
+                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                    indices += curr_leaf.get_group_indices(self.group)
+            n_com = len(indices)
+
+            # print "there are ",len(indices)," members"
+            xi = bilayer_analyzer.lateral[0]
+            yi = bilayer_analyzer.lateral[1]
+            zi = bilayer_analyzer.norm
+
+            vec_ends_out = []
+            # get the current frame
+            curr_frame = bilayer_analyzer.com_frame
+            prev_frame = self.last_com_frame
+            # get the coordinates for the selection at this frame
+            vec_ends = np.zeros((n_com, 4))
+            # vec_ends = []
+            count = 0
+            resnames = []
+            for i in indices:
+                resname = curr_frame.lipidcom[i].type
+                resnames.append(resname)
+                com_i = curr_frame.lipidcom[i].com_unwrap[
+                    bilayer_analyzer.lateral]
+                com_j = prev_frame.lipidcom[i].com_unwrap[
+                    bilayer_analyzer.lateral]
+                com_j_w = prev_frame.lipidcom[i].com[bilayer_analyzer.lateral]
+                if self.wrapped:
+                    vec_ends[count, 0] = com_j_w[0]
+                    vec_ends[count, 1] = com_j_w[1]
+                else:
+                    vec_ends[count, 0] = com_j[0]
+                    vec_ends[count, 1] = com_j[1]
+                vec_ends[count, 2] = com_i[0] - com_j[0]
+                vec_ends[count, 3] = com_i[1] - com_j[1]
+                #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
+                count += 1
+            corr_mat = np.zeros((n_com, n_com))
+            #loop over vectors
+
+            for i in range(n_com-1):
+                vec_end_a = vec_ends[i]
+                vec_a = vec_end_a[2:4] - vec_end_a[0:2]
+                for j in range(i+1, n_com):
+                    vec_end_b = vec_ends[j]
+                    vec_b = vec_end_b[2:4] - vec_end_b[0:2]
+                    dot = np.dot(vec_a, vec_b)
+                    cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(vec_b))
+                    corr_mat[i,j] = cos_t
+                    corr_mat[j,i] = cos_t
+
+
+
+            self.compute_output.append([corr_mat, resnames])
+            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_frame = current_frame
+            #return vec_ends
+        return
+
+    def save_data(self):
+
+        with open(self.save_file_name, 'wb') as outfile:
+            pickle.dump(self.compute_output, outfile)
+
+        return
+
+    def get_data(self):
+        return self.compute_output
+
+
+command_protocols['disp_vec_corr'] = DispVecCorrelationProtocol
+
+# define a new compute 'disp_vec'
+valid_computes.append('disp_vec_nncorr')
+compute_obj_name_dict['disp_vec_nncorr'] = 'com_frame'
+
+
+class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
+    def __init__(self, args):
+
+        # required
+        self.valid_args = ['interval', 'leaflet', 'resname', "wrapped"]
+        self.return_length = 4
+        self.compute_key = 'disp_vec'
+        self.compute_id = args[0]
+        # default function settings
+        self.save_file_name = self.compute_id + ".pickle"
+        self.leaflet = 'both'
+        self.group = 'all'
+        self.wrapped = False
+        self.interval = 10
+        # parse input arguments if given
+        if len(args) > 1:
+            self.parse_args(args)
+
+        # storage for output
+        self.compute_output = []
+        self.first_comp = True
+        self.last_com_frame = None
+        self.last_frame = 0
+
+        return
+
+    # required- function to parse the input arguments
+    def parse_args(self, args):
+        # print args
+        nargs = len(args)
+        for i in range(1, nargs, 2):
+            arg_key = args[i]
+            arg_arg = args[i + 1]
+            print ('arg_key: ', arg_key)
+            if arg_key in self.valid_args:
+                if arg_key == 'interval':
+                    self.interval = int(arg_arg)
+                elif arg_key == 'leaflet':
+                    if arg_arg in ['upper', 'lower', 'both']:
+                        self.leaflet = arg_arg
+                elif arg_key == 'resname':
+                    self.group = arg_arg
+                elif arg_key == 'wrapped':
+                    if arg_arg in ['True', 'true']:
+                        self.wrapped = arg_arg
+            else:
+                raise RuntimeWarning(
+                    "ignoring invalid argument key " + arg_key + " for compute" + self.compute_id)
+        return
+        # required - a check protocol function which reports relevant settings
+
+    def print_protocol(self):
+        print ("\'" + self.compute_id + "\': displacement vectors for " + str(
+            self.interval) + " frame intervals")
+        return
+
+    def reset(self):
+        self.compute_output = []
+        self.first_comp = True
+        self.last_com_frame = None
+        self.last_frame = 0
+
+        return
+
+    def run_compute(self, bilayer_analyzer):
+
+        if self.first_comp:
+            self.last_com_frame = bilayer_analyzer.com_frame
+            self.first_comp = False
+            return
+        current_frame = bilayer_analyzer.current_mda_frame.frame
+
+        interval = (current_frame) - (self.last_frame)
+        print (interval, " ", self.interval)
+        if interval == self.interval:
+            indices = []
+            if self.leaflet == "both":
+                for leaflets in bilayer_analyzer.leaflets:
+                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                    indices += curr_leaf.get_group_indices(self.group)
+            elif self.leaflet == "upper":
+                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                indices = curr_leaf.get_group_indices(self.group)
+
+            elif self.leaflet == "lower":
+                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                indices = curr_leaf.get_group_indices(self.group)
+            else:
+                # unknown option--use default "both"
+                raise RuntimeWarning(
+                    "bad setting for \'leaflet\' in " + self.compute_id + ". Using default \'both\'")
+                self.leaflet = 'both'
+                for leaflets in bilayer_analyzer.leaflets:
+                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                    indices += curr_leaf.get_group_indices(self.group)
+            n_com = len(indices)
+
+            # print "there are ",len(indices)," members"
+            xi = bilayer_analyzer.lateral[0]
+            yi = bilayer_analyzer.lateral[1]
+            zi = bilayer_analyzer.norm
+
+            vec_ends_out = []
+            # get the current frame
+            curr_frame = bilayer_analyzer.com_frame
+            prev_frame = self.last_com_frame
+            #get the vector ends
+
+            # get the coordinates for the selection at this frame
+            vec_ends = np.zeros((n_com, 4))
+            # vec_ends = []
+            count = 0
+            resnames = []
+            for i in indices:
+                resname = curr_frame.lipidcom[i].type
+                resnames.append(resname)
+                com_i = curr_frame.lipidcom[i].com_unwrap[
+                    bilayer_analyzer.lateral]
+                com_j = prev_frame.lipidcom[i].com_unwrap[
+                    bilayer_analyzer.lateral]
+                com_j_w = prev_frame.lipidcom[i].com[bilayer_analyzer.lateral]
+                if self.wrapped:
+                    vec_ends[count, 0] = com_j_w[0]
+                    vec_ends[count, 1] = com_j_w[1]
+                else:
+                    vec_ends[count, 0] = com_j[0]
+                    vec_ends[count, 1] = com_j[1]
+                vec_ends[count, 2] = com_i[0] - com_j[0]
+                vec_ends[count, 3] = com_i[1] - com_j[1]
+                #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
+                count += 1
+            corr = np.zeros((n_com,1))
+            #loop over vectors
+            for i in range(n_com):
+                vec_end_a = vec_ends[i]
+                vec_a = vec_end_a[2:4] - vec_end_a[0:2]
+                #now loop over again and find nearest neighbor at vector bases
+                nn_vec = []
+                nn_dist = 1000000.0
+                for j in range(n_com):
+                    if j != i:
+                        vec_end_b = vec_ends[j]
+                        vec_b = vec_end_b[2:4] - vec_end_b[0:2]
+                        dist = np.linalg.norm(vec_end_b[0:2]-vec_end_a[0:2])
+                        if dist < nn_dist:
+                            nn_dist = dist
+                            nn_vec = vec_b
+                #now compute the correlation (cos(theta))
+                dot = np.dot(vec_a, nn_vec)
+                cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(nn_vec))
+                corr[i] = cos_t
+
+            self.compute_output.append([corr, resnames])
+            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_frame = current_frame
+            #return vec_ends
+        return
+
+    def save_data(self):
+
+        with open(self.save_file_name, 'wb') as outfile:
+            pickle.dump(self.compute_output, outfile)
+
+        return
+
+    def get_data(self):
+        return self.compute_output
+
+
+command_protocols['disp_vec_nncorr'] = DispVecNNCorrelationProtocol
