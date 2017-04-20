@@ -116,10 +116,11 @@ class BilayerAnalyzer:
         The initialization initialially parses all the inputs and sets some the attribute values. It also calls the
         initialization of the ComputeProtocol and PlotProtocol objects and builds the MDAData object.
         Args:
-            psf_file (str):
-            trajectory (str):
-            selection (str):
-            input_file (str):
+            psf_file (str): Optional, the path and filename of the structure file.
+            trajectory (str;list): Optional, the path and filename of the trajectory file. Also accepts a list of
+                filenames.
+            selection (str): Optional, the MDAnalysis compatible string to select the bilayer components.
+            input_file (str): Optional, the path and filename of input setup file.
         """
         self.input_script_name = input_file
         if input_file is not None:

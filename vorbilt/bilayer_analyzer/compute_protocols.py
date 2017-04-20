@@ -1,3 +1,33 @@
+"""Compute Protocols
+
+This is a support module that defines a set of classes used to contruct the 'compute protocol' and the 'computes' used
+in the anlysis implemented by the vorbilt.bilayer_analyzer.bilayer_anlayzer.BilayerAnalyzer class.
+The ComputeProtocol is the class used to organize and initial the the individual compute functions/protocols. The
+individual compute functions/protocols are derived classes of ComputeFunctionProtocol, and the availabel computes can be
+extended by simply defining a new protocol.
+Example:
+    # define a new compute 'my_compute'
+    # add it to the valid_computes list
+    valid_computes.append('my_compute')
+    #add it to compute_obj_name_dict dictionary with the buildable object (e.g. mda_frame)  needed for the compute.
+    #The buildables are built by the bilayer analyzer and can accessed from it for the analysis compute.
+    compute_obj_name_dict['my_compute'] = 'mda_frame'
+    class MyComputeProtocol(ComputeFunctionProtocol):
+        #minimal def the __init__ and run_compute funcions
+        def __init__(self, args):
+            #define the initialization
+        #run compute always takes the bilayer_analyzer class object as the input
+        def run_compute(self, bilayer_analyzer):
+            #.............
+            #doing my compute
+            #................
+            return
+
+        #redefine any other functions from ComputeFunctionProtocol or add new ones.
+
+
+"""
+
 # imports
 import scipy.constants as scicon
 
@@ -11,11 +41,12 @@ from vorbilt.common.running_stats import *
 import vorbilt.mda_tools.mda_density_profile as mda_dp
 import vorbilit.lipid_grid.lipid_grid_curv as lgc
 
+#need some containers for bookkeeping
 command_protocols = {}
 valid_computes = []
 compute_obj_name_dict = {}
 # obj_dict = {"com_frame":COMFrame}
-
+#define the buildable objects that are used by the analysis functions
 use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 
 
@@ -25,6 +56,19 @@ use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 
 # protocol for the computes to run during the frame loop
 class ComputeProtocol:
+    """A protocol class to facilitate analyses of the bilayers
+
+    Attributes:
+        use_objects (list of str): A list of buildable objects that need to contructed in the BilayerAnalyzer for the
+            computes defined in this protocol.
+        in_commands (list): A list of the input strings for the computes to be used.
+        arguments (list): A list of the arguments for computes.
+        compute_keys (list): A list of the keys assigned to computes.
+        command_protocol (dict): A dictionary of the compute objects.
+        compute_ids (list): A list of the ids assigned to computes.
+        n_commands (int): The number of initialized computes.
+        
+    """
     def __init__(self, compute_commands):
         self.use_objects = use_objects
         self.in_commands = compute_commands
@@ -800,7 +844,8 @@ command_protocols['mass_dens'] = MassDensProtocol
 valid_computes.append('acm')
 compute_obj_name_dict['acm'] = 'mda_frame'
 
-
+#L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267–3273
+#D. Aguayo, F. D. González-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765−1773
 class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
     def __init__(self, args):
 
@@ -908,7 +953,8 @@ command_protocols['acm'] = AreaCompressibilityModulusProtocol
 valid_computes.append('nnf')
 compute_obj_name_dict['nnf'] = 'com_frame'
 
-
+#Found in: M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249–272
+#Originally described in: A. H. de Vries, A. E. Mark and S. J. Marrink, J. Phys. Chem. B, 2004, 108, 2454–2463
 class NNFProtocol(ComputeFunctionProtocol):
     def __init__(self, args):
 
