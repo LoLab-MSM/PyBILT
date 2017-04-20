@@ -6,9 +6,10 @@ try:
 except:
     import pickle
 
-# ORBILT imports
+# VORBILT imports
 from vorbilt.common.running_stats import *
 import vorbilt.mda_tools.mda_density_profile as mda_dp
+import vorbilit.lipid_grid.lipid_grid_curv as lgc
 
 command_protocols = {}
 valid_computes = []
@@ -1489,3 +1490,83 @@ class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
 
 
 command_protocols['disp_vec_nncorr'] = DispVecNNCorrelationProtocol
+
+# define a new compute 'apl_box'
+valid_computes.append('ndcorr')
+compute_obj_name_dict['ndcorr'] = 'com_frame'
+
+
+class NDCorrProtocol(ComputeFunctionProtocol):
+    def __init__(self, args):
+        # required
+        self.valid_args = None
+        self.return_length = 4
+        self.compute_key = 'ndcorr'
+        self.compute_id = args[0]
+        # default function settings
+        self.save_file_name = self.compute_id + ".pickle"
+        # parse input arguments if given
+        if len(args) > 1:
+            warn = "ignoring extra arguments passed to " \
+                   "ndcorr compute '{}''".format(self.compute_id)
+            raise RuntimeWarning(warn)
+        self.first_frame = True
+        # storage for output
+        self.compute_output = dict()
+        self.running_stats = dict()
+        return
+
+    # required- function to parse the input arguments
+    def parse_args():
+        pass
+
+    # required - a check protocol function which reports relevant settings
+    def print_protocol(self):
+        print (
+            "\'" + self.compute_id + "\': Norm dimension displacement lipid type cross correlation estimate.")
+        return
+
+    def run_compute(self, bilayer_analyzer):
+        #construct the grids
+        grids = lgc.LipidGrids(bilayer_analyzer.com_frame,bilayer_analyzer.leaflets,bilayer_analyzer.lateral)
+
+        if self.first_frame:
+            leafs = grids.leaf_grid.keys()
+            all_types = []
+            for leaf in leafs:
+                self.compute_output[leaf] = dict()
+                self.running_stats[leaf] = dict()
+                groups = grids.leaflets[leaf].get_group_names()
+                for group in groups:
+                    if group not in all_types:
+                        all_types.append(group)
+            for leaf in leafs:
+                for type in all_types:
+                    self.compute_output[leaf][type] = []
+                    self.running_stats[leaf][type] = RunningStats()
+            self.first_frame = False
+        #compute the correlations
+        correlations = grids.norm_displacement_cross_correlation()
+        time = bilayer_analyzer.current_mda_frame.time
+        #extract the data
+        leafs = correlations.keys():
+        for leaf in leafs:
+            for type in correlations[leaf].keys():
+                corr = correlations[leaf][type]
+                self.running_stats[leaf][type].push(corr)
+                corr_run = self.running_stats[leaf][type].mean()
+                corr_std = self.running_stats[leaf][type].deviation()
+                self.compute_output[leaf][type].append(np.array([time, corr, corr_run, corr_std]))
+
+        return
+
+    def reset(self):
+        self.first_frame = True
+        self.compute_output = dict()
+        self.running_stats = dict()
+
+        return
+
+
+command_protocols['ndcorr'] = NDCorrProtocol
+
