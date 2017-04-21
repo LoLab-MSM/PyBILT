@@ -1,16 +1,15 @@
 '''
     Classes and functions to implement gridding and curvature correlation analysis for lipid bilayers.
-    The gridding and anlaysis procedures are based on 
+    The gridding and anlaysis procedures are based on
     the decription given in section "Correlation between bilayer surface curvature and the
-clustering of lipid molecules" of Koldsø H, Shorthouse D, He ́lie J, Sansom MSP (2014) Lipid Clustering Correlates with Membrane Curvature as Revealed by Molecular Simulations of
+clustering of lipid molecules" of Koldso H, Shorthouse D, He lie J, Sansom MSP (2014) Lipid Clustering Correlates with Membrane Curvature as Revealed by Molecular Simulations of
 Complex Lipid Bilayers. PLoS Comput Biol 10(10): e1003911. doi:10.1371/journal.pcbi.1003911
 However, this implementation currently uses the z position (or normal position) of the lipids' centers of mass, while
 their implementaion uses "the z coordinate of the interface between the head groups of the
-lipids (excluding the current species being calculated) and tails in
+lipids (excluding the current species being calculated and tails in
 that box."
 
 '''
-
 import numpy as np
 #import my running stats class
 from vorbilt.common.running_stats import *
@@ -82,7 +81,7 @@ class LipidGrid_2d:
                     if x_box and y_box:
                         #add to this grid
                         self.lipid_grid[cx][cy].append((i, com_frame.lipidcom[i].type, zi))
-    
+
     def get_index_at(self,ix,iy):
         return self.lipid_grid[ix][iy][:,0]
 
@@ -90,7 +89,7 @@ class LipidGrid_2d:
         return self.lipid_grid[ix][iy][:,2]
 
 
-        
+
 class LipidGrids:
     def __init__(self, com_frame, leaflets,plane,nxbins=5,nybins=5):
         #store the frame and leaflet
@@ -147,6 +146,3 @@ class LipidGrids:
                 cross_corr = cross_sum/(z_mean*z_std*n_box)
                 output[leaf][type] = cross_corr
         return output
-
-
-

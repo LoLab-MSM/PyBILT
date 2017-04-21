@@ -39,7 +39,7 @@ except:
 # VORBILT imports
 from vorbilt.common.running_stats import *
 import vorbilt.mda_tools.mda_density_profile as mda_dp
-import vorbilit.lipid_grid.lipid_grid_curv as lgc
+import vorbilt.lipid_grid.lipid_grid_curv as lgc
 
 #need some containers for bookkeeping
 command_protocols = {}
@@ -69,7 +69,7 @@ class Analyses:
         command_protocol (dict): A dictionary of the analysis objects.
         analysis_ids (list): A list of the ids assigned to analysiss.
         n_commands (int): The number of initialized analysiss.
-        
+
     """
     def __init__(self, analysis_commands):
         self.use_objects = use_objects
@@ -846,8 +846,8 @@ command_protocols['mass_dens'] = MassDensProtocol
 valid_analysis.append('acm')
 analysis_obj_name_dict['acm'] = 'mda_frame'
 
-#L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267–3273
-#D. Aguayo, F. D. González-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765−1773
+#L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267-3273
+#D. Aguayo, F. D. Gonzalez-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765-1773
 class AreaCompressibilityModulusProtocol(AnalysisProtocol):
     def __init__(self, args):
 
@@ -955,8 +955,8 @@ command_protocols['acm'] = AreaCompressibilityModulusProtocol
 valid_analysis.append('nnf')
 analysis_obj_name_dict['nnf'] = 'com_frame'
 
-#Found in: M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249–272
-#Originally described in: A. H. de Vries, A. E. Mark and S. J. Marrink, J. Phys. Chem. B, 2004, 108, 2454–2463
+#Found in: M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249-272
+#Originally described in: A. H. de Vries, A. E. Mark and S. J. Marrink, J. Phys. Chem. B, 2004, 108, 2454-2463
 class NNFProtocol(AnalysisProtocol):
     def __init__(self, args):
 
@@ -1597,7 +1597,7 @@ class NDCorrProtocol(AnalysisProtocol):
         correlations = grids.norm_displacement_cross_correlation()
         time = bilayer_analyzer.current_mda_frame.time
         #extract the data
-        leafs = correlations.keys():
+        leafs = correlations.keys()
         for leaf in leafs:
             for type in correlations[leaf].keys():
                 corr = correlations[leaf][type]
@@ -1617,4 +1617,3 @@ class NDCorrProtocol(AnalysisProtocol):
 
 
 command_protocols['ndcorr'] = NDCorrProtocol
-

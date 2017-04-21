@@ -3,23 +3,23 @@ import MDAnalysis as mda
 import numpy as np
 
 class LipidCOM:
-    """ A lipid center of mass (COM) object.  
+    """ A lipid center of mass (COM) object.
 
     This object stores the COM coordinates of a lipid (or other molecule or group
     of atoms) computed from both the wrapped and unwrapped atomic coordinates. This
     object also stores information about the type of lipid as well as the total mass
-    of the lipid.            
+    of the lipid.
     """
     def __init__(self):
-        """LipidCOM initialization 
- 
+        """LipidCOM initialization
+
         Attributes:
             type (str): The lipid type (e.g. the lipid could be typed b resname).
             com (np.array): The length three vector holding the wrapped xyz coordinates.
             com_unwrap (np.array): The length three vector holding the unwrapped xyz coordinates.
-            mass (float): The total mass of the atoms used to define LipidCOM. 
+            mass (float): The total mass of the atoms used to define LipidCOM.
         """
-        # lipid type/resname or other name    
+        # lipid type/resname or other name
         self.type="UNK"
         # wrapped coordinates
         self.com=np.zeros(3)
@@ -28,11 +28,12 @@ class LipidCOM:
         # total mass
         self.mass=1.0
         self.leaflet = "UNK"
+        self.resid = 0
         return
-    # The name of this function could be changed to be more desriptive, e.g. 
-    # extract_com_mda_residue  
+    # The name of this function could be changed to be more desriptive, e.g.
+    # extract_com_mda_residue
     def extract(self, mda_residue, unwrap=False, box=None):
-        """ Get the center of mass coordinates from an MDAnalysis residue  
+        """ Get the center of mass coordinates from an MDAnalysis residue
 
         This function calls the MDAnalysis member function center_of_mass() of the residue
         to compute the center of mass of the atoms constituting the residue.
@@ -41,7 +42,7 @@ class LipidCOM:
             mda_residue (MDAnalysis.residue): An MDAnalysis residue object from which to extract
                 a center of masss coordinates.
             unwrap (bool, optional): Define which com container to store coordiates in.
-                False (default) - The COM coordinates are stored in the 
+                False (default) - The COM coordinates are stored in the
                 container designated for the wrapped coordinate representation.
                 True - The COM coordinates are stored in the container designated
                 for the unwrapped coordinate representation.
@@ -56,11 +57,12 @@ class LipidCOM:
             else:
                 self.com = mda_residue.center_of_mass()
                 self.com_unwrap = self.com[:]
-        
+
         self.type=mda_residue.resname
+        self.resid = mda_residue.resid
         return
 
-# a Center of Mass frame object 
+# a Center of Mass frame object
 class COMFrame:
     """ A molecular dynamics style Frame object for LipidCOM objects.
 
@@ -73,7 +75,7 @@ class COMFrame:
 
 
     """
-                
+
     # does not check that nlipids is an int
     def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords):
         """ Frame initialization.
@@ -101,15 +103,15 @@ class COMFrame:
         # initialize all the LipidCOM objects
         for i in xrange(nlipids):
             self.lipidcom.append(LipidCOM())
-        #atom indices in mda selection/frame    
+        #atom indices in mda selection/frame
         index = mda_bilayer_selection.indices
                     # loop over the residues (lipids) and get the centers of mass
-        ## do the unwrapped coordinates         
+        ## do the unwrapped coordinates
         #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
-        # to remove center of mass motion of the membrane                   
+        # to remove center of mass motion of the membrane
         mem_com = mda_frame._pos[index].mean(axis=0)
-        mda_frame._pos[index] -= mem_com            
-        r=0            
+        mda_frame._pos[index] -= mem_com
+        r=0
         for res in mda_bilayer_selection.residues:
             self.lipidcom[r].extract(res)
             self.lipidcom[r].mass = res.total_mass()
@@ -121,27 +123,27 @@ class COMFrame:
 
         mem_com = unwrap_coords.mean(axis=0)
         mda_frame._pos[index] -= mem_com
-        r=0            
+        r=0
         for res in mda_bilayer_selection.residues:
             self.lipidcom[r].extract(res, unwrap=True)
             r+=1
-                    
+
         return
-    
+
     def set_box(self, box_lengths):
-        """ Set the rectangular xyz box edge lengths.    
+        """ Set the rectangular xyz box edge lengths.
 
         Args:
-            box_lengths (numpy.array): A 1d, 3 element numpy.array containing the x,y,z box sizes (or edge lengths) 
+            box_lengths (numpy.array): A 1d, 3 element numpy.array containing the x,y,z box sizes (or edge lengths)
 
         """
         self.box = box_lengths
         return
 
     def set_time(self, time):
-        """ Set the simulation time.    
+        """ Set the simulation time.
 
-        Args: 
+        Args:
             time (float): The simulation time to assign to this Frame.
 
         """
@@ -150,7 +152,7 @@ class COMFrame:
 
     def __len__(self):
         """ Returns the number of LipidCOM objects assigned to this Frame
-        
+
         Returns:
             int: Number of LipidCOM objects currently assigned to this Frame
         """
@@ -158,53 +160,53 @@ class COMFrame:
 
 #    def COG(self,unwrapped=False):
 #        cog_out = np.zeros(3)
-#        for lipid in self.lipidcom:    
+#        for lipid in self.lipidcom:
 #            if not unwrapped:
-#                cog_out+=lipid.com    
+#                cog_out+=lipid.com
 #            else:
 #                cog_out+=lipid.com_unwrap
 #        cog_out/=len(self)
 #        return com_out
-    
+
     def com(self, wrapped=True):
-        """ Computes the center of mass (COM) for the Frame    
-        
-        This member function is used to compute the overall center of mass (COM) of the 
+        """ Computes the center of mass (COM) for the Frame
+
+        This member function is used to compute the overall center of mass (COM) of the
         COMFrame using the LipidCOM object coordinates and masses.
 
-        Args: 
+        Args:
             wrapped (bool, optional): Define which set of coordinates to use in the computation.
-                True (default) - The wrapped LipidCOM coordinates are used to compute 
+                True (default) - The wrapped LipidCOM coordinates are used to compute
                 the COM of the frame.
-                False - The unwrapped LipidCOM coordinates are used to compute 
+                False - The unwrapped LipidCOM coordinates are used to compute
                 the COM of the frame.
-                       
-        Returns:  
+
+        Returns:
             np.array: A 3 element vector containing the xyz coordinates of the Frame's COM
         """
         com_out = np.zeros(3)
         total_mass = 0.0
-        for lipid in self.lipidcom:    
+        for lipid in self.lipidcom:
             if wrapped:
                 com_out+=lipid.com*lipid.mass
-                total_mass+=lipid.mass    
+                total_mass+=lipid.mass
             else:
                 com_out+=lipid.com_unwrap*lipid.mass
-                total_mass+=lipid.mass    
+                total_mass+=lipid.mass
         com_out/=total_mass
         return com_out
-    
+
     def write_xyz(self, xyz_name, wrapped=True):
         # Open up the file to write to
         xyz_out = open(xyz_name, "w")
-        
+
         comment = "COMFrame "+str(self.number)+" MD Frame "+str(self.mdnumber)
         xyz_out.write(str(len(self.lipidcom)))
         xyz_out.write("\n")
         xyz_out.write(comment)
         xyz_out.write("\n")
-        
-        
+
+
         i=0
         for lip in self.lipidcom:
             #get the coordinates
@@ -214,16 +216,16 @@ class COMFrame:
             if not wrapped:
                x = self.lipidcom[i].com_unwrap[0]
                y = self.lipidcom[i].com_unwrap[1]
-               #z = self.lipidcom[i].com_unwrap[2] 
-                
+               #z = self.lipidcom[i].com_unwrap[2]
+
             #get the lipid resname
             oname = self.lipidcom[i].type
-            
+
             #write to file
             line = str(oname)+" "+str(x)+" "+str(y)+" "+str(z)
             xyz_out.write(line)
             xyz_out.write("\n")
             i+=1
-                 
+
         xyz_out.close()
         return
