@@ -8,7 +8,7 @@ def test_input_options():
         trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
         selection=sel_string,
     )
-    ba.add_compute('msd msd_2 leaflet upper resname POPC')
+    ba.add_analysis('msd msd_2 leaflet upper resname POPC')
     ba.add_plot('msd msd_p msd_1 DOPE-U msd_2 POPC-U')
     ba.run_analysis()
     ba = BilayerAnalyzer(input_file='sample_1.in')

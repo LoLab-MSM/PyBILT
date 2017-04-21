@@ -1,29 +1,29 @@
-"""Compute Protocols
+"""Analysis Protocols
 
-This is a support module that defines a set of classes used to contruct the 'compute protocol' and the 'computes' used
+This is a support module that defines a set of classes used to contruct the 'analysis protocol' and the 'analysiss' used
 in the anlysis implemented by the vorbilt.bilayer_analyzer.bilayer_anlayzer.BilayerAnalyzer class.
-The ComputeProtocol is the class used to organize and initial the the individual compute functions/protocols. The
-individual compute functions/protocols are derived classes of ComputeFunctionProtocol, and the availabel computes can be
+The AnalysisProtocol is the class used to organize and initial the the individual analysis functions/protocols. The
+individual analysis functions/protocols are derived classes of AnalysisProtocol, and the availabel analysiss can be
 extended by simply defining a new protocol.
 Example:
-    # define a new compute 'my_compute'
-    # add it to the valid_computes list
-    valid_computes.append('my_compute')
-    #add it to compute_obj_name_dict dictionary with the buildable object (e.g. mda_frame)  needed for the compute.
-    #The buildables are built by the bilayer analyzer and can accessed from it for the analysis compute.
-    compute_obj_name_dict['my_compute'] = 'mda_frame'
-    class MyComputeProtocol(ComputeFunctionProtocol):
-        #minimal def the __init__ and run_compute funcions
+    # define a new analysis 'my_analysis'
+    # add it to the valid_analysislist
+    valid_analysis.append('my_analysis')
+    #add it to analysis_obj_name_dict dictionary with the buildable object (e.g. mda_frame)  needed for the analysis.
+    #The buildables are built by the bilayer analyzer and can accessed from it for the analysisanalysis.
+    analysis_obj_name_dict['my_analysis'] = 'mda_frame'
+    class MyAnalysisProtocol(AnalysisFunctionProtocol):
+        #minimal def the __init__ and run_analysisfuncions
         def __init__(self, args):
             #define the initialization
-        #run compute always takes the bilayer_analyzer class object as the input
-        def run_compute(self, bilayer_analyzer):
+        #run analysis always takes the bilayer_analyzer class object as the input
+        def run_analysis(self, bilayer_analyzer):
             #.............
-            #doing my compute
+            #doing my analysis
             #................
             return
 
-        #redefine any other functions from ComputeFunctionProtocol or add new ones.
+        #redefine any other functions from AnalysisProtocol or add new ones.
 
 
 """
@@ -43,10 +43,10 @@ import vorbilit.lipid_grid.lipid_grid_curv as lgc
 
 #need some containers for bookkeeping
 command_protocols = {}
-valid_computes = []
-compute_obj_name_dict = {}
+valid_analysis= []
+analysis_obj_name_dict = {}
 # obj_dict = {"com_frame":COMFrame}
-#define the buildable objects that are used by the analysis functions
+#define the buildable objects that are used by the analysisfunctions
 use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 
 
@@ -54,59 +54,61 @@ use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 # have protocols parse dictionaries as well as strings, which is more Pythonic
 
 
-# protocol for the computes to run during the frame loop
-class ComputeProtocol:
-    """A protocol class to facilitate analyses of the bilayers
+# protocol for the analysiss to run during the frame loop
+class Analyses:
+    """A class to facilitate analysis of the bilayers
+    This object stores all the analyses that being performed and provides fucntionality to add and remove
+    analyses.
 
     Attributes:
         use_objects (list of str): A list of buildable objects that need to contructed in the BilayerAnalyzer for the
-            computes defined in this protocol.
-        in_commands (list): A list of the input strings for the computes to be used.
-        arguments (list): A list of the arguments for computes.
-        compute_keys (list): A list of the keys assigned to computes.
-        command_protocol (dict): A dictionary of the compute objects.
-        compute_ids (list): A list of the ids assigned to computes.
-        n_commands (int): The number of initialized computes.
+            analysiss defined in this protocol.
+        in_commands (list): A list of the input strings for the analysiss to be used.
+        arguments (list): A list of the arguments for analysiss.
+        analysis_keys (list): A list of the keys assigned to analysiss.
+        command_protocol (dict): A dictionary of the analysis objects.
+        analysis_ids (list): A list of the ids assigned to analysiss.
+        n_commands (int): The number of initialized analysiss.
         
     """
-    def __init__(self, compute_commands):
+    def __init__(self, analysis_commands):
         self.use_objects = use_objects
-        self.in_commands = compute_commands
-        # check computes
+        self.in_commands = analysis_commands
+        # check analysiss
         arguments = []
-        compute_keys = []
+        analysis_keys = []
         command_protocol = {}
-        compute_ids = []
-        for command in compute_commands:
+        analysis_ids = []
+        for command in analysis_commands:
             if len(command) < 2:
                 raise RuntimeError(
-                    "wrong number of arguments for compute " + str(command))
+                    "wrong number of arguments for analysis " + str(command))
             comp_key = command[0]
             comp_id = command[1]
             comp_args = command[1:]
-            if (comp_key in valid_computes):
+            if (comp_key in valid_analysis):
                 if (len(comp_args) >= 1):
-                    if comp_id not in compute_ids:
-                        comp_object = compute_obj_name_dict[comp_key]
+                    if comp_id not in analysis_ids:
+                        comp_object = analysis_obj_name_dict[comp_key]
                         self.use_objects[comp_object] = True
                         arguments.append(comp_args)
-                        compute_ids.append(comp_args[0])
-                        compute_keys.append(comp_key)
+                        analysis_ids.append(comp_args[0])
+                        analysis_keys.append(comp_key)
                         command_protocol[comp_args[0]] = command_protocols[
                             comp_key](comp_args)
                     else:
                         raise RuntimeError(
-                            "compute id \'" + comp_id + "\' has already been used")
+                            "analysisid \'" + comp_id + "\' has already been used")
                 else:
                     raise RuntimeError(
-                        "wrong number of arguments for compute " + str(
+                        "wrong number of arguments for analysis " + str(
                             command))
             else:
                 raise RuntimeError(
-                    "invalid compute \'" + comp_key + "\' :" + str(command))
+                    "invalid analysis \'" + comp_key + "\' :" + str(command))
         self.arguments = arguments
-        self.compute_keys = compute_keys
-        self.compute_ids = compute_ids
+        self.analysis_keys = analysis_keys
+        self.analysis_ids = analysis_ids
         self.command_protocol = command_protocol
         self.n_commands = len(command_protocol)
         # object dependencies
@@ -114,43 +116,43 @@ class ComputeProtocol:
             self.use_objects['com_frame'] = True
         return
 
-    def add_compute(self, compute_string):
-        command = compute_string.split()
+    def add_analysis(self, analysis_string):
+        command = analysis_string.split()
         comp_key = command[0]
         comp_id = command[1]
         comp_args = command[1:]
-        if (comp_key in valid_computes):
+        if (comp_key in valid_analysis):
             if (len(comp_args) >= 1):
-                if comp_id not in self.compute_ids:
-                    comp_object = compute_obj_name_dict[comp_key]
+                if comp_id not in self.analysis_ids:
+                    comp_object = analysis_obj_name_dict[comp_key]
                     self.use_objects[comp_object] = True
                     self.arguments.append(comp_args)
-                    self.compute_ids.append(comp_args[0])
-                    self.compute_keys.append(comp_key)
+                    self.analysis_ids.append(comp_args[0])
+                    self.analysis_keys.append(comp_key)
                     self.command_protocol[comp_args[0]] = command_protocols[
                         comp_key](comp_args)
                 else:
-                    raise RuntimeError("compute id '{}' "
+                    raise RuntimeError("analysisid '{}' "
                                        "has already been used!".format(comp_id))
             else:
                 raise RuntimeError("wrong number of arguments "
-                                   "for compute {}".format(command))
+                                   "for analysis {}".format(command))
         else:
-            raise RuntimeError("invalid compute id"
+            raise RuntimeError("invalid analysisid"
                                " '{}' : {}".format(comp_key, command))
         self.n_commands += 1
         return
 
-    def remove_compute(self, compute_id):
-        if compute_id in self.compute_ids:
-            del self.command_protocol[compute_id]
-            index = self.compute_ids.index(compute_id)
+    def remove_analysis(self, analysis_id):
+        if analysis_id in self.analysis_ids:
+            del self.command_protocol[analysis_id]
+            index = self.analysis_ids.index(analysis_id)
             del self.arguments[index]
-            del self.compute_keys[index]
-            del self.compute_ids[index]
+            del self.analysis_keys[index]
+            del self.analysis_ids[index]
             self.n_commands -= 1
         else:
-            raise RuntimeWarning("no compute with id '{}'".format(compute_id))
+            raise RuntimeWarning("no analysis with id '{}'".format(analysis_id))
         return
 
     def print_protocol(self):
@@ -158,40 +160,40 @@ class ComputeProtocol:
         for key in self.use_objects.keys():
             if self.use_objects[key]:
                 print (key)
-        print ("with computes:")
-        for compute_id in self.compute_ids:
-            self.command_protocol[compute_id].print_protocol()
+        print ("with analysiss:")
+        for analysis_id in self.analysis_ids:
+            self.command_protocol[analysis_id].print_protocol()
         return
 
     def dump_data(self):
-        print ('dumping compute data to pickle files...')
-        for compute_id in self.compute_ids:
-            print ("compute id: {} ---> {} ".format(
-                compute_id,
-                self.command_protocol[compute_id].save_file_name))
-            self.command_protocol[compute_id].save_data()
+        print ('dumping analysis data to pickle files...')
+        for analysis_id in self.analysis_ids:
+            print ("analysisid: {} ---> {} ".format(
+                analysis_id,
+                self.command_protocol[analysis_id].save_file_name))
+            self.command_protocol[analysis_id].save_data()
 
     def reset(self):
-        for compute_id in self.compute_ids:
-            self.command_protocol[compute_id].reset()
+        for analysis_id in self.analysis_ids:
+            self.command_protocol[analysis_id].reset()
         return
 
 
-class ComputeFunctionProtocol:
+class AnalysisProtocol:
     def __init__(self, args):
 
         # required
         self.valid_args = ['none']
         self.return_length = 1
-        self.compute_key = 'none'
-        self.compute_id = args[0]
+        self.analysis_key = 'none'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
             self.parse_args(args)
         # storage for output
-        self.compute_output = []
+        self.analysis_output = []
         return
 
     # required- function to parse the input arguments
@@ -205,53 +207,53 @@ class ComputeFunctionProtocol:
                 pass
             else:
                 raise RuntimeError(
-                    "ignoring invalid argument key " + arg_key + " for compute " + self.compute_key)
+                    "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_key)
         return
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print ("Parent protocol class for computes.")
+        print ("Parent protocol class for analysiss.")
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         # do some stuff
         # get an output
         output = np.zeros(self.return_length)
         # save the output
-        self.compute_output.append(output)
+        self.analysis_output.append(output)
         return
 
     def save_data(self):
         with open(self.save_file_name, 'wb') as outfile:
-            pickle.dump(np.array(self.compute_output), outfile)
+            pickle.dump(np.array(self.analysis_output), outfile)
 
         return
 
     def get_data(self):
-        return np.array(self.compute_output)
+        return np.array(self.analysis_output)
 
     def reset(self):
-        self.compute_output = []
+        self.analysis_output = []
         return
 
 
-# define a new compute 'msd'
-valid_computes.append('msd')
-compute_obj_name_dict['msd'] = 'com_frame'
+# define a new analysis 'msd'
+valid_analysis.append('msd')
+analysis_obj_name_dict['msd'] = 'com_frame'
 
 
-class MSDProtocol(ComputeFunctionProtocol):
+class MSDProtocol(AnalysisProtocol):
     def __init__(self, msd_args):
 
         # required
         self.valid_args = ['leaflet', 'resname']
         self.return_length = 2
-        self.compute_key = 'msd'
-        self.compute_id = msd_args[0]
+        self.analysis_key = 'msd'
+        self.analysis_id = msd_args[0]
         # default function settings
         self.leaflet = 'both'
         self.resname = 'all'
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         self.first_frame = True
         self.ref_coords = None
         self.indices = []
@@ -259,7 +261,7 @@ class MSDProtocol(ComputeFunctionProtocol):
         if len(msd_args) > 1:
             self.parse_args(msd_args)
         # storage for output
-        self.compute_output = []
+        self.analysis_output = []
         return
 
     # required- function to parse the input arguments
@@ -276,16 +278,16 @@ class MSDProtocol(ComputeFunctionProtocol):
                     self.resname = arg_arg
             else:
                 raise RuntimeError(
-                    "ignoring invalid argument key " + arg_key + " for compute \'msd\'")
+                    "ignoring invalid argument key " + arg_key + " for analysis \'msd\'")
         return
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
         print (
-            "\'" + self.compute_id + "\': msd analysis of " + self.resname + " lipids in " + self.leaflet + " leaflet(s).")
+            "\'" + self.analysis_id + "\': msd analysisof " + self.resname + " lipids in " + self.leaflet + " leaflet(s).")
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         leaflet = self.leaflet
         group = self.resname
         if self.first_frame:
@@ -352,35 +354,35 @@ class MSDProtocol(ComputeFunctionProtocol):
         msdcurr = drs_stat.mean()
         msd[0] = dt
         msd[1] = msdcurr
-        self.compute_output.append(msd)
+        self.analysis_output.append(msd)
         return
 
 
 # update the command_protocols dictionary
 command_protocols['msd'] = MSDProtocol
 
-# define a new compute 'apl_box'
-valid_computes.append('apl_box')
-compute_obj_name_dict['apl_box'] = 'mda_frame'
+# define a new analysis 'apl_box'
+valid_analysis.append('apl_box')
+analysis_obj_name_dict['apl_box'] = 'mda_frame'
 
 
-class APLBoxProtocol(ComputeFunctionProtocol):
+class APLBoxProtocol(AnalysisProtocol):
     def __init__(self, apl_args):
         # required
         self.valid_args = None
         self.return_length = 4
-        self.compute_key = 'apl_box'
-        self.compute_id = apl_args[0]
+        self.analysis_key = 'apl_box'
+        self.analysis_id = apl_args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(apl_args) > 1:
             raise RuntimeWarning(
-                "ignoring extra arguments passed to area per lipid compute \'" + self.compute_id + "\'")
+                "ignoring extra arguments passed to area per lipid analysis \'" + self.analysis_id + "\'")
 
         # storage for output
         self.running = RunningStats()
-        self.compute_output = []
+        self.analysis_output = []
         return
 
     # required- function to parse the input arguments
@@ -391,10 +393,10 @@ class APLBoxProtocol(ComputeFunctionProtocol):
     # required - a check protocol function which reports relevant settings
     def print_protocol(self):
         print ("'{}'': area per lipid using box "
-               "dimensions".format(self.compute_id))
+               "dimensions".format(self.analysis_id))
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         box = bilayer_analyzer.current_mda_frame.dimensions[0:3]
         plane = box[bilayer_analyzer.lateral]
         area = plane[0] * plane[1] * 2.0
@@ -407,41 +409,41 @@ class APLBoxProtocol(ComputeFunctionProtocol):
         apl_t[1] = apl
         apl_t[2] = self.running.mean()
         apl_t[3] = self.running.deviation()
-        self.compute_output.append(apl_t)
+        self.analysis_output.append(apl_t)
 
         return
 
     def reset(self):
         self.running.reset()
-        self.compute_output = []
+        self.analysis_output = []
         return
 
 
 command_protocols['apl_box'] = APLBoxProtocol
 
-# define a new compute 'apl_box'
-valid_computes.append('bilayer_thickness')
-compute_obj_name_dict['bilayer_thickness'] = 'lipid_grid'
+# define a new analysis 'apl_box'
+valid_analysis.append('bilayer_thickness')
+analysis_obj_name_dict['bilayer_thickness'] = 'lipid_grid'
 
 
-class BTGridProtocol(ComputeFunctionProtocol):
+class BTGridProtocol(AnalysisProtocol):
     def __init__(self, args):
         # required
         self.valid_args = None
         self.return_length = 4
-        self.compute_key = 'bilayer_thickness'
-        self.compute_id = args[0]
+        self.analysis_key = 'bilayer_thickness'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
             warn = "ignoring extra arguments passed to " \
-                   "bilayer thickness compute '{}''".format(self.compute_id)
+                   "bilayer thickness analysis '{}''".format(self.analysis_id)
             raise RuntimeWarning(warn)
 
         # storage for output
         self.running = RunningStats()
-        self.compute_output = []
+        self.analysis_output = []
         return
 
     # required- function to parse the input arguments
@@ -451,10 +453,10 @@ class BTGridProtocol(ComputeFunctionProtocol):
     # required - a check protocol function which reports relevant settings
     def print_protocol(self):
         print (
-            "\'" + self.compute_id + "\': bilayer thickness using lipid_grid")
+            "\'" + self.analysis_id + "\': bilayer thickness using lipid_grid")
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         current_thickness = bilayer_analyzer.lipid_grid.average_thickness()
         # print (current_thickness)
         time = bilayer_analyzer.current_mda_frame.time
@@ -465,40 +467,40 @@ class BTGridProtocol(ComputeFunctionProtocol):
         bt_t[1] = current_thickness[0]
         bt_t[2] = self.running.mean()
         bt_t[3] = self.running.deviation()
-        self.compute_output.append(bt_t)
+        self.analysis_output.append(bt_t)
 
         return
 
     def reset(self):
         self.running.reset()
-        self.compute_output = []
+        self.analysis_output = []
         return
 
 
 command_protocols['bilayer_thickness'] = BTGridProtocol
 
-# define a new compute 'apl_grid'
-valid_computes.append('apl_grid')
-compute_obj_name_dict['apl_grid'] = 'lipid_grid'
+# define a new analysis 'apl_grid'
+valid_analysis.append('apl_grid')
+analysis_obj_name_dict['apl_grid'] = 'lipid_grid'
 
 
-class APLGridProtocol(ComputeFunctionProtocol):
+class APLGridProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self.valid_args = None
         self.return_length = 4
-        self.compute_key = 'apl_grid'
-        self.compute_id = args[0]
+        self.analysis_key = 'apl_grid'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
             self.parse_args(args)
 
         # storage for output
         self.running = RunningStats()
-        self.compute_output = {}
+        self.analysis_output = {}
         self.first_comp = True
         self.running_res = {}
         return
@@ -506,26 +508,26 @@ class APLGridProtocol(ComputeFunctionProtocol):
     # required- function to parse the input arguments
     def parse_args(self, args):
         raise RuntimeWarning(
-            "ignoring extra arguments passed to area per lipid (by grid) compute \'" + self.compute_id + "\'")
+            "ignoring extra arguments passed to area per lipid (by grid) analysis \'" + self.analysis_id + "\'")
         return
 
     # required - a check protocol function which reports relevant settings
     def print_protocol(self):
-        print ("\'" + self.compute_id + "\': area per lipid using lipid_grid")
+        print ("\'" + self.analysis_id + "\': area per lipid using lipid_grid")
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         apl_grid_out = bilayer_analyzer.lipid_grid.area_per_lipid()
         # print (current_thickness)
         time = bilayer_analyzer.current_mda_frame.time
         # print (time)
         self.running.push(apl_grid_out[0])
         if self.first_comp:
-            self.compute_output['composite'] = []
+            self.analysis_output['composite'] = []
             for key in apl_grid_out[1].keys():
                 self.running_res[key] = RunningStats()
                 self.first_comp = False
-                self.compute_output[key] = []
+                self.analysis_output[key] = []
 
         apl_t = np.zeros(4)
         apl_t[0] = time
@@ -533,7 +535,7 @@ class APLGridProtocol(ComputeFunctionProtocol):
         apl_t[2] = self.running.mean()
         apl_t[3] = self.running.deviation()
 
-        self.compute_output['composite'].append(apl_t)
+        self.analysis_output['composite'].append(apl_t)
 
         for key in apl_grid_out[1].keys():
             self.running_res[key].push(apl_grid_out[1][key][0])
@@ -542,26 +544,26 @@ class APLGridProtocol(ComputeFunctionProtocol):
             apl_res[1] = apl_grid_out[1][key][0]
             apl_res[2] = self.running_res[key].mean()
             apl_res[3] = self.running_res[key].deviation()
-            self.compute_output[key].append(apl_res)
+            self.analysis_output[key].append(apl_res)
 
         return
 
     def save_data(self):
-        for key in self.compute_output.keys():
-            self.compute_output[key] = np.array(self.compute_output[key])
+        for key in self.analysis_output.keys():
+            self.analysis_output[key] = np.array(self.analysis_output[key])
         with open(self.save_file_name, 'wb') as outfile:
-            pickle.dump(self.compute_output, outfile)
+            pickle.dump(self.analysis_output, outfile)
 
         return
 
     def get_data(self):
-        for key in self.compute_output.keys():
-            self.compute_output[key] = np.array(self.compute_output[key])
-        return self.compute_output
+        for key in self.analysis_output.keys():
+            self.analysis_output[key] = np.array(self.analysis_output[key])
+        return self.analysis_output
 
     def reset(self):
         self.running.reset()
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.running_res = {}
         return
@@ -569,21 +571,21 @@ class APLGridProtocol(ComputeFunctionProtocol):
 
 command_protocols['apl_grid'] = APLGridProtocol
 
-# define a new compute 'disp_vec'
-valid_computes.append('disp_vec')
-compute_obj_name_dict['disp_vec'] = 'com_frame'
+# define a new analysis 'disp_vec'
+valid_analysis.append('disp_vec')
+analysis_obj_name_dict['disp_vec'] = 'com_frame'
 
 
-class DispVecProtocol(ComputeFunctionProtocol):
+class DispVecProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self.valid_args = ['interval', 'leaflet', 'resname', "wrapped"]
         self.return_length = 4
-        self.compute_key = 'disp_vec'
-        self.compute_id = args[0]
+        self.analysis_key = 'disp_vec'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         self.leaflet = 'both'
         self.group = 'all'
         self.wrapped = False
@@ -593,7 +595,7 @@ class DispVecProtocol(ComputeFunctionProtocol):
             self.parse_args(args)
 
         # storage for output
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
@@ -621,24 +623,24 @@ class DispVecProtocol(ComputeFunctionProtocol):
                         self.wrapped = arg_arg
             else:
                 raise RuntimeWarning(
-                    "ignoring invalid argument key " + arg_key + " for compute" + self.compute_id)
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print ("\'" + self.compute_id + "\': displacement vectors for " + str(
+        print ("\'" + self.analysis_id + "\': displacement vectors for " + str(
             self.interval) + " frame intervals")
         return
 
     def reset(self):
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
 
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
 
         if self.first_comp:
             self.last_com_frame = bilayer_analyzer.com_frame
@@ -664,7 +666,7 @@ class DispVecProtocol(ComputeFunctionProtocol):
             else:
                 # unknown option--use default "both"
                 raise RuntimeWarning(
-                    "bad setting for \'leaflet\' in " + self.compute_id + ". Using default \'both\'")
+                    "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.leaflet = 'both'
                 for leaflets in bilayer_analyzer.leaflets:
                     curr_leaf = bilayer_analyzer.leaflets[leaflets]
@@ -703,7 +705,7 @@ class DispVecProtocol(ComputeFunctionProtocol):
                 vec_ends[count, 3] = com_i[1] - com_j[1]
                 #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
                 count += 1
-            self.compute_output.append([vec_ends, resnames])
+            self.analysis_output.append([vec_ends, resnames])
             self.last_com_frame = bilayer_analyzer.com_frame
             self.last_frame = current_frame
             return vec_ends
@@ -712,31 +714,31 @@ class DispVecProtocol(ComputeFunctionProtocol):
     def save_data(self):
 
         with open(self.save_file_name, 'wb') as outfile:
-            pickle.dump(self.compute_output, outfile)
+            pickle.dump(self.analysis_output, outfile)
 
         return
 
     def get_data(self):
-        return self.compute_output
+        return self.analysis_output
 
 
 command_protocols['disp_vec'] = DispVecProtocol
 
-# define a new compute
-valid_computes.append('mass_dens')
-compute_obj_name_dict['mass_dens'] = 'mda_frame'
+# define a new analysis
+valid_analysis.append('mass_dens')
+analysis_obj_name_dict['mass_dens'] = 'mda_frame'
 
 
-class MassDensProtocol(ComputeFunctionProtocol):
+class MassDensProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self.valid_args = ['selection', 'n_bins']
         self.return_length = None
-        self.compute_key = 'mass_dens'
-        self.compute_id = args[0]
+        self.analysis_key = 'mass_dens'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         self.selection_string = 'all'
         self.n_bins = 25
         # parse input arguments if given
@@ -746,7 +748,7 @@ class MassDensProtocol(ComputeFunctionProtocol):
         # storage for output
         self.centers = None
         self.n_frames = 0
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.selection = None
 
@@ -780,25 +782,25 @@ class MassDensProtocol(ComputeFunctionProtocol):
                     n_bins_arg = False
             elif not (read_sel_string or n_bins_arg):
                 raise RuntimeWarning(
-                    "ignoring invalid argument key " + arg_key + " for compute " + self.compute_id)
+                    "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_id)
         return
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
         print (
-            "\'" + self.compute_id + "\': mass density compute for selection \'" + self.selection_string + "\' ")
+            "\'" + self.analysis_id + "\': mass density analysis for selection \'" + self.selection_string + "\' ")
         return
 
     def reset(self):
         self.centers = None
         self.n_frames = 0
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.selection = None
 
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         first = self.first_comp
         if self.first_comp:
             # print self.selection_string
@@ -821,41 +823,41 @@ class MassDensProtocol(ComputeFunctionProtocol):
             nbins=self.n_bins, refsel=ref_sel)
         if first:
             self.centers = centers_density[0]
-            self.compute_output = np.zeros(len(self.centers))
-        self.compute_output += centers_density[1]
+            self.analysis_output = np.zeros(len(self.centers))
+        self.analysis_output += centers_density[1]
         self.n_frames += 1
         return
 
     def save_data(self):
-        centers_density = (self.centers, self.compute_output / self.n_frames)
+        centers_density = (self.centers, self.analysis_output / self.n_frames)
         with open(self.save_file_name, 'wb') as outfile:
             pickle.dump(centers_density, outfile)
 
         return
 
     def get_data(self):
-        return (self.centers, self.compute_output / self.n_frames)
+        return (self.centers, self.analysis_output / self.n_frames)
 
 
 command_protocols['mass_dens'] = MassDensProtocol
 
 
-# define a new compute
-valid_computes.append('acm')
-compute_obj_name_dict['acm'] = 'mda_frame'
+# define a new analysis
+valid_analysis.append('acm')
+analysis_obj_name_dict['acm'] = 'mda_frame'
 
 #L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267–3273
 #D. Aguayo, F. D. González-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765−1773
-class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
+class AreaCompressibilityModulusProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self.valid_args = ['temperature']
         self.return_length = 4
-        self.compute_key = 'acm'
-        self.compute_id = args[0]
+        self.analysis_key = 'acm'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
             self.parse_args(args)
@@ -866,7 +868,7 @@ class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
         self.area = []
         self.apl = []
         self.times = []
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.per_leaflet = 1
         return
@@ -885,12 +887,12 @@ class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
                     self.temperature = float(arg_arg)
             else:
                 raise RuntimeWarning(
-                    "ignoring invalid argument key " + arg_key + " for compute " + self.compute_id)
+                    "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_id)
         return
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print("\'" + self.compute_id + "\': area compressibility modulus compute for selection \'")
+        print("\'" + self.analysis_id + "\': area compressibility modulus analysis for selection \'")
         return
 
     def reset(self):
@@ -898,11 +900,11 @@ class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
         self.area = []
         self.apl = []
         self.n_frames = 0
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
 
         if self.first_comp:
             nlipids = bilayer_analyzer.mda_data.n_residues
@@ -949,26 +951,26 @@ class AreaCompressibilityModulusProtocol(ComputeFunctionProtocol):
         return output
 command_protocols['acm'] = AreaCompressibilityModulusProtocol
 
-# define a new compute 'nnf'
-valid_computes.append('nnf')
-compute_obj_name_dict['nnf'] = 'com_frame'
+# define a new analysis 'nnf'
+valid_analysis.append('nnf')
+analysis_obj_name_dict['nnf'] = 'com_frame'
 
 #Found in: M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249–272
 #Originally described in: A. H. de Vries, A. E. Mark and S. J. Marrink, J. Phys. Chem. B, 2004, 108, 2454–2463
-class NNFProtocol(ComputeFunctionProtocol):
+class NNFProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self.valid_args = ['leaflet', 'resname_1', 'resname_2', 'n_neighbors']
         self.return_length = 2
-        self.compute_key = 'nnf'
-        self.compute_id = args[0]
+        self.analysis_key = 'nnf'
+        self.analysis_id = args[0]
         # default function settings
         self.leaflet = 'both'
         self.n_neighbors = 5
         self.rname_1 = 'first'
         self.rname_2 = 'first'
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         self.first_frame = True
         self.ref_coords = None
         self.indices = []
@@ -977,14 +979,14 @@ class NNFProtocol(ComputeFunctionProtocol):
         if len(args) > 1:
             self.parse_args(args)
         else:
-            raise RuntimeError('wrong number of arguments given to nnf compute. You must specifiy ')
+            raise RuntimeError('wrong number of arguments given to nnf analysis. You must specifiy ')
         # storage for output
-        self.compute_output = []
+        self.analysis_output = []
         return
 
     def reset(self):
         self.running.reset()
-        self.compute_output = []
+        self.analysis_output = []
         self.first_frame = True
         return
 
@@ -1010,7 +1012,7 @@ class NNFProtocol(ComputeFunctionProtocol):
                     self.n_neighbors = int(arg_arg)
             else:
                 raise RuntimeError(
-                    "ignoring invalid argument key " + arg_key + " for compute \'nnf\'")
+                    "ignoring invalid argument key " + arg_key + " for analysis \'nnf\'")
         #if res1 and res2:
         #    return
         #else:
@@ -1020,11 +1022,11 @@ class NNFProtocol(ComputeFunctionProtocol):
 
     def print_protocol(self):
         print (
-            "\'" + self.compute_id + "\': lateral order nearest neighbor fraction (nnf) analysis")
+            "\'" + self.analysis_id + "\': lateral order nearest neighbor fraction (nnf) analysis")
         return
 
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         do_leaflet = []
         if self.leaflet == 'both':
             do_leaflet = ['upper', 'lower']
@@ -1114,10 +1116,10 @@ class NNFProtocol(ComputeFunctionProtocol):
         f_run = self.running.mean()
         f_run_dev = self.running.deviation()
         tc = bilayer_analyzer.com_frame.time
-        self.compute_output.append([tc, f_current, f_run, f_run_dev])
+        self.analysis_output.append([tc, f_current, f_run, f_run_dev])
         return
 
-    # def run_compute(self, bilayer_analyzer):
+    # def run_analysis(self, bilayer_analyzer):
     #
     #     if self.first_frame:
     #         pass
@@ -1192,21 +1194,21 @@ class NNFProtocol(ComputeFunctionProtocol):
 # update the command_protocols dictionary
 command_protocols['nnf'] = NNFProtocol
 
-# define a new compute 'disp_vec'
-valid_computes.append('disp_vec_corr')
-compute_obj_name_dict['disp_vec_corr'] = 'com_frame'
+# define a new analysis 'disp_vec'
+valid_analysis.append('disp_vec_corr')
+analysis_obj_name_dict['disp_vec_corr'] = 'com_frame'
 
 
-class DispVecCorrelationProtocol(ComputeFunctionProtocol):
+class DispVecCorrelationProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self.valid_args = ['interval', 'leaflet', 'resname', "wrapped"]
         self.return_length = 4
-        self.compute_key = 'disp_vec'
-        self.compute_id = args[0]
+        self.analysis_key = 'disp_vec'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         self.leaflet = 'both'
         self.group = 'all'
         self.wrapped = False
@@ -1216,7 +1218,7 @@ class DispVecCorrelationProtocol(ComputeFunctionProtocol):
             self.parse_args(args)
 
         # storage for output
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
@@ -1244,24 +1246,24 @@ class DispVecCorrelationProtocol(ComputeFunctionProtocol):
                         self.wrapped = arg_arg
             else:
                 raise RuntimeWarning(
-                    "ignoring invalid argument key " + arg_key + " for compute" + self.compute_id)
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print ("\'" + self.compute_id + "\': displacement vectors for " + str(
+        print ("\'" + self.analysis_id + "\': displacement vectors for " + str(
             self.interval) + " frame intervals")
         return
 
     def reset(self):
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
 
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
 
         if self.first_comp:
             self.last_com_frame = bilayer_analyzer.com_frame
@@ -1287,7 +1289,7 @@ class DispVecCorrelationProtocol(ComputeFunctionProtocol):
             else:
                 # unknown option--use default "both"
                 raise RuntimeWarning(
-                    "bad setting for \'leaflet\' in " + self.compute_id + ". Using default \'both\'")
+                    "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.leaflet = 'both'
                 for leaflets in bilayer_analyzer.leaflets:
                     curr_leaf = bilayer_analyzer.leaflets[leaflets]
@@ -1342,7 +1344,7 @@ class DispVecCorrelationProtocol(ComputeFunctionProtocol):
 
 
 
-            self.compute_output.append([corr_mat, resnames])
+            self.analysis_output.append([corr_mat, resnames])
             self.last_com_frame = bilayer_analyzer.com_frame
             self.last_frame = current_frame
             #return vec_ends
@@ -1351,31 +1353,31 @@ class DispVecCorrelationProtocol(ComputeFunctionProtocol):
     def save_data(self):
 
         with open(self.save_file_name, 'wb') as outfile:
-            pickle.dump(self.compute_output, outfile)
+            pickle.dump(self.analysis_output, outfile)
 
         return
 
     def get_data(self):
-        return self.compute_output
+        return self.analysis_output
 
 
 command_protocols['disp_vec_corr'] = DispVecCorrelationProtocol
 
-# define a new compute 'disp_vec'
-valid_computes.append('disp_vec_nncorr')
-compute_obj_name_dict['disp_vec_nncorr'] = 'com_frame'
+# define a new analysis 'disp_vec'
+valid_analysis.append('disp_vec_nncorr')
+analysis_obj_name_dict['disp_vec_nncorr'] = 'com_frame'
 
 
-class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
+class DispVecNNCorrelationProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self.valid_args = ['interval', 'leaflet', 'resname', "wrapped"]
         self.return_length = 4
-        self.compute_key = 'disp_vec'
-        self.compute_id = args[0]
+        self.analysis_key = 'disp_vec'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         self.leaflet = 'both'
         self.group = 'all'
         self.wrapped = False
@@ -1385,7 +1387,7 @@ class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
             self.parse_args(args)
 
         # storage for output
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
@@ -1413,24 +1415,24 @@ class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
                         self.wrapped = arg_arg
             else:
                 raise RuntimeWarning(
-                    "ignoring invalid argument key " + arg_key + " for compute" + self.compute_id)
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print ("\'" + self.compute_id + "\': displacement vectors for " + str(
+        print ("\'" + self.analysis_id + "\': displacement vectors for " + str(
             self.interval) + " frame intervals")
         return
 
     def reset(self):
-        self.compute_output = []
+        self.analysis_output = []
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
 
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
 
         if self.first_comp:
             self.last_com_frame = bilayer_analyzer.com_frame
@@ -1456,7 +1458,7 @@ class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
             else:
                 # unknown option--use default "both"
                 raise RuntimeWarning(
-                    "bad setting for \'leaflet\' in " + self.compute_id + ". Using default \'both\'")
+                    "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.leaflet = 'both'
                 for leaflets in bilayer_analyzer.leaflets:
                     curr_leaf = bilayer_analyzer.leaflets[leaflets]
@@ -1513,12 +1515,12 @@ class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
                         if dist < nn_dist:
                             nn_dist = dist
                             nn_vec = vec_b
-                #now compute the correlation (cos(theta))
+                #now analysis the correlation (cos(theta))
                 dot = np.dot(vec_a, nn_vec)
                 cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(nn_vec))
                 corr[i] = cos_t
 
-            self.compute_output.append([corr, resnames])
+            self.analysis_output.append([corr, resnames])
             self.last_com_frame = bilayer_analyzer.com_frame
             self.last_frame = current_frame
             #return vec_ends
@@ -1527,38 +1529,38 @@ class DispVecNNCorrelationProtocol(ComputeFunctionProtocol):
     def save_data(self):
 
         with open(self.save_file_name, 'wb') as outfile:
-            pickle.dump(self.compute_output, outfile)
+            pickle.dump(self.analysis_output, outfile)
 
         return
 
     def get_data(self):
-        return self.compute_output
+        return self.analysis_output
 
 
 command_protocols['disp_vec_nncorr'] = DispVecNNCorrelationProtocol
 
-# define a new compute 'apl_box'
-valid_computes.append('ndcorr')
-compute_obj_name_dict['ndcorr'] = 'com_frame'
+# define a new analysis 'apl_box'
+valid_analysis.append('ndcorr')
+analysis_obj_name_dict['ndcorr'] = 'com_frame'
 
 
-class NDCorrProtocol(ComputeFunctionProtocol):
+class NDCorrProtocol(AnalysisProtocol):
     def __init__(self, args):
         # required
         self.valid_args = None
         self.return_length = 4
-        self.compute_key = 'ndcorr'
-        self.compute_id = args[0]
+        self.analysis_key = 'ndcorr'
+        self.analysis_id = args[0]
         # default function settings
-        self.save_file_name = self.compute_id + ".pickle"
+        self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
             warn = "ignoring extra arguments passed to " \
-                   "ndcorr compute '{}''".format(self.compute_id)
+                   "ndcorr analysis '{}''".format(self.analysis_id)
             raise RuntimeWarning(warn)
         self.first_frame = True
         # storage for output
-        self.compute_output = dict()
+        self.analysis_output = dict()
         self.running_stats = dict()
         return
 
@@ -1569,10 +1571,10 @@ class NDCorrProtocol(ComputeFunctionProtocol):
     # required - a check protocol function which reports relevant settings
     def print_protocol(self):
         print (
-            "\'" + self.compute_id + "\': Norm dimension displacement lipid type cross correlation estimate.")
+            "\'" + self.analysis_id + "\': Norm dimension displacement lipid type cross correlation estimate.")
         return
 
-    def run_compute(self, bilayer_analyzer):
+    def run_analysis(self, bilayer_analyzer):
         #construct the grids
         grids = lgc.LipidGrids(bilayer_analyzer.com_frame,bilayer_analyzer.leaflets,bilayer_analyzer.lateral)
 
@@ -1580,7 +1582,7 @@ class NDCorrProtocol(ComputeFunctionProtocol):
             leafs = grids.leaf_grid.keys()
             all_types = []
             for leaf in leafs:
-                self.compute_output[leaf] = dict()
+                self.analysis_output[leaf] = dict()
                 self.running_stats[leaf] = dict()
                 groups = grids.leaflets[leaf].get_group_names()
                 for group in groups:
@@ -1588,10 +1590,10 @@ class NDCorrProtocol(ComputeFunctionProtocol):
                         all_types.append(group)
             for leaf in leafs:
                 for type in all_types:
-                    self.compute_output[leaf][type] = []
+                    self.analysis_output[leaf][type] = []
                     self.running_stats[leaf][type] = RunningStats()
             self.first_frame = False
-        #compute the correlations
+        #analysis the correlations
         correlations = grids.norm_displacement_cross_correlation()
         time = bilayer_analyzer.current_mda_frame.time
         #extract the data
@@ -1602,13 +1604,13 @@ class NDCorrProtocol(ComputeFunctionProtocol):
                 self.running_stats[leaf][type].push(corr)
                 corr_run = self.running_stats[leaf][type].mean()
                 corr_std = self.running_stats[leaf][type].deviation()
-                self.compute_output[leaf][type].append(np.array([time, corr, corr_run, corr_std]))
+                self.analysis_output[leaf][type].append(np.array([time, corr, corr_run, corr_std]))
 
         return
 
     def reset(self):
         self.first_frame = True
-        self.compute_output = dict()
+        self.analysis_output = dict()
         self.running_stats = dict()
 
         return

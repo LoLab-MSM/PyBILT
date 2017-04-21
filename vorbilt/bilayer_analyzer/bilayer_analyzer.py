@@ -22,7 +22,7 @@ except:
 import com_frame as cf
 import leaflet as lf
 import vorbilt.lipid_grid.lipid_grid as lg
-import compute_protocols as cp
+import analysis_protocols as ap
 import plot_protocols as pp
 from vorbilt.common.running_stats import *
 import mda_data as md
@@ -31,7 +31,7 @@ import mda_data as md
 from vorbilt.mda_tools.mda_unwrap import wrap_coordinates, \
     wrap_coordinates_parallel
 
-default_compute_commands = [['msd', 'msd_1']]
+default_analysis_commands = [['msd', 'msd_1']]
 
 
 # the main analyzer class
@@ -46,8 +46,8 @@ class BilayerAnalyzer:
             missing in an input script.
         input_script_name (str): The name of the input script if one was supplied.
         commands (dict): A dictionary of lists keyed to the setup commands.
-        compute_protocol (obj:ComputeProtocol): An instance of ComputeProtocol used to setup and store the defined
-            compute operations to perform during analysis.
+        analysis_protocol (obj:Analyses): An instance of Analyses used to setup and store the defined
+            analysis operations to perform during analysis.
         plot_protocol (obj:PlotProtocol): An instance of PlotProtocol used to setup and store the defined plotting
             operations to perform after the analysis is done.
         mda_data (obj:MDAData): An object used to store all the MDAnalysis object data for the input structure and
@@ -101,7 +101,7 @@ class BilayerAnalyzer:
             loop.
     """
     # for the input script parser
-    valid_commands = ["psf", "trajectory", "compute", "selection", "frames",
+    valid_commands = ["psf", "trajectory", "analysis", "selection", "frames",
                       "plot"]
     required_commands = ['psf', 'trajectory', 'selection']
     required_command_error_strings = {'psf': "the psf file needs to specified with command: \"psf path/psf_file_name\""}
@@ -114,7 +114,7 @@ class BilayerAnalyzer:
                  input_file=None):
         """BilayerAnalyzer initialization.
         The initialization initialially parses all the inputs and sets some the attribute values. It also calls the
-        initialization of the ComputeProtocol and PlotProtocol objects and builds the MDAData object.
+        initialization of the Analyses and PlotProtocol objects and builds the MDAData object.
         Args:
             psf_file (str): Optional, the path and filename of the structure file.
             trajectory (str;list): Optional, the path and filename of the trajectory file. Also accepts a list of
@@ -138,22 +138,22 @@ class BilayerAnalyzer:
                     '"psf_file", "trajectory", and "selection"'
             raise RuntimeError(error)
 
-            # set up the compute protocol
-        print ("setting up compute protocol:")
-        if 'compute' in self.commands.keys():
-            self.compute_protocol = cp.ComputeProtocol(
-                self.commands['compute'])
+            # set up the analysis protocol
+        print ("setting up analysis protocol:")
+        if 'analysis' in self.commands.keys():
+            self.analysis_protocol = ap.Analyses(
+                self.commands['analysis'])
         else:
-            self.compute_protocol = cp.ComputeProtocol(
-                default_compute_commands)
-        self.print_compute_protocol()
+            self.analysis_protocol = ap.Analyses(
+                default_analysis_commands)
+        self.print_analysis_protocol()
         # set up the plot protocol
         print ("setting up plot protocol")
         if "plot" in self.commands.keys():
             self.plot_protocol = pp.PlotProtocol(self.commands['plot'],
-                                                 self.compute_protocol)
+                                                 self.analysis_protocol)
         else:
-            self.plot_protocol = pp.PlotProtocol(None, self.compute_protocol)
+            self.plot_protocol = pp.PlotProtocol(None, self.analysis_protocol)
         for i in self.commands:
             print(i, self.commands[i])
         # build selection string for the MDAData object
@@ -232,7 +232,7 @@ class BilayerAnalyzer:
 
         Returns:
             (dict): A dictionary containing lists of commands for each type of
-             command key (e.g. compute, plot
+             command key (e.g. analysis, plot
                 etc.).
         Raises:
             RuntimeError: A runtime error is given if there is an invalid
@@ -276,55 +276,55 @@ class BilayerAnalyzer:
 
         return commands
 
-    def print_compute_protocol(self):
-        """Print the compute protocol."""
-        self.compute_protocol.print_protocol()
+    def print_analysis_protocol(self):
+        """Print the analysis protocol."""
+        self.analysis_protocol.print_protocol()
         return
 
-    def add_compute(self, compute_string):
-        """Add a compute to the compute protocol.
+    def add_analysis(self, analysis_string):
+        """Add a analysis to the analysis protocol.
         Args:
-            compute_string (str): A string defining the compute key, compute
-             id, and arguments for the new compute.
+            analysis_string (str): A string defining the analysis key, analysis
+             id, and arguments for the new analysis.
 
         """
-        self.compute_protocol.add_compute(compute_string)
+        self.analysis_protocol.add_analysis(analysis_string)
         return
 
-    def remove_compute(self, compute_id):
-        """Remove a specified compute from the comptue protocol.
+    def remove_analysis(self, analysis_id):
+        """Remove a specified analysis from the comptue protocol.
         Args:
-            compute_id (str): The string compute id of the compute to be
+            analysis_id (str): The string analysis id of the analysis to be
              removed from the protocol.
 
         """
-        self.compute_protocol.remove_compute(compute_id)
+        self.analysis_protocol.remove_analysis(analysis_id)
         return
 
-    def get_compute_ids(self):
-        """Return the ids of currently initialized computes in the compute
+    def get_analysis_ids(self):
+        """Return the ids of currently initialized analysiss in the analysis
         protocol.
         Returns:
-            (list): A list string compute ids.
+            (list): A list string analysis ids.
 
         """
-        return self.compute_protocol.compute_ids
+        return self.analysis_protocol.analysis_ids
 
-    def get_compute_data(self, compute_id):
-        """Return the analysis output for the specified compute.
+    def get_analysis_data(self, analysis_id):
+        """Return the analysis output for the specified analysis.
         Args:
-            compute_id (str): A string compute id.
+            analysis_id (str): A string analysis id.
 
         Returns:
-            Variable: The analysis output of the specified compute.
-            The type/structure will depend on the compute.
+            Variable: The analysis output of the specified analysis.
+            The type/structure will depend on the analysis.
 
         """
-        return self.compute_protocol.command_protocol[compute_id].get_data()
+        return self.analysis_protocol.command_protocol[analysis_id].get_data()
 
     def dump_data(self):
-        """Dump all the anlysis outputs from the computes as pickle files."""
-        self.compute_protocol.dump_data()
+        """Dump all the anlysis outputs from the analysiss as pickle files."""
+        self.analysis_protocol.dump_data()
         return
 
         ## plot data/access
@@ -340,7 +340,7 @@ class BilayerAnalyzer:
             plot_string (str): A string with the plot key, id, and arguments.
 
         """
-        self.plot_protocol.add_plot(plot_string, self.compute_protocol)
+        self.plot_protocol.add_plot(plot_string, self.analysis_protocol)
         return
 
     def remove_plot(self, plot_id):
@@ -372,7 +372,7 @@ class BilayerAnalyzer:
 
         """
         self.plot_protocol.command_protocol[plot_id].show_plot(
-            self.compute_protocol)
+            self.analysis_protocol)
         return
 
     def generate_plot(self, plot_id):
@@ -382,13 +382,13 @@ class BilayerAnalyzer:
 
         """
         self.plot_protocol.command_protocol[plot_id].generate_plot(
-            self.compute_protocol)
+            self.analysis_protocol)
         return
 
     def save_all_plots(self):
         """Generates the image files (.eps) for all plots in the plot protocol.
         """
-        self.plot_protocol.save_plots(self.compute_protocol)
+        self.plot_protocol.save_plots(self.analysis_protocol)
         return
 
     # mda_trajectory data/access
@@ -471,9 +471,9 @@ class BilayerAnalyzer:
         return
 
     def reset(self):
-        """ Clears the analysis output stored in the computes.
+        """ Clears the analysis output stored in the analysiss.
         """
-        self.compute_protocol.reset()
+        self.analysis_protocol.reset()
         return
 
     # analysis
@@ -481,7 +481,7 @@ class BilayerAnalyzer:
         """ Runs the analsysis.
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
-        analysis of each compute that was initialized in the setup.
+        analysis of each analysis that was initialized in the setup.
 
         Args:
             nprocs (int): An integer specifying the number of cores to use in
@@ -525,7 +525,7 @@ class BilayerAnalyzer:
                 oldcoord = np.copy(wrapcoord)
                 # print ("wrapped coords:")
             # print (wrapcoord)
-            #if self.compute_protocol.use_objects['com_frame']:
+            #if self.analysis_protocol.use_objects['com_frame']:
             # now build the COMFrame
             self.com_frame = cf.COMFrame(frame, self.mda_data.bilayer_sel,
                                          wrapcoord)
@@ -567,7 +567,7 @@ class BilayerAnalyzer:
                 self.leaflets[pos].add_member(l, lipcom.type, lipcom.resid)
                 l += 1
 
-            if self.compute_protocol.use_objects['lipid_grid']:
+            if self.analysis_protocol.use_objects['lipid_grid']:
                 self.lipid_grid = lg.LipidGrids(self.com_frame, self.leaflets,
                                                 self.lateral,
                                                 nxbins=self.lg_nxbins,
@@ -579,31 +579,29 @@ class BilayerAnalyzer:
                         pickle.dump(self.lipid_grid, ofile)
 
                         # lipid_grid = None
-            # now do analyses - computes
-            # compute_out = []
-            # for i in range(self.compute_protocol.n_commands):
-            #     compute_out.append([])
+            # now do analyses
+
             print("Frame", frame.frame)
             i = 0
-            for compute_id in self.compute_protocol.compute_ids:
-                print ("compute " + compute_id)
-                self.compute_protocol.command_protocol[compute_id].run_compute(
+            for analysis_id in self.analysis_protocol.analysis_ids:
+                print ("analysis " + analysis_id)
+                self.analysis_protocol.command_protocol[analysis_id].run_analysis(
                     self)
-                # comp_out = compute.run_compute(self)
+                # comp_out = analysis.run_analysis(self)
                 # print (comp_out)
-                #   compute_out[i].append(comp_out)
+                #   analysis_out[i].append(comp_out)
                 i += 1
             print(" ")
             self.frame_index += self.frame_range[2]
-            # print ('compute_out:')
-            # print (compute_out)
+            # print ('analysis_out:')
+            # print (analysis_out)
 
     @staticmethod
-    def print_available_computes():
-        """Prints the keys of computes that can initialized.
+    def print_available_analysis():
+        """Prints the keys of analysiss that can initialized.
 
         """
-        print(cp.command_protocols.keys())
+        print(ap.command_protocols.keys())
         return
 
     @staticmethod
@@ -613,7 +611,7 @@ class BilayerAnalyzer:
         return
 
     @staticmethod
-    def available_computes():
+    def available_analysis():
         """Returns the list of the keys of the available plot types.
 
         Returns:
@@ -623,11 +621,11 @@ class BilayerAnalyzer:
         return pp.command_protocols.keys()
 
     @staticmethod
-    def available_computes():
-        """ Returns the available computes.
+    def available_analysis():
+        """ Returns the available analysiss.
         Returns:
             (list): A list of string keys corresponding to the available
-            computes.
+            analysiss.
 
         """
-        return cp.command_protocols.keys()
+        return ap.command_protocols.keys()
