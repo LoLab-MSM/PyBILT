@@ -178,8 +178,23 @@ class Analyses:
             self.command_protocol[analysis_id].reset()
         return
 
-
+#base class for analysis protocols
 class AnalysisProtocol:
+    '''Base class for analysis protocols.
+
+    Args:
+        args (list): list of argument keys and values.
+
+    Attributes:
+        valid_args (list): list of the valid arguemnt keys.
+        return_length (int): if applicable, length of the return vector
+        analysis_key (str): the key name of this analysis.
+        analysis_id (str): the unique id assigned to this analyisis.
+        save_file_name (str): the path and filename for the pickle file output of
+            this analysis' results.
+        analysis_output (list or list like): Used to store the ouptut of this
+            analyis during the frame loop.
+    '''
     def __init__(self, args):
 
         # required
@@ -191,13 +206,17 @@ class AnalysisProtocol:
         self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
         # storage for output
         self.analysis_output = []
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
+        '''Parses the setup arguments for this analysis
+        Args:
+            args (list): List of argument keys and values.
+        '''
         # print args
         nargs = len(args)
         for i in range(1, nargs, 2):
@@ -259,13 +278,13 @@ class MSDProtocol(AnalysisProtocol):
         self.indices = []
         # parse input arguments if given
         if len(msd_args) > 1:
-            self.parse_args(msd_args)
+            self._parse_args(msd_args)
         # storage for output
         self.analysis_output = []
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, msd_args):
+    def _parse_args(self, msd_args):
         # print msd_args
         nargs = len(msd_args)
         for i in range(1, nargs, 2):
@@ -387,7 +406,7 @@ class APLBoxProtocol(AnalysisProtocol):
 
     # required- function to parse the input arguments
     @staticmethod
-    def parse_args():
+    def _parse_args():
         pass
 
     # required - a check protocol function which reports relevant settings
@@ -447,7 +466,7 @@ class BTGridProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args():
+    def _parse_args():
         pass
 
     # required - a check protocol function which reports relevant settings
@@ -496,7 +515,7 @@ class APLGridProtocol(AnalysisProtocol):
         self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
 
         # storage for output
         self.running = RunningStats()
@@ -506,7 +525,7 @@ class APLGridProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
         raise RuntimeWarning(
             "ignoring extra arguments passed to area per lipid (by grid) analysis \'" + self.analysis_id + "\'")
         return
@@ -592,7 +611,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.interval = 10
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
 
         # storage for output
         self.analysis_output = []
@@ -603,7 +622,7 @@ class DispVecProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
         # print args
         nargs = len(args)
         for i in range(1, nargs, 2):
@@ -743,7 +762,7 @@ class MassDensProtocol(AnalysisProtocol):
         self.n_bins = 25
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
 
         # storage for output
         self.centers = None
@@ -755,7 +774,7 @@ class MassDensProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
         # print args
         nargs = len(args)
         read_sel_string = False
@@ -860,7 +879,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
 
         # storage for output
         self.temperature = 298.15
@@ -874,7 +893,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
         # print args
         nargs = len(args)
         for i in range(1, nargs, 2):
@@ -977,7 +996,7 @@ class NNFProtocol(AnalysisProtocol):
         self.running = RunningStats()
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
         else:
             raise RuntimeError('wrong number of arguments given to nnf analysis. You must specifiy ')
         # storage for output
@@ -991,7 +1010,7 @@ class NNFProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
         # print args
         nargs = len(args)
         res1 = False
@@ -1215,7 +1234,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         self.interval = 10
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
 
         # storage for output
         self.analysis_output = []
@@ -1226,7 +1245,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
         # print args
         nargs = len(args)
         for i in range(1, nargs, 2):
@@ -1384,7 +1403,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         self.interval = 10
         # parse input arguments if given
         if len(args) > 1:
-            self.parse_args(args)
+            self._parse_args(args)
 
         # storage for output
         self.analysis_output = []
@@ -1395,7 +1414,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args(self, args):
+    def _parse_args(self, args):
         # print args
         nargs = len(args)
         for i in range(1, nargs, 2):
@@ -1565,7 +1584,7 @@ class NDCorrProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments
-    def parse_args():
+    def _parse_args():
         pass
 
     # required - a check protocol function which reports relevant settings
