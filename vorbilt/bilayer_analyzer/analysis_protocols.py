@@ -265,8 +265,6 @@ class AnalysisProtocol:
         # print args
         if isinstance(args, (basestring, str)):
             self._parse_string(args)
-        elif isinstance(args, list):
-            self._parse_list(args)
         elif isinstance(args, dict):
             self._parse_dict(args)
         else:
@@ -654,6 +652,7 @@ class DispVecProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
+        self._short_description = "Displacement vectors."
         self.return_length = 4
         self.analysis_key = 'disp_vec'
         self.analysis_id = 'none'
@@ -1292,7 +1291,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         self.analysis_id = 'none'
 
         # default function settings
-        self.setting = dict()
+        self.settings = dict()
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
