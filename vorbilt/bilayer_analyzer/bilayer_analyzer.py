@@ -102,7 +102,7 @@ class BilayerAnalyzer:
     """
     # for the input script parser
     valid_commands = ["psf", "trajectory", "analysis", "selection", "frames",
-                      "plot"]
+                      "plot", "lipid_grid"]
     required_commands = ['psf', 'trajectory', 'selection']
     required_command_error_strings = {'psf': "the psf file needs to specified with command: \"psf path/psf_file_name\""}
     required_command_error_strings[
@@ -126,6 +126,31 @@ class BilayerAnalyzer:
         if input_file is not None:
             print ("parsing input file \'" + input_file + "\'...")
             self.commands = self.parse_input_script(input_file)
+            # parse 'frames' input key--
+            # for setting the frame range of the analysis
+            if 'frames' in self.commands.keys():
+                f_args = self.commands['frames']
+                for i in range(0, len(f_args), 2):
+                    arg_key = f_args[i]
+                    arg_value = f_args[i + 1]
+                    if arg_key == 'first':
+                        self.frame_range[0] = arg_value
+                    elif arg_key == 'last':
+                        self.frame_range[1] = arg_value
+                    elif arg_key == 'interval':
+                        self.frame_range[2] = arg_value
+
+                        # parse inputs for lipid_grid settings
+            if 'lipid_grid' in self.commands.keys():
+                lg_args = self.commands['lipid_grid']
+                for i in range(0, len(lg_args), 2):
+                    arg_key = lg_args[i]
+                    arg_value = lg_args[i + 1]
+                    if arg_key == 'n_xbins':
+                        self.lg_nxbins = arg_value
+                    elif arg_key == 'n_ybins':
+                        self.lg_nybins = arg_value
+
         elif (psf_file is not None) and ((trajectory is not None) and
                                              (selection is not None)):
             print ("parsing inputs...")
@@ -196,30 +221,7 @@ class BilayerAnalyzer:
         self.dump_lipid_grid = False
         self.dump_lipid_grid_path = "./"
 
-        # parse 'frames' input key--
-        # for setting the frame range of the analysis
-        if 'frames' in self.commands.keys():
-            f_args = self.commands['frames']
-            for i in range(0, len(f_args), 2):
-                arg_key = f_args[i]
-                arg_value = f_args[i + 1]
-                if arg_key == 'first':
-                    self.frame_range[0] = arg_value
-                elif arg_key == 'last':
-                    self.frame_range[1] = arg_value
-                elif arg_key == 'interval':
-                    self.frame_range[2] = arg_value
 
-                    # parse inputs for lipid_grid settings
-        if 'lipid_grid' in self.commands.keys():
-            lg_args = self.commands['lipid_grid']
-            for i in range(0, len(lg_args), 2):
-                arg_key = lg_args[i]
-                arg_value = lg_args[i + 1]
-                if arg_key == 'n_xbins':
-                    self.lg_nxbins = arg_value
-                elif arg_key == 'n_ybins':
-                    self.lg_nybins = arg_value
 
         self.first_com_frame = None
         return
