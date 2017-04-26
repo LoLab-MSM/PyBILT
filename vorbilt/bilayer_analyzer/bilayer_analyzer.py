@@ -31,7 +31,15 @@ import mda_data as md
 from vorbilt.mda_tools.mda_unwrap import wrap_coordinates, \
     wrap_coordinates_parallel
 
-default_analysis_commands = [['msd', 'msd_1']]
+default_analysis_commands = ['msd msd_1']
+
+
+def word_list_to_string(word_list, delimeter=" "):
+    string = ""
+    for word in word_list:
+        string+=word+delimeter
+    nchar = len(string)
+    return str(string[0:nchar-1])
 
 
 # the main analyzer class
@@ -261,10 +269,14 @@ class BilayerAnalyzer:
                 else:
                     if key in self.valid_commands:
                         if key in commands.keys():
-                            commands[key].append(words[1:])
+                            input_string = word_list_to_string(words[1:])
+                            print (input_string)
+                            commands[key].append(input_string)
                         else:
                             commands[key] = []
-                            commands[key].append(words[1:])
+                            input_string = word_list_to_string(words[1:])
+                            print(input_string)
+                            commands[key].append(input_string)
                     else:
                         print("input command {} is not a valid"
                               " command".format(key))

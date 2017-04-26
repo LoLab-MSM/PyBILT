@@ -54,6 +54,13 @@ use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 # have protocols parse dictionaries as well as strings, which is more Pythonic
 
 
+def word_list_to_string(word_list, delimeter=" "):
+    string = ""
+    for word in word_list:
+        string+=word+delimeter
+    nchar = len(string)
+    return str(string[0:nchar-1])
+
 # protocol for the analysis to run during the frame loop
 class Analyses:
     '''A class to facilitate analysis of the bilayers
@@ -88,29 +95,29 @@ class Analyses:
             self.use_objects['com_frame'] = True
         return
 
-   def add_analysis(self, inputs):
-       if isinstance(inputs, (str, basestring)):
+    def add_analysis(self, inputs):
+        if isinstance(inputs, (str, basestring)):
            self._add_analysis_from_string(inputs)
-       elif isinstance(inputs, (list, tuple)):
+        elif isinstance(inputs, (list, tuple)):
             self._add_analysis_from_list(inputs)
-       elif isinstance(inputs, dict):
+        elif isinstance(inputs, dict):
            self._add_analysis_from_dict(inputs)
-       return
+        return
 
     def _add_analysis_from_string(self, analysis_string):
         command = analysis_string.split()
         comp_key = command[0]
         comp_id = command[1]
-        comp_args = command[1:]
+        comp_args = word_list_to_string(command[1:])
         if (comp_key in valid_analysis):
             if (len(comp_args) >= 1):
                 if comp_id not in self.analysis_ids:
                     comp_object = analysis_obj_name_dict[comp_key]
                     self.use_objects[comp_object] = True
                     self.arguments.append(comp_args)
-                    self.analysis_ids.append(comp_args[0])
+                    self.analysis_ids.append(comp_id)
                     self.analysis_keys.append(comp_key)
-                    self.command_protocol[comp_args[0]] = command_protocols[
+                    self.command_protocol[comp_id] = command_protocols[
                         comp_key](comp_args)
                 else:
                     raise RuntimeError("analysisid '{}' "
@@ -136,12 +143,12 @@ class Analyses:
                     comp_object = analysis_obj_name_dict[comp_key]
                     self.use_objects[comp_object] = True
                     self.arguments.append(comp_args)
-                    self.analysis_ids.append(comp_args[0])
+                    self.analysis_ids.append(comp_id)
                     self.analysis_keys.append(comp_key)
-                    self.command_protocol[comp_args[0]] = command_protocols[
+                    self.command_protocol[comp_id] = command_protocols[
                         comp_key](comp_args)
                 else:
-                    raise RuntimeError("analysisid '{}' "
+                    raise RuntimeError("analysis_id '{}' "
                                        "has already been used!".format(comp_id))
             else:
                 raise RuntimeError("invalid analysis_key '{}'".format(comp_key))
@@ -164,9 +171,9 @@ class Analyses:
                 comp_object = analysis_obj_name_dict[comp_key]
                 self.use_objects[comp_object] = True
                 self.arguments.append(comp_args)
-                self.analysis_ids.append(comp_args[0])
+                self.analysis_ids.append(comp_id)
                 self.analysis_keys.append(comp_key)
-                self.command_protocol[comp_args[0]] = command_protocols[
+                self.command_protocol[comp_id] = command_protocols[
                     comp_key](comp_args)
             else:
                 raise RuntimeError("analysisid '{}' "
@@ -269,7 +276,7 @@ class AnalysisProtocol:
     def _parse_string(self, args):
         arg_dict = self._parse_str_to_dict(args)
         #type cast setttings if needed
-        self._cast_settings(arg_dict)
+        arg_dict = self._cast_settings(arg_dict)
         self._parse_dict(arg_dict)
         return
 
@@ -290,10 +297,10 @@ class AnalysisProtocol:
 
     # cast the input string values of settings to appropriate types -- should be overwritten in derived classes to
     # properly type cast their own settings.
-    def _cast_settings(self, arg_dict):
-        for setting_key in arg_dict:
+    def _cast_settings(self, args_dict):
+        for setting_key in args_dict:
             pass
-        return arg_dict
+        return args_dict
 
     def _parse_dict(self, args):
         if 'analysis_id' not in args.keys():
@@ -312,7 +319,7 @@ class AnalysisProtocol:
 
     def print_protocol(self):
         print ("Analysis: "+self._short_description)
-        print ("  with analysis_id {} : ".format(self.analysis_id))
+        print ("  with analysis_id: {} ".format(self.analysis_id))
         print ("   and settings: ")
         for key in self.settings.keys():
             print ("    {}: {} ".format(key, self.settings[key]))
@@ -356,7 +363,7 @@ class MSDProtocol(AnalysisProtocol):
         self._short_description = "Mean squared displacement."
         self.return_length = 2
         self.analysis_key = 'msd'
-        self.analysis_id = args[0]
+        self.analysis_id = 'none'
         # default function settings
         # adjustable
         self.settings = dict()
@@ -462,7 +469,11 @@ class APLBoxProtocol(AnalysisProtocol):
         self._short_description = "Area per lipid using box dimensions."
         self.return_length = 4
         self.analysis_key = 'apl_box'
-
+        self.analysis_id = 'none'
+        #define adjustable settings
+        self.settings = dict()
+        self.settings['none'] = None
+        self._valid_settings = self.settings.keys()
         # parse input arguments if given
         self._parse_args(args)
 
@@ -510,7 +521,11 @@ class BTGridProtocol(AnalysisProtocol):
         self._short_description = "Bilayer thickness using lipid_grid."
         self.return_length = 4
         self.analysis_key = 'bilayer_thickness'
-
+        self.analysis_id = 'none'
+        #define adjustable settings
+        self.settings = dict()
+        self.settings['none'] = None
+        self._valid_settings = self.settings.keys()
         # parse input arguments if given
         self._parse_args(args)
 
@@ -558,7 +573,11 @@ class APLGridProtocol(AnalysisProtocol):
         self._short_description = "Area per lipid using lipid_grid"
         self.return_length = 4
         self.analysis_key = 'apl_grid'
-
+        self.analysis_id = 'none'
+        #define adjustable settings
+        self.settings = dict()
+        self.settings['none'] = None
+        self._valid_settings = self.settings.keys()
         # parse input arguments
         self._parse_args(args)
 
@@ -637,6 +656,8 @@ class DispVecProtocol(AnalysisProtocol):
         # required
         self.return_length = 4
         self.analysis_key = 'disp_vec'
+        self.analysis_id = 'none'
+
         #default settings
         self.settings = dict()
         self.settings['leaflet'] = 'both'
@@ -673,6 +694,8 @@ class DispVecProtocol(AnalysisProtocol):
                 elif arg_key == 'wrapped':
                     arg_arg = arg_arg in ['True', 'true']
                     args_dict[arg_key] = arg_arg
+            elif arg_key == 'analysis_id':
+                pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
@@ -783,6 +806,7 @@ class MassDensProtocol(AnalysisProtocol):
         self._short_description = "Mass density."
         self.return_length = None
         self.analysis_key = 'mass_dens'
+        self.analysis_id = 'none'
 
         # default settings
         self.settings = dict()
@@ -926,6 +950,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         self._short_description = "Area compressibility modulus."
         self.return_length = 4
         self.analysis_key = 'acm'
+        self.analysis_id = 'none'
 
         # default function settings
         self.settings = dict()
@@ -957,6 +982,8 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
             if arg_key in self._valid_settings:
                 if arg_key == 'temperature':
                     arg_dict[arg_key] = float(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
@@ -1033,6 +1060,7 @@ class NNFProtocol(AnalysisProtocol):
         
         self.return_length = 2
         self.analysis_key = 'nnf'
+        self.analysis_id = 'none'
 
         # default function settings
         self.settings = dict()
@@ -1062,7 +1090,9 @@ class NNFProtocol(AnalysisProtocol):
             arg_arg = args_dict[arg_key]
             if arg_key in self._valid_settings:
                 if arg_key == 'n_neighbors':
-                    arg_dict[arg_key] = int(arg_arg)
+                    args_dict[arg_key] = int(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
@@ -1259,7 +1289,8 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         
         self.return_length = 4
         self.analysis_key = 'disp_vec'
-        
+        self.analysis_id = 'none'
+
         # default function settings
         self.setting = dict()
         self.settings['leaflet'] = 'both'
@@ -1291,6 +1322,8 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
                 elif arg_key == 'wrapped':
                     arg_arg = arg_arg in ['True', 'true']
                     args_dict[arg_key] = arg_arg
+            elif arg_key == 'analysis_id':
+                pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
@@ -1416,7 +1449,8 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         self._short_description = "Displacement vector nearest neigbor correlations."
         self.return_length = 4
         self.analysis_key = 'disp_vec'
-        
+        self.analysis_id = 'none'
+
         # default function settings
         self.settings = dict()
         self.settings['leaflet'] = 'both'
@@ -1446,6 +1480,8 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
                 elif arg_key == 'wrapped':
                     arg_arg = arg_arg in ['True', 'true']
                     args_dict[arg_key] = arg_arg
+            elif arg_key == 'analysis_id':
+                pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
@@ -1578,7 +1614,11 @@ class NDCorrProtocol(AnalysisProtocol):
 
         self.return_length = 4
         self.analysis_key = 'ndcorr'
-
+        self.analysis_id = 'none'
+        #define adjustable settings
+        self.settings = dict()
+        self.settings['none'] = None
+        self._valid_settings = self.settings.keys()
         # default function settings
 
         # parse input arguments if given
