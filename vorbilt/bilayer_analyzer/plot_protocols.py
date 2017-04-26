@@ -19,6 +19,7 @@ class PlotProtocol:
         plot_ids = []
         if plot_commands is not None:
             for command in plot_commands:
+                command = command.split()
                 if len(command) < 2:
                     raise RuntimeError(
                         "wrong number of arguments for plot " + str(command))
