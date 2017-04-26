@@ -56,7 +56,7 @@ use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 
 # protocol for the analysis to run during the frame loop
 class Analyses:
-    """A class to facilitate analysis of the bilayers
+    '''A class to facilitate analysis of the bilayers
     This object stores all the analyses that being performed and provides fucntionality to add and remove
     analyses.
 
@@ -70,55 +70,34 @@ class Analyses:
         analysis_ids (list): A list of the ids assigned to analysis.
         n_commands (int): The number of initialized analysis.
 
-    """
+    '''
     def __init__(self, analysis_commands):
         self.use_objects = use_objects
         self.in_commands = analysis_commands
+        self.arguments = []
+        self.analysis_keys = []
+        self.analysis_ids = []
+        self.command_protocol = dict()
+        self.n_commands = 0
         # check analysis
-        arguments = []
-        analysis_keys = []
-        command_protocol = {}
-        analysis_ids = []
+
         for command in analysis_commands:
-            if len(command) < 2:
-                raise RuntimeError(
-                    "wrong number of arguments for analysis " + str(command))
-            comp_key = command[0]
-            comp_id = command[1]
-            comp_args = command[1:]
-            if (comp_key in valid_analysis):
-                if (len(comp_args) >= 1):
-                    if comp_id not in analysis_ids:
-                        comp_object = analysis_obj_name_dict[comp_key]
-                        self.use_objects[comp_object] = True
-                        arguments.append(comp_args)
-                        analysis_ids.append(comp_args[0])
-                        analysis_keys.append(comp_key)
-                        command_protocol[comp_args[0]] = command_protocols[
-                            comp_key](comp_args)
-                    else:
-                        raise RuntimeError(
-                            "analysisid \'" + comp_id + "\' has already been used")
-                else:
-                    raise RuntimeError(
-                        "wrong number of arguments for analysis " + str(
-                            command))
-            else:
-                raise RuntimeError(
-                    "invalid analysis \'" + comp_key + "\' :" + str(command))
-        self.arguments = arguments
-        self.analysis_keys = analysis_keys
-        self.analysis_ids = analysis_ids
-        self.command_protocol = command_protocol
-        self.n_commands = len(command_protocol)
+            self.add_analysis(command)
         # object dependencies
         if self.use_objects['lipid_grid']:
             self.use_objects['com_frame'] = True
         return
-   # def add_analysis(self, inputs):
 
+   def add_analysis(self, inputs):
+       if isinstance(inputs, (str, basestring)):
+           self._add_analysis_from_string(inputs)
+       elif isinstance(inputs, (list, tuple)):
+            self._add_analysis_from_list(inputs)
+       elif isinstance(inputs, dict):
+           self._add_analysis_from_dict(inputs)
+       return
 
-    def add_analysis(self, analysis_string):
+    def _add_analysis_from_string(self, analysis_string):
         command = analysis_string.split()
         comp_key = command[0]
         comp_id = command[1]
@@ -143,6 +122,60 @@ class Analyses:
             raise RuntimeError("invalid analysisid"
                                " '{}' : {}".format(comp_key, command))
         self.n_commands += 1
+        return
+
+    def _add_analysis_from_list(self, analysis_list):
+
+        if len(analysis_list) == 3:
+            comp_key = analysis_list[0]
+            comp_id = analysis_list[1]
+            comp_args = analysis_list[2]
+            comp_args['analysis_id'] = comp_id
+            if (comp_key in valid_analysis):
+                if comp_id not in self.analysis_ids:
+                    comp_object = analysis_obj_name_dict[comp_key]
+                    self.use_objects[comp_object] = True
+                    self.arguments.append(comp_args)
+                    self.analysis_ids.append(comp_args[0])
+                    self.analysis_keys.append(comp_key)
+                    self.command_protocol[comp_args[0]] = command_protocols[
+                        comp_key](comp_args)
+                else:
+                    raise RuntimeError("analysisid '{}' "
+                                       "has already been used!".format(comp_id))
+            else:
+                raise RuntimeError("invalid analysis_key '{}'".format(comp_key))
+        else:
+            raise RuntimeError("wrong number of arguments in the input list/tuple. Should be three: [a_key, a_id, a_set_dict]")
+
+        self.n_commands += 1
+        return
+
+    def _add_analysis_from_dict(self, analysis_dict):
+        for key in ['analysis_key', 'analysis_id', "analysis_settings"]:
+            if key not in analysis_dict.keys():
+                raise RuntimeError("required key: {} , not in the input dictionary.".format(key))
+        comp_key = analysis_dict['analysis_key']
+        comp_id = analysis_dict['analysis_id']
+        comp_args = analysis_dict['analysis_settings']
+        comp_args['analysis_id'] = comp_id
+        if (comp_key in valid_analysis):
+            if comp_id not in self.analysis_ids:
+                comp_object = analysis_obj_name_dict[comp_key]
+                self.use_objects[comp_object] = True
+                self.arguments.append(comp_args)
+                self.analysis_ids.append(comp_args[0])
+                self.analysis_keys.append(comp_key)
+                self.command_protocol[comp_args[0]] = command_protocols[
+                    comp_key](comp_args)
+            else:
+                raise RuntimeError("analysisid '{}' "
+                                   "has already been used!".format(comp_id))
+
+        else:
+            raise RuntimeError("invalid analysis_key '{}'".format(comp_key))
+        self.n_commands+=1
+
         return
 
     def remove_analysis(self, analysis_id):
@@ -223,7 +256,7 @@ class AnalysisProtocol:
             args (list): List of argument keys and values.
         '''
         # print args
-        if isinstance(args, str):
+        if isinstance(args, (basestring, str)):
             self._parse_string(args)
         elif isinstance(args, list):
             self._parse_list(args)
