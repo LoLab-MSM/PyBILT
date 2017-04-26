@@ -160,7 +160,7 @@ class Analyses:
         for key in self.use_objects.keys():
             if self.use_objects[key]:
                 print (key)
-        print ("with analysiss:")
+        print ("with analysis:")
         for analysis_id in self.analysis_ids:
             self.command_protocol[analysis_id].print_protocol()
         return
@@ -168,7 +168,7 @@ class Analyses:
     def dump_data(self):
         print ('dumping analysis data to pickle files...')
         for analysis_id in self.analysis_ids:
-            print ("analysisid: {} ---> {} ".format(
+            print ("analysis id: {} ---> {} ".format(
                 analysis_id,
                 self.command_protocol[analysis_id].save_file_name))
             self.command_protocol[analysis_id].save_data()
@@ -201,12 +201,12 @@ class AnalysisProtocol:
         self.valid_args = ['none']
         self.return_length = 1
         self.analysis_key = 'none'
-        self.analysis_id = args[0]
+        self.analysis_id = ''
+        self.settings = dict{}
         # default function settings
         self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
-        if len(args) > 1:
-            self._parse_args(args)
+        self._parse_args(args)
         # storage for output
         self.analysis_output = []
         return
@@ -218,18 +218,45 @@ class AnalysisProtocol:
             args (list): List of argument keys and values.
         '''
         # print args
+        if isinstance(args, list):
+            self._parse_list(args)
+        elif isinstance(args, dict):
+            self._parse_dict(args)
+        return
+        # required - a check protocol function which reports relevant settings
+    def _parse_string(self, args):
+        arg_list = analysis_string.split()
+        nargs = len(arg_list)
+        if len(arg_list)
+        self._parse_list(arg_list)
+        return
+
+    def _parse_list(self, args):
         nargs = len(args)
+        self.analysis_id = args[0]
         for i in range(1, nargs, 2):
             arg_key = args[i]
             arg_arg = args[i + 1]
             if arg_key in self.valid_args:
-                pass
+                self.settings[arg_key] =  arg_arg
             else:
                 raise RuntimeError(
                     "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_key)
         return
-        # required - a check protocol function which reports relevant settings
 
+    def _parse_dict(self, args):
+        if 'analysis_id' not in args.keys():
+            raise RuntimeError("required key \'anlaysis_id\' not assigned in input dict for analysis type: \'"+self.analysis_key+"\'")
+        for arg_key in args.keys():
+            arg_arg = args[arg_key]
+            if arg_key in self.valid_args:
+                self.settings[arg_key] =  arg_arg
+            elif arg_key == 'analysis_id':
+                self.analysis_id = arg_arg
+            else:
+                raise RuntimeError(
+                    "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_key)
+        return
     def print_protocol(self):
         print ("Parent protocol class for analysiss.")
         return
@@ -262,39 +289,48 @@ analysis_obj_name_dict['msd'] = 'com_frame'
 
 
 class MSDProtocol(AnalysisProtocol):
-    def __init__(self, msd_args):
+    '''Mean squared displacement
+    Args:
+        args (list): list of string keys and arguments
+    '''
+    def __init__(self, args):
 
         # required
         self.valid_args = ['leaflet', 'resname']
         self.return_length = 2
         self.analysis_key = 'msd'
-        self.analysis_id = msd_args[0]
+        self.analysis_id = args[0]
         # default function settings
-        self.leaflet = 'both'
-        self.resname = 'all'
+        # adjustable
+        self.settings = dict{}
+        self.settings['leaflet'] = 'both'
+        self.settings['resname'] = 'all'
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
         self.save_file_name = self.analysis_id + ".pickle"
         self.first_frame = True
         self.ref_coords = None
         self.indices = []
         # parse input arguments if given
-        if len(msd_args) > 1:
-            self._parse_args(msd_args)
+        if len(args) > 1:
+            self._parse_args(args)
         # storage for output
         self.analysis_output = []
         return
 
     # required- function to parse the input arguments
-    def _parse_args(self, msd_args):
-        # print msd_args
-        nargs = len(msd_args)
+    def _parse_args(self, args):
+        # print args
+        nargs = len(args)
         for i in range(1, nargs, 2):
-            arg_key = msd_args[i]
-            arg_arg = msd_args[i + 1]
+            arg_key = args[i]
+            arg_arg = args[i + 1]
             if arg_key in self.valid_args:
                 if arg_key == 'leaflet':
-                    self.leaflet = arg_arg
+                    self.settings['leaflet'] = arg_arg
                 elif arg_key == 'resname':
-                    self.resname = arg_arg
+                    self.settings['resname'] = arg_arg
             else:
                 raise RuntimeError(
                     "ignoring invalid argument key " + arg_key + " for analysis \'msd\'")
@@ -303,12 +339,12 @@ class MSDProtocol(AnalysisProtocol):
 
     def print_protocol(self):
         print (
-            "\'" + self.analysis_id + "\': msd analysisof " + self.resname + " lipids in " + self.leaflet + " leaflet(s).")
+            "\'" + self.analysis_id + "\': msd analysisof " + self.settings['resname'] + " lipids in " + self.settings['leaflet'] + " leaflet(s).")
         return
 
     def run_analysis(self, bilayer_analyzer):
-        leaflet = self.leaflet
-        group = self.resname
+        leaflet = self.settings['leaflet']
+        group = self.settings['resname']
         if self.first_frame:
             indices = []
             # parse the leaflet and group inputs
@@ -386,16 +422,16 @@ analysis_obj_name_dict['apl_box'] = 'mda_frame'
 
 
 class APLBoxProtocol(AnalysisProtocol):
-    def __init__(self, apl_args):
+    def __init__(self, args):
         # required
         self.valid_args = None
         self.return_length = 4
         self.analysis_key = 'apl_box'
-        self.analysis_id = apl_args[0]
+        self.analysis_id = args[0]
         # default function settings
         self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
-        if len(apl_args) > 1:
+        if len(args) > 1:
             raise RuntimeWarning(
                 "ignoring extra arguments passed to area per lipid analysis \'" + self.analysis_id + "\'")
 
@@ -1478,7 +1514,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
                 # unknown option--use default "both"
                 raise RuntimeWarning(
                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
-                self.leaflet = 'both'
+                self.settings['leaflet'] = 'both'
                 for leaflets in bilayer_analyzer.leaflets:
                     curr_leaf = bilayer_analyzer.leaflets[leaflets]
                     indices += curr_leaf.get_group_indices(self.group)
