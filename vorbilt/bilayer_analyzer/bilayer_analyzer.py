@@ -129,6 +129,7 @@ class BilayerAnalyzer:
                 filenames.
             selection (str): Optional, the MDAnalysis compatible string to select the bilayer components.
             input_file (str): Optional, the path and filename of input setup file.
+            input_dict (dict): Optional, a dictionary of keyed by valid commands and their input values.
         """
         self.input_script_name = input_file
         if input_file is not None:
