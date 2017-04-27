@@ -295,11 +295,11 @@ class BilayerAnalyzer:
         self.analysis_protocol.print_protocol()
         return
 
-    def add_analysis(self, analysis_string):
+    def add_analysis(self, analysis_in):
         """Add a analysis to the analysis protocol.
         Args:
-            analysis_string (str): A string defining the analysis key, analysis
-             id, and arguments for the new analysis.
+            analysis_in (str, list/tuple, or dict): The inpute defining the analysis key, analysis
+             id, and settings for the new analysis.
 
         """
         self.analysis_protocol.add_analysis(analysis_string)

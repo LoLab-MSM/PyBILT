@@ -63,7 +63,7 @@ def word_list_to_string(word_list, delimeter=" "):
 
 # protocol for the analysis to run during the frame loop
 class Analyses:
-    '''A class to facilitate analysis of the bilayers
+    """A class to facilitate analysis of the bilayers
     This object stores all the analyses that being performed and provides fucntionality to add and remove
     analyses.
 
@@ -77,7 +77,7 @@ class Analyses:
         analysis_ids (list): A list of the ids assigned to analysis.
         n_commands (int): The number of initialized analysis.
 
-    '''
+    """
     def __init__(self, analysis_commands):
         self.use_objects = use_objects
         self.in_commands = analysis_commands
@@ -94,6 +94,9 @@ class Analyses:
         if self.use_objects['lipid_grid']:
             self.use_objects['com_frame'] = True
         return
+
+    def __getitem__(self, item):
+        return self.command_protocol[item]
 
     def add_analysis(self, inputs):
         if isinstance(inputs, (str, basestring)):
@@ -222,7 +225,7 @@ class Analyses:
 
 #base class for analysis protocols
 class AnalysisProtocol:
-    '''Base class for analysis protocols.
+    """Base class for analysis protocols.
 
     Args:
         args (list): list of argument keys and values.
@@ -236,7 +239,7 @@ class AnalysisProtocol:
             this analysis' results.
         analysis_output (list or list like): Used to store the ouptut of this
             analyis during the frame loop.
-    '''
+    """
     def __init__(self, args):
 
         # required
@@ -258,10 +261,10 @@ class AnalysisProtocol:
 
     # required- function to parse the input arguments
     def _parse_args(self, args):
-        '''Parses the setup arguments for this analysis
+        """Parses the setup arguments for this analysis
         Args:
             args (list): List of argument keys and values.
-        '''
+        """
         # print args
         if isinstance(args, (basestring, str)):
             self._parse_string(args)
@@ -351,10 +354,10 @@ analysis_obj_name_dict['msd'] = 'com_frame'
 
 
 class MSDProtocol(AnalysisProtocol):
-    '''Mean squared displacement
+    """Mean squared displacement
     Args:
         args (list): list of string keys and arguments
-    '''
+    """
     def __init__(self, args):
 
         # required
