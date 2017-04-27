@@ -100,7 +100,7 @@ class LipidGrid_2d:
 
 
 class LipidGrids:
-    def __init__(self, com_frame, leaflets,plane,nxbins=2,nybins=2):
+    def __init__(self, com_frame, leaflets,plane,nxbins=4,nybins=4):
         #store the frame and leaflet
         self.frame = com_frame
         self.leaflets = leaflets
