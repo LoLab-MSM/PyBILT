@@ -119,7 +119,7 @@ class BilayerAnalyzer:
         'selection'] = "an MDAnalysis syntax selection needs to specified with command: \"selction \'selection string\'\""
 
     def __init__(self, psf_file=None, trajectory=None, selection=None,
-                 input_file=None):
+                 input_file=None, input_dict=None):
         """BilayerAnalyzer initialization.
         The initialization initialially parses all the inputs and sets some the attribute values. It also calls the
         initialization of the Analyses and PlotProtocol objects and builds the MDAData object.
@@ -166,6 +166,39 @@ class BilayerAnalyzer:
             self.commands['psf'] = psf_file
             self.commands['trajectory'] = trajectory
             self.commands['selection'] = selection
+
+        elif input_dict is not None and isinstance(input_dict, dict):
+            id_keys = input_dict.keys()
+            for key in required_commands:
+                if key not in id_keys:
+                    raise RuntimeError("key \'{}\' needs to be included in the input dictionary.".format(key))
+            for key in id_keys:
+                if key in valid_commands:
+                    self.commands[key] = input_dict[key]
+            # parse 'frames' input key--
+            # for setting the frame range of the analysis
+            if 'frames' in self.commands.keys():
+                f_args = self.commands['frames']
+                for i in range(0, len(f_args), 2):
+                    arg_key = f_args[i]
+                    arg_value = f_args[i + 1]
+                    if arg_key == 'first':
+                        self.frame_range[0] = arg_value
+                    elif arg_key == 'last':
+                        self.frame_range[1] = arg_value
+                    elif arg_key == 'interval':
+                        self.frame_range[2] = arg_value
+
+                        # parse inputs for lipid_grid settings
+            if 'lipid_grid' in self.commands.keys():
+                lg_args = self.commands['lipid_grid']
+                for i in range(0, len(lg_args), 2):
+                    arg_key = lg_args[i]
+                    arg_value = lg_args[i + 1]
+                    if arg_key == 'n_xbins':
+                        self.lg_nxbins = arg_value
+                    elif arg_key == 'n_ybins':
+                        self.lg_nybins = arg_value
         else:
             error = 'Must provide input_file or all three options for' \
                     '"psf_file", "trajectory", and "selection"'
@@ -302,7 +335,7 @@ class BilayerAnalyzer:
              id, and settings for the new analysis.
 
         """
-        self.analysis_protocol.add_analysis(analysis_string)
+        self.analysis_protocol.add_analysis(analysis_in)
         return
 
     def remove_analysis(self, analysis_id):
