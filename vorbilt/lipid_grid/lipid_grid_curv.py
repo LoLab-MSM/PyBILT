@@ -24,16 +24,19 @@ class LipidGrid_2d:
         iy = plane[1]
         iz = [i for i in [0,1,2] if i not in plane][0]
         #get the box dimemsions
-        box = com_frame.box[plane]
+        box = com_frame.box
         boxx = box[ix]
         boxy = box[iy]
+        box_com = com_frame.mem_com
+        box_com_x = box_com[ix]
+        box_com_y = box_com[iy]
         #save the numbers of bins
         self.x_nbins = nxbins
         self.y_nbins = nybins
         #initialize the edges of the and centers of the gridpoints
         # x
-        self.x_min = 0.0
-        self.x_max = boxx
+        self.x_min = -box_com_x
+        self.x_max = boxx - box_com_x
         self.x_edges = np.linspace(self.x_min,self.x_max,(nxbins+1),endpoint=True)
         self.x_incr = self.x_edges[1]-self.x_edges[0]
         x_incr_h = self.x_incr/2.0
@@ -44,8 +47,8 @@ class LipidGrid_2d:
             self.x_centers[j]=self.x_edges[j]+x_incr_h
 
         # y
-        self.y_min = 0.0
-        self.y_max = boxy
+        self.y_min = -box_com_y
+        self.y_max = boxy - box_com_y
         self.y_edges = np.linspace(self.y_min,self.y_max,(nybins+1),endpoint=True)
         self.y_incr = self.y_edges[1]-self.y_edges[0]
         y_incr_h = self.y_incr/2.0
@@ -63,10 +66,12 @@ class LipidGrid_2d:
 
         self.lipid_grid = []
         #cx = 0
+        #print self.x_edges
         for cx in range(len(self.x_edges)-1):
             self.lipid_grid.append([])
             x_lower = self.x_edges[cx]
             x_upper = self.x_edges[cx+1]
+            #print "x_upper ",x_upper, " x_lower ",x_lower
             for cy in range(len(self.y_edges)-1):
                 self.lipid_grid[cx].append([])
                 y_lower = self.y_edges[cy]
@@ -78,7 +83,11 @@ class LipidGrid_2d:
                     zi = com_frame.lipidcom[i].com_unwrap[iz]
                     x_box = xi > x_lower and xi < x_upper
                     y_box = yi > y_lower and yi < y_upper
+                    #print "x_lower: ", x_lower, " xi: ", xi, " x_ upper: ", x_upper, " x_box: ", x_box
                     if x_box and y_box:
+
+                       # print "y_lower: ", y_lower, " yi: ", yi, " y_upper: ", y_upper, " y_box: ",y_box
+                       # print
                         #add to this grid
                         self.lipid_grid[cx][cy].append((i, com_frame.lipidcom[i].type, zi))
 
@@ -91,7 +100,7 @@ class LipidGrid_2d:
 
 
 class LipidGrids:
-    def __init__(self, com_frame, leaflets,plane,nxbins=5,nybins=5):
+    def __init__(self, com_frame, leaflets,plane,nxbins=2,nybins=2):
         #store the frame and leaflet
         self.frame = com_frame
         self.leaflets = leaflets
@@ -121,21 +130,27 @@ class LipidGrids:
                 count = []
                 z_vals = []
                 n_box = 0.0
+                #print (self.leaf_grid[leaf].lipid_grid)
+               # print(len(self.leaf_grid[leaf].lipid_grid))
                 for xb in self.leaf_grid[leaf].lipid_grid:
+                    #print(len(xb))
                     for yb in xb:
+                        #print(len(yb))
                         box_count = 0
                         box_z_vals = []
                         for lipid in yb:
+                         #   print(lipid)
                             lipid_type = lipid[1]
                             lipid_z = lipid[2]
                             if lipid_type == type:
                                 box_count+=1
                             else:
                                 box_z_vals.append(lipid_z)
-                        n_box+=1.0
-                        box_z_avg = np.array(box_z_vals).mean()
-                        count.append(box_count)
-                        z_vals.append(box_z_avg)
+                        if len(yb) > 0:
+                            n_box+=1.0
+                            box_z_avg = np.array(box_z_vals).mean()
+                            count.append(box_count)
+                            z_vals.append(box_z_avg)
                 count = np.array(count)
                 z_vals = np.array(z_vals)
                 count_mean = count.mean()

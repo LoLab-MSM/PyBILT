@@ -111,6 +111,7 @@ class COMFrame:
         # to remove center of mass motion of the membrane
         mem_com = mda_frame._pos[index].mean(axis=0)
         mda_frame._pos[index] -= mem_com
+        self.mem_com = mem_com
         r=0
         for res in mda_bilayer_selection.residues:
             self.lipidcom[r].extract(res)

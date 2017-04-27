@@ -1677,5 +1677,10 @@ class NDCorrProtocol(AnalysisProtocol):
 
         return
 
+    def get_data(self):
+        for key in self.analysis_output.keys():
+            for tkey in self.analysis_output[key].keys():
+                self.analysis_output[key][tkey] = np.array(self.analysis_output[key][tkey])
+        return self.analysis_output
 
 command_protocols['ndcorr'] = NDCorrProtocol
