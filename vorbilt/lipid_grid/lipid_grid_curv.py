@@ -68,7 +68,7 @@ class LipidGrid_2d:
             x_lower = self.x_edges[cx]
             x_upper = self.x_edges[cx+1]
             for cy in range(len(self.y_edges)-1):
-                self.lipid_grid[cx] = []
+                self.lipid_grid[cx].append([])
                 y_lower = self.y_edges[cy]
                 y_upper = self.y_edges[cy+1]
                 #check lipid COMs

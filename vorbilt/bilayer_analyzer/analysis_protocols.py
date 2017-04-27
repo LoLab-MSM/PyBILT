@@ -665,7 +665,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
-        self.settings['interval'] = 10
+        self.settings['interval'] = 5
         self._valid_settings = self.settings.keys()
         #self.leaflet = 'both'
         #self.group = 'all'
@@ -1034,7 +1034,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         apl_run = gen_running_average(apl)
         apl_minus_area = (apl - area_eq)**2
         apl_minus_area_run = gen_running_average(apl_minus_area)
-        acm = scicon.k * self.temperature * apl_run[:,0] / ( self.per_leaflet * apl_minus_area_run[:,0])
+        acm = scicon.k * self.settings['temperature'] * apl_run[:,0] / ( self.per_leaflet * apl_minus_area_run[:,0])
         #conversion factor for Joules/Angstron^2 to milliNewtons/meter
         acm*=10.0**23
         acm_run = gen_running_average(acm)
@@ -1298,7 +1298,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
-        self.settings['interval'] = 10
+        self.settings['interval'] = 5
         self._valid_settings = self.settings.keys()
         # parse input arguments if given
         self._parse_args(args)
@@ -1458,7 +1458,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
-        self.settings['interval'] = 10
+        self.settings['interval'] = 5
         self._valid_settings = self.settings.keys()
         # parse input arguments if given
         self._parse_args(args)
