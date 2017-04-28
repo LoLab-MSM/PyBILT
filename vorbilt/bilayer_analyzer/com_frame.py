@@ -32,7 +32,7 @@ class LipidCOM:
         return
     # The name of this function could be changed to be more desriptive, e.g.
     # extract_com_mda_residue
-    def extract(self, mda_residue, unwrap=False, box=None):
+    def extract(self, mda_residue, unwrap=False, box=None, name_dict=None):
         """ Get the center of mass coordinates from an MDAnalysis residue
 
         This function calls the MDAnalysis member function center_of_mass() of the residue
@@ -47,19 +47,32 @@ class LipidCOM:
                 True - The COM coordinates are stored in the container designated
                 for the unwrapped coordinate representation.
         """
+        self.type = mda_residue.resname
+        self.resid = mda_residue.resid
+        self.atom_names = mda_residue.atoms.names
+        atom_group = mda_residue
+        if isinstance(name_dict, dict):
+
+            names = name_dict[self.type]
+            self.atom_names = names
+            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+names[0])])
+            n_names = len(names)
+            for i in range(1, n_names):
+                atom_group+=eval("mda_residue.atoms."+names[i])
+
         if unwrap:
-            self.com_unwrap = mda_residue.center_of_mass()
+            self.com_unwrap = atom_group.center_of_mass()
 
         else:
             if box is not None:
-                self.com = mda_residue.center_of_mass()
+                self.com = atom_group.center_of_mass()
                 self.com_unwrap = self.com[:]
             else:
-                self.com = mda_residue.center_of_mass()
+                self.com = atom_group.center_of_mass()
                 self.com_unwrap = self.com[:]
 
-        self.type=mda_residue.resname
-        self.resid = mda_residue.resid
+
+        self.mass = atom_group.total_mass()
         return
 
 # a Center of Mass frame object
@@ -77,7 +90,7 @@ class COMFrame:
     """
 
     # does not check that nlipids is an int
-    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords):
+    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None):
         """ Frame initialization.
 
         Args:
@@ -114,8 +127,8 @@ class COMFrame:
         self.mem_com = mem_com
         r=0
         for res in mda_bilayer_selection.residues:
-            self.lipidcom[r].extract(res)
-            self.lipidcom[r].mass = res.total_mass()
+            self.lipidcom[r].extract(res, name_dict=name_dict)
+            #self.lipidcom[r].mass = res.total_mass()
             r+=1
         #now wrapped coordinates
         #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
@@ -126,7 +139,7 @@ class COMFrame:
         mda_frame._pos[index] -= mem_com
         r=0
         for res in mda_bilayer_selection.residues:
-            self.lipidcom[r].extract(res, unwrap=True)
+            self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict)
             r+=1
 
         return

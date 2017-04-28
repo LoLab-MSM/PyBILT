@@ -252,6 +252,7 @@ class BilayerAnalyzer:
         self.com_frame = None
         self.dump_com_frame = False
         self.dump_com_frame_path = "./"
+        self.com_frame_name_dict = None
         # leaflet
         self.leaflets = None
         self.dump_leaflet = False
@@ -576,7 +577,7 @@ class BilayerAnalyzer:
             #if self.analysis_protocol.use_objects['com_frame']:
             # now build the COMFrame
             self.com_frame = cf.COMFrame(frame, self.mda_data.bilayer_sel,
-                                         wrapcoord)
+                                         wrapcoord, name_dict=self.com_frame_name_dict)
             if first_com:
                 self.first_com_frame = self.com_frame
                 first_com = False
