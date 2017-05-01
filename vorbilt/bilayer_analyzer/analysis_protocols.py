@@ -1608,7 +1608,7 @@ command_protocols['disp_vec_nncorr'] = DispVecNNCorrelationProtocol
 valid_analysis.append('ndcorr')
 analysis_obj_name_dict['ndcorr'] = 'com_frame'
 
-
+#
 class NDCorrProtocol(AnalysisProtocol):
     def __init__(self, args):
         # required
