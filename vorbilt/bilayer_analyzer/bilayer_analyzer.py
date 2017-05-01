@@ -131,6 +131,10 @@ class BilayerAnalyzer:
             input_file (str): Optional, the path and filename of input setup file.
             input_dict (dict): Optional, a dictionary of keyed by valid commands and their input values.
         """
+        # settings for frame loop
+        # frame_range[0]=first,frame_range[1]=last,frame_range[2]=interval
+        self.frame_range = [0, -1, 1]
+        self.frame_index = 0
         self.input_script_name = input_file
         if input_file is not None:
             print ("parsing input file \'" + input_file + "\'...")
@@ -243,10 +247,7 @@ class BilayerAnalyzer:
         self.normal_dimension = "z"
         self.current_mda_frame = None
 
-        # settings for frame loop
-        # frame_range[0]=first,frame_range[1]=last,frame_range[2]=interval
-        self.frame_range = [0, -1, 1]
-        self.frame_index = 0
+
         # buildable objects
         # com frame
         self.com_frame = None
@@ -267,6 +268,14 @@ class BilayerAnalyzer:
 
 
         self.first_com_frame = None
+        #for iterator
+        self._first_frame = True
+        self._first_com = True
+        self._current_frame = self.frame_range[0]
+        self._last_frame = self.frame_range[1]
+        if self._last_frame < 0:
+            self._last_frame += len(self.mda_data.mda_trajectory)
+
         return
 
     def parse_input_script(self, input_script_name):
@@ -678,3 +687,135 @@ class BilayerAnalyzer:
 
         """
         return ap.command_protocols.keys()
+    def __iter__(self):
+        return self
+
+    def next(self):
+        """ Runs the analsysis as an iterator.
+        The function performs the loop over the trajectory. At each frame it
+        builds the necessary objects (e.g. COMFrame) and then executes the
+        analysis of each analysis that was initialized in the setup.
+
+        Args:
+            nprocs (int): An integer specifying the number of cores to use in
+            multithreaded parallelelization.
+
+        """
+        if self._current_frame > self._last_frame:
+            raise StopIteration()
+        nprocs = 1
+        parallel = False
+        if nprocs > 1:
+            parallel = True
+
+        # now we need to unwrap the coordinates
+        natoms = self.mda_data.natoms
+        oldcoord = np.zeros((natoms, 3))
+        currcoord = np.zeros((natoms, 3))
+        wrapcoord = np.zeros((natoms, 3))
+        first_frame_coord = np.zeros((natoms, 3))
+        index = self.mda_data.bilayer_sel.indices
+        firstframe = self._first_frame
+        first_com = self._first_com
+        self.frame_index = self.frame_range[0]
+        #for frame in self.mda_data.mda_trajectory[
+        #             self._current_frame:self._current_frame+self.frame_range[2]:self.frame_range[
+        #                 2]]:
+        #with self.mda_data.mda_trajectory[self._current_frame] as frame:
+        frame = self.mda_data.mda_trajectory[self._current_frame]
+        self.current_mda_frame = frame
+        currcoord = frame._pos[index]
+        if firstframe:
+            oldcoord = np.copy(currcoord)
+            first_frame_coord = np.copy(oldcoord)
+            self._first_frame = False
+            wrapcoord = np.copy(currcoord)
+        else:
+            abc = frame.dimensions[0:3]
+            if parallel:
+                wrapcoord = wrap_coordinates_parallel(abc, currcoord,
+                                                      oldcoord,
+                                                      nprocs=nprocs)
+            else:
+                wrapcoord = wrap_coordinates(abc, currcoord, oldcoord)
+            # frame._pos[index] = wrapcoord[:]
+            oldcoord = np.copy(wrapcoord)
+            # print ("wrapped coords:")
+        # print (wrapcoord)
+        #if self.analysis_protocol.use_objects['com_frame']:
+        # now build the COMFrame
+        self.com_frame = cf.COMFrame(frame, self.mda_data.bilayer_sel,
+                                     wrapcoord, name_dict=self.com_frame_name_dict)
+        if first_com:
+            self.first_com_frame = self.com_frame
+            self._first_com = False
+        # now we can assign the lipids to the leaflets
+        self.leaflets = {'upper': lf.Leaflet('upper'),
+                         'lower': lf.Leaflet('lower')}
+        if self.dump_com_frame:
+            ofname = self.dump_com_frame_path + "com_frame_" + str(
+                frame.frame) + ".pickle"
+            with open(ofname, 'wb') as ofile:
+                pickle.dump(self.com_frame, ofile)
+        if self.dump_leaflet:
+            ofname = self.dump_leaflet_path + "leaflets_" + str(
+                frame.frame) + ".pickle"
+            with open(ofname, 'wb') as ofile:
+                pickle.dump(self.leaflets, ofile)
+
+        # first compute the average position along the normal direction
+        zstat = RunningStats()
+        for lipcom in self.com_frame.lipidcom:
+            zstat.push(lipcom.com_unwrap[self.norm])
+        zavg = zstat.mean()
+        # now loop over the lipids
+        l = 0
+        for lipcom in self.com_frame.lipidcom:
+            pos = ""
+            # decide which leaflet
+            #    print (lipcom.com_unwrap)
+            #    print (lipcom.com)
+            if lipcom.com_unwrap[self.norm] > zavg:
+                pos = 'upper'
+            elif lipcom.com_unwrap[self.norm] < zavg:
+                pos = 'lower'
+            # add to the chosen leaflet
+            self.com_frame.lipidcom[l].leaflet = pos
+            self.leaflets[pos].add_member(l, lipcom.type, lipcom.resid)
+            l += 1
+
+        if self.analysis_protocol.use_objects['lipid_grid']:
+            self.lipid_grid = lg.LipidGrids(self.com_frame, self.leaflets,
+                                            self.lateral,
+                                            nxbins=self.lg_nxbins,
+                                            nybins=self.lg_nybins)
+            if self.dump_lipid_grid:
+                ofname = self.dump_lipid_grid_path + "lipid_grid_" + str(
+                    frame.frame) + ".pickle"
+                with open(ofname, 'wb') as ofile:
+                    pickle.dump(self.lipid_grid, ofile)
+
+                    # lipid_grid = None
+        # now do analyses
+
+        print("Frame", frame.frame)
+        i = 0
+        for analysis_id in self.analysis_protocol.analysis_ids:
+            print ("analysis " + analysis_id)
+            self.analysis_protocol.command_protocol[analysis_id].run_analysis(
+                self)
+            # comp_out = analysis.run_analysis(self)
+            # print (comp_out)
+            #   analysis_out[i].append(comp_out)
+            i += 1
+        print(" ")
+        self.frame_index += self.frame_range[2]
+
+        self._current_frame+=self.frame_range[2]
+        if self._current_frame <= self._last_frame:
+
+        #    return self._current_frame-self.frame_range[2]
+            return
+        #else:
+         #   raise StopIteration()
+

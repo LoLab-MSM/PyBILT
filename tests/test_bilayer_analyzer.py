@@ -51,5 +51,23 @@ def test_analysis_defaults():
         print(ba.get_analysis_data(a_id))
 
 
-test_input_options()
-test_analysis_defaults()
+def test_analysis_iterator():
+    # initialize analyzer with keyword options--and default analysis
+    sel_string = "not resname CLA and not resname TIP3 and not resname POT"
+    ba = BilayerAnalyzer(
+        psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+        trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+        selection=sel_string,
+    )
+    # add analysis by string input
+    ba.add_analysis('msd msd_2 leaflet upper resname POPC')
+    print('Doing analysis iteration...')
+    for _frame in ba:
+        print(ba.com_frame)
+        print(" ")
+
+
+if __name__ == '__main__':
+    test_input_options()
+    test_analysis_defaults()
+    test_analysis_iterator()
