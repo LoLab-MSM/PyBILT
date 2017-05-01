@@ -143,6 +143,8 @@ class COMFrame:
             r+=1
 
         return
+    def __repr__(self):
+        return 'COMFrame for frame %s with %s lipids' % (self.number, len(self.lipidcom))
 
     def set_box(self, box_lengths):
         """ Set the rectangular xyz box edge lengths.
