@@ -1,6 +1,6 @@
 import numpy as np
 #import the running stats class
-from RunningStats import *
+from vorbilt.common.running_stats import *
 
 def vector_to_unit(v):
     #returns the unit vector version of v: v_u = v/|v|
@@ -120,12 +120,74 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
             acyl_norm = np.cross(v_ch1,v_ch2)
             cos_beta = cos_angle_between_vectors(acyl_norm,bilayer_norm)
             scd = 0.50*(3.0* cos_beta**2 -1.0)
-            Scd.Push(scd)
+            Scd.push(scd)
         Scd_out[f,0]=curr_time
-        Scd_out[f,1]=Scd.Mean()
-        Scd_out[f,2]=Scd.Deviation()
+        Scd_out[f,1]=Scd.mean()
+        Scd_out[f,2]=Scd.deviation()
         f+=1
     return Scd_out
+
+#based on description in Moore et al. 2001 Biophysical Journal 81(5) 2484-2494
+def deuterium_order_Moore(mda_universe, lipid_segids, lipid_map, fstart=0,fend=-1,fstep=1, norm_axis='z'):
+
+    trajectory = mda_universe.trajectory
+    bilayer_norm = np.array([0.0, 0.0, 1.0])
+    if norm_axis is 'x':
+        bilayer_norm = np.array([1.0, 0.0, 0.0])
+    elif norm_axis is 'y':
+        bilayer_norm = np.array([0.0, 1.0, 0.0])
+    nframes = len(trajectory)
+    f = 0
+    #setup the output container
+    output = {}
+    for lipid_type in lipid_map.keys():
+        output[lipid_type] = {}
+        for number in lipid_map[lipid_type]:
+            output[lipid_type][number] = RunningStats()
+
+    # adjust the frame end points for slicing
+    if fend != -1:
+        fend += 1
+    if fend == (nframes - 1) and fstart == (nframes - 1):
+        fend += 1
+    if fend == fstart:
+        fend += 1
+    if fstart < 0:
+        fstart += nframes
+    if fend < 0:
+        fend += nframes + 1
+
+    nframes = (fend - fstart) / fstep
+    print "doing frame slice points ", fstart, " to ", fend, " with step ", fstep
+    print "total of ", nframes, " frames"
+    for frame in trajectory[fstart:fend:fstep]:
+        curr_time = frame.time
+        for lipid_type in lipid_map.keys():
+            segid = lipid_segids[lipid_type]
+            for position in lipid_map[lipid_type].keys():
+                carbon_name = lipid_map[lipid_type][position]['carbon']
+                hydrogen_names = lipid_map[lipid_type][position]['hydrogens']
+                Cs = eval("mda_universe."+segid+"."+lipid_type+"."+carbon_name)
+                H1s = eval("mda_universe."+segid+"."+lipid_type+"."+hydrogen_names[0])
+                H2s = eval("mda_universe."+segid+"."+lipid_type+"."+hydrogen_names[1])
+                n_lipid = len(Cs)
+                for i in range(n_lipid):
+                    C = Cs[i]
+                    H1 = H1s[i]
+                    H2 = H2s[i]
+                    C_pos = C.pos
+                    H1_pos = H1.pos
+                    H2_pos = H2.pos
+                    v_ch1 = H1_pos - C_pos
+                    v_ch2 = H2_pos - C_pos
+                    acyl_norm = np.cross(v_ch1, v_ch2)
+                    cos_beta = cos_angle_between_vectors(acyl_norm, bilayer_norm)
+                    scd = 0.50 * (3.0 * cos_beta ** 2 - 1.0)
+                    output[lipid_type][position].push(scd)
+    for lipid_type in lipid_map.keys():
+        for position in lipid_map[lipid_type].keys():
+            output[lipid_type][position] = output[lipid_type][position].mean()
+    return output
 
 #average over all acyl groups of all the lipids based on description in Vermeer Eur Biophys J (2007) 36:919-931
 def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fstep=1, norm_axis='z'):
@@ -177,10 +239,10 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
             cos_beta_ch2 = cos_angle_between_vectors(v_ch2,bilayer_norm)
             scd_ch1 = 0.50*(3.0* cos_beta_ch1**2 -1.0)
             scd_ch2 = 0.50*(3.0* cos_beta_ch1**2 -1.0)
-            Scd.Push(scd_ch1)
-            Scd.Push(scd_ch2)
+            Scd.push(scd_ch1)
+            Scd.push(scd_ch2)
         Scd_out[f,0]=curr_time
-        Scd_out[f,1]=Scd.Mean()
-        Scd_out[f,2]=Scd.Deviation()
+        Scd_out[f,1]=Scd.mean()
+        Scd_out[f,2]=Scd.deviation()
         f+=1
     return Scd_out    
