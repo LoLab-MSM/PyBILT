@@ -98,6 +98,9 @@ class Analyses:
     def __getitem__(self, item):
         return self.command_protocol[item]
 
+    def __len__(self):
+        return len(self.analysis_ids)
+
     def add_analysis(self, inputs):
         if isinstance(inputs, (str, basestring)):
            self._add_analysis_from_string(inputs)
@@ -1059,7 +1062,7 @@ class NNFProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Lateral order nearest neighbor fraction."
-        
+
         self.return_length = 2
         self.analysis_key = 'nnf'
         self.analysis_id = 'none'
@@ -1099,7 +1102,7 @@ class NNFProtocol(AnalysisProtocol):
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return args_dict
-    
+
     def reset(self):
         self.running.reset()
         self.analysis_output = []
@@ -1288,7 +1291,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Displacement vector correlation matrix."
-        
+
         self.return_length = 4
         self.analysis_key = 'disp_vec'
         self.analysis_id = 'none'
@@ -1302,9 +1305,9 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         self._valid_settings = self.settings.keys()
         # parse input arguments if given
         self._parse_args(args)
-        
+
         self.save_file_name = self.analysis_id + ".pickle"
-        
+
         # storage for output
         self.analysis_output = []
         self.first_comp = True
@@ -1627,7 +1630,7 @@ class NDCorrProtocol(AnalysisProtocol):
         self._parse_args(args)
         #save file name for pickle dump of results
         self.save_file_name = self.analysis_id + ".pickle"
-        
+
         #for analysis and outputs
         self.first_frame = True
         # storage for output

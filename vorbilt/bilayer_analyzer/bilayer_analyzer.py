@@ -277,7 +277,9 @@ class BilayerAnalyzer:
             self._last_frame += len(self.mda_data.mda_trajectory)
 
         return
-
+    def __repr__(self):
+        return 'BilayerAnalyzer'
+         
     def parse_input_script(self, input_script_name):
         """Parses input setup scripts.
         Args:
@@ -818,4 +820,3 @@ class BilayerAnalyzer:
             return
         #else:
          #   raise StopIteration()
-
