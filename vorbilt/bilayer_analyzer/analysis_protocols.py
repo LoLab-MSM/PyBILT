@@ -213,13 +213,13 @@ class Analyses:
             self.command_protocol[analysis_id].print_protocol()
         return
 
-    def dump_data(self):
+    def dump_data(self, path=None):
         print ('dumping analysis data to pickle files...')
         for analysis_id in self.analysis_ids:
             print ("analysis id: {} ---> {} ".format(
                 analysis_id,
                 self.command_protocol[analysis_id].save_file_name))
-            self.command_protocol[analysis_id].save_data()
+            self.command_protocol[analysis_id].save_data(path=path)
 
     def reset(self):
         for analysis_id in self.analysis_ids:
@@ -337,8 +337,11 @@ class AnalysisProtocol:
         self.analysis_output.append(output)
         return
 
-    def save_data(self):
-        with open(self.save_file_name, 'wb') as outfile:
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
+        with open(save_file, 'wb') as outfile:
             pickle.dump(np.array(self.analysis_output), outfile)
 
         return
@@ -626,10 +629,14 @@ class APLGridProtocol(AnalysisProtocol):
 
         return
 
-    def save_data(self):
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
+
         for key in self.analysis_output.keys():
             self.analysis_output[key] = np.array(self.analysis_output[key])
-        with open(self.save_file_name, 'wb') as outfile:
+        with open(save_file, 'wb') as outfile:
             pickle.dump(self.analysis_output, outfile)
 
         return
@@ -783,12 +790,15 @@ class DispVecProtocol(AnalysisProtocol):
             self.analysis_output.append([vec_ends, resnames])
             self.last_com_frame = bilayer_analyzer.com_frame
             self.last_frame = current_frame
-            return vec_ends
+            return
         return
 
-    def save_data(self):
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
 
-        with open(self.save_file_name, 'wb') as outfile:
+        with open(save_file, 'wb') as outfile:
             pickle.dump(self.analysis_output, outfile)
 
         return
@@ -835,21 +845,6 @@ class MassDensProtocol(AnalysisProtocol):
         self.selection = None
 
         return
-
-    def _parse_str_to_dict(self, args):
-        arg_dict = dict()
-        args = args.split()
-        nargs = len(args)
-        arg_dict['analysis_id'] = args[0]
-        for i in range(1, nargs, 2):
-            arg_key = args[i]
-            arg_arg = args[i + 1]
-            if arg_key in self._valid_settings:
-                arg_dict[arg_key] =  arg_arg
-            else:
-                raise RuntimeError(
-                    "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_key)
-        return arg_dict
 
     # required- function to parse the input arguments from string
     def _cast_settings(self, args_dict):
@@ -928,9 +923,12 @@ class MassDensProtocol(AnalysisProtocol):
         self.n_frames += 1
         return
 
-    def save_data(self):
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
         centers_density = (self.centers, self.analysis_output / self.n_frames)
-        with open(self.save_file_name, 'wb') as outfile:
+        with open(save_file, 'wb') as outfile:
             pickle.dump(centers_density, outfile)
 
         return
@@ -1025,9 +1023,12 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         self.n_frames += 1
         return
 
-    def save_data(self):
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
         data = self.get_data()
-        with open(self.save_file_name, 'wb') as outfile:
+        with open(save_file, 'wb') as outfile:
             pickle.dump(data, outfile)
         return
 
@@ -1429,9 +1430,12 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
             #return vec_ends
         return
 
-    def save_data(self):
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
 
-        with open(self.save_file_name, 'wb') as outfile:
+        with open(save_file, 'wb') as outfile:
             pickle.dump(self.analysis_output, outfile)
 
         return
@@ -1594,9 +1598,12 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
             #return vec_ends
         return
 
-    def save_data(self):
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
 
-        with open(self.save_file_name, 'wb') as outfile:
+        with open(save_file, 'wb') as outfile:
             pickle.dump(self.analysis_output, outfile)
 
         return

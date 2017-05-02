@@ -131,6 +131,45 @@ class BilayerAnalyzer:
             input_file (str): Optional, the path and filename of input setup file.
             input_dict (dict): Optional, a dictionary of keyed by valid commands and their input values.
         """
+        #settings dictionary
+        #self.settings = dict()
+        #set default settings
+        #self.settings['frame_range'] = [0, -1, 1]
+        #self.settings['input_script_name'] = None
+        #self.settings['norm'] = 2
+        #self.settings['lateral'] = [0, 1]
+        #self.setting['lateral_dimension'] = "xy"
+        #self.settings['normal_dimension'] = "z"
+
+
+        #buildable representation objects and their settings
+        #self.reps = dict()
+        #self.rep_settings = dict()
+
+
+        # analysis defaults
+        self.norm = 2
+        self.lateral = [0, 1]
+        self.lateral_dimension = "xy"
+        self.normal_dimension = "z"
+        self.current_mda_frame = None
+
+        # buildable objects
+        # com frame
+        self.com_frame = None
+        self.dump_com_frame = False
+        self.dump_com_frame_path = "./"
+        self.com_frame_name_dict = None
+        # leaflet
+        self.leaflets = None
+        self.dump_leaflet = False
+        self.dump_leaflet_path = "./"
+        # lipid grid- with default settings
+        self.lipid_grid = None
+        self.lg_nxbins = 10
+        self.lg_nybins = 10
+        self.dump_lipid_grid = False
+        self.dump_lipid_grid_path = "./"
         # settings for frame loop
         # frame_range[0]=first,frame_range[1]=last,frame_range[2]=interval
         self.frame_range = [0, -1, 1]
@@ -240,30 +279,6 @@ class BilayerAnalyzer:
         self.mda_data = md.MDAData(self.commands['psf'],
                                    self.commands['trajectory'],
                                    sel_string)
-        # analysis defaults
-        self.norm = 2
-        self.lateral = [0, 1]
-        self.lateral_dimension = "xy"
-        self.normal_dimension = "z"
-        self.current_mda_frame = None
-
-
-        # buildable objects
-        # com frame
-        self.com_frame = None
-        self.dump_com_frame = False
-        self.dump_com_frame_path = "./"
-        self.com_frame_name_dict = None
-        # leaflet
-        self.leaflets = None
-        self.dump_leaflet = False
-        self.dump_leaflet_path = "./"
-        # lipid grid- with default settings
-        self.lipid_grid = None
-        self.lg_nxbins = 10
-        self.lg_nybins = 10
-        self.dump_lipid_grid = False
-        self.dump_lipid_grid_path = "./"
 
 
 
@@ -382,9 +397,9 @@ class BilayerAnalyzer:
         """
         return self.analysis_protocol.command_protocol[analysis_id].get_data()
 
-    def dump_data(self):
+    def dump_data(self, path=None):
         """Dump all the anlysis outputs from the analysiss as pickle files."""
-        self.analysis_protocol.dump_data()
+        self.analysis_protocol.dump_data(path=path)
         return
 
         ## plot data/access
@@ -689,9 +704,9 @@ class BilayerAnalyzer:
 
         """
         return ap.command_protocols.keys()
+    #iterator functions --
     def __iter__(self):
         return self
-
     def next(self):
         """ Runs the analsysis as an iterator.
         The function performs the loop over the trajectory. At each frame it
