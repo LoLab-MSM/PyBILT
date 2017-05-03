@@ -548,6 +548,12 @@ class BilayerAnalyzer:
     def reset(self):
         """ Clears the analysis output stored in the analysiss.
         """
+        self.frame_index = 0
+        # for iterator
+        self._first_frame = True
+        self._first_com = True
+        self._current_frame = self.frame_range[0]
+        #analyses
         self.analysis_protocol.reset()
         return
 
