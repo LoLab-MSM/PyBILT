@@ -2,9 +2,11 @@
 #numpy
 import numpy as np
 #import my running stats class
-from RunningStats import *
+from vorbilt.common.running_stats import *
 # import the coordinate wrapping function--for unwrapping
-from pUnwrap import mda_wrap_coordinates
+from vorbilt.mda_tools.mda_unwrap import wrap_coordinates
+
+
 '''
  function to compute the mean square displacement (MSD) and diffusion constant
  of a list of MDAnalysis atom selections (atom_sel_list). The list of atom selections 
@@ -102,25 +104,26 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
 		for	j in xrange(nsels):
 			drs_curr = drs[j,:]	
 			drs_mag = drs_curr.sum()
-			drs_stat.Push(drs_mag)
+			drs_stat.push(drs_mag)
 		#get the msd for the current selection
-		msdcurr = drs_stat.Mean()
-		devcurr = drs_stat.Deviation()
+		msdcurr = drs_stat.mean()
+		devcurr = drs_stat.deviation()
 		dt = times[i]-times[0]
 		DiffCon = msdcurr/(2.0*dim*dt)
-		diff_stat.Push(DiffCon)
+		diff_stat.push(DiffCon)
 		#print "msdcurr ",msdcurr
 		#push to the msd array
 		msd[i,0]=dt
 		msd[i,1]=msdcurr
 		msd[i,2]=devcurr
 		msd[i,3]=DiffCon
-		msd[i,4]=diff_stat.Mean()
-		msd[i,5]=diff_stat.Deviation()
+		msd[i,4]=diff_stat.mean()
+		msd[i,5]=diff_stat.deviation()
 		if	verbose:
 				print "selection number ",i," has msd ",msdcurr," with deviation ",devcurr 
 		#reset the running stats object--prepare for next selection
 		drs_stat.Reset()
 	#return msd array
 	return msd 
+
 
