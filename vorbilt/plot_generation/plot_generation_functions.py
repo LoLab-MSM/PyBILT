@@ -20,10 +20,10 @@ sfig_params = {
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-params = {'figure.figsize': [8.5, 6.0], 'font.size': 14, 'axes.labelsize': 18,
+params = {'figure.figsize': [8.5, 6.0], 'font.size': 16, 'axes.labelsize': 20,
     'legend.fontsize': 14,
-    'xtick.labelsize': 12,
-    'ytick.labelsize': 12,}
+    'xtick.labelsize': 14,
+    'ytick.labelsize': 14,}
 mpl.rcParams.update(params)
 #sns.set_style("whitegrid")
 #sns.set_style("white")
@@ -379,7 +379,7 @@ def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.eps',tim
     plt.close()
     return
 
-def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thickness.eps',time_in='ps',time_out='ns',show=False, interval=1,save=True):
+def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thickness.eps',time_in='ps',time_out='ns',show=False, interval=1,save=True, xlim = None, ylim=None):
     '''
     Generates a single plot with bilayer thickness curves
     Takes outputs from:
@@ -417,6 +417,10 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thicknes
     xlabel = "Time ("+time_out+")"
     plt.xlabel(xlabel)
     plt.ylabel("Bilayer thickness ($\AA$)")
+    if xlim is not None:
+        plt.set_xlim(xlim)
+    if ylim is not None:
+        plt.set_ylim(ylim)
     if name_list is not None:
         plt.legend(loc=0)
     if save:    
