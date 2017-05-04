@@ -153,7 +153,8 @@ class BilayerAnalyzer:
         self.lateral_dimension = "xy"
         self.normal_dimension = "z"
         self.current_mda_frame = None
-
+        self.print_interval = 5
+        self._frame_loop_count = 0
         # buildable objects
         # com frame
         self.com_frame = None
@@ -294,7 +295,7 @@ class BilayerAnalyzer:
         return
     def __repr__(self):
         return 'BilayerAnalyzer'
-         
+
     def parse_input_script(self, input_script_name):
         """Parses input setup scripts.
         Args:
@@ -553,6 +554,7 @@ class BilayerAnalyzer:
         self._first_frame = True
         self._first_com = True
         self._current_frame = self.frame_range[0]
+        self._frame_loop_count = 0
         #analyses
         self.analysis_protocol.reset()
         return
@@ -661,19 +663,22 @@ class BilayerAnalyzer:
 
                         # lipid_grid = None
             # now do analyses
-
-            print("Frame", frame.frame)
+            if self._frame_loop_count % self.print_interval == 0:
+                print("Frame", frame.frame)
             i = 0
             for analysis_id in self.analysis_protocol.analysis_ids:
-                print ("analysis " + analysis_id)
+                if self._frame_loop_count % self.print_interval == 0:
+                    print ("analysis " + analysis_id)
                 self.analysis_protocol.command_protocol[analysis_id].run_analysis(
                     self)
                 # comp_out = analysis.run_analysis(self)
                 # print (comp_out)
                 #   analysis_out[i].append(comp_out)
                 i += 1
-            print(" ")
+            if self._frame_loop_count % self.print_interval == 0:
+                print(" ")
             self.frame_index += self.frame_range[2]
+            self._frame_loop_count+=1
             # print ('analysis_out:')
             # print (analysis_out)
 
@@ -820,20 +825,22 @@ class BilayerAnalyzer:
 
                     # lipid_grid = None
         # now do analyses
-
-        print("Frame", frame.frame)
+        if self._frame_loop_count % self.print_interval == 0:
+            print("Frame: {}".format(frame.frame))
         i = 0
         for analysis_id in self.analysis_protocol.analysis_ids:
-            print ("analysis " + analysis_id)
+            if self._frame_loop_count % self.print_interval == 0:
+                print ("  analysis: {}".format(analysis_id))
             self.analysis_protocol.command_protocol[analysis_id].run_analysis(
                 self)
             # comp_out = analysis.run_analysis(self)
             # print (comp_out)
             #   analysis_out[i].append(comp_out)
             i += 1
-        print(" ")
+        if self._frame_loop_count % self.print_interval == 0:
+            print(" ")
         self.frame_index += self.frame_range[2]
-
+        self._frame_loop_count+=1
         self._current_frame+=self.frame_range[2]
         if self._current_frame <= self._last_frame:
 
