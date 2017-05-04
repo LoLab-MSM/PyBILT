@@ -5,6 +5,7 @@ from vorbilt.bilayer_analyzer.analysis_protocols import valid_analysis
 
 #input options
 def test_input_options():
+    print("testing various input options...")
     #initialize analyzer with keyword options--and default analysis
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
@@ -33,6 +34,7 @@ def test_input_options():
 
 #analsyses with default options
 def test_analysis_defaults():
+    print("testing the default settings of all analysis protocols...")
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
         psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
@@ -52,6 +54,7 @@ def test_analysis_defaults():
 
 
 def test_analysis_iterator():
+    print("testing the analysis iterator...")
     # initialize analyzer with keyword options--and default analysis
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
