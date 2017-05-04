@@ -1781,9 +1781,9 @@ class DCClusterProtocol(AnalysisProtocol):
             indices += curr_leaf.get_group_indices(self.settings['resname'])
         pos = []
         for index in indices:
-            pos.append(bilayer_analyzer.com_frame.lipidcom.com[bilayer_analyzer.plane])
+            pos.append(bilayer_analyzer.com_frame.lipidcom[index].com[bilayer_analyzer.lateral])
         pos = np.array(pos)
-        box = bilayer_analyzer.com_frame.box[bilayer_analyzer.plane]
+        box = bilayer_analyzer.com_frame.box[bilayer_analyzer.lateral]
         cutoff = self.settings['cutoff']
         dist_func = dc_cluster.distance_euclidean_pbc
         clusters = dc_cluster.distance_cutoff_clustering(pos, self.settings['cutoff'], dist_func, 1, box, center='box_half')
