@@ -5,10 +5,11 @@ def distance_euclidean(v_a, v_b):
     return np.sqrt(np.dot(d_v, d_v))
 
 def distance_euclidean_pbc(v_a, v_b, box_lengths, center='zero'):
-    if center == 'zero':
-        center = np.zeros(len(v_a))
-    elif center == 'box_half':
-        center = box_lengths/2.0
+    if isinstance(center, str):
+        if center == 'zero':
+            center = np.zeros(len(v_a))
+        elif center == 'box_half':
+            center = box_lengths/2.0
     #shift center to zero for minimum image
     v_a = v_a - center
     v_b = v_b - center
@@ -30,6 +31,8 @@ def distance_euclidean_pbc(v_a, v_b, box_lengths, center='zero'):
 
 def distance_cutoff_clustering(vectors, cutoff, dist_func, min_size=1, *df_args, **df_kwargs):
     #compute the boolean distance-cutoff matrix
+    #print(df_args)
+    #print(df_kwargs)
     nvecs = len(vectors)
     dist_bool = np.zeros((nvecs,nvecs), dtype=np.bool)
     for i in range(nvecs-1):
@@ -74,7 +77,7 @@ def distance_cutoff_clustering(vectors, cutoff, dist_func, min_size=1, *df_args,
                     if dist_bool[a][b]:
                         neighbors.append(b)
                         master[j][1] = True
-                        print(neighbors)
+                        #print(neighbors)
             #print(master)
             i+=1
         master = list([v for v in master if v[1] == False])

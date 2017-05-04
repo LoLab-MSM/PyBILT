@@ -40,7 +40,7 @@ except:
 from vorbilt.common.running_stats import *
 import vorbilt.mda_tools.mda_density_profile as mda_dp
 import vorbilt.lipid_grid.lipid_grid_curv as lgc
-
+from vorbilt.common import distance_cutoff_clustering as dc_cluster
 #need some containers for bookkeeping
 command_protocols = {}
 valid_analysis= []
@@ -1694,3 +1694,149 @@ class NDCorrProtocol(AnalysisProtocol):
         return self.analysis_output
 
 command_protocols['ndcorr'] = NDCorrProtocol
+
+# define a new analysis 'apl_box'
+valid_analysis.append('dc_cluster')
+analysis_obj_name_dict['dc_cluster'] = 'com_frame'
+
+#
+class DCClusterProtocol(AnalysisProtocol):
+    def __init__(self, args):
+        # required
+        self._short_description = "Distance cutoff clustering."
+
+        self.return_length = 4
+        self.analysis_key = 'dc_cluster'
+        self.analysis_id = 'none'
+        #define adjustable settings
+        self.settings = dict()
+        self.settings['resname'] = 'first'
+        self.settings['leaflet'] = 'upper'
+        self.settings['cutoff'] = 12.0
+        self._valid_settings = self.settings.keys()
+        # default function settings
+
+        # parse input arguments if given
+        self._parse_args(args)
+        #save file name for pickle dump of results
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        #for analysis and outputs
+        self.first_frame = True
+        self.converted = False
+        # storage for output
+        self.analysis_output = dict()
+        self.running_stats = dict()
+        self.analysis_output['clusters'] = []
+        self.analysis_output['nclusters'] = []
+        self.analysis_output['max_size'] = []
+        self.analysis_output['min_size'] = []
+        self.analysis_output['avg_size'] = []
+        self.running_stats['nclusters'] = RunningStats()
+        self.running_stats['max_size'] = RunningStats()
+        self.running_stats['min_size'] = RunningStats()
+        self.running_stats['avg_size'] = RunningStats()
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, args_dict):
+
+        for arg_key in args_dict.keys():
+            arg_arg = args_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'cutoff':
+                    arg_dict[arg_key] = float(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                raise RuntimeWarning(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return args_dict
+
+    def run_analysis(self, bilayer_analyzer):
+        do_leaflet = []
+        if self.settings['leaflet'] == 'both':
+            do_leaflet = ['upper', 'lower']
+        else:
+            do_leaflet = [self.settings['leaflet']]
+
+        if self.first_frame:
+            #pass
+            # build group/resname/lipid type list
+            lipid_types = []
+            nlipids = 0
+            for leaflet_name in do_leaflet:
+                leaflet = bilayer_analyzer.leaflets[leaflet_name]
+                groups = leaflet.get_group_names()
+        #        nlipids += len(leaflet.get_member_indices())
+                for group in groups:
+                    if group not in lipid_types:
+                        lipid_types.append(group)
+            if self.settings['resname'] == 'first':
+                self.settings['resname'] =  lipid_types[0]
+            self.first_frame = False
+        indices = []
+        for leaflets in do_leaflet:
+            curr_leaf = bilayer_analyzer.leaflets[leaflets]
+            indices += curr_leaf.get_group_indices(self.settings['resname'])
+        pos = []
+        for index in indices:
+            pos.append(bilayer_analyzer.com_frame.lipidcom.com[bilayer_analyzer.plane])
+        pos = np.array(pos)
+        box = bilayer_analyzer.com_frame.box[bilayer_analyzer.plane]
+        cutoff = self.settings['cutoff']
+        dist_func = dc_cluster.distance_euclidean_pbc
+        clusters = dc_cluster.distance_cutoff_clustering(pos, self.settings['cutoff'], dist_func, 1, box, center='box_half')
+
+        nclusters = len(clusters)
+        min_size = 0
+        max_size = 0
+        avg_size = 0.0
+        for cluster in clusters:
+            n = len(cluster)
+            if n > max_size:
+                max_size = n
+            elif n > 0 and max_size == 0:
+                min_size = n
+            elif max_size > 0 and n < max_size:
+                min_size = n
+            avg_size += n
+        avg_size /= nclusters
+        self.running_stats['nclusters'].push(nclusters)
+        self.running_stats['max_size'].push(max_size)
+        self.running_stats['min_size'].push(min_size)
+        self.running_stats['avg_size'].push(avg_size)
+        time = bilayer_analyzer.com_frame.time
+        self.analysis_output['clusters'].append(clusters)
+        self.analysis_output['nclusters'].append([time,nclusters,self.running_stats['nclusters'].mean(), self.running_stats['nclusters'].deviation()])
+        self.analysis_output['max_size'].append([time,max_size,self.running_stats['max_size'].mean(), self.running_stats['max_size'].deviation()])
+        self.analysis_output['min_size'].append([time,min_size,self.running_stats['min_size'].mean(), self.running_stats['min_size'].deviation()])
+        self.analysis_output['avg_size'].append([time,avg_size,self.running_stats['avg_size'].mean(), self.running_stats['avg_size'].deviation()])
+
+        return
+
+    def reset(self):
+        self.first_frame = True
+        self.analysis_output = dict()
+        self.running_stats = dict()
+        self.analysis_output['clusters'] = []
+        self.analysis_output['nclusters'] = []
+        self.analysis_output['max_size'] = []
+        self.analysis_output['min_size'] = []
+        self.analysis_output['avg_size'] = []
+        self.running_stats['nclusters'].reset()
+        self.running_stats['max_size'].reset()
+        self.running_stats['min_size'].reset()
+        self.running_stats['avg_size'].reset()
+        self.converted = False
+        return
+
+    def get_data(self):
+        if not self.converted:
+            for key in self.analysis_output.keys():
+                if key != 'clusters':
+                    self.analysis_output[key] = np.array(self.analysis_output[key])
+            self.converted = True
+        return self.analysis_output
+
+command_protocols['dc_cluster'] = DCClusterProtocol
