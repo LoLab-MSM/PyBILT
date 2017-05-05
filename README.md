@@ -1,4 +1,4 @@
-# VORBILT - Vanderbilt-Oak Ridge BILayer analysis Toolkit
+# VORBILT - Vanderbilt-Oak Ridge lipid BILayer molecular simulation trajectory analysis Toolkit
 
 
 Developed using Anaconda 4.3.1 Python 2.7				
