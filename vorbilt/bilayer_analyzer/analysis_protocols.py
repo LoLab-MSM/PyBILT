@@ -1000,12 +1000,13 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
 
 
     def reset(self):
-        self.area_run.reset()
+        self.n_frames = 0
         self.area = []
         self.apl = []
-        self.n_frames = 0
+        self.times = []
         self.analysis_output = []
         self.first_comp = True
+        self.per_leaflet = 1
         return
 
     def run_analysis(self, bilayer_analyzer):
