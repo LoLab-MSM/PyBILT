@@ -386,12 +386,13 @@ class MSDProtocol(AnalysisProtocol):
         #self.leaflet = 'both'
         #self.resname = 'all'
 
-        self.save_file_name = self.analysis_id + ".pickle"
+
         self.first_frame = True
         self.ref_coords = None
         self.indices = []
         # parse input arguments if given
         self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
         # storage for output
         self.analysis_output = []
         return
@@ -654,7 +655,7 @@ class APLGridProtocol(AnalysisProtocol):
 
     def reset(self):
         self.running.reset()
-        self.analysis_output = []
+        self.analysis_output = {}
         self.first_comp = True
         self.running_res = {}
         return
@@ -745,11 +746,11 @@ class DispVecProtocol(AnalysisProtocol):
                     curr_leaf = bilayer_analyzer.leaflets[leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             elif self.settings['leaflet'] == "upper":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = bilayer_analyzer.leaflets['upper']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
 
             elif self.settings['leaflet'] == "lower":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = bilayer_analyzer.leaflets['lower']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
@@ -1020,10 +1021,10 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         dimensions = bilayer_analyzer.current_mda_frame.dimensions[0:3]
         lateral_dim = dimensions[lateral_indices]
         area = lateral_dim.prod()
-        print(area)
+        #print(area)
         self.area.append(area)
         apl = area / self.per_leaflet
-        print(apl)
+        #print(apl)
         self.apl.append(apl)
         time = bilayer_analyzer.current_mda_frame.time
         self.times.append(time)
@@ -1367,11 +1368,11 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
                     curr_leaf = bilayer_analyzer.leaflets[leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             elif self.settings['leaflet'] == "upper":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = bilayer_analyzer.leaflets['upper']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
 
             elif self.settings['leaflet'] == "lower":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = bilayer_analyzer.leaflets['lower']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
@@ -1528,11 +1529,11 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
                     curr_leaf = bilayer_analyzer.leaflets[leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             elif self.settings['leaflet'] == "upper":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = bilayer_analyzer.leaflets['upper']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
 
             elif self.settings['leaflet'] == "lower":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = bilayer_analyzer.leaflets['lower']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
@@ -1824,17 +1825,12 @@ class DCClusterProtocol(AnalysisProtocol):
 
     def reset(self):
         self.first_frame = True
-        self.analysis_output = dict()
-        self.running_stats = dict()
-        self.analysis_output['clusters'] = []
-        self.analysis_output['nclusters'] = []
-        self.analysis_output['max_size'] = []
-        self.analysis_output['min_size'] = []
-        self.analysis_output['avg_size'] = []
-        self.running_stats['nclusters'].reset()
-        self.running_stats['max_size'].reset()
-        self.running_stats['min_size'].reset()
-        self.running_stats['avg_size'].reset()
+
+        for key in self.analysis_output.keys():
+            self.analysis_output[key] = []
+        for key in self.running_stats.keys():
+            self.running_stats[key].reset()
+
         self.converted = False
         return
 

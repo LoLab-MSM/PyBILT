@@ -119,24 +119,21 @@ class COMFrame:
         #atom indices in mda selection/frame
         index = mda_bilayer_selection.indices
                     # loop over the residues (lipids) and get the centers of mass
-        ## do the unwrapped coordinates
-        #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
-        # to remove center of mass motion of the membrane
-        mem_com = mda_frame._pos[index].mean(axis=0)
-        mda_frame._pos[index] -= mem_com
-        self.mem_com = mem_com
+        ## do the wrapped coordinates
+
         r=0
         for res in mda_bilayer_selection.residues:
             self.lipidcom[r].extract(res, name_dict=name_dict)
             #self.lipidcom[r].mass = res.total_mass()
             r+=1
-        #now wrapped coordinates
+        #now unwrapped coordinates
+
+        mda_frame._pos[index] = unwrap_coords[:]
         #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
         # to remove center of mass motion of the membrane
-        mda_frame._pos[index] = unwrap_coords[:]
-
-        mem_com = unwrap_coords.mean(axis=0)
+        mem_com = mda_frame._pos[index].mean(axis=0)
         mda_frame._pos[index] -= mem_com
+        self.mem_com = mem_com
         r=0
         for res in mda_bilayer_selection.residues:
             self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict)
