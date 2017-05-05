@@ -290,7 +290,7 @@ class BilayerAnalyzer:
         self._current_frame = self.frame_range[0]
         self._last_frame = self.frame_range[1]
         if self._last_frame < 0:
-            self._last_frame += len(self.mda_data.mda_trajectory)
+            self._last_frame += len(self.mda_data.mda_trajectory)+1
 
         return
     def __repr__(self):
@@ -592,6 +592,9 @@ class BilayerAnalyzer:
         firstframe = True
         first_com = True
         self.frame_index = self.frame_range[0]
+        n_mda_frames = len(self.mda_data.mda_trajectory)
+        if self.frame_range[1] < 0:
+            self.frame_range[1]+=n_mda_frames+1
         for frame in self.mda_data.mda_trajectory[
                      self.frame_range[0]:self.frame_range[1]:self.frame_range[
                          2]]:

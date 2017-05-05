@@ -29,7 +29,7 @@ from scipy.spatial import Delaunay
 #import running stats class
 from vorbilt.common.running_stats import *
 # import the coordinate wrapping function--for unwrapping
-from vorbilt.mda_tools.mda_unwrap import mda_wrap_coordinates,mda_wrap_coordinates_parallel
+from vorbilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
 
 # This function is incomplete!
 def colorize_step_vector_clusters(vectors):
@@ -702,7 +702,7 @@ def msd_frames(frames, fstart, fend, indices, refframe, plane):
         #get the msd for the current selection
         msdcurr = drs_stat.mean()
         devcurr = drs_stat.deviation()
-        drs_stat.Reset()
+        drs_stat.reset()
         findex = f-fstart
         output[findex, 0]=tc
         output[findex, 1]=msdcurr
@@ -1073,9 +1073,9 @@ class COMTraj:
             else:
                 abc = frame.dimensions[0:3]
                 if parallel:
-                    wrapcoord = mda_wrap_coordinates_parallel(abc, currcoord, oldcoord,nprocs=nprocs)
+                    wrapcoord = wrap_coordinates_parallel(abc, currcoord, oldcoord,nprocs=nprocs)
                 else:
-                    wrapcoord = mda_wrap_coordinates(abc, currcoord, oldcoord)
+                    wrapcoord = wrap_coordinates(abc, currcoord, oldcoord)
                 frame._pos[index] = wrapcoord[:]
                 oldcoord = np.copy(wrapcoord)
             #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
@@ -1219,7 +1219,7 @@ class COMTraj:
             #get the msd for the current selection
             msdcurr = drs_stat.mean()
             devcurr = drs_stat.deviation()
-            drs_stat.Reset()
+            drs_stat.reset()
             msd_stat.push(msdcurr)
             msd_tavg = msd_stat.mean()
             msd_dev = msd_stat.deviation()            
