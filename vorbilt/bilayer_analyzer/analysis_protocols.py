@@ -203,6 +203,12 @@ class Analyses:
             raise RuntimeWarning("no analysis with id '{}'".format(analysis_id))
         return
 
+    def remove_all(self):
+        a_ids = self.analysis_ids
+        for a_id in a_ids:
+            self.remove_analysis(a_id)
+        return
+
     def print_protocol(self):
         print ('build objects:')
         for key in self.use_objects.keys():
@@ -301,10 +307,10 @@ class AnalysisProtocol:
 
     # cast the input string values of settings to appropriate types -- should be overwritten in derived classes to
     # properly type cast their own settings.
-    def _cast_settings(self, args_dict):
-        for setting_key in args_dict:
+    def _cast_settings(self, arg_dict):
+        for setting_key in arg_dict:
             pass
-        return args_dict
+        return arg_dict
 
     def _parse_dict(self, args):
         if 'analysis_id' not in args.keys():
@@ -696,22 +702,22 @@ class DispVecProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments from string
-    def _cast_settings(self, args_dict):
+    def _cast_settings(self, arg_dict):
 
-        for arg_key in args_dict.keys():
-            arg_arg = args_dict[arg_key]
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
             if arg_key in self._valid_settings:
                 if arg_key == 'interval':
                     arg_dict[arg_key] = int(arg_arg)
                 elif arg_key == 'wrapped':
                     arg_arg = arg_arg in ['True', 'true']
-                    args_dict[arg_key] = arg_arg
+                    arg_dict[arg_key] = arg_arg
             elif arg_key == 'analysis_id':
                 pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
-        return args_dict
+        return arg_dict
 
 
     def reset(self):
@@ -847,9 +853,9 @@ class MassDensProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments from string
-    def _cast_settings(self, args_dict):
+    def _cast_settings(self, arg_dict):
         #in this case the casting is taken care of in _parse_str_to_dict
-        return args_dict
+        return arg_dict
 
     # needed to overwrite the string parser to handle the selection string
     def _parse_str_to_dict(self, args):
@@ -978,10 +984,10 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments from string
-    def _cast_settings(self, args_dict):
+    def _cast_settings(self, arg_dict):
 
-        for arg_key in args_dict.keys():
-            arg_arg = args_dict[arg_key]
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
             if arg_key in self._valid_settings:
                 if arg_key == 'temperature':
                     arg_dict[arg_key] = float(arg_arg)
@@ -990,7 +996,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
-        return args_dict
+        return arg_dict
 
 
     def reset(self):
@@ -1090,19 +1096,19 @@ class NNFProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments from string
-    def _cast_settings(self, args_dict):
+    def _cast_settings(self, arg_dict):
 
-        for arg_key in args_dict.keys():
-            arg_arg = args_dict[arg_key]
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
             if arg_key in self._valid_settings:
                 if arg_key == 'n_neighbors':
-                    args_dict[arg_key] = int(arg_arg)
+                    arg_dict[arg_key] = int(arg_arg)
             elif arg_key == 'analysis_id':
                 pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
-        return args_dict
+        return arg_dict
 
     def reset(self):
         self.running.reset()
@@ -1318,22 +1324,22 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments from string
-    def _cast_settings(self, args_dict):
+    def _cast_settings(self, arg_dict):
 
-        for arg_key in args_dict.keys():
-            arg_arg = args_dict[arg_key]
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
             if arg_key in self._valid_settings:
                 if arg_key == 'interval':
                     arg_dict[arg_key] = int(arg_arg)
                 elif arg_key == 'wrapped':
                     arg_arg = arg_arg in ['True', 'true']
-                    args_dict[arg_key] = arg_arg
+                    arg_dict[arg_key] = arg_arg
             elif arg_key == 'analysis_id':
                 pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
-        return args_dict
+        return arg_dict
 
     def reset(self):
         self.analysis_output = []
@@ -1479,22 +1485,22 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments from string
-    def _cast_settings(self, args_dict):
+    def _cast_settings(self, arg_dict):
 
-        for arg_key in args_dict.keys():
-            arg_arg = args_dict[arg_key]
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
             if arg_key in self._valid_settings:
                 if arg_key == 'interval':
                     arg_dict[arg_key] = int(arg_arg)
                 elif arg_key == 'wrapped':
                     arg_arg = arg_arg in ['True', 'true']
-                    args_dict[arg_key] = arg_arg
+                    arg_dict[arg_key] = arg_arg
             elif arg_key == 'analysis_id':
                 pass
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
-        return args_dict
+        return arg_dict
 
     def reset(self):
         self.analysis_output = []
@@ -1739,10 +1745,10 @@ class DCClusterProtocol(AnalysisProtocol):
         return
 
     # required- function to parse the input arguments from string
-    def _cast_settings(self, args_dict):
+    def _cast_settings(self, arg_dict):
 
-        for arg_key in args_dict.keys():
-            arg_arg = args_dict[arg_key]
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
             if arg_key in self._valid_settings:
                 if arg_key == 'cutoff':
                     arg_dict[arg_key] = float(arg_arg)
@@ -1751,7 +1757,7 @@ class DCClusterProtocol(AnalysisProtocol):
             else:
                 raise RuntimeWarning(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
-        return args_dict
+        return arg_dict
 
     def run_analysis(self, bilayer_analyzer):
         do_leaflet = []

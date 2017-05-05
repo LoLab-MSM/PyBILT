@@ -158,9 +158,9 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
     plt.xlabel(xlabel)
     plt.ylabel("Area per lipid ($\AA^2$)")
     if xlim is not None:
-        plt.set_xlim(xlim)
+        plt.xlim(xlim)
     if ylim is not None:
-        plt.set_ylim(ylim)
+        plt.ylim(ylim)
     if name_list is not None:
         plt.legend(loc=0)
     if save:    
@@ -418,9 +418,9 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thicknes
     plt.xlabel(xlabel)
     plt.ylabel("Bilayer thickness ($\AA$)")
     if xlim is not None:
-        plt.set_xlim(xlim)
+        plt.xlim(xlim)
     if ylim is not None:
-        plt.set_ylim(ylim)
+        plt.ylim(ylim)
     if name_list is not None:
         plt.legend(loc=0)
     if save:    

@@ -377,6 +377,12 @@ class BilayerAnalyzer:
         self.analysis_protocol.remove_analysis(analysis_id)
         return
 
+    def remove_all_analyses(self):
+        """Remove all analyses from the analysis protocol.
+        """
+        self.analysis_protocol.remove_all()
+        return
+
     def get_analysis_ids(self):
         """Return the ids of currently initialized analysiss in the analysis
         protocol.
@@ -481,7 +487,7 @@ class BilayerAnalyzer:
         return
 
     # buildable objects functions
-    def dump_com_frame(self, on=True, path="./"):
+    def set_dump_com_frame(self, on=True, path="./"):
         """Turn on (or off) the dumping of COMFrame objects built during analysis.
         Args:
             on (bool, optional): Defines whether the COMFrame objects should be
@@ -497,7 +503,7 @@ class BilayerAnalyzer:
             self.dump_com_frame_path = path
         return
 
-    def dump_leaflet(self, on=True, path="./"):
+    def set_dump_leaflet(self, on=True, path="./"):
         """Turn on (or off) the dumping of leaflet objects built during analysis.
         Args:
             on (bool, optional): Defines whether the COMFrame objects should be
@@ -513,7 +519,7 @@ class BilayerAnalyzer:
             self.dump_leaflet_path = path
         return
 
-    def dump_lipid_grid(self, on=True, path="./"):
+    def set_dump_lipid_grid(self, on=True, path="./"):
         """Turn on (or off) the dumping of LipidGrid objects built during analysis.
         Args:
             on (bool, optional): Defines whether the COMFrame objects should be
