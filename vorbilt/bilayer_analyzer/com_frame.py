@@ -123,10 +123,12 @@ class COMFrame:
 
         r=0
         for res in mda_bilayer_selection.residues:
+            #print(res," ",res.center_of_mass())
             self.lipidcom[r].extract(res, name_dict=name_dict)
             #self.lipidcom[r].mass = res.total_mass()
             r+=1
         #now unwrapped coordinates
+
 
         mda_frame._pos[index] = unwrap_coords[:]
         #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)

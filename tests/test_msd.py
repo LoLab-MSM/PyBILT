@@ -12,7 +12,7 @@ def test_msd():
 
     analyzer.run_analysis()
     msd_dat_a = analyzer.get_analysis_data('msd_1')
-    print("MSD from bilayer analyzer:")
+    print("MSD from BilayerAnalyzer:")
     print(msd_dat_a)
 
     u = mda.Universe('../vorbilt/sample_bilayer/sample_bilayer.psf', '../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd')
@@ -22,9 +22,23 @@ def test_msd():
     print("MSD from COMTraj:")
     print(msd_dat_b)
 
-    print("matching: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001)))
+    print("BilayerAnalyzer and COMTraj match: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001)))
+
+    #redo bilayer_anlayzer calc, but use the iterator looper
+    analyzer = ba.BilayerAnalyzer(psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+                                  trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+                                  selection="not resname CLA and not resname TIP3 and not resname POT")
+
+
+    analyzer.print_analysis_protocol()
+    for _frame in analyzer:
+        pass
+    msd_dat_c = analyzer.get_analysis_data('msd_1')
+    print("MSD from BilayerAnalyzer obtained using iterator:")
+    print(msd_dat_c)
+    print("matches first BilayerAnalyzer comp: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001)))
+    #print(analyzer.mda_data.bilayer_sel.residues[0].center_of_mass())
+
+
 if __name__ == '__main__':
     test_msd()
-
-
-
