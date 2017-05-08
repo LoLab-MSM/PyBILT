@@ -1809,7 +1809,10 @@ class DCClusterProtocol(AnalysisProtocol):
             elif max_size > 0 and n < max_size:
                 min_size = n
             avg_size += n
-        avg_size /= nclusters
+        #protect for divide by zero
+        if nclusters > 0:
+            avg_size /= nclusters
+            
         self.running_stats['nclusters'].push(nclusters)
         self.running_stats['max_size'].push(max_size)
         self.running_stats['min_size'].push(min_size)
