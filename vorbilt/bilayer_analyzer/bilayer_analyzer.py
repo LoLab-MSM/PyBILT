@@ -549,6 +549,9 @@ class BilayerAnalyzer:
             self.frame_range[0] = first
         if last != self.frame_range[1]:
             self.frame_range[1] = last
+            self._last_frame = last
+            if self._last_frame < 0:
+                self._last_frame+=len(self.mda_data.mda_trajectory)
         if interval != self.frame_range[2]:
             self.frame_range[2] = interval
         return

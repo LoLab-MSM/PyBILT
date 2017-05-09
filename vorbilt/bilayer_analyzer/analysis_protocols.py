@@ -738,7 +738,7 @@ class DispVecProtocol(AnalysisProtocol):
         current_frame = bilayer_analyzer.current_mda_frame.frame
 
         interval = (current_frame) - (self.last_frame)
-        print (interval, " ", self.settings['interval'])
+        #print (interval, " ", self.settings['interval'])
         if interval == self.settings['interval']:
             indices = []
             if self.settings['leaflet'] == "both":
@@ -1360,7 +1360,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         current_frame = bilayer_analyzer.current_mda_frame.frame
 
         interval = (current_frame) - (self.last_frame)
-        print (interval, " ", self.settings['interval'])
+        #print (interval, " ", self.settings['interval'])
         if interval == self.settings['interval']:
             indices = []
             if self.settings['leaflet'] == "both":
@@ -1521,7 +1521,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         current_frame = bilayer_analyzer.current_mda_frame.frame
 
         interval = (current_frame) - (self.last_frame)
-        print (interval, " ", self.settings['interval'])
+        #print (interval, " ", self.settings['interval'])
         if interval == self.settings['interval']:
             indices = []
             if self.settings['leaflet'] == "both":
@@ -1812,7 +1812,7 @@ class DCClusterProtocol(AnalysisProtocol):
         #protect for divide by zero
         if nclusters > 0:
             avg_size /= nclusters
-            
+
         self.running_stats['nclusters'].push(nclusters)
         self.running_stats['max_size'].push(max_size)
         self.running_stats['min_size'].push(min_size)
