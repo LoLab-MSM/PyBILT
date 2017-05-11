@@ -26,7 +26,7 @@ In addition, it is highly recommended that you install
 version 4.3.1 Python 2.7 before installing VORBILT. VORBILT
 has yet to be tested outside of an Anaconda environment.
 
-#### Setup Anaconda's conda tool
+#### Setup using Anaconda's conda tool
 The file environment.yml has been provided to allow for easy setup of a new
 environment with all the appropriate dependencies using the conda tool. Run
 ```
