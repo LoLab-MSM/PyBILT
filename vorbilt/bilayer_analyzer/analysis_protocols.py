@@ -1302,7 +1302,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         self._short_description = "Displacement vector correlation matrix."
 
         self.return_length = 4
-        self.analysis_key = 'disp_vec'
+        self.analysis_key = 'disp_vec_corr'
         self.analysis_id = 'none'
 
         # default function settings
@@ -1465,7 +1465,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         # required
         self._short_description = "Displacement vector nearest neigbor correlations."
         self.return_length = 4
-        self.analysis_key = 'disp_vec'
+        self.analysis_key = 'disp_vec_nncorr'
         self.analysis_id = 'none'
 
         # default function settings
