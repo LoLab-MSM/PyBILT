@@ -42,6 +42,39 @@ def word_list_to_string(word_list, delimeter=" "):
     return str(string[0:nchar-1])
 
 
+def valid_analyses(show_settings=True):
+    analyses = ap.Analyses([])
+    for key in ap.valid_analysis:
+        a_id = key+"_t"
+        analyses.add_analysis(key+" "+a_id)
+    for a_id in analyses.command_protocol.keys():
+        a_key = analyses.command_protocol[a_id].analysis_key
+        descript = analyses.command_protocol[a_id]._short_description
+        print("analysis_key: {} ---> {}".format(a_key,descript))
+        if show_settings:
+            print("  with settings:")
+            for setting in analyses.command_protocol[a_id].settings.keys():
+                value = analyses.command_protocol[a_id].settings[setting]
+                print("    {} --> {}".format(setting,type(value)))
+    return
+
+def print_analysis_settings(analysis_key):
+    analyses = ap.Analyses([])
+    if analysis_key in ap.valid_analysis:
+        a_id = analysis_key+"_t"
+        analyses.add_analysis(analysis_key+" "+a_id)
+        for a_id in analyses.command_protocol.keys():
+            a_key = analyses.command_protocol[a_id].analysis_key
+            descript = analyses.command_protocol[a_id]._short_description
+            print("analysis_key: {} ---> {}".format(a_key,descript))
+            print("  with settings:")
+            for setting in analyses.command_protocol[a_id].settings.keys():
+                value = analyses.command_protocol[a_id].settings[setting]
+                print("    {} --> {}".format(setting,type(value)))
+    else:
+        print("{} is not a valid analysis".format(analysis_key))
+    return
+
 # the main analyzer class
 
 class BilayerAnalyzer:
