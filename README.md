@@ -1,9 +1,9 @@
 # VORBILT
-## *V*anderbilt-*O*ak Ridge *BIL*ayer analysis *T*oolkit
+## **V**anderbilt-**O**ak Ridge **BIL**ayer analysis **T**oolkit
 
-### VORBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
+#### VORBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
-VORBILT is composed of 5 major modules:
+**VORBILT** is composed of 5 major modules:
 
     * bilayer_analyzer -- The bilayer_analyzer is the primary analysis module. This object has the most comprehensive set of built-in features (types of analyses and use of different bilayer representations) and makes use of much of the functionality from proceeding modules.  
     * mda_tools -- This module has various sets of functions for directly analyzing and operating on MDAnalysis trajectories and objects. e.g. functions to compute density profiles.
