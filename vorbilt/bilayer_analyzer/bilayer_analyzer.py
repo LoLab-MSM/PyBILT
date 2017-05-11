@@ -246,12 +246,13 @@ class BilayerAnalyzer:
             self.commands['selection'] = selection
 
         elif input_dict is not None and isinstance(input_dict, dict):
+            self.commands = dict()
             id_keys = input_dict.keys()
-            for key in required_commands:
+            for key in self.required_commands:
                 if key not in id_keys:
                     raise RuntimeError("key \'{}\' needs to be included in the input dictionary.".format(key))
             for key in id_keys:
-                if key in valid_commands:
+                if key in self.valid_commands:
                     self.commands[key] = input_dict[key]
             # parse 'frames' input key--
             # for setting the frame range of the analysis

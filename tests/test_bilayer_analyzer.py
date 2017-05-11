@@ -32,6 +32,21 @@ def test_input_options():
     #run analysis
     ba.run_analysis()
 
+    #now initialize with an input dictionary
+    # define the input dictionary
+    input_dict = {'psf' : '../vorbilt/sample_bilayer/sample_bilayer.psf',
+                 'trajectory' : '../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+                  'selection' : 'resname POPC or resname DOPE or resname TLCL2'
+                 }
+
+    #now initialize the analyzer
+    ba = BilayerAnalyzer(input_dict=input_dict)
+
+    ba.add_analysis('msd msd_b resname DOPE leaflet upper')
+    ba.run_analysis()
+
+    return
+    
 #analsyses with default options
 def test_analysis_defaults():
     print("testing the default settings of all analysis protocols...")
