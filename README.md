@@ -1,8 +1,10 @@
-# VORBILT 
-## *V*anderbilt-*O*ak *R*idge *BIL*ayer analysis *T*oolkit 
+# VORBILT
+## *V*anderbilt-*O*ak *R*idge *BIL*ayer analysis *T*oolkit
 #### VORBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
 ### Install
+
+#### Warning: VORBILT is still under heavy development and may rapidly change.
 
 Download VORBILT from the github repo (https://github.com/blakeaw/VORBILT.git)
 and then add the path to the VORBILT directory to your PYTHONPATH. From a
@@ -21,8 +23,8 @@ VORBILT has the following major dependencies:
    * Seaborn 0.7.1
 
 
-In addition, it is highly recommended that you install 
-[Anaconda Python](https://www.continuum.io/) 
+In addition, it is highly recommended that you install
+[Anaconda Python](https://www.continuum.io/)
 version 4.3.1 Python 2.7 before installing VORBILT. VORBILT
 has yet to be tested outside of an Anaconda environment.
 
@@ -60,4 +62,3 @@ before running VORBILT modules.
                        (using matplotlib and seaborn) for some of the properties
                        that can be computed from functions in the other modules.
                        e.g. mean squared displacement and area per lipid.
-
