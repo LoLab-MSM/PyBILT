@@ -1,12 +1,12 @@
-from vorbilt.bilayer_analyzer.bilayer_analyzer import valid_analyses
+from vorbilt.bilayer_analyzer.bilayer_analyzer import print_valid_analyses
 
-def test_valid_analyses():
-    print("testing call to valid_analyses function...")
-    valid_analyses()
+def test_print_valid_analyses():
+    print("testing call to print_valid_analyses function...")
+    print_valid_analyses()
     print(" ")
     print("without settings...")
-    valid_analyses(show_settings=False)
+    print_valid_analyses(show_settings=False)
     return
 
 if __name__ == '__main__':
-    test_valid_analyses()
+    test_print_valid_analyses()

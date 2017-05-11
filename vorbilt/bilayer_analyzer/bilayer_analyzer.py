@@ -42,7 +42,7 @@ def word_list_to_string(word_list, delimeter=" "):
     return str(string[0:nchar-1])
 
 
-def valid_analyses(show_settings=True):
+def print_valid_analyses(show_settings=True):
     analyses = ap.Analyses([])
     for key in ap.valid_analysis:
         a_id = key+"_t"
