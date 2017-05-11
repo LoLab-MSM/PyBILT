@@ -75,6 +75,10 @@ def print_analysis_settings(analysis_key):
         print("{} is not a valid analysis".format(analysis_key))
     return
 
+def print_available_plots():
+    print(pp.valid_plots)
+    return
+
 # the main analyzer class
 
 class BilayerAnalyzer:
