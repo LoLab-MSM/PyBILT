@@ -3,6 +3,43 @@
 
 #### VORBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
+### Install
+
+Download VORBILT from the github repo (https://github.com/blakeaw/VORBILT.git) and then add the
+path to the VORBILT directory to your PYTHONPATH. From a terminal
+you can type
+```
+export PYTHONPATH="path_to/VORBILT:$PYTHONPATH
+```
+to add it to the current shell environment. For persistence add the line to your .bashrc file.
+
+VORBILT has the following major dependencies:
+   * MDAnalysis 0.15.0
+   * NumPy  1.11.3
+   * SciPy 0.18.1,
+   * Matplotlib 2.0.0
+   * Seaborn 0.7.1
+
+
+In addition, it is highly recommended that you install
+Anaconda Python (Anaconda 4.3.1 Python 2.7, https://www.continuum.io/) before installing VORBILT.
+VORBILT has yet to be tested outside of Anaconda environment.
+
+#### Setup using the Anaconda's conda tool
+The file conda_req.txt has been provided to allow for easy setup
+using the conda tool. Run
+```
+conda create -n vorbilt --file conda_req.txt
+```
+which will create a new conda environment named vorbilt
+with the appropriate dependencies.
+Then activate the environment
+```
+source activate vorbilt
+```
+before running VORBILT modules.
+Note: In the future this procedure will likely be replaced with a conda environment.yml file based approach. 
+
 **VORBILT** is composed of 5 major modules:
 
     * bilayer_analyzer -- The bilayer_analyzer is the primary analysis module. This object has the most comprehensive set of built-in features (types of analyses and use of different bilayer representations) and makes use of much of the functionality from proceeding modules.  
@@ -12,9 +49,3 @@
     * plot_generation -- This module has several pre-written plotting functions (using matplotlib and seaborn) for some of the properties that can be computed from functions in the other modules. e.g. mean squared displacement and area per lipid.
 
 Developed using Anaconda 4.3.1 Python 2.7				
-# Dependencies:
-   * NumPy  1.11.3
-   * SciPy 0.18.1,
-   * Matplotlib 2.0.0
-   * Seaborn 0.7.1
-   * MDAnalysis 0.15.0
