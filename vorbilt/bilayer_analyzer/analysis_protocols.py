@@ -61,6 +61,16 @@ def word_list_to_string(word_list, delimeter=" "):
     nchar = len(string)
     return str(string[0:nchar-1])
 
+
+#def _run_analysis_alias(protocol_analyzer):
+#    protocol = protocol_analyzer[0]
+#    protocol.run_analysis(protocol_analyzer[1])
+#    return protocol
+
+def _run_analysis_alias(protocol_analyzer):
+    print(protocol_analyzer)
+    return protocol_analyzer
+
 # protocol for the analysis to run during the frame loop
 class Analyses:
     """A class to facilitate analysis of the bilayers
@@ -249,6 +259,8 @@ class AnalysisProtocol:
         analysis_output (list or list like): Used to store the ouptut of this
             analyis during the frame loop.
     """
+    _pickleable = True
+
     def __init__(self, args):
 
         # required
@@ -822,6 +834,7 @@ analysis_obj_name_dict['mass_dens'] = 'mda_frame'
 
 
 class MassDensProtocol(AnalysisProtocol):
+    _pickleable = False
     def __init__(self, args):
 
         # required
@@ -832,7 +845,7 @@ class MassDensProtocol(AnalysisProtocol):
 
         # default settings
         self.settings = dict()
-        self.settings['selection_string'] = 'all'
+        self.settings['selection_string'] = 'BILAYER'
         self.settings['n_bins'] = 25
         self._valid_settings = self.settings.keys()
         #self.selection_string = 'all'
@@ -942,6 +955,16 @@ class MassDensProtocol(AnalysisProtocol):
 
     def get_data(self):
         return (self.centers, self.analysis_output / self.n_frames)
+
+    def __getstate__(self):
+        odict = dict()
+        for key in self.__dict__.keys:
+            odict[key] = self.__dict__[key]
+        odict['selection'] = None
+        return odict
+
+    def __setstate__(self, dict):
+        self.__dict__ = dict
 
 
 command_protocols['mass_dens'] = MassDensProtocol
