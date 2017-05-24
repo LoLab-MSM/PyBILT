@@ -11,7 +11,7 @@ def test_ba_run_performance():
     setup = """\
 import vorbilt.bilayer_analyzer.bilayer_analyzer as ba
 from __main__ import run_serial
-analyzer = ba.BilayerAnalyzer(psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+analyzer = ba.BilayerAnalyzer(structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
                               trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
                               selection="not resname CLA and not resname TIP3 and not resname POT")
 

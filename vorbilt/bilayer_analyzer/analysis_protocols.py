@@ -16,8 +16,18 @@ Example:
         #minimal def the __init__ and run_analysisfuncions
         def __init__(self, args):
             #define the initialization
-        #run analysis always takes the bilayer_analyzer class object as the input
-        def run_analysis(self, bilayer_analyzer):
+        #The run_analysis function should always take three inputs
+        #    of data that is passed in from the BilayerAnalayzer instance
+        #    that owns this instance of an analysis protocol. The values are:
+        #       ba_settings = BilayerAnalyzer.settings --> The adjustable
+        #           settings dictionary which contains data like 'lateral', and
+        #           'norm'.
+        #       ba_reps = BilayerAnalyzer.reps --> The dictionary container of
+        #           frame representations. e.g. 'com_frame' and 'lipid_grid'
+        #       ba_mda_data = BilayerAnalyzer.mda_data --> An MDAData instance
+        #           that contains data like the MDAnalysis universe, trajectory,
+        #           bilayer_selection, etc.
+        def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
             #.............
             #doing my analysis
             #................
@@ -51,7 +61,7 @@ use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 
 
 # TO DO:
-# have protocols parse dictionaries as well as strings, which is more Pythonic
+#
 
 
 def word_list_to_string(word_list, delimeter=" "):
@@ -347,7 +357,7 @@ class AnalysisProtocol:
             print ("    {}: {} ".format(key, self.settings[key]))
         return
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         # do some stuff
         # get an output
         output = np.zeros(self.return_length)
@@ -410,28 +420,28 @@ class MSDProtocol(AnalysisProtocol):
         return
 
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         leaflet = self.settings['leaflet']
         group = self.settings['resname']
         if self.first_frame:
             indices = []
             # parse the leaflet and group inputs
             if leaflet == "both":
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
             elif leaflet == "upper":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = ba_reps['leaflets'][leaflet]
                 indices = curr_leaf.get_group_indices(group)
             elif leaflet == "lower":
-                curr_leaf = bilayer_analyzer.leaflets[leaflet]
+                curr_leaf = ba_reps['leaflets'][leaflet]
                 indices = curr_leaf.get_group_indices(group)
             else:
                 # unknown option--use default "both"
                 print "!! Warning - request for unknown leaflet name \'", leaflet
                 print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
             self.indices = indices
         indices = self.indices
@@ -440,8 +450,8 @@ class MSDProtocol(AnalysisProtocol):
 
         count = 0
         for i in indices:
-            com_curr = bilayer_analyzer.com_frame.lipidcom[i].com_unwrap[
-                bilayer_analyzer.lateral]
+            com_curr = ba_reps['com_frame'].lipidcom[i].com_unwrap[
+                ba_settings['lateral']]
             selcoords[count] = com_curr[:]
             count += 1
 
@@ -455,8 +465,8 @@ class MSDProtocol(AnalysisProtocol):
             count = 0
             for i in indices:
                 com_curr = \
-                    bilayer_analyzer.first_com_frame.lipidcom[i].com_unwrap[
-                        bilayer_analyzer.lateral]
+                    ba_reps['first_com_frame'].lipidcom[i].com_unwrap[
+                        ba_settings['lateral']]
                 ref_coords[count] = com_curr[:]
                 count += 1
             self.ref_coords = ref_coords[:]
@@ -464,7 +474,7 @@ class MSDProtocol(AnalysisProtocol):
         else:
             ref_coords = self.ref_coords
             # get the current com frame list
-        tc = bilayer_analyzer.com_frame.time
+        tc = ba_reps['com_frame'].time
         dt = tc
         dr = selcoords - ref_coords
         drs = dr * dr
@@ -511,13 +521,13 @@ class APLBoxProtocol(AnalysisProtocol):
         self.analysis_output = []
         return
 
-    def run_analysis(self, bilayer_analyzer):
-        box = bilayer_analyzer.current_mda_frame.dimensions[0:3]
-        plane = box[bilayer_analyzer.lateral]
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        box = ba_reps['current_mda_frame'].dimensions[0:3]
+        plane = box[ba_settings['lateral']]
         area = plane[0] * plane[1] * 2.0
-        nlipids = bilayer_analyzer.mda_data.n_residues
+        nlipids = ba_mda_data.n_residues
         apl = area / nlipids
-        time = bilayer_analyzer.current_mda_frame.time
+        time = ba_reps['current_mda_frame'].time
         self.running.push(apl)
         apl_t = np.zeros(self.return_length)
         apl_t[0] = time
@@ -564,10 +574,10 @@ class BTGridProtocol(AnalysisProtocol):
         return
 
 
-    def run_analysis(self, bilayer_analyzer):
-        current_thickness = bilayer_analyzer.lipid_grid.average_thickness()
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        current_thickness = ba_reps['lipid_grid'].average_thickness()
         # print (current_thickness)
-        time = bilayer_analyzer.current_mda_frame.time
+        time = ba_reps['current_mda_frame'].time
         # print (time)
         self.running.push(current_thickness[0])
         bt_t = np.zeros(4)
@@ -616,10 +626,10 @@ class APLGridProtocol(AnalysisProtocol):
         self.running_res = {}
         return
 
-    def run_analysis(self, bilayer_analyzer):
-        apl_grid_out = bilayer_analyzer.lipid_grid.area_per_lipid()
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        apl_grid_out = ba_reps['lipid_grid'].area_per_lipid()
         # print (current_thickness)
-        time = bilayer_analyzer.current_mda_frame.time
+        time = ba_reps['current_mda_frame'].time
         # print (time)
         self.running.push(apl_grid_out[0])
         if self.first_comp:
@@ -741,47 +751,47 @@ class DispVecProtocol(AnalysisProtocol):
 
         return
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
 
         if self.first_comp:
-            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_com_frame = ba_reps['com_frame']
             self.first_comp = False
             return
-        current_frame = bilayer_analyzer.current_mda_frame.frame
+        current_frame = ba_reps['current_mda_frame'].frame
 
         interval = (current_frame) - (self.last_frame)
         #print (interval, " ", self.settings['interval'])
         if interval == self.settings['interval']:
             indices = []
             if self.settings['leaflet'] == "both":
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             elif self.settings['leaflet'] == "upper":
-                curr_leaf = bilayer_analyzer.leaflets['upper']
+                curr_leaf = ba_reps['leaflets']['upper']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
 
             elif self.settings['leaflet'] == "lower":
-                curr_leaf = bilayer_analyzer.leaflets['lower']
+                curr_leaf = ba_reps['leaflets']['lower']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
                 raise RuntimeWarning(
                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.settings['leaflet'] = 'both'
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             n_com = len(indices)
 
             # print "there are ",len(indices)," members"
-            xi = bilayer_analyzer.lateral[0]
-            yi = bilayer_analyzer.lateral[1]
-            zi = bilayer_analyzer.norm
+            xi = ba_settings['lateral'][0]
+            yi = ba_settings['lateral'][1]
+            zi = ba_settings['norm']
 
             vec_ends_out = []
             # get the current frame
-            curr_frame = bilayer_analyzer.com_frame
+            curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
             # get the coordinates for the selection at this frame
             vec_ends = np.zeros((n_com, 4))
@@ -792,10 +802,10 @@ class DispVecProtocol(AnalysisProtocol):
                 resname = curr_frame.lipidcom[i].type
                 resnames.append(resname)
                 com_i = curr_frame.lipidcom[i].com_unwrap[
-                    bilayer_analyzer.lateral]
+                    ba_settings['lateral']]
                 com_j = prev_frame.lipidcom[i].com_unwrap[
-                    bilayer_analyzer.lateral]
-                com_j_w = prev_frame.lipidcom[i].com[bilayer_analyzer.lateral]
+                    ba_settings['lateral']]
+                com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
                 if self.settings['wrapped']:
                     vec_ends[count, 0] = com_j_w[0]
                     vec_ends[count, 1] = com_j_w[1]
@@ -807,7 +817,7 @@ class DispVecProtocol(AnalysisProtocol):
                 #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
                 count += 1
             self.analysis_output.append([vec_ends, resnames])
-            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_com_frame = ba_reps['com_frame']
             self.last_frame = current_frame
             return
         return
@@ -915,28 +925,28 @@ class MassDensProtocol(AnalysisProtocol):
 
         return
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         first = self.first_comp
         if self.first_comp:
             print self.settings['selection_string']
             if self.settings['selection_string'] == "BILAYER":
                 print("bilayer_sel")
-                self.selection = bilayer_analyzer.mda_data.bilayer_sel
+                self.selection = ba_mda_data.bilayer_sel
             else:
                 print("non-bilayer")
-                self.selection = bilayer_analyzer.mda_data.mda_universe.select_atoms(
+                self.selection = ba_mda_data.mda_universe.select_atoms(
                     self.settings['selection_string'])
             self.first_comp = False
 
         # print "there are ",len(indices)," members"
 
-        norm_axis = bilayer_analyzer.normal_dimension
-        ref_sel = bilayer_analyzer.mda_data.bilayer_sel
+        norm_axis = ba_settings['normal_dimension']
+        ref_sel = ba_mda_data.bilayer_sel
         # mda_density_profile
         centers_density = mda_dp.mass_density_profile(
-            bilayer_analyzer.mda_data.mda_trajectory, self.selection,
-            fstart=bilayer_analyzer.frame_index,
-            fend=bilayer_analyzer.frame_index + 1, axis=norm_axis,
+            ba_mda_data.mda_trajectory, self.selection,
+            fstart=ba_settings['frame_index'],
+            fend=ba_settings['frame_index'] + 1, axis=norm_axis,
             nbins=self.settings['n_bins'], refsel=ref_sel)
         if first:
             self.centers = centers_density[0]
@@ -1035,15 +1045,15 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         self.per_leaflet = 1
         return
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
 
         if self.first_comp:
-            nlipids = bilayer_analyzer.mda_data.n_residues
+            nlipids = ba_mda_data.n_residues
             per_leaflet = nlipids / 2
             self.per_leaflet = per_leaflet
             self.first_comp = False
-        lateral_indices = bilayer_analyzer.lateral
-        dimensions = bilayer_analyzer.current_mda_frame.dimensions[0:3]
+        lateral_indices = ba_settings['lateral']
+        dimensions = ba_reps['current_mda_frame'].dimensions[0:3]
         lateral_dim = dimensions[lateral_indices]
         area = lateral_dim.prod()
         #print(area)
@@ -1051,7 +1061,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         apl = area / self.per_leaflet
         #print(apl)
         self.apl.append(apl)
-        time = bilayer_analyzer.current_mda_frame.time
+        time = ba_reps['current_mda_frame'].time
         self.times.append(time)
         self.n_frames += 1
         return
@@ -1147,7 +1157,7 @@ class NNFProtocol(AnalysisProtocol):
 
 
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         do_leaflet = []
         if self.settings['leaflet'] == 'both':
             do_leaflet = ['upper', 'lower']
@@ -1160,7 +1170,7 @@ class NNFProtocol(AnalysisProtocol):
             lipid_types = []
             nlipids = 0
             for leaflet_name in do_leaflet:
-                leaflet = bilayer_analyzer.leaflets[leaflet_name]
+                leaflet = ba_reps['leaflets'][leaflet_name]
                 groups = leaflet.get_group_names()
                 nlipids += len(leaflet.get_member_indices())
                 for group in groups:
@@ -1180,9 +1190,9 @@ class NNFProtocol(AnalysisProtocol):
         lipid_types = self.lipid_types
         n_ltypes = self.n_ltypes
         #print lipid_types
-        x_index = bilayer_analyzer.lateral[0]
-        y_index = bilayer_analyzer.lateral[1]
-        box = bilayer_analyzer.current_mda_frame.dimensions[0:3]
+        x_index = ba_settings['lateral'][0]
+        y_index = ba_settings['lateral'][1]
+        box = ba_reps['current_mda_frame'].dimensions[0:3]
         box_x = box[x_index]
         box_y = box[y_index]
         box_x_h = box_x / 2.0
@@ -1192,7 +1202,7 @@ class NNFProtocol(AnalysisProtocol):
         #print "ltype_a: ",ltype_a," ltype_b: ",ltype_b
         avg_frac = RunningStats()
         for leaflet_name in do_leaflet:
-            leaflet = bilayer_analyzer.leaflets[leaflet_name]
+            leaflet = ba_reps['leaflets'][leaflet_name]
 
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
                 ltype_a_indices = leaflet.get_group_indices(ltype_a)
@@ -1202,8 +1212,8 @@ class NNFProtocol(AnalysisProtocol):
                     neighbors = []
                     for j in all_index:
                         if i != j:
-                            pos_a = bilayer_analyzer.com_frame.lipidcom[i].com
-                            pos_b = bilayer_analyzer.com_frame.lipidcom[j].com
+                            pos_a = ba_reps['com_frame'].lipidcom[i].com
+                            pos_b = ba_reps['com_frame'].lipidcom[j].com
                             dx = np.abs(pos_a[x_index] - pos_b[x_index])
                             dy = np.abs(pos_a[y_index] - pos_b[y_index])
                             # minimum image for wrapped coordinates
@@ -1215,7 +1225,7 @@ class NNFProtocol(AnalysisProtocol):
                                 dy = box_y - np.absolute(pos_a[y_index] - box_y_h) - np.absolute(
                                     pos_b[y_index] - box_y_h)
                             dist = np.sqrt(dx ** 2 + dy ** 2)
-                            ltype = bilayer_analyzer.com_frame.lipidcom[j].type
+                            ltype = ba_reps['com_frame'].lipidcom[j].type
                             #print "ltype: ",ltype," dist ",dist
                             neighbors.append([j, dist, ltype])
                     neighbors.sort(key=lambda x: x[1])
@@ -1236,17 +1246,17 @@ class NNFProtocol(AnalysisProtocol):
         self.running.push(f_current)
         f_run = self.running.mean()
         f_run_dev = self.running.deviation()
-        tc = bilayer_analyzer.com_frame.time
+        tc = ba_reps['com_frame'].time
         self.analysis_output.append([tc, f_current, f_run, f_run_dev])
         return
 
-    # def run_analysis(self, bilayer_analyzer):
+    # def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
     #
     #     if self.first_frame:
     #         pass
     #         #build group/resname/lipid type list
     #         lipid_types = []
-    #         for leaflet in bilayer_analyzer.leaflets:
+    #         for leaflet in ba_reps['leaflets']:
     #             groups = leaflet.get_group_names()
     #             for group in groups:
     #                 if group not in lipid_types:
@@ -1258,15 +1268,15 @@ class NNFProtocol(AnalysisProtocol):
     #     lipid_types = self.lipid_types
     #     n_ltypes = self.n_ltypes
     #
-    #     x_index = bilayer_analyzer.lateral[0]
-    #     y_index = bilayer_analyzer.lateral[1]
-    #     box = bilayer_analyzer.current_mda_frame.dimensions[0:3]
+    #     x_index = ba_settings['lateral'][0]
+    #     y_index = ba_settings['lateral'][1]
+    #     box = ba_reps['current_mda_frame'].dimensions[0:3]
     #     box_x = box[x_index]
     #     box_y = box[y_index]
     #     box_x_h = box_x/2.0
     #     box_y_h = box_y/2.0
     #
-    #     for leaflet in bilayer_analyzer.leaflets:
+    #     for leaflet in ba_reps['leaflets']:
     #         all_indices = leaflet.get_member_indices()
     #
     #         #X-X types
@@ -1280,8 +1290,8 @@ class NNFProtocol(AnalysisProtocol):
     #                     for lindex_b in ltype_indices:
     #
     #                         if lindex_b != lindex:
-    #                             pos_a = bilayer_analyzer.com_frame.lipidcom[lindex].com
-    #                             pos_b = bilayer_analyzer.com_frame.lipidcom[lindex_b].com
+    #                             pos_a = ba_reps['com_frame'].lipidcom[lindex].com
+    #                             pos_b = ba_reps['com_frame'].lipidcom[lindex_b].com
     #                             dx = np.abs(pos_a[x_index] - pos_b[x_index])
     #                             dy = np.abs(pos_a[y_index] - pos_b[y_index])
     #                             #minimum image for wrapped coordinates
@@ -1306,7 +1316,7 @@ class NNFProtocol(AnalysisProtocol):
     #                 for lipid_type_b in lipid_types:
     #                     if leaflet.has_group(lipid_type_b):
     #                         ltype_b_indices
-    #     tc = bilayer_analyzer.com_frame.time
+    #     tc = ba_reps['com_frame'].time
     #
     #
     #     return
@@ -1376,47 +1386,47 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
 
         return
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
 
         if self.first_comp:
-            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_com_frame = ba_reps['com_frame']
             self.first_comp = False
             return
-        current_frame = bilayer_analyzer.current_mda_frame.frame
+        current_frame = ba_reps['current_mda_frame'].frame
 
         interval = (current_frame) - (self.last_frame)
         #print (interval, " ", self.settings['interval'])
         if interval == self.settings['interval']:
             indices = []
             if self.settings['leaflet'] == "both":
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             elif self.settings['leaflet'] == "upper":
-                curr_leaf = bilayer_analyzer.leaflets['upper']
+                curr_leaf = ba_reps['leaflets']['upper']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
 
             elif self.settings['leaflet'] == "lower":
-                curr_leaf = bilayer_analyzer.leaflets['lower']
+                curr_leaf = ba_reps['leaflets']['lower']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
                 raise RuntimeWarning(
                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.settings['leaflet'] = 'both'
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             n_com = len(indices)
 
             # print "there are ",len(indices)," members"
-            xi = bilayer_analyzer.lateral[0]
-            yi = bilayer_analyzer.lateral[1]
-            zi = bilayer_analyzer.norm
+            xi = ba_settings['lateral'][0]
+            yi = ba_settings['lateral'][1]
+            zi = ba_settings['norm']
 
             vec_ends_out = []
             # get the current frame
-            curr_frame = bilayer_analyzer.com_frame
+            curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
             # get the coordinates for the selection at this frame
             vec_ends = np.zeros((n_com, 4))
@@ -1427,10 +1437,10 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
                 resname = curr_frame.lipidcom[i].type
                 resnames.append(resname)
                 com_i = curr_frame.lipidcom[i].com_unwrap[
-                    bilayer_analyzer.lateral]
+                    ba_settings['lateral']]
                 com_j = prev_frame.lipidcom[i].com_unwrap[
-                    bilayer_analyzer.lateral]
-                com_j_w = prev_frame.lipidcom[i].com[bilayer_analyzer.lateral]
+                    ba_settings['lateral']]
+                com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
                 if self.settings['wrapped']:
                     vec_ends[count, 0] = com_j_w[0]
                     vec_ends[count, 1] = com_j_w[1]
@@ -1458,7 +1468,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
 
 
             self.analysis_output.append([corr_mat, resnames])
-            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_com_frame = ba_reps['com_frame']
             self.last_frame = current_frame
             #return vec_ends
         return
@@ -1537,47 +1547,47 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
 
         return
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
 
         if self.first_comp:
-            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_com_frame = ba_reps['com_frame']
             self.first_comp = False
             return
-        current_frame = bilayer_analyzer.current_mda_frame.frame
+        current_frame = ba_reps['current_mda_frame'].frame
 
         interval = (current_frame) - (self.last_frame)
         #print (interval, " ", self.settings['interval'])
         if interval == self.settings['interval']:
             indices = []
             if self.settings['leaflet'] == "both":
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             elif self.settings['leaflet'] == "upper":
-                curr_leaf = bilayer_analyzer.leaflets['upper']
+                curr_leaf = ba_reps['leaflets']['upper']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
 
             elif self.settings['leaflet'] == "lower":
-                curr_leaf = bilayer_analyzer.leaflets['lower']
+                curr_leaf = ba_reps['leaflets']['lower']
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
                 raise RuntimeWarning(
                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.settings['leaflet'] = 'both'
-                for leaflets in bilayer_analyzer.leaflets:
-                    curr_leaf = bilayer_analyzer.leaflets[leaflets]
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             n_com = len(indices)
 
             # print "there are ",len(indices)," members"
-            xi = bilayer_analyzer.lateral[0]
-            yi = bilayer_analyzer.lateral[1]
-            zi = bilayer_analyzer.norm
+            xi = ba_settings['lateral'][0]
+            yi = ba_settings['lateral'][1]
+            zi = ba_settings['norm']
 
             vec_ends_out = []
             # get the current frame
-            curr_frame = bilayer_analyzer.com_frame
+            curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
             #get the vector ends
 
@@ -1590,10 +1600,10 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
                 resname = curr_frame.lipidcom[i].type
                 resnames.append(resname)
                 com_i = curr_frame.lipidcom[i].com_unwrap[
-                    bilayer_analyzer.lateral]
+                    ba_settings['lateral']]
                 com_j = prev_frame.lipidcom[i].com_unwrap[
-                    bilayer_analyzer.lateral]
-                com_j_w = prev_frame.lipidcom[i].com[bilayer_analyzer.lateral]
+                    ba_settings['lateral']]
+                com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
                 if self.settings['wrapped']:
                     vec_ends[count, 0] = com_j_w[0]
                     vec_ends[count, 1] = com_j_w[1]
@@ -1626,7 +1636,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
                 corr[i] = cos_t
 
             self.analysis_output.append([corr, resnames])
-            self.last_com_frame = bilayer_analyzer.com_frame
+            self.last_com_frame = ba_reps['com_frame']
             self.last_frame = current_frame
             #return vec_ends
         return
@@ -1679,9 +1689,9 @@ class NDCorrProtocol(AnalysisProtocol):
         return
 
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         #construct the grids
-        grids = lgc.LipidGrids(bilayer_analyzer.com_frame,bilayer_analyzer.leaflets,bilayer_analyzer.lateral)
+        grids = lgc.LipidGrids(ba_reps['com_frame'],ba_reps['leaflets'],ba_settings['lateral'])
 
         if self.first_frame:
             leafs = grids.leaf_grid.keys()
@@ -1700,7 +1710,7 @@ class NDCorrProtocol(AnalysisProtocol):
             self.first_frame = False
         #analysis the correlations
         correlations = grids.norm_displacement_cross_correlation()
-        time = bilayer_analyzer.current_mda_frame.time
+        time = ba_reps['current_mda_frame'].time
         #extract the data
         leafs = correlations.keys()
         for leaf in leafs:
@@ -1786,7 +1796,7 @@ class DCClusterProtocol(AnalysisProtocol):
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
-    def run_analysis(self, bilayer_analyzer):
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         do_leaflet = []
         if self.settings['leaflet'] == 'both':
             do_leaflet = ['upper', 'lower']
@@ -1799,7 +1809,7 @@ class DCClusterProtocol(AnalysisProtocol):
             lipid_types = []
             nlipids = 0
             for leaflet_name in do_leaflet:
-                leaflet = bilayer_analyzer.leaflets[leaflet_name]
+                leaflet = ba_reps['leaflets'][leaflet_name]
                 groups = leaflet.get_group_names()
         #        nlipids += len(leaflet.get_member_indices())
                 for group in groups:
@@ -1810,13 +1820,13 @@ class DCClusterProtocol(AnalysisProtocol):
             self.first_frame = False
         indices = []
         for leaflets in do_leaflet:
-            curr_leaf = bilayer_analyzer.leaflets[leaflets]
+            curr_leaf = ba_reps['leaflets'][leaflets]
             indices += curr_leaf.get_group_indices(self.settings['resname'])
         pos = []
         for index in indices:
-            pos.append(bilayer_analyzer.com_frame.lipidcom[index].com[bilayer_analyzer.lateral])
+            pos.append(ba_reps['com_frame'].lipidcom[index].com[ba_settings['lateral']])
         pos = np.array(pos)
-        box = bilayer_analyzer.com_frame.box[bilayer_analyzer.lateral]
+        box = ba_reps['com_frame'].box[ba_settings['lateral']]
         cutoff = self.settings['cutoff']
         dist_func = dc_cluster.distance_euclidean_pbc
         clusters = dc_cluster.distance_cutoff_clustering(pos, self.settings['cutoff'], dist_func, 1, box, center='box_half')
@@ -1842,7 +1852,7 @@ class DCClusterProtocol(AnalysisProtocol):
         self.running_stats['max_size'].push(max_size)
         self.running_stats['min_size'].push(min_size)
         self.running_stats['avg_size'].push(avg_size)
-        time = bilayer_analyzer.com_frame.time
+        time = ba_reps['com_frame'].time
         self.analysis_output['clusters'].append(clusters)
         self.analysis_output['nclusters'].append([time,nclusters,self.running_stats['nclusters'].mean(), self.running_stats['nclusters'].deviation()])
         self.analysis_output['max_size'].append([time,max_size,self.running_stats['max_size'].mean(), self.running_stats['max_size'].deviation()])

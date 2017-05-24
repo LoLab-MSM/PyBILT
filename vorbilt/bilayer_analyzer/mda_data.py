@@ -58,5 +58,19 @@ class MDAData:
         #dict['residues'] = residues
         self.__dict__ = dict
 
+    def reduced(self):
+        return MDADataReduced(self)
+
     #def __getinitargs__(self):
     #    return (self.psf_file, self.trajectory_file, self.bilayer_sel_string)
+
+class MDADataReduced:
+    def __init__(self, mda_data):
+        self.psf_file = mda_data.psf_file
+        self.trajectory_file = mda_data.trajectory_file
+        self.bilayer_sel_string = mda_data.bilayer_sel_string
+        self.nframes = mda_data.nframes
+        self.natoms = mda_data.natoms
+        self.indices = mda_data.indices
+        self.n_residues = mda_data.n_residues
+        return
