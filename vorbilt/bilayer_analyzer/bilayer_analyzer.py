@@ -781,15 +781,15 @@ class BilayerAnalyzer:
         run_serial = []
         run_parallel = []
         for a_id in self.analysis_protocol.command_protocol.keys():
-            print a_id, " ", self.analysis_protocol.command_protocol[a_id]._pickleable
+        #    print a_id, " ", self.analysis_protocol.command_protocol[a_id]._pickleable
             if self.analysis_protocol.command_protocol[a_id]._pickleable:
-                print(a_id)
+        #        print(a_id)
                 run_parallel.append(a_id)
             else:
                 run_serial.append(a_id)
 
-        print(run_serial)
-        print(run_parallel)
+        #print(run_serial)
+        #print(run_parallel)
         for frame in self.mda_data.mda_trajectory[
                      self.frame_range[0]:self.frame_range[1]:self.frame_range[
                          2]]:
@@ -878,10 +878,10 @@ class BilayerAnalyzer:
                     print ("analysis " + analysis_id)
 
             for a_id in run_parallel:
-                print(a_id)
+            #    print(a_id)
                 r_analyses.append([self.analysis_protocol.command_protocol[a_id], self])
                 #r_analyses.append('hello')
-            print(r_analyses)
+            #print(r_analyses)
             # create process pool
             pool = multiprocessing.Pool(processes=nprocs)
             #def in_func(input):
@@ -889,18 +889,22 @@ class BilayerAnalyzer:
 
             in_func = _run_analysis_alias
             #execute the analyses using pool.map
+            #print("in_func")
+            #print(in_func)
+            #print("r_analyses")
+            #print(r_analyses)
             results = pool.map(in_func, r_analyses)
             #close and join the pool
             pool.close()
             pool.join()
-            print(results)
+            #print(results)
             #extract the results
             for item in results:
                 analysis_id = item.analysis_id
                 self.analysis_protocol.command_protocol[analysis_id] = item
             del results
             for a_id in run_serial:
-                self.analysis_protocol.command_protocol[a_id].run_analysis()
+                self.analysis_protocol.command_protocol[a_id].run_analysis(self)
 
             if self._frame_loop_count % self.print_interval == 0:
                     print(" ")

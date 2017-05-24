@@ -845,7 +845,7 @@ class MassDensProtocol(AnalysisProtocol):
 
         # default settings
         self.settings = dict()
-        self.settings['selection_string'] = 'BILAYER'
+        self.settings['selection_string'] = "BILAYER"
         self.settings['n_bins'] = 25
         self._valid_settings = self.settings.keys()
         #self.selection_string = 'all'
@@ -918,10 +918,12 @@ class MassDensProtocol(AnalysisProtocol):
     def run_analysis(self, bilayer_analyzer):
         first = self.first_comp
         if self.first_comp:
-            # print self.selection_string
-            if self.settings['selection_string'] == ' BILAYER':
+            print self.settings['selection_string']
+            if self.settings['selection_string'] == "BILAYER":
+                print("bilayer_sel")
                 self.selection = bilayer_analyzer.mda_data.bilayer_sel
             else:
+                print("non-bilayer")
                 self.selection = bilayer_analyzer.mda_data.mda_universe.select_atoms(
                     self.settings['selection_string'])
             self.first_comp = False
@@ -958,7 +960,7 @@ class MassDensProtocol(AnalysisProtocol):
 
     def __getstate__(self):
         odict = dict()
-        for key in self.__dict__.keys:
+        for key in self.__dict__.keys():
             odict[key] = self.__dict__[key]
         odict['selection'] = None
         return odict
