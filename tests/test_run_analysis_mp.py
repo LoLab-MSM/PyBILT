@@ -6,7 +6,7 @@ import timeit
 
 
 def test_run_analysis_mp():
-    analyzer = ba.BilayerAnalyzer(psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+    analyzer = ba.BilayerAnalyzer(structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
                                   trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
                                   selection="not resname CLA and not resname TIP3 and not resname POT")
 
@@ -51,7 +51,7 @@ def test_parallel_performance():
     setup = """\
 import vorbilt.bilayer_analyzer.bilayer_analyzer as ba
 from __main__ import run_serial, run_parallel
-analyzer = ba.BilayerAnalyzer(psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+analyzer = ba.BilayerAnalyzer(structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
                               trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
                               selection="not resname CLA and not resname TIP3 and not resname POT")
 

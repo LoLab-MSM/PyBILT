@@ -9,7 +9,7 @@ def test_input_options():
     #initialize analyzer with keyword options--and default analysis
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
-        psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+        structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
         trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
         selection=sel_string,
     )
@@ -34,7 +34,7 @@ def test_input_options():
 
     #now initialize with an input dictionary
     # define the input dictionary
-    input_dict = {'psf' : '../vorbilt/sample_bilayer/sample_bilayer.psf',
+    input_dict = {'structure' : '../vorbilt/sample_bilayer/sample_bilayer.psf',
                  'trajectory' : '../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
                   'selection' : 'resname POPC or resname DOPE or resname TLCL2'
                  }
@@ -46,13 +46,13 @@ def test_input_options():
     ba.run_analysis()
 
     return
-    
+
 #analsyses with default options
 def test_analysis_defaults():
     print("testing the default settings of all analysis protocols...")
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
-        psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+        structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
         trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
         selection=sel_string,
     )
@@ -73,7 +73,7 @@ def test_analysis_iterator():
     # initialize analyzer with keyword options--and default analysis
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
-        psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+        structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
         trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
         selection=sel_string,
     )

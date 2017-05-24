@@ -3,7 +3,7 @@ import vorbilt.com_trajectory.COMTraj as comtraj
 import MDAnalysis as mda
 import numpy as np
 def test_msd():
-    analyzer = ba.BilayerAnalyzer(psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+    analyzer = ba.BilayerAnalyzer(structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
                                   trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
                                   selection="not resname CLA and not resname TIP3 and not resname POT")
 
@@ -25,7 +25,7 @@ def test_msd():
     print("BilayerAnalyzer and COMTraj match: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001)))
 
     #redo bilayer_anlayzer calc, but use the iterator looper
-    analyzer = ba.BilayerAnalyzer(psf_file='../vorbilt/sample_bilayer/sample_bilayer.psf',
+    analyzer = ba.BilayerAnalyzer(structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
                                   trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
                                   selection="not resname CLA and not resname TIP3 and not resname POT")
 
