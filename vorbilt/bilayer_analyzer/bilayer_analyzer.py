@@ -790,6 +790,12 @@ class BilayerAnalyzer:
 
         #print(run_serial)
         #print(run_parallel)
+        # create process pool
+        pool = multiprocessing.Pool(processes=nprocs)
+        #def in_func(input):
+        #    ap._run_analysis_alias(input)
+
+        in_func = _run_analysis_alias
         for frame in self.mda_data.mda_trajectory[
                      self.frame_range[0]:self.frame_range[1]:self.frame_range[
                          2]]:
@@ -882,21 +888,14 @@ class BilayerAnalyzer:
                 r_analyses.append([self.analysis_protocol.command_protocol[a_id], self])
                 #r_analyses.append('hello')
             #print(r_analyses)
-            # create process pool
-            pool = multiprocessing.Pool(processes=nprocs)
-            #def in_func(input):
-            #    ap._run_analysis_alias(input)
 
-            in_func = _run_analysis_alias
             #execute the analyses using pool.map
             #print("in_func")
             #print(in_func)
             #print("r_analyses")
             #print(r_analyses)
             results = pool.map(in_func, r_analyses)
-            #close and join the pool
-            pool.close()
-            pool.join()
+
             #print(results)
             #extract the results
             for item in results:
@@ -912,6 +911,10 @@ class BilayerAnalyzer:
             self._frame_loop_count += 1
             # print ('analysis_out:')
             # print (analysis_out)
+        #close and join the pool
+        pool.close()
+        pool.join()
+        return
 
     @staticmethod
     def print_available_analysis():
