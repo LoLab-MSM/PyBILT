@@ -100,7 +100,7 @@ class LipidGrid_2d:
 
 
 class LipidGrids:
-    def __init__(self, com_frame, leaflets,plane,nxbins=4,nybins=4):
+    def __init__(self, com_frame, leaflets,plane,nxbins=2,nybins=2):
         #store the frame and leaflet
         self.frame = com_frame
         self.leaflets = leaflets
@@ -125,7 +125,7 @@ class LipidGrids:
         for leaf in self.leaflets.keys():
             output[leaf] = dict()
             types = self.leaflets[leaf].get_group_names()
-            for type in types:
+            for l_type in types:
                 #loop over grid boxes
                 count = []
                 z_vals = []
@@ -142,22 +142,42 @@ class LipidGrids:
                          #   print(lipid)
                             lipid_type = lipid[1]
                             lipid_z = lipid[2]
-                            if lipid_type == type:
+                            #print "lipid_z: ",lipid_z
+                            if lipid_type == l_type:
                                 box_count+=1
                             else:
                                 box_z_vals.append(lipid_z)
                         if len(yb) > 0:
+                            n_box+=1
+                        if len(box_z_vals) > 0:
                             n_box+=1.0
-                            box_z_avg = np.array(box_z_vals).mean()
+                            box_z_avg = box_z_vals[0]
+                            if box_z_vals > 1:
+                                box_z_avg = np.array(box_z_vals).mean()
+                            #print " box_z_vals: "
+                            #print box_z_vals
+                            print "box_z_avg: ",box_z_avg
+                            #print "yb: "
+                            #print yb
                             count.append(box_count)
                             z_vals.append(box_z_avg)
-                count = np.array(count)
-                z_vals = np.array(z_vals)
-                count_mean = count.mean()
-                count_std = count.std()
-                z_mean = z_vals.mean()
-                z_std = z_vals.std()
-                cross_sum = np.dot(count-count_mean, z_vals-z_mean)
-                cross_corr = cross_sum/(z_mean*z_std*n_box)
-                output[leaf][type] = cross_corr
+                cross_corr = 0.0
+                if len(count) > 1 and len(z_vals) >1:
+                    count = np.array(count)
+                    z_vals = np.array(z_vals)
+                    count_mean = count.mean()
+                    count_std = count.std()
+                    z_mean = z_vals.mean()
+                    z_std = z_vals.std()
+                    cross_sum = np.dot(count-count_mean, z_vals-z_mean)
+                    cross_corr = cross_sum/(z_mean*z_std*n_box)
+                if np.isnan(cross_corr):
+                    print"cross_corr: ",cross_corr," cross_sum ", cross_sum," n_box ",n_box, " z_mean ",z_mean, " z_std ", z_std
+                    print "count:"
+                    print count
+                    print "z_vals:"
+                    print z_vals
+                    quit()
+                    cross_corr = 0.0
+                output[leaf][l_type] = cross_corr
         return output

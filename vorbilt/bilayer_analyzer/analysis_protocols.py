@@ -1239,7 +1239,8 @@ class NNFProtocol(AnalysisProtocol):
                         if ntype == ltype_b:
                             n_type_b += 1.0
                     frac = n_type_b/self.settings['n_neighbors']
-                    #print "frac ",frac
+                    #print "frac ",frac," n_type_b: ",n_type_b," set_n_neighbors: ",self.settings['n_neighbors']
+
                     avg_frac.push(frac)
 
         f_current = avg_frac.mean()
@@ -1704,9 +1705,9 @@ class NDCorrProtocol(AnalysisProtocol):
                     if group not in all_types:
                         all_types.append(group)
             for leaf in leafs:
-                for type in all_types:
-                    self.analysis_output[leaf][type] = []
-                    self.running_stats[leaf][type] = RunningStats()
+                for l_type in all_types:
+                    self.analysis_output[leaf][l_type] = []
+                    self.running_stats[leaf][l_type] = RunningStats()
             self.first_frame = False
         #analysis the correlations
         correlations = grids.norm_displacement_cross_correlation()
@@ -1714,12 +1715,12 @@ class NDCorrProtocol(AnalysisProtocol):
         #extract the data
         leafs = correlations.keys()
         for leaf in leafs:
-            for type in correlations[leaf].keys():
-                corr = correlations[leaf][type]
-                self.running_stats[leaf][type].push(corr)
-                corr_run = self.running_stats[leaf][type].mean()
-                corr_std = self.running_stats[leaf][type].deviation()
-                self.analysis_output[leaf][type].append(np.array([time, corr, corr_run, corr_std]))
+            for l_type in correlations[leaf].keys():
+                corr = correlations[leaf][l_type]
+                self.running_stats[leaf][l_type].push(corr)
+                corr_run = self.running_stats[leaf][l_type].mean()
+                corr_std = self.running_stats[leaf][l_type].deviation()
+                self.analysis_output[leaf][l_type].append(np.array([time, corr, corr_run, corr_std]))
 
         return
 

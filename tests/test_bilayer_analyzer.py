@@ -81,7 +81,7 @@ def test_analysis_iterator():
     ba.add_analysis('msd msd_2 leaflet upper resname POPC')
     print('Doing analysis iteration...')
     for _frame in ba:
-        print(ba.com_frame)
+        print(ba.reps['com_frame'])
         print(" ")
 
 
