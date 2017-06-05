@@ -10,7 +10,7 @@ def test_com_frame_sub_selection():
     #reset
     analyzer.reset()
     #use the phosphorous atoms instead of full lipid center of mass
-    analyzer.rep_settings['name_dict'] = {'DOPE':['P'],'POPC':['P'],'TLCL2':['P1','P3']}
+    analyzer.rep_settings['com_frame']['name_dict'] = {'DOPE':['P'],'POPC':['P'],'TLCL2':['P1','P3']}
 
     analyzer.run_analysis()
 
@@ -20,7 +20,7 @@ def test_com_frame_sub_selection():
     #reset
     analyzer.reset()
     #use the phosphorous and nitrogen atoms instead of full lipid center of mass -- TLCL2 has no nitrogen
-    analyzer.rep_settings['name_dict'] = {'DOPE':['P', 'N'],'POPC':['P', 'N'],'TLCL2':['P1','P3']}
+    analyzer.rep_settings['com_frame']['name_dict'] = {'DOPE':['P', 'N'],'POPC':['P', 'N'],'TLCL2':['P1','P3']}
     analyzer.run_analysis()
     PN_msd = analyzer.get_analysis_data('msd_1')
 
