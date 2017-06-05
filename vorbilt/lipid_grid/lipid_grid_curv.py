@@ -35,8 +35,10 @@ class LipidGrid_2d:
         self.y_nbins = nybins
         #initialize the edges of the and centers of the gridpoints
         # x
-        self.x_min = -box_com_x
-        self.x_max = boxx - box_com_x
+        #self.x_min = -box_com_x
+        #self.x_max = boxx - box_com_x
+        self.x_min = 0.0
+        self.x_max = boxx
         self.x_edges = np.linspace(self.x_min,self.x_max,(nxbins+1),endpoint=True)
         self.x_incr = self.x_edges[1]-self.x_edges[0]
         x_incr_h = self.x_incr/2.0
@@ -47,14 +49,16 @@ class LipidGrid_2d:
             self.x_centers[j]=self.x_edges[j]+x_incr_h
 
         # y
-        self.y_min = -box_com_y
-        self.y_max = boxy - box_com_y
+        #self.y_min = -box_com_y
+        #self.y_max = boxy - box_com_y
+        self.y_min = 0.0
+        self.y_max = boxy
         self.y_edges = np.linspace(self.y_min,self.y_max,(nybins+1),endpoint=True)
         self.y_incr = self.y_edges[1]-self.y_edges[0]
         y_incr_h = self.y_incr/2.0
         self.y_centers = np.zeros(nybins)
         self.y_nedges = len(self.y_edges)
-        for i in xrange(1,self.x_nedges):
+        for i in xrange(1,self.y_nedges):
             j=i-1
             self.y_centers[j]=self.y_edges[j]+y_incr_h
         self.x_length = self.x_max-self.x_min
@@ -67,6 +71,8 @@ class LipidGrid_2d:
         self.lipid_grid = []
         #cx = 0
         #print self.x_edges
+        mx_x = -1000.0
+        mn_x = 1000.0
         for cx in range(len(self.x_edges)-1):
             self.lipid_grid.append([])
             x_lower = self.x_edges[cx]
@@ -83,13 +89,21 @@ class LipidGrid_2d:
                     zi = com_frame.lipidcom[i].com_unwrap[iz]
                     x_box = xi > x_lower and xi < x_upper
                     y_box = yi > y_lower and yi < y_upper
-                    #print "x_lower: ", x_lower, " xi: ", xi, " x_ upper: ", x_upper, " x_box: ", x_box
+                   # print "x_lower: ", x_lower, " xi: ", xi, " x_ upper: ", x_upper, " x_box: ", x_box
+                   #quit()
+                    if xi < mn_x:
+                        mn_x = xi
+                    if xi > mx_x:
+                        mx_x = xi
                     if x_box and y_box:
 
                        # print "y_lower: ", y_lower, " yi: ", yi, " y_upper: ", y_upper, " y_box: ",y_box
                        # print
                         #add to this grid
                         self.lipid_grid[cx][cy].append((i, com_frame.lipidcom[i].type, zi))
+                        #print "lipid index ",i," of type ",com_frame.lipidcom[i].type, " added to grid (",cx," ",cy,")"
+        #print "minimum x coord: ", mn_x
+        #print "maximum x coord: ", mx_x
 
     def get_index_at(self,ix,iy):
         return self.lipid_grid[ix][iy][:,0]
@@ -100,7 +114,7 @@ class LipidGrid_2d:
 
 
 class LipidGrids:
-    def __init__(self, com_frame, leaflets,plane,nxbins=2,nybins=2):
+    def __init__(self, com_frame, leaflets,plane,nxbins=3,nybins=3):
         #store the frame and leaflet
         self.frame = com_frame
         self.leaflets = leaflets
@@ -124,8 +138,9 @@ class LipidGrids:
         output = dict()
         for leaf in self.leaflets.keys():
             output[leaf] = dict()
-            types = self.leaflets[leaf].get_group_names()
-            for l_type in types:
+            ll_types = self.leaflets[leaf].get_group_names()
+           # print "ll_types: ", ll_types
+            for l_type in ll_types:
                 #loop over grid boxes
                 count = []
                 z_vals = []
@@ -134,7 +149,11 @@ class LipidGrids:
                # print(len(self.leaf_grid[leaf].lipid_grid))
                 for xb in self.leaf_grid[leaf].lipid_grid:
                     #print(len(xb))
+                    #print "xb: "
+                    #print xb
                     for yb in xb:
+                        #print "yb :"
+                        #print yb
                         #print(len(yb))
                         box_count = 0
                         box_z_vals = []
@@ -147,37 +166,44 @@ class LipidGrids:
                                 box_count+=1
                             else:
                                 box_z_vals.append(lipid_z)
-                        if len(yb) > 0:
-                            n_box+=1
+                        #if len(yb) > 0:
+                        #    n_box+=1.0
+                        n_box+=1
                         if len(box_z_vals) > 0:
-                            n_box+=1.0
+                            #n_box+=1.0
                             box_z_avg = box_z_vals[0]
                             if box_z_vals > 1:
                                 box_z_avg = np.array(box_z_vals).mean()
                             #print " box_z_vals: "
                             #print box_z_vals
-                            print "box_z_avg: ",box_z_avg
+                           # print "box_z_avg: ",box_z_avg
                             #print "yb: "
                             #print yb
-                            count.append(box_count)
+                            count.append(float(box_count))
                             z_vals.append(box_z_avg)
                 cross_corr = 0.0
                 if len(count) > 1 and len(z_vals) >1:
+                   # print "l_type: ",l_type
                     count = np.array(count)
+                   # print "count: ", count
                     z_vals = np.array(z_vals)
+                   # print "z_vals: ", z_vals
                     count_mean = count.mean()
                     count_std = count.std()
                     z_mean = z_vals.mean()
                     z_std = z_vals.std()
                     cross_sum = np.dot(count-count_mean, z_vals-z_mean)
-                    cross_corr = cross_sum/(z_mean*z_std*n_box)
+                    cross_corr = cross_sum/(count_std*z_std*n_box)
+                   # print "n_box: ",n_box
+
                 if np.isnan(cross_corr):
-                    print"cross_corr: ",cross_corr," cross_sum ", cross_sum," n_box ",n_box, " z_mean ",z_mean, " z_std ", z_std
-                    print "count:"
-                    print count
-                    print "z_vals:"
-                    print z_vals
-                    quit()
+                   # print"cross_corr: ",cross_corr," cross_sum ", cross_sum," n_box ",n_box, " z_mean ",z_mean, " z_std ", z_std
+                   # print "count:"
+                   # print count
+                   # print "z_vals:"
+                   # print z_vals
+                   # quit()
                     cross_corr = 0.0
                 output[leaf][l_type] = cross_corr
+        #quit()
         return output

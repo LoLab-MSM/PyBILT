@@ -8,6 +8,7 @@ def test_ndcorr():
     analyzer.add_analysis('ndcorr ndcorr_a')
     analyzer.remove_analysis('msd_1')
     analyzer.print_analysis_protocol()
+    #use the phosphorous atoms instead of full lipid center of mass
     analyzer.run_analysis()
     print(analyzer.get_analysis_data('ndcorr_a'))
 
