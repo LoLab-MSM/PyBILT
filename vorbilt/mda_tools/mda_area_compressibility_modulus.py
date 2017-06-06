@@ -7,12 +7,12 @@ and T is the temperature (in Kelvin).
 See references:
 Coarse Grained Model for Semiquantitative Lipid Simulations
 Siewert J. Marrink, Alex H. de Vries, and Alan E. Mark
-J. Phys. Chem. B, 2004, 108 (2), pp 750–760
+J. Phys. Chem. B, 2004, 108 (2), pp 750-760
 DOI: 10.1021/jp036508g
 
 Molecular Dynamics Simulations of Cardiolipin Bilayers
 Martin Dahlberg and Arnold Maliniak
-J. Phys. Chem. B, 2008, 112 (37), pp 11655–11663
+J. Phys. Chem. B, 2008, 112 (37), pp 11655-11663
 DOI: 10.1021/jp803414g
 
 """
