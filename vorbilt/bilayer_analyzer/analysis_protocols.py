@@ -2147,3 +2147,86 @@ class ALDProtocol(AnalysisProtocol):
         return
 # update the command_protocols dictionary
 command_protocols['ald'] = ALDProtocol
+
+# define a new analysis 'apl_box'
+valid_analysis.append('ac')
+analysis_obj_name_dict['ac'] = 'mda_frame'
+#Yoshimichi Andoha, Susumu Okazakia, Ryuichi Ueokab, "Molecular dynamics
+# study of lipid bilayers modeling the plasma membranes of normal murine
+# thymocytes and leukemic GRSL cells", Biochimica et Biophysica Acta (BBA)
+# - Biomembranes, Volume 1828, Issue 4, April 2013, Pages 1259–1270.
+# https://doi.org/10.1016/j.bbamem.2013.01.005
+# Note: Area Compressibility is a defined in the reference is the inverse of
+# area compressibility modulus. 
+class AreaCompressibilityProtocol(AnalysisProtocol):
+    def __init__(self, args):
+
+        # required
+        self._short_description = "Isothermal area compressibility."
+        self.return_length = 4
+        self.analysis_key = 'ac'
+        self.analysis_id = 'none'
+
+        # default function settings
+        self.settings = dict()
+        self.settings['temperature'] = 298.15
+        self._valid_settings = self.settings.keys()
+
+        # parse input arguments
+        self._parse_args(args)
+
+        #output filename for pickle dump of results
+        self.save_file_name = self.analysis_id + ".pickle"
+
+
+        # storage for output
+        self.n_frames = 0
+        self.area_run = RunningStats()
+        self.area_fluctuation = RunningStats()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'temperature':
+                    arg_dict[arg_key] = float(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                raise RuntimeWarning(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+
+    def reset(self):
+        self.n_frames = 0
+        self.area_run.reset()
+        self.area_fluctuation.reset()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        dimensions = ba_reps['current_mda_frame'].dimensions[0:3]
+        area = dimensions.prod()/dimensions[ba_settings['norm']]
+        #print(area)
+        self.area_run.push(area)
+        area_mean = self.area_run.mean()
+        fluctuation = (area - area_mean)**2
+        self.area_fluctuation.push(fluctuation)
+        avg_area_fluctuation = self.area_fluctuation.mean()
+        X_T = avg_area_fluctuation/(area_mean*scicon.k*self.settings['temperature'])
+        #conversion factor for Angstrom^2/Joules to meter^2/Joule
+        Ka*=10.0**(-20)
+        time = ba_reps['current_mda_frame'].time
+        self.analysis_output.append([time, X_T])
+        self.n_frames += 1
+        return
+
+command_protocols['ac'] = AreaCompressibilityProtocol
