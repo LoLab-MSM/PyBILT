@@ -988,6 +988,7 @@ analysis_obj_name_dict['acm'] = 'mda_frame'
 
 #L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267-3273
 #D. Aguayo, F. D. Gonzalez-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765-1773
+#
 class AreaCompressibilityModulusProtocol(AnalysisProtocol):
     def __init__(self, args):
 
@@ -1882,3 +1883,267 @@ class DCClusterProtocol(AnalysisProtocol):
         return self.analysis_output
 
 command_protocols['dc_cluster'] = DCClusterProtocol
+
+# define a new analysis 'apl_box'
+valid_analysis.append('vcm')
+analysis_obj_name_dict['vcm'] = 'mda_frame'
+#Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular Dynamics
+# Simulations of Phospholipid Bilayers with Cholesterol", Biophys J.
+# 2003 Apr; 84(4): 2192-2206. doi:  10.1016/S0006-3495(03)75025-5
+class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
+    def __init__(self, args):
+
+        # required
+        self._short_description = "Volume compressibility modulus."
+        self.return_length = 4
+        self.analysis_key = 'vcm'
+        self.analysis_id = 'none'
+
+        # default function settings
+        self.settings = dict()
+        self.settings['temperature'] = 298.15
+        self._valid_settings = self.settings.keys()
+
+        # parse input arguments
+        self._parse_args(args)
+
+        #output filename for pickle dump of results
+        self.save_file_name = self.analysis_id + ".pickle"
+
+
+        # storage for output
+        self.n_frames = 0
+        self.volume_run = RunningStats()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'temperature':
+                    arg_dict[arg_key] = float(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                raise RuntimeWarning(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+
+    def reset(self):
+        self.n_frames = 0
+        self.volume_run.reset()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        dimensions = ba_reps['current_mda_frame'].dimensions[0:3]
+        volume = dimensions.prod()
+        #print(area)
+        self.volume_run.push(volume)
+        Kv = (volume*scicon.k*self.settings['temperature'])/self.volume_run.deviation()**2
+        time = ba_reps['current_mda_frame'].time
+        self.analysis_output.append([time, Kv])
+        self.n_frames += 1
+        return
+
+command_protocols['vcm'] = VolumeCompressibilityModulusProtocol
+
+# define a new analysis 'apl_box'
+valid_analysis.append('acm_b')
+analysis_obj_name_dict['acm_b'] = 'mda_frame'
+#Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular Dynamics
+# Simulations of Phospholipid Bilayers with Cholesterol", Biophys J.
+# 2003 Apr; 84(4): 2192-2206. doi:  10.1016/S0006-3495(03)75025-5
+class AreaCompressibilityModulusBProtocol(AnalysisProtocol):
+    def __init__(self, args):
+
+        # required
+        self._short_description = "Area compressibility modulus."
+        self.return_length = 4
+        self.analysis_key = 'acm_b'
+        self.analysis_id = 'none'
+
+        # default function settings
+        self.settings = dict()
+        self.settings['temperature'] = 298.15
+        self._valid_settings = self.settings.keys()
+
+        # parse input arguments
+        self._parse_args(args)
+
+        #output filename for pickle dump of results
+        self.save_file_name = self.analysis_id + ".pickle"
+
+
+        # storage for output
+        self.n_frames = 0
+        self.area_run = RunningStats()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'temperature':
+                    arg_dict[arg_key] = float(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                raise RuntimeWarning(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+
+    def reset(self):
+        self.n_frames = 0
+        self.area_run.reset()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        dimensions = ba_reps['current_mda_frame'].dimensions[0:3]
+        area = dimensions.prod()/dimensions[ba_settings['norm']]
+        #print(area)
+        self.area_run.push(area)
+        Ka = (area*scicon.k*self.settings['temperature'])/self.area_run.deviation()**2
+        #conversion factor for Joules/Angstron^2 to milliNewtons/meter
+        Ka*=10.0**23
+        time = ba_reps['current_mda_frame'].time
+        self.analysis_output.append([time, Ka])
+        self.n_frames += 1
+        return
+
+command_protocols['acm_b'] = AreaCompressibilityModulusBProtocol
+
+# define a new analysis 'msd'
+valid_analysis.append('ald')
+analysis_obj_name_dict['ald'] = 'com_frame'
+
+#ALD From:
+#Kenichiro Koshiyama, Tetsuya Kodama, Takeru Yano, Shigeo Fujikawa,
+# "Molecular dynamics simulation of structural changes of lipid bilayers
+# induced by shock waves: Effects of incident angles", Biochimica et Biophysica
+# Acta (BBA) - Biomembranes, Volume 1778, Issue 6, June 2008, Pages 1423-1428
+class ALDProtocol(AnalysisProtocol):
+    """Average lateral displacement
+    Args:
+        args (list): list of string keys and arguments
+    """
+    def __init__(self, args):
+
+        # required
+        self._short_description = "Average lateral displacement."
+        self.return_length = 2
+        self.analysis_key = 'ald'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['leaflet'] = 'both'
+        self.settings['resname'] = 'all'
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+
+        self.first_frame = True
+        self.ref_coords = None
+        self.indices = []
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        L_stat = RunningStats()
+        self.analysis_output = []
+        return
+
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        leaflet = self.settings['leaflet']
+        group = self.settings['resname']
+        if self.first_frame:
+            indices = []
+            # parse the leaflet and group inputs
+            if leaflet == "both":
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            elif leaflet == "upper":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            elif leaflet == "lower":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            else:
+                # unknown option--use default "both"
+                print "!! Warning - request for unknown leaflet name \'", leaflet
+                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            self.indices = indices
+        indices = self.indices
+        n_com = len(indices)
+        selcoords = np.zeros((n_com, 2))
+
+        count = 0
+        for i in indices:
+            com_curr = ba_reps['com_frame'].lipidcom[i].com_unwrap[
+                ba_settings['lateral']]
+            selcoords[count] = com_curr[:]
+            count += 1
+
+        # initialize a numpy array to hold the msd for the selection
+        msd = np.zeros(2)
+        # initialize a running stats object to do the averaging over resids
+        #drs_stat = RunningStats()
+
+        ref_coords = np.zeros((n_com, 2))
+        if self.first_frame:
+            count = 0
+            for i in indices:
+                com_curr = \
+                    ba_reps['first_com_frame'].lipidcom[i].com_unwrap[
+                        ba_settings['lateral']]
+                ref_coords[count] = com_curr[:]
+                count += 1
+            self.ref_coords = ref_coords[:]
+            self.first_frame = False
+        else:
+            ref_coords = self.ref_coords
+            # get the current com frame list
+        tc = ba_reps['com_frame'].time
+        dt = tc
+        dr = selcoords - ref_coords
+        m_dr = []
+        for val in dr:
+            m_dr.append(np.sqrt(np.dot(val, val)))
+        L = np.abs(m_dr).sum()/len(m_dr)
+        L_stat.push(L)
+        # get the msd for the current selection
+        Lcurr = L_stat.mean()
+        msd[0] = dt
+        msd[1] = Lcurr
+        self.analysis_output.append(msd)
+        return
+
+    def reset(self):
+        self.L_stat.reset()
+        self.analysis_output = []
+        self.first_frame = True
+        return
+# update the command_protocols dictionary
+command_protocols['ald'] = ALDProtocol
