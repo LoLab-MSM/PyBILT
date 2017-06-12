@@ -2018,7 +2018,8 @@ class AreaCompressibilityModulusBProtocol(AnalysisProtocol):
         area = dimensions.prod()/dimensions[ba_settings['norm']]
         #print(area)
         self.area_run.push(area)
-        Ka = (area*scicon.k*self.settings['temperature'])/self.area_run.deviation()**2
+
+        Ka = (self.area_run.mean()*scicon.k*self.settings['temperature'])/self.area_run.deviation()**2
         #conversion factor for Joules/Angstron^2 to milliNewtons/meter
         Ka*=10.0**23
         time = ba_reps['current_mda_frame'].time
@@ -2154,10 +2155,10 @@ analysis_obj_name_dict['ac'] = 'mda_frame'
 #Yoshimichi Andoha, Susumu Okazakia, Ryuichi Ueokab, "Molecular dynamics
 # study of lipid bilayers modeling the plasma membranes of normal murine
 # thymocytes and leukemic GRSL cells", Biochimica et Biophysica Acta (BBA)
-# - Biomembranes, Volume 1828, Issue 4, April 2013, Pages 1259–1270.
+# - Biomembranes, Volume 1828, Issue 4, April 2013, Pages 1259-1270.
 # https://doi.org/10.1016/j.bbamem.2013.01.005
 # Note: Area Compressibility is a defined in the reference is the inverse of
-# area compressibility modulus. 
+# area compressibility modulus.
 class AreaCompressibilityProtocol(AnalysisProtocol):
     def __init__(self, args):
 
@@ -2230,3 +2231,195 @@ class AreaCompressibilityProtocol(AnalysisProtocol):
         return
 
 command_protocols['ac'] = AreaCompressibilityProtocol
+
+# define a new analysis
+valid_analysis.append('lop')
+analysis_obj_name_dict['lop'] = 'mda_frame'
+#Based on P-N vector-normal angle:
+#Zheng Li, Richard M. Venable, Laura A. Rogers, Diana Murray,
+# and Richard W. Pastor, "Molecular Dynamics Simulations of PIP2 and PIP3
+# in Lipid Bilayers: Determination of Ring Orientation, and the Effects of
+# Surface Roughness on a Poisson-Boltzmann Description", Biophys J. 2009 Jul 8;
+# 97(1): 155-163.
+# doi:  10.1016/j.bpj.2009.04.037
+class LateralOrientationParameterProtocol(AnalysisProtocol):
+    def __init__(self, args):
+        # required
+        self._short_description = "Lateral orientation parameter."
+        self.return_length = 4
+        self.analysis_key = 'lop'
+        self.analysis_id = 'none'
+        #define adjustable settings
+        self.settings = dict()
+        self.settings['resname'] = 'first'
+        self.settings['leaflet'] = 'upper'
+        self.settings['ref_atom_1'] = 'P'
+        self.settings['ref_atom_2'] = 'N'
+        self._valid_settings = self.settings.keys()
+        # parse input arguments if given
+        self._parse_args(args)
+
+        # default function settings
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        # storage for output
+        self.running = RunningStats()
+        self.first_comp = True
+        self.analysis_output = []
+        self.selection = None
+        self.norm_vec = np.zeros(3)
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        norm = ba_settings['norm']
+        if self.first_comp:
+            if self.settings['resname'] == 'first':
+                groups = ba_reps['leaflets'][self.setttings['leaflet']].get_group_names()
+                self.settings['resname'] = groups[0]
+            com_frame = ba_reps['com_frame']
+            #norm_vec = np.zeros(3)
+            self.norm_vec[norm] = 1.0
+            indices = ba_reps['leaflets'][self.settings['leaflet']].get_group_indices(self.settings['resname'])
+            for index in indices:
+                res_com = com_frame.lipidcom[index]
+                resid = res_com.resid
+
+                sel_string = "resname "+self.settings['resname']+" and resid "+str(resid)
+                res_sel = ba_mda_data.mda_universe.select_atoms(sel_string)
+                if index == indices[0]:
+                    self.selection = res_sel
+                else:
+                    self.selection += res_sel
+            self.first_comp = False
+        residues = self.selection.residues
+        cos_run = RunningStats()
+        for residue in residues:
+            atom_1 = eval("residue."+self.settings['ref_atom_1'])
+            atom_2 = eval("residue."+self.settings['ref_atom_2'])
+            atom_1_i = atom_1.index
+            atom_2_i = atom_2.index
+            atom_1_coord = ba_reps['current_mda_frame']._pos[atom_1_i]
+            atom_2_coord = ba_reps['current_mda_frame']._pos[atom_2_i]
+            diff = atom_2_coord - atom_1_coord
+
+            dist = np.sqrt(np.dot(diff, diff))
+            cos_t = np.dot(diff, self.norm_vec)/dist
+            cos_run.push(cos_t)
+        cos_t_avg = cos_run.mean()
+        self.running.push(cos_t_avg)
+        time = ba_reps['current_mda_frame'].time
+        #self.running.push(ap
+        cos_t = np.zeros(self.return_length)
+        cos_t[0] = time
+        cos_t[1] = cos_t_avg
+        cos_t[2] = self.running.mean()
+        cos_t[3] = self.running.deviation()
+        self.analysis_output.append(cos_t)
+
+        return
+
+    def reset(self):
+        self.running.reset()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+command_protocols['lop'] = LateralOrientationParameterProtocol
+
+# define a new analysis
+valid_analysis.append('loa')
+analysis_obj_name_dict['loa'] = 'mda_frame'
+#Based on P-N vector-normal angle:
+#Zheng Li, Richard M. Venable, Laura A. Rogers, Diana Murray,
+# and Richard W. Pastor, "Molecular Dynamics Simulations of PIP2 and PIP3
+# in Lipid Bilayers: Determination of Ring Orientation, and the Effects of
+# Surface Roughness on a Poisson-Boltzmann Description", Biophys J. 2009 Jul 8;
+# 97(1): 155-163.
+# doi:  10.1016/j.bpj.2009.04.037
+class LateralOrientationAngleProtocol(AnalysisProtocol):
+    def __init__(self, args):
+        # required
+        self._short_description = "Lateral orientation angle."
+        self.return_length = 4
+        self.analysis_key = 'lop'
+        self.analysis_id = 'none'
+        #define adjustable settings
+        self.settings = dict()
+        self.settings['resname'] = 'first'
+        self.settings['leaflet'] = 'upper'
+        self.settings['ref_atom_1'] = 'P'
+        self.settings['ref_atom_2'] = 'N'
+        self._valid_settings = self.settings.keys()
+        # parse input arguments if given
+        self._parse_args(args)
+
+        # default function settings
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        # storage for output
+        self.running = RunningStats()
+        self.first_comp = True
+        self.analysis_output = []
+        self.selection = None
+        self.norm_vec = np.zeros(3)
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        norm = ba_settings['norm']
+        if self.first_comp:
+            if self.settings['resname'] == 'first':
+                groups = ba_reps['leaflets'][self.setttings['leaflet']].get_group_names()
+                self.settings['resname'] = groups[0]
+            com_frame = ba_reps['com_frame']
+            #norm_vec = np.zeros(3)
+            self.norm_vec[norm] = 1.0
+            indices = ba_reps['leaflets'][self.settings['leaflet']].get_group_indices(self.settings['resname'])
+            for index in indices:
+                res_com = com_frame.lipidcom[index]
+                resid = res_com.resid
+
+                sel_string = "resname "+self.settings['resname']+" and resid "+str(resid)
+                res_sel = ba_mda_data.mda_universe.select_atoms(sel_string)
+                if index == indices[0]:
+                    self.selection = res_sel
+                else:
+                    self.selection += res_sel
+            self.first_comp = False
+        residues = self.selection.residues
+        cos_run = RunningStats()
+        for residue in residues:
+            atom_1 = eval("residue."+self.settings['ref_atom_1'])
+            atom_2 = eval("residue."+self.settings['ref_atom_2'])
+            atom_1_i = atom_1.index
+            atom_2_i = atom_2.index
+            atom_1_coord = ba_reps['current_mda_frame']._pos[atom_1_i]
+            atom_2_coord = ba_reps['current_mda_frame']._pos[atom_2_i]
+            diff = atom_2_coord - atom_1_coord
+
+            dist = np.sqrt(np.dot(diff, diff))
+            cos_t = np.dot(diff, self.norm_vec)/dist
+            angle = 90.0 - np.arccos(cos_t)*180.0/np.pi
+
+            cos_run.push(angle)
+        cos_t_avg = cos_run.mean()
+        self.running.push(cos_t_avg)
+        time = ba_reps['current_mda_frame'].time
+        #self.running.push(ap
+        cos_t = np.zeros(self.return_length)
+        cos_t[0] = time
+        cos_t[1] = cos_t_avg
+        cos_t[2] = self.running.mean()
+        cos_t[3] = self.running.deviation()
+        self.analysis_output.append(cos_t)
+
+        return
+
+    def reset(self):
+        self.running.reset()
+        self.analysis_output = []
+        self.first_comp = True
+        return
+
+command_protocols['loa'] = LateralOrientationAngleProtocol
