@@ -981,121 +981,6 @@ class MassDensProtocol(AnalysisProtocol):
 
 command_protocols['mass_dens'] = MassDensProtocol
 
-
-# define a new analysis
-valid_analysis.append('acm')
-analysis_obj_name_dict['acm'] = 'mda_frame'
-
-#L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267-3273
-#D. Aguayo, F. D. Gonzalez-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765-1773
-#
-class AreaCompressibilityModulusProtocol(AnalysisProtocol):
-    def __init__(self, args):
-
-        # required
-        self._short_description = "Area compressibility modulus."
-        self.return_length = 4
-        self.analysis_key = 'acm'
-        self.analysis_id = 'none'
-
-        # default function settings
-        self.settings = dict()
-        self.settings['temperature'] = 298.15
-        self._valid_settings = self.settings.keys()
-
-        # parse input arguments
-        self._parse_args(args)
-
-        #output filename for pickle dump of results
-        self.save_file_name = self.analysis_id + ".pickle"
-
-
-        # storage for output
-        self.n_frames = 0
-        self.area = []
-        self.apl = []
-        self.times = []
-        self.analysis_output = []
-        self.first_comp = True
-        self.per_leaflet = 1
-        return
-
-    # required- function to parse the input arguments from string
-    def _cast_settings(self, arg_dict):
-
-        for arg_key in arg_dict.keys():
-            arg_arg = arg_dict[arg_key]
-            if arg_key in self._valid_settings:
-                if arg_key == 'temperature':
-                    arg_dict[arg_key] = float(arg_arg)
-            elif arg_key == 'analysis_id':
-                pass
-            else:
-                raise RuntimeWarning(
-                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
-        return arg_dict
-
-
-    def reset(self):
-        self.n_frames = 0
-        self.area = []
-        self.apl = []
-        self.times = []
-        self.analysis_output = []
-        self.first_comp = True
-        self.per_leaflet = 1
-        return
-
-    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
-
-        if self.first_comp:
-            nlipids = ba_mda_data.n_residues
-            per_leaflet = nlipids / 2
-            self.per_leaflet = per_leaflet
-            self.first_comp = False
-        lateral_indices = ba_settings['lateral']
-        dimensions = ba_reps['current_mda_frame'].dimensions[0:3]
-        lateral_dim = dimensions[lateral_indices]
-        area = lateral_dim.prod()
-        #print(area)
-        self.area.append(area)
-        apl = area / self.per_leaflet
-        #print(apl)
-        self.apl.append(apl)
-        time = ba_reps['current_mda_frame'].time
-        self.times.append(time)
-        self.n_frames += 1
-        return
-
-    def save_data(self, path=None):
-        save_file = self.save_file_name
-        if path is not None:
-            save_file = path+self.save_file_name
-        data = self.get_data()
-        with open(save_file, 'wb') as outfile:
-            pickle.dump(data, outfile)
-        return
-
-    def get_data(self):
-        area_eq = np.array(self.area).mean()
-        apl = np.array(self.apl)
-        apl_run = gen_running_average(apl)
-        apl_minus_area = (apl - area_eq)**2
-        apl_minus_area_run = gen_running_average(apl_minus_area)
-        acm = scicon.k * self.settings['temperature'] * apl_run[:,0] / ( self.per_leaflet * apl_minus_area_run[:,0])
-        #conversion factor for Joules/Angstron^2 to milliNewtons/meter
-        acm*=10.0**23
-        acm_run = gen_running_average(acm)
-        times = np.array(self.times)
-        npoints = len(times)
-        output = np.zeros((npoints, 4))
-        output[:, 0] = times[:]
-        output[:, 1] = acm[:]
-        output[:, 2] = acm_run[:, 0]
-        output[:, 3] = acm_run[:, 1]
-        return output
-command_protocols['acm'] = AreaCompressibilityModulusProtocol
-
 # define a new analysis 'nnf'
 valid_analysis.append('nnf')
 analysis_obj_name_dict['nnf'] = 'com_frame'
@@ -1956,18 +1841,21 @@ class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
 command_protocols['vcm'] = VolumeCompressibilityModulusProtocol
 
 # define a new analysis 'apl_box'
-valid_analysis.append('acm_b')
-analysis_obj_name_dict['acm_b'] = 'mda_frame'
+valid_analysis.append('acm')
+analysis_obj_name_dict['acm'] = 'mda_frame'
 #Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular Dynamics
 # Simulations of Phospholipid Bilayers with Cholesterol", Biophys J.
 # 2003 Apr; 84(4): 2192-2206. doi:  10.1016/S0006-3495(03)75025-5
-class AreaCompressibilityModulusBProtocol(AnalysisProtocol):
+#Also see:
+#L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267-3273
+#D. Aguayo, F. D. Gonzalez-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765-1773
+class AreaCompressibilityModulusProtocol(AnalysisProtocol):
     def __init__(self, args):
 
         # required
         self._short_description = "Area compressibility modulus."
         self.return_length = 4
-        self.analysis_key = 'acm_b'
+        self.analysis_key = 'acm'
         self.analysis_id = 'none'
 
         # default function settings
@@ -2018,16 +1906,22 @@ class AreaCompressibilityModulusBProtocol(AnalysisProtocol):
         area = dimensions.prod()/dimensions[ba_settings['norm']]
         #print(area)
         self.area_run.push(area)
-
-        Ka = (self.area_run.mean()*scicon.k*self.settings['temperature'])/self.area_run.deviation()**2
+        Ka = 1.0
+        if self.first_comp:
+            Ka = 0.0
+            self.first_comp = False
+        else:
+            Ka = (self.area_run.mean()*scicon.k*self.settings['temperature'])/self.area_run.variance()
+        #print "<A>: ", self.area_run.mean(), " var(A): ",self.area_run.variance()
         #conversion factor for Joules/Angstron^2 to milliNewtons/meter
         Ka*=10.0**23
+
         time = ba_reps['current_mda_frame'].time
         self.analysis_output.append([time, Ka])
         self.n_frames += 1
         return
 
-command_protocols['acm_b'] = AreaCompressibilityModulusBProtocol
+command_protocols['acm'] = AreaCompressibilityModulusProtocol
 
 # define a new analysis 'msd'
 valid_analysis.append('ald')
