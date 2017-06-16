@@ -211,6 +211,40 @@ class COMFrame:
         com_out/=total_mass
         return com_out
 
+    def coordinates(self, wrapped=True):
+        coords = []
+        for item in self.lipidcom:
+            if wrapped:
+                coords.append(item.com)
+            else:
+                coords.append(item.com_unwrap)
+        return np.array(coords)
+
+    def masses(self):
+        output = []
+        for lipid in self.lipidcom:
+            output.append(lipid.mass)
+        return np.array(output)
+
+    def resids(self):
+        output = []
+        for lipid in self.lipidcom:
+            output.append(lipid.resid)
+        return np.array(output)
+
+    def resnames(self):
+
+        output = []
+        for lipid in self.lipidcom:
+            output.append(lipid.type)
+        return output
+
+    def leaflets(self):
+        output = []
+        for lipid in self.lipidcom:
+            output.append(lipid.leaflet)
+        return output
+
     def write_xyz(self, xyz_name, wrapped=True):
         # Open up the file to write to
         xyz_out = open(xyz_name, "w")
