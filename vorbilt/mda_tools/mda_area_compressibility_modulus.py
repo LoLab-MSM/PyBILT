@@ -48,16 +48,18 @@ def area_compressibility_modulus(mda_trajectory, bilayer_selection, temperature,
     # approximate area per lipid
     times = np.array(times)
     areas = np.array(areas)
-    apl = areas / per_leaflet
-    apl_run = gen_running_average(apl)
+    #apl = areas / per_leaflet
+    apl_run = gen_running_average(areas)
     # get the expectation value
-    area_eq = areas.mean()
+    apl_eq = areas.mean()
     # (A - A_eq)**2
     paren = (apl - apl_eq) ** 2
     # running < (A - A_eq)**2 >
     paren_run = gen_running_average(paren)
     # compute the modulus
-    K_a = scicon.k * temperature * apl_run[:, 0] / (per_leaflet * paren_run[:, 0])
+    K_a = (scicon.k * temperature * apl_run[:, 0]) / (apl_run[:, 1]**2)
+    #conversion factor for Joules/Angstron^2 to milliNewtons/meter
+    Ka*=10.0**23
     K_a_run = gen_running_average(K_a)
     time_series = np.zeros((len(K_a_run), 3))
     time_series[:, 0] = times[:]
