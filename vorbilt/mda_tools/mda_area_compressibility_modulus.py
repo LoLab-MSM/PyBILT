@@ -1,8 +1,8 @@
 """ Implementation of area compressibilty modulus
 The are compressibilty modulus is an elastic property that can be computed from the total area (in the lateral
-dimension) and the area per lipid. The quantity is given by
-    K_A = kT<A>[ N <(A - A_o)^2>]^-1,
-where A is the area per lipid, A_o is the equilibrium area, and N is the lipids per leaflet; k is Boltzmann's constant
+dimension) and its fluctuations. The quantity is given by
+    K_A = kT<A>[ <(A - <A>)^2>]^-1,
+where A is the area per lipid, k is Boltzmann's constant
 and T is the temperature (in Kelvin).
 See references:
 Coarse Grained Model for Semiquantitative Lipid Simulations
@@ -38,31 +38,24 @@ def area_compressibility_modulus(mda_trajectory, bilayer_selection, temperature,
     nlipids = len(bilayer_selection.residues)
     per_leaflet = nlipids / 2
     # get the lateral area at each frame
-    areas = []
+    area_run = RunningStats()
     times = []
+    K_a = []
     for frame in mda_trajectory[first:last:interval]:
         lateral_edges = frame.dimensions[lateral_index]
         area = lateral_edges.prod()
-        areas.append(area)
+        area_run.push(area)
+        # compute the modulus
+        Ka = (scicon.k * temperature * area_run.mean())/area_run.variance()
+        #conversion factor for Joules/Angstrom^2 to milliNewtons/meter
+        Ka*=10.0**23
         times.append(frame.time)
+        K_a.append(Ka)
     # approximate area per lipid
     times = np.array(times)
-    areas = np.array(areas)
-    #apl = areas / per_leaflet
-    apl_run = gen_running_average(areas)
-    # get the expectation value
-    apl_eq = areas.mean()
-    # (A - A_eq)**2
-    paren = (apl - apl_eq) ** 2
-    # running < (A - A_eq)**2 >
-    paren_run = gen_running_average(paren)
-    # compute the modulus
-    K_a = (scicon.k * temperature * apl_run[:, 0]) / (apl_run[:, 1]**2)
-    #conversion factor for Joules/Angstron^2 to milliNewtons/meter
-    Ka*=10.0**23
+    K_a = np.array(K_a)
     K_a_run = gen_running_average(K_a)
-    time_series = np.zeros((len(K_a_run), 3))
+    time_series = np.zeros((len(K_a_run), 2))
     time_series[:, 0] = times[:]
-    time_series[:, 1] = K_a_run[:, 0]
-    time_series[:, 2] = K_a_run[:, 1]
-    return time_series
+    time_series[:, 1] = K_a[:]
+    return time_series[1:]
