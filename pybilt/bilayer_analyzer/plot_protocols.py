@@ -1,4 +1,4 @@
-import vorbilt.plot_generation.plot_generation_functions as pgf
+import pybilt.plot_generation.plot_generation_functions as pgf
 
 
 command_protocols = {}

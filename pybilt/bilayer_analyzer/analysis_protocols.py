@@ -1,7 +1,7 @@
 """Analysis Protocols
 
 This is a support module that defines a set of classes used to contruct the 'analysis protocol' and the 'analysis' used
-in the anlysis implemented by the vorbilt.bilayer_analyzer.bilayer_anlayzer.BilayerAnalyzer class.
+in the anlysis implemented by the pybilt.bilayer_analyzer.bilayer_anlayzer.BilayerAnalyzer class.
 The AnalysisProtocol is the class used to organize and initial the the individual analysis functions/protocols. The
 individual analysis functions/protocols are derived classes of AnalysisProtocol, and the availabel analysis can be
 extended by simply defining a new protocol.
@@ -47,10 +47,10 @@ except:
     import pickle
 
 # VORBILT imports
-from vorbilt.common.running_stats import *
-import vorbilt.mda_tools.mda_density_profile as mda_dp
-import vorbilt.lipid_grid.lipid_grid_curv as lgc
-from vorbilt.common import distance_cutoff_clustering as dc_cluster
+from pybilt.common.running_stats import *
+import pybilt.mda_tools.mda_density_profile as mda_dp
+import pybilt.lipid_grid.lipid_grid_curv as lgc
+from pybilt.common import distance_cutoff_clustering as dc_cluster
 #need some containers for bookkeeping
 command_protocols = {}
 valid_analysis= []
@@ -1908,8 +1908,10 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         self.area_run.push(area)
         Ka = 1.0
         if self.first_comp:
-            Ka = 0.0
             self.first_comp = False
+            self.n_frames+=1
+            #return
+            Ka = 0.0
         else:
             Ka = (self.area_run.mean()*scicon.k*self.settings['temperature'])/self.area_run.variance()
         #print "<A>: ", self.area_run.mean(), " var(A): ",self.area_run.variance()

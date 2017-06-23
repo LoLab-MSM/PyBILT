@@ -27,9 +27,9 @@ from scipy.spatial import Delaunay
 #import copy
 
 #import running stats class
-from vorbilt.common.running_stats import *
+from pybilt.common.running_stats import *
 # import the coordinate wrapping function--for unwrapping
-from vorbilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
+from pybilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
 
 # This function is incomplete!
 def colorize_step_vector_clusters(vectors):

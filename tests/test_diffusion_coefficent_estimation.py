@@ -1,5 +1,5 @@
 import numpy as np
-from vorbilt.mda_tools import diffusion_coefficients as dc
+from pybilt.mda_tools import diffusion_coefficients as dc
 
 def test_diffusion_coefficient_estimation():
     #set known diffusion coefficient for test data

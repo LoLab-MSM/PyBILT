@@ -1,5 +1,5 @@
 import numpy as np
-import vorbilt.common.gaussian as gauss
+import pybilt.common.gaussian as gauss
 #dictionary of elements and their valence electron counts - used for electron profile density
 valence_dict = {'H':1,'C':4,'N':5,'O':6,'P':5}
 #dictionary of elements and their atomic numbers - used for electron profile density

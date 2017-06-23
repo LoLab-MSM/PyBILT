@@ -21,7 +21,7 @@ DOI: 10.1021/jp803414g
 # numpy
 import numpy as np
 # import my running stats class
-from vorbilt.common.running_stats import *
+from pybilt.common.running_stats import *
 import scipy.constants as scicon
 
 

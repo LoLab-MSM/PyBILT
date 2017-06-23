@@ -1,6 +1,6 @@
 import numpy as np
 #import the running stats class
-from vorbilt.common.running_stats import *
+from pybilt.common.running_stats import *
 
 def vector_to_unit(v):
     #returns the unit vector version of v: v_u = v/|v|

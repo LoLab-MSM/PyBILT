@@ -1,6 +1,6 @@
 #Same protocol as sample_script_1 without using the input setup file.
 
-import vorbilt.bilayer_analyzer.bilayer_analyzer as ba
+import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 
 analyzer = ba.BilayerAnalyzer(structure='../../sample_bilayer/sample_bilayer.psf',
     trajectory='../../sample_bilayer/sample_bilayer_10frames.dcd',

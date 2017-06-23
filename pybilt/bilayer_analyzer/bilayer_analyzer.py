@@ -4,7 +4,7 @@ This module defines the BilayerAnalyzer class that can be used to build protocol
 for the analysis of a lipid bilayer trajectory.
 
 Example:
-    >> import vorbilt.bilayer_analyzer as ba
+    >> import pybilt.bilayer_analyzer as ba
     >> analyzer = ba.BilayerAnalyzer(input_file="setup.in")
     >> analyzer.run_analysis()
     >> analyzer.dump_data()
@@ -25,14 +25,14 @@ import multiprocessing
 # VORBILT imports
 import com_frame as cf
 import leaflet as lf
-import vorbilt.lipid_grid.lipid_grid as lg
+import pybilt.lipid_grid.lipid_grid as lg
 import analysis_protocols as ap
 import plot_protocols as pp
-from vorbilt.common.running_stats import *
+from pybilt.common.running_stats import *
 import mda_data as md
 
 # import the coordinate wrapping function--for unwrapping
-from vorbilt.mda_tools.mda_unwrap import wrap_coordinates, \
+from pybilt.mda_tools.mda_unwrap import wrap_coordinates, \
     wrap_coordinates_parallel
 
 default_analysis_commands = ['msd msd_1']

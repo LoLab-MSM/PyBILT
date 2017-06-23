@@ -1,10 +1,10 @@
-import vorbilt.bilayer_analyzer.bilayer_analyzer as ba
-import vorbilt.com_trajectory.COMTraj as comtraj
+import pybilt.bilayer_analyzer.bilayer_analyzer as ba
+import pybilt.com_trajectory.COMTraj as comtraj
 import MDAnalysis as mda
 import numpy as np
 def test_msd():
-    analyzer = ba.BilayerAnalyzer(structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
-                                  trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+    analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
+                                  trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
                                   selection="not resname CLA and not resname TIP3 and not resname POT")
 
 
@@ -15,7 +15,7 @@ def test_msd():
     print("MSD from BilayerAnalyzer:")
     print(msd_dat_a)
 
-    u = mda.Universe('../vorbilt/sample_bilayer/sample_bilayer.psf', '../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd')
+    u = mda.Universe('../pybilt/sample_bilayer/sample_bilayer.psf', '../pybilt/sample_bilayer/sample_bilayer_10frames.dcd')
     bilayer_sel = u.select_atoms("not resname CLA and not resname TIP3 and not resname POT")
     ct = comtraj.COMTraj(u.trajectory,bilayer_sel)
     msd_dat_b = ct.calc_msd()
@@ -25,8 +25,8 @@ def test_msd():
     print("BilayerAnalyzer and COMTraj match: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001)))
 
     #redo bilayer_anlayzer calc, but use the iterator looper
-    analyzer = ba.BilayerAnalyzer(structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
-                                  trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+    analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
+                                  trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
                                   selection="not resname CLA and not resname TIP3 and not resname POT")
 
 

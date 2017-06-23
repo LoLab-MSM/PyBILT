@@ -1,5 +1,5 @@
-from vorbilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
-from vorbilt.bilayer_analyzer.analysis_protocols import valid_analysis
+from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
+from pybilt.bilayer_analyzer.analysis_protocols import valid_analysis
 
 #define tests
 
@@ -9,8 +9,8 @@ def test_input_options():
     #initialize analyzer with keyword options--and default analysis
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
-        structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
-        trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+        structure='../pybilt/sample_bilayer/sample_bilayer.psf',
+        trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
         selection=sel_string,
     )
     #add analysis by string input
@@ -34,8 +34,8 @@ def test_input_options():
 
     #now initialize with an input dictionary
     # define the input dictionary
-    input_dict = {'structure' : '../vorbilt/sample_bilayer/sample_bilayer.psf',
-                 'trajectory' : '../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+    input_dict = {'structure' : '../pybilt/sample_bilayer/sample_bilayer.psf',
+                 'trajectory' : '../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
                   'selection' : 'resname POPC or resname DOPE or resname TLCL2'
                  }
 
@@ -52,8 +52,8 @@ def test_analysis_defaults():
     print("testing the default settings of all analysis protocols...")
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
-        structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
-        trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+        structure='../pybilt/sample_bilayer/sample_bilayer.psf',
+        trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
         selection=sel_string,
     )
     for key in valid_analysis:
@@ -73,8 +73,8 @@ def test_analysis_iterator():
     # initialize analyzer with keyword options--and default analysis
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"
     ba = BilayerAnalyzer(
-        structure='../vorbilt/sample_bilayer/sample_bilayer.psf',
-        trajectory='../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd',
+        structure='../pybilt/sample_bilayer/sample_bilayer.psf',
+        trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
         selection=sel_string,
     )
     # add analysis by string input

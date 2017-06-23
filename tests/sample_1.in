@@ -1,8 +1,8 @@
 #set the structure file (psf) for the system
-structure ../vorbilt/sample_bilayer/sample_bilayer.psf
+structure ../pybilt/sample_bilayer/sample_bilayer.psf
 
 #set the trajectory file
-trajectory ../vorbilt/sample_bilayer/sample_bilayer_10frames.dcd
+trajectory ../pybilt/sample_bilayer/sample_bilayer_10frames.dcd
 
 #MDAnalysis syntax selection text to select the bilayer
 selection "not resname CLA and not resname TIP3 and not resname POT"

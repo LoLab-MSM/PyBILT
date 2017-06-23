@@ -8,7 +8,7 @@
 
 import numpy as np
 #import my running stats class
-from vorbilt.common.running_stats import *
+from pybilt.common.running_stats import *
 
 class LipidGrid_2d:
     def __init__(self, com_frame, com_frame_indices,plane,nxbins=50,nybins=50, embedded_protein=None):

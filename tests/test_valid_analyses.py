@@ -1,4 +1,4 @@
-from vorbilt.bilayer_analyzer.bilayer_analyzer import print_valid_analyses
+from pybilt.bilayer_analyzer.bilayer_analyzer import print_valid_analyses
 
 def test_print_valid_analyses():
     print("testing call to print_valid_analyses function...")

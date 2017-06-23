@@ -1,5 +1,5 @@
 import numpy as np
-from vorbilt.common import distance_cutoff_clustering as dc_cluster
+from pybilt.common import distance_cutoff_clustering as dc_cluster
 
 def test_dc_clustering():
     #Euclidean distance

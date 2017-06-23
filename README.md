@@ -1,21 +1,21 @@
-# VORBILT
-## *V*anderbilt-*O*ak *R*idge *BIL*ayer analysis *T*oolkit
-#### VORBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
+# PyBILT
+## *Py*thon based *BIL*ayer analysis *T*oolkit
+#### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
 ### Install
 
-#### Warning: VORBILT is still under heavy development and may rapidly change.
+#### Warning: PyBILT is still under heavy development and may rapidly change.
 
-Download VORBILT from the github repo (https://github.com/blakeaw/VORBILT.git)
-and then add the path to the VORBILT directory to your PYTHONPATH. From a
+Download PyBILT from the github repo (https://github.com/blakeaw/PyBILT.git)
+and then add the path to the PyBILT directory to your PYTHONPATH. From a
 terminal you can type
 ```
-export PYTHONPATH="path_to/VORBILT:$PYTHONPATH
+export PYTHONPATH="path_to/PyBILT:$PYTHONPATH
 ```
 to add it to the current shell environment. For persistence add the line to your
 .bashrc file.
 
-VORBILT has the following major dependencies:
+PyBILT has the following major dependencies:
    * MDAnalysis 0.15.0
    * NumPy  1.11.3
    * SciPy 0.18.1,
@@ -25,7 +25,7 @@ VORBILT has the following major dependencies:
 
 In addition, it is highly recommended that you install
 [Anaconda Python](https://www.continuum.io/)
-version 4.3.1 Python 2.7 before installing VORBILT. VORBILT
+version 4.3.1 Python 2.7 before installing PyBILT. PyBILT
 has yet to be tested outside of an Anaconda environment.
 
 #### Setup using Anaconda's conda tool
@@ -39,10 +39,10 @@ dependencies. Then activate the environment
 ```
 source activate vorbilt
 ```
-before running VORBILT modules.
+before running PyBILT modules.
 
-#### Quick overview of VORBILT
-**VORBILT** is composed of 5 major modules:
+#### Quick overview of PyBILT
+**PyBILT** is composed of 5 major modules:
   * bilayer_analyzer -- The bilayer_analyzer is the primary analysis module.
                         This object has the most comprehensive set of built-in
                         features (types of analyses and use of different bilayer

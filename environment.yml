@@ -1,4 +1,4 @@
-name: vorbilt
+name: pybilt
 channels:
 - !!python/unicode
   'conda-forge'
@@ -440,5 +440,5 @@ dependencies:
   - jupyter-core==4.2.1
   - prompt-toolkit==1.0.9
   - tables==3.3.0
-prefix: !!python/unicode '/home/blake/anaconda2/envs/vorbilt'
+prefix: !!python/unicode '/home/blake/anaconda2/envs/pybilt'
 
