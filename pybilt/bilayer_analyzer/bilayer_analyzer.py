@@ -22,7 +22,7 @@ except:
 import os
 import multiprocessing
 
-# VORBILT imports
+# PyBILT imports
 import com_frame as cf
 import leaflet as lf
 import pybilt.lipid_grid.lipid_grid as lg

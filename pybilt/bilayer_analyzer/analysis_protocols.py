@@ -46,7 +46,7 @@ try:
 except:
     import pickle
 
-# VORBILT imports
+# PyBILT imports
 from pybilt.common.running_stats import *
 import pybilt.mda_tools.mda_density_profile as mda_dp
 import pybilt.lipid_grid.lipid_grid_curv as lgc
