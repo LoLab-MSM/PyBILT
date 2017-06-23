@@ -34,10 +34,10 @@ environment with all the appropriate dependencies using the conda tool. Run
 ```
 conda env create -f environment.yml
 ```
-which will create a new conda environment named vorbilt with the appropriate
+which will create a new conda environment named *pybilt* with the appropriate
 dependencies. Then activate the environment
 ```
-source activate vorbilt
+source activate pybilt
 ```
 before running PyBILT modules.
 
