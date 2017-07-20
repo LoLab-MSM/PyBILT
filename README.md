@@ -1,17 +1,18 @@
 # PyBILT
 ## *Py*thon based lipid *BIL*ayer analysis *T*oolkit
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
+
 The analyses include (but are not limited to),
-    * Mean Squared Displacement (MSD)
-    * Diffusion coefficent estimators (from MSD curves) - includes Einstein relation, linear fit, and anomalous diffusion fit.
-    * Area per lipid estimators
-    * Bilayer thickness
-    * Displacement Vector (flow) maps and correlations
-    * Deuterium order parameter
-    * Orientation parameters
-    * Mass and Electron Density Estimators
-    * and more!
-    
+   * Mean Squared Displacement (MSD)
+   * Diffusion coefficent estimators (from MSD curves) - includes Einstein relation, linear fit, and anomalous diffusion fit.
+   * Area per lipid estimators
+   * Bilayer thickness
+   * Displacement Vector (flow) maps and correlations
+   * Deuterium order parameter
+   * Orientation parameters
+   * Mass and Electron Density Estimators
+   * and more!
+
 ### Install
 
 #### Warning: PyBILT is still under heavy development and may rapidly change.
