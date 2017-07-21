@@ -1,6 +1,8 @@
 name: pybilt
 channels:
 - !!python/unicode
+  'mdanalysis'
+- !!python/unicode
   'conda-forge'
 - !!python/unicode
   'defaults'
