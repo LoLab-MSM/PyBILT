@@ -1,3 +1,4 @@
+
 """Analysis Protocols
 
 This is a support module that defines a set of classes used to contruct the 'analysis protocol' and the 'analysis' used
@@ -1963,7 +1964,7 @@ class ALDProtocol(AnalysisProtocol):
         self._parse_args(args)
         self.save_file_name = self.analysis_id + ".pickle"
         # storage for output
-        L_stat = RunningStats()
+        self.L_stat = RunningStats()
         self.analysis_output = []
         return
 
@@ -2029,9 +2030,9 @@ class ALDProtocol(AnalysisProtocol):
         for val in dr:
             m_dr.append(np.sqrt(np.dot(val, val)))
         L = np.abs(m_dr).sum()/len(m_dr)
-        L_stat.push(L)
+        self.L_stat.push(L)
         # get the msd for the current selection
-        Lcurr = L_stat.mean()
+        Lcurr = self.L_stat.mean()
         msd[0] = dt
         msd[1] = Lcurr
         self.analysis_output.append(msd)
@@ -2120,7 +2121,7 @@ class AreaCompressibilityProtocol(AnalysisProtocol):
         avg_area_fluctuation = self.area_fluctuation.mean()
         X_T = avg_area_fluctuation/(area_mean*scicon.k*self.settings['temperature'])
         #conversion factor for Angstrom^2/Joules to meter^2/Joule
-        Ka*=10.0**(-20)
+        X_T*=10.0**(-20)
         time = ba_reps['current_mda_frame'].time
         self.analysis_output.append([time, X_T])
         self.n_frames += 1
@@ -2171,7 +2172,7 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
         norm = ba_settings['norm']
         if self.first_comp:
             if self.settings['resname'] == 'first':
-                groups = ba_reps['leaflets'][self.setttings['leaflet']].get_group_names()
+                groups = ba_reps['leaflets'][self.settings['leaflet']].get_group_names()
                 self.settings['resname'] = groups[0]
             com_frame = ba_reps['com_frame']
             #norm_vec = np.zeros(3)
@@ -2266,7 +2267,7 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
         norm = ba_settings['norm']
         if self.first_comp:
             if self.settings['resname'] == 'first':
-                groups = ba_reps['leaflets'][self.setttings['leaflet']].get_group_names()
+                groups = ba_reps['leaflets'][self.settings['leaflet']].get_group_names()
                 self.settings['resname'] = groups[0]
             com_frame = ba_reps['com_frame']
             #norm_vec = np.zeros(3)
