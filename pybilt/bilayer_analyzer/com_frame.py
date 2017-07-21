@@ -50,7 +50,7 @@ class LipidCOM:
         self.type = mda_residue.resname
         self.resid = mda_residue.resid
         self.atom_names = mda_residue.atoms.names
-        atom_group = mda_residue
+        atom_group = mda_residue.atoms
         if isinstance(name_dict, dict):
 
             names = name_dict[self.type]
