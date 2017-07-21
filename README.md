@@ -27,7 +27,7 @@ to add it to the current shell environment. For persistence add the line to your
 .bashrc file.
 
 PyBILT has the following major dependencies:
-   * MDAnalysis 0.15.0
+   * MDAnalysis 0.16.0
    * NumPy  1.11.3
    * SciPy 0.18.1,
    * Matplotlib 2.0.0

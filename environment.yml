@@ -14,7 +14,7 @@ dependencies:
 - !!python/unicode
   'libnetcdf=4.4.1.1=4'
 - !!python/unicode
-  'mdanalysis=0.15.0=np111_0'
+  'mdanalysis=0.16.0=np111_0'
 - !!python/unicode
   'mmtf-python=1.0.5=py27_0'
 - !!python/unicode
