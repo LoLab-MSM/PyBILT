@@ -1046,7 +1046,13 @@ class COMTraj:
             r=0
             for res in mem_sel.residues:
                 cframe.lipidcom[r].extract(res, box=dimensions)
-                cframe.lipidcom[r].mass = res.total_mass()
+                masses = res.atoms.masses
+                if len(masses) > 1:
+                    cframe.lipidcom[r].mass = masses.sum()
+                elif len(masses) == 1:
+                    cframe.lipidcom[r].mass = masses[0]
+
+                #print(cframe.lipidcom[r].mass)
                 r+=1
             #append the frame
             self.frame.append(cframe)
