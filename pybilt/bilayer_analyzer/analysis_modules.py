@@ -209,3 +209,86 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=[]
 
 
     return
+
+
+def area_per_lipid(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path=None):
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    #remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    #add the apl analyses
+    analyzer.add_analysis("apl_box apl_box")
+    analyzer.add_analysis("apl_grid apl_grid")
+
+    analyzer.print_analysis_protocol()
+
+    #add the plots
+    analyzer.add_plot("apl apl_box apl_box None")
+    analyzer.add_plot("apl apl_p apl_box Box apl_grid None")
+    analyzer.add_plot("apl apl_grid apl_grid None")
+
+    analyzer.print_plot_protocol()
+
+    #run analysis
+    analyzer.run_analysis()
+
+    #output data and plots
+    analyzer.dump_data(path=dump_path)
+    analyzer.save_all_plots()
+
+    return
+
+def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path=None, name_dict=None):
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
+    # add the analysis
+    analyzer.add_analysis("bilayer_thickness bt")
+
+    analyzer.print_analysis_protocol()
+    #add the plot
+    analyzer.add_plot("bilayer_thickness bt_p bt")
+
+    analyzer.print_plot_protocol()
+
+    #run analysis
+    analyzer.run_analysis()
+
+    #output data and plots
+    analyzer.dump_data(path=dump_path)
+    analyzer.save_all_plots()
+
+    return
+
+def compressibility(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path=None, temperature=298.15):
+
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+
+    # add the analyses
+    # area compressibility modulus
+    analyzer.add_analysis("acm acm temperature "+str(temperature))
+    # volume compressibility modulus
+    analyzer.add_analysis("vcm vcm temperature " + str(temperature))
+    # area compressibility -- (not modulus)
+    analyzer.add_analysis("ac ac temperature " + str(temperature))
+    analyzer.print_analysis_protocol()
+
+    return
