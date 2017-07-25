@@ -82,15 +82,16 @@ class LipidCOM:
                 True - The COM coordinates are stored in the container designated
                 for the unwrapped coordinate representation.
         """
+        atoms = mda_residue.atoms
         if unwrap:
-            self.com_unwrap = mda_residue.center_of_mass()
+            self.com_unwrap = atoms.center_of_mass()
 
         else:
             if box is not None:
-                self.com = mda_residue.center_of_mass()
+                self.com = atoms.center_of_mass()
                 self.com_unwrap = self.com[:]
             else:
-                self.com = mda_residue.center_of_mass()
+                self.com = atoms.center_of_mass()
                 self.com_unwrap = self.com[:]
 
         self.type=mda_residue.resname
