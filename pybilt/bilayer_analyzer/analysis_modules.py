@@ -290,5 +290,44 @@ def compressibility(structure_file, trajectory_file, selection_string, frame_sta
     # area compressibility -- (not modulus)
     analyzer.add_analysis("ac ac temperature " + str(temperature))
     analyzer.print_analysis_protocol()
+    analyzer.run_analysis()
+    acm = analyzer.get_analysis_data('acm')
+    vcm = analyzer.get_analysis_data('vcm')
+    ac = analyzer.get_analysis_data('ac')
+    print(acm)
+    print("Area compressibility modulus: {} mN/m".format(acm[-1:,1]))
+    print("Area compressibility: {} m/mN".format(ac[-1:,1]))
+    print("Volume compressibility modulus: {} J/Angstrom^3".format(vcm[-1:,1]))
+
+    return
+
+def dispvector_correlation(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path=None):
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    #remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    #add the apl analyses
+    analyzer.add_analysis("apl_box apl_box")
+    analyzer.add_analysis("apl_grid apl_grid")
+
+    analyzer.print_analysis_protocol()
+
+    #add the plots
+    analyzer.add_plot("apl apl_box apl_box None")
+    analyzer.add_plot("apl apl_p apl_box Box apl_grid None")
+    analyzer.add_plot("apl apl_grid apl_grid None")
+
+    analyzer.print_plot_protocol()
+
+    #run analysis
+    analyzer.run_analysis()
+
+    #output data and plots
+    analyzer.dump_data(path=dump_path)
+    analyzer.save_all_plots()
 
     return

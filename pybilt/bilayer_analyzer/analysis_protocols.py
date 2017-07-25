@@ -1915,8 +1915,9 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
             Ka = 0.0
         else:
             Ka = (self.area_run.mean()*scicon.k*self.settings['temperature'])/self.area_run.variance()
-        #print "<A>: ", self.area_run.mean(), " var(A): ",self.area_run.variance()
-        #conversion factor for Joules/Angstron^2 to milliNewtons/meter
+        print "<A>: ", self.area_run.mean(), " var(A): ",self.area_run.variance()
+        print "T: ",self.settings['temperature']," k: ",scicon.k
+        #conversion factor for Joules/Angstrom^2 to milliNewtons/meter
         Ka*=10.0**23
 
         time = ba_reps['current_mda_frame'].time
@@ -2119,9 +2120,10 @@ class AreaCompressibilityProtocol(AnalysisProtocol):
         fluctuation = (area - area_mean)**2
         self.area_fluctuation.push(fluctuation)
         avg_area_fluctuation = self.area_fluctuation.mean()
-        X_T = avg_area_fluctuation/(area_mean*scicon.k*self.settings['temperature'])
+       # X_T = avg_area_fluctuation/(area_mean*scicon.k*self.settings['temperature'])
+        X_T = self.area_run.variance() / (area_mean * scicon.k * self.settings['temperature'])
         #conversion factor for Angstrom^2/Joules to meter^2/Joule
-        X_T*=10.0**(-20)
+        X_T*=10.0**(-23)
         time = ba_reps['current_mda_frame'].time
         self.analysis_output.append([time, X_T])
         self.n_frames += 1
