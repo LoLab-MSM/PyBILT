@@ -2,7 +2,7 @@ import numpy as np
 
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 from pybilt.mda_tools import diffusion_coefficients as dc
-
+import pybilt.plot_generation.plot_generation_functions as pgf
 
 
 
@@ -310,10 +310,14 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
     #remove the default msd analysis
     analyzer.remove_analysis('msd_1')
     #add the apl analyses
-    analyzer.add_analysis("disp_vec disp_vec")
+    #compute the displacment vectors for maps
+    analyzer.add_analysis("disp_vec disp_vec_upper scale True wrapped True leaflet upper")
+    analyzer.add_analysis("disp_vec disp_vec_lower scale True wrapped True leaflet lower")
+    #compute the full correlation matrix between displacement vectors (i.e. cos(theta))
     analyzer.add_analysis("disp_vec_corr disp_vec_corr")
-    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr")
-
+    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
+    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper")
+    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower leaflet lower")
     analyzer.print_analysis_protocol()
 
     #run analysis
@@ -321,6 +325,41 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
 
     #output data and plots
     analyzer.dump_data(path=dump_path)
-    analyzer.save_all_plots()
+
+
+    #generate the plots/maps for displacement vectors
+    disp_vecs = analyzer.get_analysis_data('disp_vec_upper')
+    counter=0
+    number = str(len("{}".format(len(disp_vecs)) )+1)
+    form = "{:0"+number+"d}"
+    for disp_vec in disp_vecs:
+        count = form.format(counter)
+        filename = "step_vector_map_upper_"+count+".eps"
+        filename_b = "step_vector_map_upper_"+count+".png"
+        pgf.plot_step_vectors(disp_vec, filename=filename)
+        pgf.plot_step_vectors(disp_vec, filename=filename_b)
+
+    disp_vecs = analyzer.get_analysis_data('disp_vec_lower')
+    counter=0
+    number = str(len("{}".format(len(disp_vecs)) )+1)
+    form = "{:0"+number+"d}"
+    for disp_vec in disp_vecs:
+        count = form.format(counter)
+        filename = "step_vector_map_lower_"+count+".eps"
+        filename_b = "step_vector_map_lower_"+count+".png"
+        pgf.plot_step_vectors(disp_vec, filename=filename)
+        pgf.plot_step_vectors(disp_vec, filename=filename_b)
+
+    disp_vec_corrs = analyzer.get_analysis_data('disp_vec_corr')
+    counter = 0
+    number = str(len("{}".format(len(disp_vecs))) + 1)
+    form = "{:0" + number + "d}"
+    for disp_vec_corr in disp_vec_corrs:
+        corr_mat = disp_vec_corr[0]
+        count = form.format(counter)
+        filename = "step_vector_correlation_map_" + count + ".eps"
+        filename_b = "step_vector_correlation_map_" + count + ".png"
+        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
+        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
 
     return
