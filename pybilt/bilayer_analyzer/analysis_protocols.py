@@ -690,7 +690,8 @@ command_protocols['apl_grid'] = APLGridProtocol
 valid_analysis.append('disp_vec')
 analysis_obj_name_dict['disp_vec'] = 'com_frame'
 
-
+#need to think more about box scaling (settings['scale']). currently if set True
+# will scale by the box size of the reference frame
 class DispVecProtocol(AnalysisProtocol):
     def __init__(self, args):
 
@@ -706,6 +707,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
         self.settings['interval'] = 5
+        self.settings['scale'] = False
         self._valid_settings = self.settings.keys()
         #self.leaflet = 'both'
         #self.group = 'all'
@@ -794,6 +796,10 @@ class DispVecProtocol(AnalysisProtocol):
             # get the current frame
             curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
+
+            #get box dimensions for reference frame (i.e. prev_frame)
+            box = prev_frame.box
+            box_lateral = box[ba_settings['lateral']]
             # get the coordinates for the selection at this frame
             vec_ends = np.zeros((n_com, 4))
             # vec_ends = []
@@ -807,6 +813,14 @@ class DispVecProtocol(AnalysisProtocol):
                 com_j = prev_frame.lipidcom[i].com_unwrap[
                     ba_settings['lateral']]
                 com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
+                if self.settings['scale']:
+                    com_i[0]/=box_lateral[0]
+                    com_i[1]/=box_lateral[1]
+                    com_j[0]/=box_lateral[0]
+                    com_j[1]/=box_lateral[1]
+                    com_j_w[0]/=box_lateral[0]
+                    com_j_w[1]/=box_lateral[1]
+
                 if self.settings['wrapped']:
                     vec_ends[count, 0] = com_j_w[0]
                     vec_ends[count, 1] = com_j_w[1]
@@ -815,6 +829,7 @@ class DispVecProtocol(AnalysisProtocol):
                     vec_ends[count, 1] = com_j[1]
                 vec_ends[count, 2] = com_i[0] - com_j[0]
                 vec_ends[count, 3] = com_i[1] - com_j[1]
+
                 #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
                 count += 1
             self.analysis_output.append([vec_ends, resnames])
