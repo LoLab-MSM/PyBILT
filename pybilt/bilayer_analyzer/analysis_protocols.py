@@ -738,6 +738,8 @@ class DispVecProtocol(AnalysisProtocol):
                 elif arg_key == 'wrapped':
                     arg_arg = arg_arg in ['True', 'true']
                     arg_dict[arg_key] = arg_arg
+                elif arg_key == 'scale':
+                    arg_arg = arg_arg in ['True', 'true']
             elif arg_key == 'analysis_id':
                 pass
             else:
