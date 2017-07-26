@@ -47,7 +47,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     vx = vectors_resnames[0][:,2]
     vy = vectors_resnames[0][:,3]
     step_vec_plot = plt.figure()
-    resnames = set(vectors_resnames[1])
+    resnames = sorted(set(vectors_resnames[1]))
     i = 0
     color_dict = {}
     for res in resnames:
@@ -360,6 +360,30 @@ def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.eps', show=Fal
     #c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)
     if colorbar:
         plt.colorbar()
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+
+def plot_corr_mat_as_scatter(in_corrmat, save=True, filename='correlation_matrix.eps', show=False ):
+    ax_l = len(in_corrmat)
+
+    x_axes = np.zeros(ax_l ** 2, dtype=np.int)
+    y_axes = np.zeros(ax_l ** 2, dtype=np.int)
+    c = np.zeros(ax_l ** 2)
+    k = 0
+    for i in xrange(ax_l):
+        for j in xrange(ax_l):
+            x_axes[k] = i
+            y_axes[k] = j
+            c[k] = in_corrmat[i, j]
+            k += 1
+    cma = plt.cm.get_cmap('viridis')
+    plt.scatter(x_axes, y_axes, c=c, marker='s', s=10, edgecolors='none', cmap=cma, vmin=-1.0, vmax=1.0)
+    plt.colorbar()
     if save:
         plt.savefig(filename)
     if show:
