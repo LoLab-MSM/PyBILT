@@ -1,7 +1,7 @@
 import numpy as np
 
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
-from pybilt.mda_tools import diffusion_coefficients as dc
+from pybilt.diffusion import diffusion_coefficients as dc
 import pybilt.plot_generation.plot_generation_functions as pgf
 
 
@@ -362,4 +362,38 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
 
+    return
+
+def PN_orientational_angle(structure_file, trajectory_file, selection_string, lipid_resnames, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path=None):
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                             trajectory=trajectory_file,
+                             selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    #remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    #add the loa analyses
+    for resname in lipid_resnames:
+        analyzer.add_analysis("loa loa_"+resname+"_upper leaflet upper resname "+resname)
+        analyzer.add_analysis("loa loa_"+resname+"_lower leaflet lower resname "+resname)
+    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
+    analyzer.print_analysis_protocol()
+
+    #run analysis
+    analyzer.run_analysis()
+
+    #output data and plots
+    analyzer.dump_data(path=dump_path)
+
+    for resname in lipid_resnames:
+        loa_upper = analyzer.get_analysis_data("loa_"+resname+"_upper")
+        loa_lower = analyzer.get_analysis_data("loa_"+resname+"_lower")
+        print("Lipid resname {} has average PN orientation anlge of {} in the upper leaflet".format(resname,loa_upper[-1][1]))
+        complement = 90.0 - loa_upper[-1][1]
+        print("    complement angle: {}".format(complement))
+        print("Lipid resname {} has average PN orientation anlge of {} in the lower leaflet".format(resname,np.abs(loa_lower[-1][1])))
+        complement = 90.0 - np.abs(loa_lower[-1][1])
+        print("    complement angle: {}".format(complement))
+        print(" ")
     return
