@@ -1358,6 +1358,8 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
                 count += 1
             corr_mat = np.zeros((n_com, n_com))
             #loop over vectors
+            for i in range(n_com):
+                corr_mat[i,i] = 1.0
 
             for i in range(n_com-1):
                 vec_end_a = vec_ends[i]
