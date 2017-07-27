@@ -397,3 +397,41 @@ def PN_orientational_angle(structure_file, trajectory_file, selection_string, li
         print("    complement angle: {}".format(complement))
         print(" ")
     return
+
+def nearest_neighbor_fraction(structure_file, trajectory_file, selection_string, lipid_resnames, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path=None):
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                             trajectory=trajectory_file,
+                             selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    #remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    nres = len(lipid_resnames)
+    pairs = []
+    for i in range(nres):
+        pairs.append([lipid_resnames[i], lipid_resnames[i]])
+    for i in range(nres-1):
+        for j in range(i+1, nres):
+            pairs.append([lipid_resnames[i], lipid_resnames[j]])
+    #add the loa analyses
+    for pair in pairs:
+        l1 = pair[0]
+        l2 = pair[1]
+        analyzer.add_analysis("nnf nnf_"+l1+"_"+l2+" resname_1 "+l1+" resname_2 "+l2)
+    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
+    analyzer.print_analysis_protocol()
+    print(" ")
+
+    #run analysis
+    analyzer.run_analysis()
+
+    #output data and plots
+    analyzer.dump_data(path=dump_path)
+
+    for pair in pairs:
+        l1 = pair[0]
+        l2 = pair[1]
+        t_nnf = analyzer.get_analysis_data("nnf_"+l1+"_"+l2)
+        print("Nearest neighbor fraction for lipid pair {} and {} : {:0.4f} +- {:0.4f}".format(l1,l2,t_nnf[-1][2],t_nnf[-1][3]))
+    return
