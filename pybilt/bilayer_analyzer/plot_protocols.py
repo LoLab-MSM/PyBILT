@@ -472,7 +472,7 @@ class BTPlotProtocol(PlotFunctionProtocol):
     def parse_args(self, args):
         # print args
         nargs = len(args)
-        for i in range(1, nargs, 2):
+        for i in range(1, nargs-1, 2):
             arg_key = args[i]
             arg_arg = args[i + 1]
             if arg_key in self.valid_args:
