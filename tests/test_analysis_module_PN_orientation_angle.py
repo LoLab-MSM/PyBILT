@@ -1,5 +1,5 @@
 
-from pybilt.bilayer_analyzer.analysis_modules import PN_orientational_angle
+from pybilt.analysis_modules import PN_orientational_angle
 
 
 def test_analysis_module_PN_orientation_anlge():

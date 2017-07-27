@@ -1,5 +1,5 @@
 
-from pybilt.bilayer_analyzer.analysis_modules import nearest_neighbor_fraction
+from pybilt.analysis_modules import nearest_neighbor_fraction
 
 
 def test_analysis_module_nearest_neihbor_fraction():

@@ -1,5 +1,5 @@
 
-from pybilt.bilayer_analyzer.analysis_modules import msd_diffusion
+from pybilt.analysis_modules import msd_diffusion
 
 
 def test_analysis_module_msd_diffusion():

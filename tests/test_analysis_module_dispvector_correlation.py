@@ -1,5 +1,5 @@
 
-from pybilt.bilayer_analyzer.analysis_modules import dispvector_correlation
+from pybilt.analysis_modules import dispvector_correlation
 
 
 def test_analysis_module_dispvector_correlation():
