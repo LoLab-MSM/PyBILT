@@ -239,6 +239,14 @@ def area_per_lipid(structure_file, trajectory_file, selection_string, frame_star
     #output data and plots
     analyzer.dump_data(path=dump_path)
     analyzer.save_all_plots()
+    #print final ensemble averages to stdout
+    apl_box = analyzer.get_analysis_data('apl_box')
+    print("Area per lipid estimates (squared Angstrom): ")
+    print("  via the box dimensions: {:0.4f} +- {:0.4f}".format(apl_box[-1][2], apl_box[-1][3]))
+    print("  via the gridding procedure: ")
+    apl_grid = analyzer.get_analysis_data('apl_grid')
+    for item in apl_grid.keys():
+        print("    {}: {:0.4f} +- {:0.4f}".format(item, apl_grid[item][-1][2], apl_grid[item][-1][3]))
 
     return
 
@@ -268,6 +276,9 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     #output data and plots
     analyzer.dump_data(path=dump_path)
     analyzer.save_all_plots()
+    #output final ensemble average to stdout
+    bt = analyzer.get_analysis_data('bt')
+    print("Bilayer thickness from gridding procedure: {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3]))
 
     return
 
