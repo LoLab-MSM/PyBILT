@@ -266,7 +266,7 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
 
     analyzer.print_analysis_protocol()
     #add the plot
-    analyzer.add_plot("bilayer_thickness bt_p bt")
+    analyzer.add_plot("bilayer_thickness bt_p bt None")
 
     analyzer.print_plot_protocol()
 
@@ -278,7 +278,7 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     analyzer.save_all_plots()
     #output final ensemble average to stdout
     bt = analyzer.get_analysis_data('bt')
-    print("Bilayer thickness from gridding procedure: {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3]))
+    print("Bilayer thickness from gridding procedure (Angstrom): {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3]))
 
     return
 

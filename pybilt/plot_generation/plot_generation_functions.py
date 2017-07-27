@@ -457,8 +457,8 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thicknes
             t/=1000.0
         elif time_in == 'ns' and time_out == 'ps':
             t*=1000.0
-        bt = bt_d[::interval,1]
-        error = bt_d[::interval,2]
+        bt = bt_d[::interval,2]
+        error = bt_d[::interval,3]
         if name_list is not None:
             plt.errorbar(t, bt, yerr=error,linewidth=2.0,label=name_list[i])
         else:
