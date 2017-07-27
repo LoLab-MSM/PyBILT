@@ -435,3 +435,42 @@ def nearest_neighbor_fraction(structure_file, trajectory_file, selection_string,
         t_nnf = analyzer.get_analysis_data("nnf_"+l1+"_"+l2)
         print("Nearest neighbor fraction for lipid pair {} and {} : {:0.4f} +- {:0.4f}".format(l1,l2,t_nnf[-1][2],t_nnf[-1][3]))
     return
+
+def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path=None, com_sub_selection_dict=None):
+
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                             trajectory=trajectory_file,
+                             selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    #remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+
+    if com_sub_selection_dict is not None:
+        analyzer.rep_settings['com_frame']['name_dict'] = com_sub_selection_dict
+    analyzer.add_analysis("ndcorr norm_disp_correlation")
+    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
+    analyzer.print_analysis_protocol()
+    print(" ")
+
+    #run analysis
+    analyzer.run_analysis()
+
+    #output data and plots
+    analyzer.dump_data(path=dump_path)
+
+    ndcorr = analyzer.get_analysis_data('norm_disp_correlation')
+    print(" ")
+    print("Normal dimension displacement-lipid type cross correlation results:")
+    for leaflet in ndcorr.keys():
+        print("  {} leaflet:".format(leaflet))
+        for lipid_resname in ndcorr[leaflet].keys():
+            mean = ndcorr[leaflet][lipid_resname][-1][2]
+            deviation = ndcorr[leaflet][lipid_resname][-1][3]
+            print("    Lipid resname {}: {:0.4f} +- {:0.4f}".format(lipid_resname, mean, deviation))
+
+    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.png")
+    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.eps")
+
+    return

@@ -480,3 +480,75 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thicknes
         return plt.show()
     plt.close()
     return
+
+def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='normal_displacement_lipid_type_cross_correlation.eps',show=False, save=True):
+
+    color_list = ['red', 'green', 'blue', 'black', 'orange', 'purple', 'yellow']
+    #build the data objects
+    leaflets = sorted(analyzer_data.keys(), reverse=True)
+    count = 0
+    lipid_types = []
+    yvals = []
+    yerr = []
+    for leaflet in leaflets:
+        for lipid_resname in sorted(analyzer_data[leaflet].keys()):
+            if leaflet == 'upper':
+                count+=1
+            mean = analyzer_data[leaflet][lipid_resname][-1][2]
+            deviation = analyzer_data[leaflet][lipid_resname][-1][3]
+            lipid_types.append(lipid_resname)
+            yvals.append(mean)
+            yerr.append(deviation)
+    unique_lipid_types = set(lipid_types)
+    color_dict = {}
+    i =0
+    for type in unique_lipid_types:
+        color_dict[type] = color_list[i]
+        i+=1
+    colors = []
+    for type in lipid_types:
+        colors.append(color_dict[type])
+
+    xval = np.arange(len(yvals))
+    val_by_lipid = {}
+    for i in range(len(xval)):
+        lipid = lipid_types[i]
+        xv = xval[i]
+        yv = yvals[i]
+        ye = yerr[i]
+        color = colors[i]
+        if lipid in val_by_lipid.keys():
+            val_by_lipid[lipid][0].append(xv)
+            val_by_lipid[lipid][1].append(yv)
+            val_by_lipid[lipid][2].append(ye)
+            val_by_lipid[lipid][3].append(color)
+            val_by_lipid[lipid][4].append(lipid)
+        else:
+            val_by_lipid[lipid] = [[xv], [yv], [ye], [color], [lipid]]
+    width = 0.35
+    for lipid_resname in sorted(unique_lipid_types):
+        #print(val_by_lipid[lipid_resname][0])
+
+        plt.bar(val_by_lipid[lipid_resname][0], val_by_lipid[lipid_resname][1], width,
+                yerr=val_by_lipid[lipid_resname][2], color=val_by_lipid[lipid_resname][3][0],
+                label=lipid_resname,
+                error_kw=dict(ecolor=val_by_lipid[lipid_resname][3][0], lw=2, capsize=5, capthick=2))
+
+
+    line_xval = [xval[count-1]+0.5+(width/2.0), xval[count-1]+0.5+(width/2.0)]
+    line_yval = [min(yvals)-max(yerr), max(yvals)+1.25*max(yerr)]
+    plt.plot(line_xval, line_yval, color='black')
+    plt.plot([0, max(xval)+1], [0.0, 0.0], 'k--')
+    plt.text(xval[0]+0.25, max(yvals)+1.25*max(yerr), 'upper leaflet')
+    plt.text(xval[count], max(yvals) + 1.25 * max(yerr), 'lower leaflet')
+    plt.legend(loc=0)
+    plt.xlabel('Lipid type')
+    plt.ylabel('Cross correlation')
+    plt.tick_params(labelbottom='off')
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+
+    return
