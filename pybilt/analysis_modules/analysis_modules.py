@@ -485,3 +485,4 @@ def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, 
     pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.eps")
 
     return
+
