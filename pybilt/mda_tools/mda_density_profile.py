@@ -1,5 +1,8 @@
 import numpy as np
 import pybilt.common.gaussian as gauss
+
+from MDAnalysis.analysis import align
+
 #dictionary of elements and their valence electron counts - used for electron profile density
 valence_dict = {'H':1,'C':4,'N':5,'O':6,'P':5}
 #dictionary of elements and their atomic numbers - used for electron profile density
@@ -367,3 +370,122 @@ def get_intersections(x, y1, y2):
     return output
 
 
+def mass_density_profile_multi_align(universe, mda_selections, align_struct_universe, align_sel_string, fstart=0, fend=-1,
+                                     fstep=1, axis='z', nbins=100, reference=0.0, refsel=None):
+    lat_ind = [0, 1]
+    dir_ind = 2
+    if axis is 'x':
+        dir_ind = 0
+        lat_ind = [1, 2]
+    elif axis is 'y':
+        dir_ind = 1
+        lat_ind = [0, 2]
+    #indices = mda_selection.indices
+
+    # build the mass array
+    masses = {}
+    for key in mda_selections.keys():
+        natoms = len(mda_selections[key])
+        masses[key] = np.zeros(natoms)
+        a = 0
+        for atom in mda_selections[key]:
+            masses[key][a] = atom.mass
+            a  += 1
+
+    nframes = len(universe.trajectory)
+    # adjust the end point for slicing
+    if fend != -1:
+        fend += 1
+    if fend == (nframes - 1) and fstart == (nframes - 1):
+        fend += 1
+    if fend == fstart:
+        fend += 1
+    if fstart < 0:
+        fstart += nframes
+    if fend < 0:
+        fend += nframes + 1
+
+    # get the maximum box dimension along axis
+    bzm = 0.0
+    nframes = 0
+    sel_z = []
+    system_sel = universe.select_atoms('all')
+    for frame in universe.trajectory[fstart:fend:fstep]:
+        #get the unaligned system com and axis coordinate
+        system_com = system_sel.atoms.center_of_mass()
+        system_z = system_com[dir_ind]
+        #now do the alignment and get new com and axis coordinates
+        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        system_com_a = system_sel.atoms.center_of_mass()
+        system_z_a = system_com[dir_ind]
+        dz_a = system_z_a - system_z
+        bzc = frame.dimensions[dir_ind]
+        if bzc > bzm:
+            bzm = bzc
+        ref_sel_z = 0.0
+        if refsel is not None:
+            ref_com = refsel.center_of_mass()
+            ref_sel_z = ref_com[dir_ind]
+            sel_z.append(-ref_sel_z)
+        nframes += 1
+    shiftzmax = 0.0
+    shiftzmin = 0.0
+    if refsel is not None:
+        # reference=sel_z_avg/nframes
+        shiftzmax = min(sel_z)
+        shiftzmin = max(sel_z)
+    # build the profile axis
+    minz = 0.0 + dz_a + shiftzmin
+    maxz = bzm + dz_a + shiftzmax
+    edges = np.linspace(minz, maxz, (nbins + 1), endpoint=True)
+    incr = edges[1] - edges[0]
+    incr_h = incr / 2.0
+    centers = np.zeros(nbins)
+    nedges = len(edges)
+    for i in xrange(1, nedges):
+        j = i - 1
+        centers[j] = edges[j] + incr_h
+
+    counts = np.zeros(nbins)
+    if refsel is None:
+        sel_z = np.zeros(nframes)
+    else:
+        sel_z = np.array(sel_z)
+    f = 0
+    out_counts = {}
+    for key in mda_selections.keys():
+        out_counts[key] = np.zeros(nbins)
+    for frame in universe.trajectory[fstart:fend:fstep]:
+
+        bx = frame.dimensions[lat_ind[0]]
+        by = frame.dimensions[lat_ind[1]]
+        # now do the alignment
+        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        binvolume = incr * bx * by
+        for key in mda_selections.keys():
+            indices = mda_selections[key].indices
+            counts_f = np.zeros(nbins)
+            sel_pos = frame._pos[indices]
+            zpos = sel_pos[:, dir_ind]
+            sel_z_curr = sel_z[f]
+            zpos += sel_z_curr
+            push_index = (zpos - minz) / incr
+            j = 0
+            for i in push_index:
+                ii = int(np.floor(i))
+                if ii >= nbins:
+                    ii = nbins - 1
+                elif ii < 0:
+                    ii = 0
+                counts_f[ii] += masses[key][j]
+                j += 1
+            counts_f /= binvolume
+            out_counts[key] += counts_f
+        f += 1
+    nframes = float(nframes)
+    for key in mda_selections.keys():
+
+        out_counts[key] /= nframes
+    centers -= reference
+
+    return centers, out_counts
