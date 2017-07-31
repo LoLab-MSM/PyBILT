@@ -435,8 +435,8 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         shiftzmax = min(sel_z)
         shiftzmin = max(sel_z)
     # build the profile axis
-    minz = 0.0 + dz_a + shiftzmin
-    maxz = bzm + dz_a + shiftzmax
+    minz = 0.0 + dz_a + shiftzmin - 0.15*(bzm)
+    maxz = bzm + dz_a + shiftzmax + 0.15*(bzm)
     edges = np.linspace(minz, maxz, (nbins + 1), endpoint=True)
     incr = edges[1] - edges[0]
     incr_h = incr / 2.0
