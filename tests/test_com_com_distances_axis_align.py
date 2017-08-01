@@ -1,7 +1,7 @@
-from pybilt.mda_tools.mda_distance import com_com_distance_axis_multi_align
+from pybilt.mda_tools.mda_distance import com_com_distances_axis_align
 import MDAnalysis as mda
 
-def test_com_com_distance_axis_multi_align():
+def test_com_com_distances_axis_align():
 
     u = mda.Universe('../pybilt/sample_bilayer/sample_bilayer.psf', '../pybilt/sample_bilayer/sample_bilayer_10frames.dcd')
     ref = mda.Universe('../pybilt/sample_bilayer/sample_bilayer.psf', '../pybilt/sample_bilayer/sample_bilayer_10frames.dcd')
@@ -10,7 +10,7 @@ def test_com_com_distance_axis_multi_align():
     print(sel_1)
     print(sel_2)
 
-    times, dists = com_com_distance_axis_multi_align(u, [[sel_1, sel_2]], ref, 'resid 1')
+    times, dists = com_com_distances_axis_align(u, [[sel_1, sel_2]], ref, 'resid 1')
 
     print(times)
     print(dists)
@@ -19,4 +19,4 @@ def test_com_com_distance_axis_multi_align():
     return
 
 if __name__ == '__main__':
-    test_com_com_distance_axis_multi_align()
+    test_com_com_distances_axis_align()
