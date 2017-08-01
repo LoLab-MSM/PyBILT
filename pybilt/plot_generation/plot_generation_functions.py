@@ -552,3 +552,57 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
     plt.close()
 
     return
+
+def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filename='position_density_2d.eps', show=False, colorbar=True, vmin=0.0, vmax=None, normalized=False, scaled_to_max=False):
+    #cma = plt.cm.get_cmap('YlGnBu_r')
+    cma = plt.cm.get_cmap('jet')
+   # fig = plt.figure()
+   # ax = fig.add_subplot(111)
+    #create the linear arrays of positions and colors values
+    x_pos = []
+    y_pos = []
+    color_vals = []
+    for i in range(len(x_centers)):
+        for j in range(len(y_centers)):
+            x_pos.append(x_centers[i])
+            y_pos.append(y_centers[j])
+            color_vals.append(counts[i][j])
+    x_pos = np.array(x_pos)
+    y_pos = np.array(y_pos)
+   # print(len(x_pos))
+   # print(len(y_pos))
+    color_vals = np.array(color_vals)
+    if normalized:
+        vmax = 1.0
+        vmin = 0.0
+    if vmin is not None and vmax is None:
+        plt.scatter(x_pos, y_pos, c=color_vals, marker='s',s=50, cmap=cma, vmin=vmin, edgecolors='face')
+    elif vmax is not None and vmin is None:
+        plt.scatter(x_pos, y_pos, c=color_vals, marker='s',s=50, cmap=cma, vmax=vmax, edgecolors='face')
+    elif vmin is not None and vmax is not None:
+        plt.scatter(x_pos, y_pos, c=color_vals, marker='s', s=50, cmap=cma, vmin=vmin, vmax=vmax, edgecolors='face')
+    else:
+        plt.scatter(x_pos, y_pos, c=color_vals, marker='s',s=50, cmap=cma, edgecolors='face')
+    plt.xlabel('x ($\AA$)')
+    plt.ylabel('y ($\AA$)')
+
+    #print in_xyzc[3]
+    #plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s',s=50, cmap=cma)
+    #cax, kw = mpl.colorbar.make_axes(plt.gca())
+    #norm = mpl.colors.Normalize(vmin = min(in_xyzc[3]), vmax = max(in_xyzc[3]), clip = False)
+
+    #c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)
+    if colorbar:
+        cbar = plt.colorbar()
+        if normalized:
+            cbar.ax.set_ylabel('Count (normalized)')
+        elif scaled_to_max:
+            cbar.ax.set_ylabel('Count (scaled to maximum)')
+        else:
+            cbar.ax.set_ylabel('Count')
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
