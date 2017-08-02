@@ -304,6 +304,7 @@ def compressibility(structure_file, trajectory_file, selection_string, frame_sta
     analyzer.add_analysis("ac ac temperature " + str(temperature))
     analyzer.print_analysis_protocol()
     analyzer.run_analysis()
+    analyzer.dump_data(path=dump_path)
     acm = analyzer.get_analysis_data('acm')
     vcm = analyzer.get_analysis_data('vcm')
     ac = analyzer.get_analysis_data('ac')
