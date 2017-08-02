@@ -1,9 +1,9 @@
 # PyBILT
-======
-![docstring-coverage \badge](https://img.shields.io/badge/docstring%20coverage-31.4%25-yellow.svg) 
-======
+------
+![docstring-coverage badge](https://img.shields.io/badge/docstring%20coverage-31.4%25-yellow.svg) 
+------
 ## *Py*thon based lipid *BIL*ayer analysis *T*oolkit
-======
+------
 ![alt text](./_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
@@ -17,7 +17,7 @@ The analyses include:
    * Orientation parameters
    * Mass and Electron Density Estimators
    * and more!
-======
+------
 
 ### Install
 
@@ -45,7 +45,7 @@ In addition, it is highly recommended that you install
 version 4.3.1 Python 2.7 before installing PyBILT. PyBILT
 has yet to be tested outside of an Anaconda environment.
 
-======
+------
 
 #### Setup using Anaconda's conda tool
 The file environment.yml has been provided to allow for easy setup of a new
@@ -60,7 +60,7 @@ source activate pybilt
 ```
 before running PyBILT modules.
 
-======
+------
 
 #### Quick overview of PyBILT
 **PyBILT** is composed of 5 major modules:
