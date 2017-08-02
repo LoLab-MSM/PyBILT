@@ -5,3 +5,6 @@ ignore-patterns:
 ignore-paths:
     - _images
     - jupyter_notebooks
+
+python-targets:
+    - 2
