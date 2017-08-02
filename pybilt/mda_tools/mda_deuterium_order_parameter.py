@@ -5,7 +5,7 @@ from pybilt.common.running_stats import RunningStats
 def vector_to_unit(v):
     #returns the unit vector version of v: v_u = v/|v|
     # magnitude of v
-    v_mag = np.linalg.norm(v)
+    v_mag = np.sqrt(np.dot(v, v))
     return v / v_mag
 
 def angle_between_vectors(v1, v2):
@@ -67,17 +67,17 @@ def build_acyl_index_lists(membrane_lipid_sel):
                     acyl_hydrogens.append(hbond)
     return acyl_carbons,acyl_hydrogens
 
-#average over all acyl groups of all the lipids based on description in Moore et al. 2001 Biophysical Journal 81(5) 2484-2494
-def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fstep=1, norm_axis='z'):
+#helper functions
 
-    bilayer_norm = np.array([0.0,0.0,1.0])
-    if    norm_axis is 'x':
-        bilayer_norm = np.array([1.0,0.0,0.0])
+def _get_bilayer_norm_vector(norm_axis):
+    if norm_axis is 'z':
+        return np.array([0.0,0.0,1.0])
+    elif norm_axis is 'x':
+        return np.array([1.0,0.0,0.0])
     elif norm_axis is 'y':
-        bilayer_norm = np.array([0.0,1.0,0.0])
-    nframes = len(trajectory)
-    
-    #adjust the frame end points for slicing
+        return np.array([0.0,1.0,0.0])
+
+def _adjust_frame_range_for_slicing(fstart, fend, nframes):
     if fend != -1:
         fend+=1
     if fend == (nframes-1) and fstart == (nframes-1):
@@ -88,14 +88,24 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
         fstart+=nframes
     if fend < 0:
         fend+=nframes+1
+    return fstart, fend
+
+#average over all acyl groups of all the lipids based on description in Moore et al. 2001 Biophysical Journal 81(5) 2484-2494
+def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fstep=1, norm_axis='z'):
+
+
+    bilayer_norm = _get_bilayer_norm_vector(norm_axis)
+    nframes = len(trajectory)
     
-    nframes = (fend - fstart)/fstep
-    print "doing frame slice points ",fstart," to ",fend, " with step ",fstep
-    print "total of ",nframes," frames"
+    #adjust the frame end points for slicing
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(trajectory))
+    nframes = (fend-fstart)/fstep
+    print("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep))
+    print("total of {} frames".format(nframes))
     #build the index lists of acyl components
-    print "building index lists for acyl groups"
+    print("building index lists for acyl groups")
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
-    print "there are ",len(acy_carbons)," acyl groups"
+    print("there are {} acyl groups".format(len(acy_carbons)))
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
     Scd_out = np.zeros((nframes,3))
@@ -118,11 +128,7 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
 def deuterium_order_Moore(mda_universe, lipid_segids, lipid_map, fstart=0,fend=-1,fstep=1, norm_axis='z'):
 
     trajectory = mda_universe.trajectory
-    bilayer_norm = np.array([0.0, 0.0, 1.0])
-    if norm_axis is 'x':
-        bilayer_norm = np.array([1.0, 0.0, 0.0])
-    elif norm_axis is 'y':
-        bilayer_norm = np.array([0.0, 1.0, 0.0])
+    bilayer_norm = _get_bilayer_norm_vector(norm_axis)
     nframes = len(trajectory)
     #setup the output container
     output = {}
@@ -132,20 +138,12 @@ def deuterium_order_Moore(mda_universe, lipid_segids, lipid_map, fstart=0,fend=-
             output[lipid_type][number] = RunningStats()
 
     # adjust the frame end points for slicing
-    if fend != -1:
-        fend += 1
-    if fend == (nframes - 1) and fstart == (nframes - 1):
-        fend += 1
-    if fend == fstart:
-        fend += 1
-    if fstart < 0:
-        fstart += nframes
-    if fend < 0:
-        fend += nframes + 1
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, nframes)
 
     nframes = (fend - fstart) / fstep
-    print "doing frame slice points ", fstart, " to ", fend, " with step ", fstep
-    print "total of ", nframes, " frames"
+    print("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep))
+    print("total of {} frames".format(nframes))
+
     for frame in trajectory[fstart:fend:fstep]:
         for lipid_type in lipid_map.keys():
             segid = lipid_segids[lipid_type]
@@ -170,28 +168,16 @@ def deuterium_order_Moore(mda_universe, lipid_segids, lipid_map, fstart=0,fend=-
 #average over all acyl groups of all the lipids based on description in Vermeer Eur Biophys J (2007) 36:919-931
 def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fstep=1, norm_axis='z'):
 
-    bilayer_norm = np.array([0.0,0.0,1.0])
-    if    norm_axis is 'x':
-        bilayer_norm = np.array([1.0,0.0,0.0])
-    elif norm_axis is 'y':
-        bilayer_norm = np.array([0.0,1.0,0.0])
+    bilayer_norm = _get_bilayer_norm_vector(norm_axis)
     nframes = len(trajectory)
     
     #adjust the frame end points for slicing
-    if fend != -1:
-        fend+=1
-    if fend == (nframes-1) and fstart == (nframes-1):
-        fend+=1
-    if fend == fstart:
-        fend+=1
-    if fstart<0:
-        fstart+=nframes
-    if fend < 0:
-        fend+=nframes+1
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, nframes)
     
     nframes = (fend - fstart)/fstep
-    print "doing frame slice points ",fstart," to ",fend, " with step ",fstep
-    print "total of ",nframes," frames"
+    print("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep))
+    print("total of {} frames".format(nframes))
+
     #build the index lists of acyl components
     print "building index lists for acyl groups"
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
