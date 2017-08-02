@@ -214,7 +214,7 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
 
 
 def area_per_lipid(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None):
+                  frame_interval=1, dump_path=None, n_xbins=100, n_ybins=100):
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
@@ -232,6 +232,10 @@ def area_per_lipid(structure_file, trajectory_file, selection_string, frame_star
     analyzer.add_plot("apl apl_box apl_box None")
     analyzer.add_plot("apl apl_p apl_box Box apl_grid None")
     analyzer.add_plot("apl apl_grid apl_grid None")
+
+    #adjust the number of bins for gridding
+    analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
+    analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
 
     analyzer.print_plot_protocol()
 
@@ -253,7 +257,7 @@ def area_per_lipid(structure_file, trajectory_file, selection_string, frame_star
     return
 
 def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None, name_dict=None):
+                  frame_interval=1, dump_path="./", name_dict=None, n_xbins=100, n_ybins=100):
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
@@ -265,6 +269,9 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     # add the analysis
     analyzer.add_analysis("bilayer_thickness bt")
+    #adjust the number of bins for gridding
+    analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
+    analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
 
     analyzer.print_analysis_protocol()
     #add the plot
@@ -273,7 +280,17 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     analyzer.print_plot_protocol()
 
     #run analysis
-    analyzer.run_analysis()
+    for _frame in analyzer:
+        fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
+        frame_curr = analyzer.reps['com_frame'].number
+        thickgrid = analyzer.reps['lipid_grid'].thickness_grid()
+        xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_grid=thickgrid)['lower']
+
+        # with sns.color_palette("PuBuGn_d"):
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.png', colorbar=True, vmin=20.0,
+                                 vmax=50.0)
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
+                                 vmax=50.0)
 
     #output data and plots
     analyzer.dump_data(path=dump_path)
@@ -283,6 +300,7 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     print("Bilayer thickness from gridding procedure (Angstrom): {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3]))
 
     return
+
 
 def compressibility(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
                   frame_interval=1, dump_path=None, temperature=298.15):
@@ -466,7 +484,7 @@ def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, 
     analyzer.add_analysis("ndcorr norm_disp_correlation")
     #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
     analyzer.print_analysis_protocol()
-    print(" ")
+    print("--------")
 
     #run analysis
     analyzer.run_analysis()
