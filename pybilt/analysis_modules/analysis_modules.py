@@ -6,7 +6,7 @@ import pybilt.plot_generation.plot_generation_functions as pgf
 
 
 
-def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=[], frame_start=0, frame_end=-1, frame_interval=1, dump_path=None):
+def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=None, frame_start=0, frame_end=-1, frame_interval=1, dump_path=None):
 
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
@@ -14,6 +14,8 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=[]
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
     #for each lipid resname in the input resnames add an msd analysis for both, upper, and lower leaflets
+    if resnames is None:
+        resnames = []
     for lipid_type in resnames:
         a_name = "msd_"+lipid_type
         add_string = "msd "+a_name+" resname "+lipid_type

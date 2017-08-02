@@ -80,13 +80,13 @@ def com_com_distances_plane(universe, mda_selection_pairs, fstart=0, fend=-1, fs
     """
     lat_ind = [0, 1]
     dir_ind = 2
-    if axis is 'yx':
+    if plane is 'yx':
         dir_ind = 2
         lat_ind = [0, 1]
-    elif axis is 'xz' or axis is 'zx':
+    elif plane is 'xz' or plane is 'zx':
         dir_ind = 1
         lat_ind = [0, 2]
-    elif axis is 'zy' or axis is 'yz':
+    elif plane is 'zy' or plane is 'yz':
         dir_ind = 0
         lat_ind = [1, 2]
     #indices = mda_selection.indices

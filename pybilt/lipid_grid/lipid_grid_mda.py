@@ -55,7 +55,7 @@ class LipidGrid_2d:
         self.y_length = self.y_max - self.y_min
         # get the lipid indices for this leaflet
         resids = mda_frame_resids
-        void_ind = max(indices) + 1
+        #void_ind = max(indices) + 1
         # now assign lipids to the gridpoints
         self.lipid_grid = np.zeros((nxbins, nybins), dtype=np.int)
         self.lipid_grid_z = np.zeros((nxbins, nybins))

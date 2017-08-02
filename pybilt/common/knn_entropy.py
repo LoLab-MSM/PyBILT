@@ -112,7 +112,7 @@ def mutual_information(var_tuple, k=2):
     if MI < 0.0: MI = 0.0
     #return
     return MI 
-  	
+
 # conditional mutual information
 def conditional_mutual_information(var_tuple, cond_tuple, k=2):
     nvar = len(var_tuple)
