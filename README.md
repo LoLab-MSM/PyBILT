@@ -2,6 +2,7 @@
 ------
 ![docstring-coverage badge](https://img.shields.io/badge/docstring%20coverage-31.4%25-yellow.svg)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
+[![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
 ------
 ## *Py*thon based lipid *BIL*ayer analysis *T*oolkit
 ------
