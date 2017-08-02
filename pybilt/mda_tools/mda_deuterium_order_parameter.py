@@ -1,6 +1,6 @@
 import numpy as np
 #import the running stats class
-from pybilt.common.running_stats import *
+from pybilt.common.running_stats import RunningStats
 
 def vector_to_unit(v):
     #returns the unit vector version of v: v_u = v/|v|
@@ -39,12 +39,8 @@ def build_acyl_index_lists(membrane_lipid_sel):
     acyl_carbons = []
     acyl_hydrogens = []
     for atom in membrane_lipid_sel.atoms:
-        an = atom.name[0]
-        at = atom.type[0]
-        ai = atom.index
-        
         #check if carbon
-        if an is 'C' or at is 'C':
+        if atom.name[0] is 'C' or atom.name[0] is 'C':
             nb = len(atom.bonds)
             if nb == 4:
                 hbond = []
@@ -67,7 +63,7 @@ def build_acyl_index_lists(membrane_lipid_sel):
                 #passes if acyl carbon    
                 #print "nch_flag ",nch_flag
                 if nch_flag and len(hbond) >= 2:
-                    acyl_carbons.append(ai)
+                    acyl_carbons.append(atom.index)
                     acyl_hydrogens.append(hbond)
     return acyl_carbons,acyl_hydrogens
 
@@ -99,29 +95,20 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
     #build the index lists of acyl components
     print "building index lists for acyl groups"
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
-    n_acyl = len(acyl_carbons)
-    print "there are ",n_acyl," acyl groups"
+    print "there are ",len(acy_carbons)," acyl groups"
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
     Scd_out = np.zeros((nframes,3))
     f=0
     for frame in trajectory[fstart:fend:fstep]:
-        curr_time = frame.time
-        for i in xrange(n_acyl):
-            
-            c_i = acyl_carbons[i]
-            h1_i = acyl_hydrogens[i][0]
-            h2_i = acyl_hydrogens[i][1]
-            c_pos = frame._pos[c_i]
-            h1_pos = frame._pos[h1_i]
-            h2_pos = frame._pos[h2_i]
-            v_ch1 = h1_pos - c_pos
-            v_ch2 = h2_pos - c_pos
-            acyl_norm = np.cross(v_ch1,v_ch2)
-            cos_beta = cos_angle_between_vectors(acyl_norm,bilayer_norm)
-            scd = 0.50*(3.0* cos_beta**2 -1.0)
-            Scd.push(scd)
-        Scd_out[f,0]=curr_time
+        for i in xrange(len(acy_carbons)):
+
+            c_pos = frame.positions[acyl_carbons[i]]
+            h1_pos = frame.positions[acyl_hydrogens[i][0]]
+            h2_pos = frame.positions[acyl_hydrogens[i][1]]
+            acyl_norm = np.cross(h1_pos - c_pos, h2_pos - c_pos)
+            Scd.push( 0.50*(3.0* cos_angle_between_vectors(acyl_norm, bilayer_norm)**2 -1.0) )
+        Scd_out[f,0]=frame.time
         Scd_out[f,1]=Scd.mean()
         Scd_out[f,2]=Scd.deviation()
         f+=1
@@ -137,7 +124,6 @@ def deuterium_order_Moore(mda_universe, lipid_segids, lipid_map, fstart=0,fend=-
     elif norm_axis is 'y':
         bilayer_norm = np.array([0.0, 1.0, 0.0])
     nframes = len(trajectory)
-    f = 0
     #setup the output container
     output = {}
     for lipid_type in lipid_map.keys():
@@ -161,7 +147,6 @@ def deuterium_order_Moore(mda_universe, lipid_segids, lipid_map, fstart=0,fend=-
     print "doing frame slice points ", fstart, " to ", fend, " with step ", fstep
     print "total of ", nframes, " frames"
     for frame in trajectory[fstart:fend:fstep]:
-        curr_time = frame.time
         for lipid_type in lipid_map.keys():
             segid = lipid_segids[lipid_type]
             for position in lipid_map[lipid_type].keys():
@@ -172,17 +157,10 @@ def deuterium_order_Moore(mda_universe, lipid_segids, lipid_map, fstart=0,fend=-
                 H2s = eval("mda_universe."+segid+"."+lipid_type+"."+hydrogen_names[1])
                 n_lipid = len(Cs)
                 for i in range(n_lipid):
-                    C = Cs[i]
-                    H1 = H1s[i]
-                    H2 = H2s[i]
-                    C_pos = C.pos
-                    H1_pos = H1.pos
-                    H2_pos = H2.pos
-                    v_ch1 = H1_pos - C_pos
-                    v_ch2 = H2_pos - C_pos
+                    v_ch1 = H1s[i].pos - Cs[i].pos
+                    v_ch2 = H2s[i].pos - Cs[i].pos
                     acyl_norm = np.cross(v_ch1, v_ch2)
-                    cos_beta = cos_angle_between_vectors(acyl_norm, bilayer_norm)
-                    scd = 0.50 * (3.0 * cos_beta ** 2 - 1.0)
+                    scd = 0.50 * (3.0 * cos_angle_between_vectors(acyl_norm, bilayer_norm) ** 2 - 1.0)
                     output[lipid_type][position].push(scd)
     for lipid_type in lipid_map.keys():
         for position in lipid_map[lipid_type].keys():
@@ -218,25 +196,25 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
     print "building index lists for acyl groups"
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
     n_acyl = len(acyl_carbons)
-    print "there are ",n_acyl," acyl groups"
+    print "there are ",len(acy_carbons)," acyl groups"
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
     Scd_out = np.zeros((nframes,3))
     f=0
     for frame in trajectory[fstart:fend:fstep]:
         curr_time = frame.time
-        for i in xrange(n_acyl):
+        for i in xrange(len(acy_carbons)):
             
             c_i = acyl_carbons[i]
             h1_i = acyl_hydrogens[i][0]
             h2_i = acyl_hydrogens[i][1]
-            c_pos = frame._pos[c_i]
-            h1_pos = frame._pos[h1_i]
-            h2_pos = frame._pos[h2_i]
+            c_pos = frame.positions[c_i]
+            h1_pos = frame.positions[h1_i]
+            h2_pos = frame.positions[h2_i]
             v_ch1 = h1_pos - c_pos
             v_ch2 = h2_pos - c_pos
             cos_beta_ch1 = cos_angle_between_vectors(v_ch1,bilayer_norm)
-            cos_beta_ch2 = cos_angle_between_vectors(v_ch2,bilayer_norm)
+            #cos_beta_ch2 = cos_angle_between_vectors(v_ch2,bilayer_norm)
             scd_ch1 = 0.50*(3.0* cos_beta_ch1**2 -1.0)
             scd_ch2 = 0.50*(3.0* cos_beta_ch1**2 -1.0)
             Scd.push(scd_ch1)
