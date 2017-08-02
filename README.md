@@ -1,4 +1,4 @@
-# PyBILT [![docstring-coverage badge](https://img.shields.io/badge/docstring%20coverage-31.4%25-yellow.svg)]
+# PyBILT         ![docstring-coverage badge](https://img.shields.io/badge/docstring%20coverage-31.4%25-yellow.svg)
 ## *Py*thon based lipid *BIL*ayer analysis *T*oolkit
 
 ![alt text](./_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
