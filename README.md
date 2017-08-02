@@ -1,5 +1,6 @@
 # PyBILT
 ## *Py*thon based lipid *BIL*ayer analysis *T*oolkit
+[![docstring-coverage badge](https://img.shields.io/badge/docstring_coverage-31%-yellow.svg)]
 ![alt text](./_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
