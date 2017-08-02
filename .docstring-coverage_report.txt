@@ -1,0 +1,423 @@
+
+File ./pybilt/__init__.py
+ - File is empty.
+ Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
+
+File ./pybilt/plot_generation/plot_generation_functions.py
+ - No docstring for plot_grid_as_scatter!
+ - No docstring for plot_corr_mat_as_scatter!
+ - No docstring for plot_displacement_lipid_type_cross_correlation!
+ - No docstring for plot_position_density_map_2d!
+ Needed: 15; Exist: 11; Missing: 4; Coverage: 73.3%
+
+File ./pybilt/plot_generation/__init__.py
+ - File is empty.
+ Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
+
+File ./pybilt/analysis_modules/analysis_modules.py
+ - No module dostring!
+ - No docstring for msd_diffusion!
+ - No docstring for area_per_lipid!
+ - No docstring for bilayer_thickness!
+ - No docstring for compressibility!
+ - No docstring for dispvector_correlation!
+ - No docstring for PN_orientational_angle!
+ - No docstring for nearest_neighbor_fraction!
+ - No docstring for normal_displacement_lipid_type_correlation!
+ Needed: 9; Exist: 0; Missing: 9; Coverage: 0.0%
+
+File ./pybilt/analysis_modules/__init__.py
+ Needed: 1; Exist: 1; Missing: 0; Coverage: 100.0%
+
+File ./pybilt/com_trajectory/COMTraj.py
+ - No docstring for colorize_step_vector_clusters!
+ - No docstring for Frame.write_xyz!
+ - No docstring for Leaflet.__str__!
+ - No docstring for Leaflet.__repr__!
+ - No docstring for COMTraj.__str__!
+ - No docstring for COMTraj.__repr__!
+ - No docstring for COMTraj.voronoi_tesselate!
+ - No docstring for COMTraj.delaunay_tesselate!
+ - No docstring for COMTraj.step_vector!
+ - No docstring for COMTraj.step_vector_frames!
+ - No docstring for COMTraj.step_vector_colors!
+ Needed: 60; Exist: 49; Missing: 11; Coverage: 81.7%
+
+File ./pybilt/com_trajectory/__init__.py
+ - File is empty.
+ Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
+
+File ./pybilt/diffusion/diffusion_coefficients.py
+ - No docstring for diffusion_coefficient_linear_fit!
+ - No docstring for _msd_anom_1d!
+ - No docstring for _msd_anom_2d!
+ - No docstring for _msd_anom_3d!
+ - No docstring for diffusion_coefficient_anomalous_fit!
+ - No docstring for _time_block!
+ Needed: 8; Exist: 2; Missing: 6; Coverage: 25.0%
+
+File ./pybilt/diffusion/__init__.py
+ - No module dostring!
+ Needed: 1; Exist: 0; Missing: 1; Coverage: 0.0%
+
+File ./pybilt/mda_tools/mda_area_compressibility_modulus.py
+ - No docstring for area_compressibility_modulus!
+ Needed: 2; Exist: 1; Missing: 1; Coverage: 50.0%
+
+File ./pybilt/mda_tools/mda_msd.py
+ - No module dostring!
+ - No docstring for mda_msd!
+ Needed: 2; Exist: 0; Missing: 2; Coverage: 0.0%
+
+File ./pybilt/mda_tools/mda_density_map.py
+ - No module dostring!
+ - No docstring for position_density_map_2d_multi_align!
+ Needed: 2; Exist: 0; Missing: 2; Coverage: 0.0%
+
+File ./pybilt/mda_tools/mda_distance.py
+ - No module dostring!
+ Needed: 5; Exist: 4; Missing: 1; Coverage: 80.0%
+
+File ./pybilt/mda_tools/mda_deuterium_order_parameter.py
+ - No module dostring!
+ - No docstring for vector_to_unit!
+ - No docstring for angle_between_vectors!
+ - No docstring for cos_angle_between_vectors!
+ - No docstring for build_acyl_index_lists!
+ - No docstring for average_deuterium_order_Moore!
+ - No docstring for deuterium_order_Moore!
+ - No docstring for average_deuterium_order_Vermeer!
+ Needed: 8; Exist: 0; Missing: 8; Coverage: 0.0%
+
+File ./pybilt/mda_tools/mda_unwrap.py
+ - No module dostring!
+ - No docstring for wrap_coordinates!
+ - No docstring for wrap_coordinates_parallel!
+ - No docstring for mda_unwrap!
+ - No docstring for mda_unwrap_parallel!
+ Needed: 5; Exist: 0; Missing: 5; Coverage: 0.0%
+
+File ./pybilt/mda_tools/mda_density_profile.py
+ - No module dostring!
+ - No docstring for electron_density_profile!
+ - No docstring for electron_density_profile_gaussians!
+ - No docstring for mass_density_profile!
+ - No docstring for SizeError!
+ - No docstring for SizeError.__init__!
+ - No docstring for SizeError.__str__!
+ - No docstring for get_intersections!
+ - No docstring for mass_density_profile_multi_align!
+ Needed: 9; Exist: 0; Missing: 9; Coverage: 0.0%
+
+File ./pybilt/mda_tools/__init__.py
+ Needed: 1; Exist: 1; Missing: 0; Coverage: 100.0%
+
+File ./pybilt/lipid_grid/lipid_grid_mda.py
+ - No docstring for LipidGrid_2d!
+ - No docstring for LipidGrid_2d.__init__!
+ - No docstring for LipidGrid_2d.get_index_at!
+ - No docstring for LipidGrid_2d.get_z_at!
+ - No docstring for LipidGrid_2d.write_xyz!
+ - No docstring for LipidGrids!
+ - No docstring for LipidGrids.__init__!
+ - No docstring for LipidGrids.thickness_grid!
+ - No docstring for LipidGrids.average_thickness!
+ - No docstring for LipidGrids.map_to_grid!
+ - No docstring for LipidGrids.area_per_lipid!
+ - No docstring for LipidGrids.curvature!
+ - No docstring for LipidGrids.grid_to_dict!
+ - No docstring for LipidGrids.get_xyzc!
+ - No docstring for LipidGrids.write_xyz!
+ - No docstring for LipidGrids.get_integer_type_arrays!
+ - No docstring for LipidGrids.get_one_array_per_leaflet!
+ Needed: 18; Exist: 1; Missing: 17; Coverage: 5.6%
+
+File ./pybilt/lipid_grid/lipid_grid.py
+ - No docstring for LipidGrid_2d!
+ - No docstring for LipidGrid_2d.__init__!
+ - No docstring for LipidGrid_2d.get_index_at!
+ - No docstring for LipidGrid_2d.get_z_at!
+ - No docstring for LipidGrid_2d.z_perturb_grid!
+ - No docstring for LipidGrid_2d.write_xyz!
+ - No docstring for LipidGrids!
+ - No docstring for LipidGrids.__init__!
+ - No docstring for LipidGrids.thickness_grid!
+ - No docstring for LipidGrids.average_thickness!
+ - No docstring for LipidGrids.map_to_grid!
+ - No docstring for LipidGrids.area_per_lipid!
+ - No docstring for LipidGrids.curvature!
+ - No docstring for LipidGrids.grid_to_dict!
+ - No docstring for LipidGrids.get_xyzc!
+ - No docstring for LipidGrids.write_xyz!
+ - No docstring for LipidGrids.get_integer_type_arrays!
+ - No docstring for LipidGrids.get_one_array_per_leaflet!
+ Needed: 19; Exist: 1; Missing: 18; Coverage: 5.3%
+
+File ./pybilt/lipid_grid/lipid_grid_curv.py
+ - No docstring for LipidGrid_2d!
+ - No docstring for LipidGrid_2d.__init__!
+ - No docstring for LipidGrid_2d.get_index_at!
+ - No docstring for LipidGrid_2d.get_z_at!
+ - No docstring for LipidGrids!
+ - No docstring for LipidGrids.__init__!
+ - No docstring for LipidGrids.norm_displacement_cross_correlation!
+ Needed: 8; Exist: 1; Missing: 7; Coverage: 12.5%
+
+File ./pybilt/lipid_grid/__init__.py
+ - File is empty.
+ Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
+
+File ./pybilt/bilayer_analyzer/analysis_protocols.py
+ - No docstring for word_list_to_string!
+ - No docstring for _run_analysis_alias!
+ - No docstring for Analyses.__init__!
+ - No docstring for Analyses.__getitem__!
+ - No docstring for Analyses.__len__!
+ - No docstring for Analyses.add_analysis!
+ - No docstring for Analyses._add_analysis_from_string!
+ - No docstring for Analyses._add_analysis_from_list!
+ - No docstring for Analyses._add_analysis_from_dict!
+ - No docstring for Analyses.remove_analysis!
+ - No docstring for Analyses.remove_all!
+ - No docstring for Analyses.print_protocol!
+ - No docstring for Analyses.dump_data!
+ - No docstring for Analyses.reset!
+ - No docstring for AnalysisProtocol.__init__!
+ - No docstring for AnalysisProtocol._parse_string!
+ - No docstring for AnalysisProtocol._parse_str_to_dict!
+ - No docstring for AnalysisProtocol._cast_settings!
+ - No docstring for AnalysisProtocol._parse_dict!
+ - No docstring for AnalysisProtocol.print_protocol!
+ - No docstring for AnalysisProtocol.run_analysis!
+ - No docstring for AnalysisProtocol.save_data!
+ - No docstring for AnalysisProtocol.get_data!
+ - No docstring for AnalysisProtocol.reset!
+ - No docstring for MSDProtocol.__init__!
+ - No docstring for MSDProtocol.run_analysis!
+ - No docstring for APLBoxProtocol!
+ - No docstring for APLBoxProtocol.__init__!
+ - No docstring for APLBoxProtocol.run_analysis!
+ - No docstring for APLBoxProtocol.reset!
+ - No docstring for BTGridProtocol!
+ - No docstring for BTGridProtocol.__init__!
+ - No docstring for BTGridProtocol.run_analysis!
+ - No docstring for BTGridProtocol.reset!
+ - No docstring for APLGridProtocol!
+ - No docstring for APLGridProtocol.__init__!
+ - No docstring for APLGridProtocol.run_analysis!
+ - No docstring for APLGridProtocol.save_data!
+ - No docstring for APLGridProtocol.get_data!
+ - No docstring for APLGridProtocol.reset!
+ - No docstring for DispVecProtocol!
+ - No docstring for DispVecProtocol.__init__!
+ - No docstring for DispVecProtocol._cast_settings!
+ - No docstring for DispVecProtocol.reset!
+ - No docstring for DispVecProtocol.run_analysis!
+ - No docstring for DispVecProtocol.save_data!
+ - No docstring for DispVecProtocol.get_data!
+ - No docstring for MassDensProtocol!
+ - No docstring for MassDensProtocol.__init__!
+ - No docstring for MassDensProtocol._cast_settings!
+ - No docstring for MassDensProtocol._parse_str_to_dict!
+ - No docstring for MassDensProtocol.reset!
+ - No docstring for MassDensProtocol.run_analysis!
+ - No docstring for MassDensProtocol.save_data!
+ - No docstring for MassDensProtocol.get_data!
+ - No docstring for MassDensProtocol.__getstate__!
+ - No docstring for MassDensProtocol.__setstate__!
+ - No docstring for NNFProtocol!
+ - No docstring for NNFProtocol.__init__!
+ - No docstring for NNFProtocol._cast_settings!
+ - No docstring for NNFProtocol.reset!
+ - No docstring for NNFProtocol.run_analysis!
+ - No docstring for DispVecCorrelationProtocol!
+ - No docstring for DispVecCorrelationProtocol.__init__!
+ - No docstring for DispVecCorrelationProtocol._cast_settings!
+ - No docstring for DispVecCorrelationProtocol.reset!
+ - No docstring for DispVecCorrelationProtocol.run_analysis!
+ - No docstring for DispVecCorrelationProtocol.save_data!
+ - No docstring for DispVecCorrelationProtocol.get_data!
+ - No docstring for DispVecNNCorrelationProtocol!
+ - No docstring for DispVecNNCorrelationProtocol.__init__!
+ - No docstring for DispVecNNCorrelationProtocol._cast_settings!
+ - No docstring for DispVecNNCorrelationProtocol.reset!
+ - No docstring for DispVecNNCorrelationProtocol.run_analysis!
+ - No docstring for DispVecNNCorrelationProtocol.save_data!
+ - No docstring for DispVecNNCorrelationProtocol.get_data!
+ - No docstring for NDCorrProtocol!
+ - No docstring for NDCorrProtocol.__init__!
+ - No docstring for NDCorrProtocol.run_analysis!
+ - No docstring for NDCorrProtocol.reset!
+ - No docstring for NDCorrProtocol.get_data!
+ - No docstring for DCClusterProtocol!
+ - No docstring for DCClusterProtocol.__init__!
+ - No docstring for DCClusterProtocol._cast_settings!
+ - No docstring for DCClusterProtocol.run_analysis!
+ - No docstring for DCClusterProtocol.reset!
+ - No docstring for DCClusterProtocol.get_data!
+ - No docstring for VolumeCompressibilityModulusProtocol!
+ - No docstring for VolumeCompressibilityModulusProtocol.__init__!
+ - No docstring for VolumeCompressibilityModulusProtocol._cast_settings!
+ - No docstring for VolumeCompressibilityModulusProtocol.reset!
+ - No docstring for VolumeCompressibilityModulusProtocol.run_analysis!
+ - No docstring for AreaCompressibilityModulusProtocol!
+ - No docstring for AreaCompressibilityModulusProtocol.__init__!
+ - No docstring for AreaCompressibilityModulusProtocol._cast_settings!
+ - No docstring for AreaCompressibilityModulusProtocol.reset!
+ - No docstring for AreaCompressibilityModulusProtocol.run_analysis!
+ - No docstring for ALDProtocol.__init__!
+ - No docstring for ALDProtocol.run_analysis!
+ - No docstring for ALDProtocol.reset!
+ - No docstring for AreaCompressibilityProtocol!
+ - No docstring for AreaCompressibilityProtocol.__init__!
+ - No docstring for AreaCompressibilityProtocol._cast_settings!
+ - No docstring for AreaCompressibilityProtocol.reset!
+ - No docstring for AreaCompressibilityProtocol.run_analysis!
+ - No docstring for LateralOrientationParameterProtocol!
+ - No docstring for LateralOrientationParameterProtocol.__init__!
+ - No docstring for LateralOrientationParameterProtocol.run_analysis!
+ - No docstring for LateralOrientationParameterProtocol.reset!
+ - No docstring for LateralOrientationAngleProtocol!
+ - No docstring for LateralOrientationAngleProtocol.__init__!
+ - No docstring for LateralOrientationAngleProtocol.run_analysis!
+ - No docstring for LateralOrientationAngleProtocol.reset!
+ Needed: 119; Exist: 6; Missing: 113; Coverage: 5.0%
+
+File ./pybilt/bilayer_analyzer/bilayer_analyzer.py
+ - No docstring for word_list_to_string!
+ - No docstring for print_valid_analyses!
+ - No docstring for print_analysis_settings!
+ - No docstring for print_available_plots!
+ - No docstring for _run_analysis_alias!
+ - No docstring for BilayerAnalyzer.__repr__!
+ - No docstring for BilayerAnalyzer.__iter__!
+ Needed: 39; Exist: 32; Missing: 7; Coverage: 82.1%
+
+File ./pybilt/bilayer_analyzer/plot_protocols.py
+ - No module dostring!
+ - No docstring for PlotProtocol!
+ - No docstring for PlotProtocol.__init__!
+ - No docstring for PlotProtocol.add_plot!
+ - No docstring for PlotProtocol.remove_plot!
+ - No docstring for PlotProtocol.print_protocol!
+ - No docstring for PlotProtocol.save_plots!
+ - No docstring for PlotFunctionProtocol!
+ - No docstring for PlotFunctionProtocol.__init__!
+ - No docstring for PlotFunctionProtocol.parse_args!
+ - No docstring for PlotFunctionProtocol.print_protocol!
+ - No docstring for PlotFunctionProtocol.generate_plot!
+ - No docstring for PlotFunctionProtocol.show_plot!
+ - No docstring for MSDPlotProtocol!
+ - No docstring for MSDPlotProtocol.parse_args!
+ - No docstring for MSDPlotProtocol.print_protocol!
+ - No docstring for MSDPlotProtocol.generate_plot!
+ - No docstring for MSDPlotProtocol.show_plot!
+ - No docstring for APLPlotProtocol!
+ - No docstring for APLPlotProtocol.parse_args!
+ - No docstring for APLPlotProtocol.print_protocol!
+ - No docstring for APLPlotProtocol.generate_plot!
+ - No docstring for APLPlotProtocol.show_plot!
+ - No docstring for DispVecPlotProtocol!
+ - No docstring for DispVecPlotProtocol.parse_args!
+ - No docstring for DispVecPlotProtocol.print_protocol!
+ - No docstring for DispVecPlotProtocol.generate_plot!
+ - No docstring for DispVecPlotProtocol.show_plot!
+ - No docstring for BTPlotProtocol!
+ - No docstring for BTPlotProtocol.parse_args!
+ - No docstring for BTPlotProtocol.print_protocol!
+ - No docstring for BTPlotProtocol.generate_plot!
+ - No docstring for BTPlotProtocol.show_plot!
+ Needed: 37; Exist: 4; Missing: 33; Coverage: 10.8%
+
+File ./pybilt/bilayer_analyzer/com_frame.py
+ - No module dostring!
+ - No docstring for COMFrame.__repr__!
+ - No docstring for COMFrame.coordinates!
+ - No docstring for COMFrame.masses!
+ - No docstring for COMFrame.resids!
+ - No docstring for COMFrame.resnames!
+ - No docstring for COMFrame.leaflets!
+ - No docstring for COMFrame.write_xyz!
+ Needed: 17; Exist: 9; Missing: 8; Coverage: 52.9%
+
+File ./pybilt/bilayer_analyzer/mda_data.py
+ - No docstring for MDAData.__init__!
+ - No docstring for MDAData.update_trajectory!
+ - No docstring for MDAData.__getstate__!
+ - No docstring for MDAData.__setstate__!
+ - No docstring for MDAData.reduced!
+ - No docstring for MDADataReduced!
+ - No docstring for MDADataReduced.__init__!
+ Needed: 9; Exist: 2; Missing: 7; Coverage: 22.2%
+
+File ./pybilt/bilayer_analyzer/__init__.py
+ - No module dostring!
+ Needed: 1; Exist: 0; Missing: 1; Coverage: 0.0%
+
+File ./pybilt/bilayer_analyzer/leaflet.py
+ - No module dostring!
+ - No docstring for Leaflet.__str__!
+ - No docstring for Leaflet.__repr__!
+ - No docstring for Leaflet.get_member_resname_from_resid!
+ Needed: 19; Exist: 15; Missing: 4; Coverage: 78.9%
+
+File ./pybilt/bilayer_analyzer/sample_analysis_script/sample_script_1.py
+ - No module dostring!
+ Needed: 1; Exist: 0; Missing: 1; Coverage: 0.0%
+
+File ./pybilt/bilayer_analyzer/sample_analysis_script/sample_script_2.py
+ - No module dostring!
+ Needed: 1; Exist: 0; Missing: 1; Coverage: 0.0%
+
+File ./pybilt/common/running_stats.py
+ - No module dostring!
+ - No docstring for RunningStats!
+ - No docstring for RunningStats.__init__!
+ - No docstring for RunningStats.push!
+ - No docstring for RunningStats.mean!
+ - No docstring for RunningStats.variance!
+ - No docstring for RunningStats.deviation!
+ - No docstring for RunningStats.reset!
+ Needed: 9; Exist: 1; Missing: 8; Coverage: 11.1%
+
+File ./pybilt/common/knn_entropy.py
+ - No module dostring!
+ - No docstring for k_nearest_neighbors!
+ - No docstring for kth_nearest_neighbor_distances!
+ - No docstring for shannon_entropy!
+ - No docstring for shannon_entropy_pc!
+ - No docstring for mutual_information!
+ - No docstring for conditional_mutual_information!
+ Needed: 7; Exist: 0; Missing: 7; Coverage: 0.0%
+
+File ./pybilt/common/gaussian.py
+ - No module dostring!
+ - No docstring for Gaussian!
+ - No docstring for Gaussian.__init__!
+ - No docstring for Gaussian.eval!
+ - No docstring for Gaussian.reset_mean!
+ - No docstring for GaussianRange!
+ - No docstring for GaussianRange.__init__!
+ - No docstring for GaussianRange.get_values!
+ - No docstring for GaussianRange.eval!
+ - No docstring for GaussianRange.integrate_range!
+ - No docstring for GaussianRange.sum_range!
+ - No docstring for GaussianRange.normalize!
+ - No docstring for GaussianRange.reset_mean!
+ Needed: 13; Exist: 0; Missing: 13; Coverage: 0.0%
+
+File ./pybilt/common/distance_cutoff_clustering.py
+ - No module dostring!
+ - No docstring for distance_euclidean!
+ - No docstring for distance_euclidean_pbc!
+ - No docstring for distance_cutoff_clustering!
+ Needed: 4; Exist: 0; Missing: 4; Coverage: 0.0%
+
+File ./pybilt/common/__init__.py
+ - File is empty.
+ Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
+
+
+Overall statistics for 35 files (5 files are empty):
+Docstrings needed: 449; Docstrings exist: 141; Docstrings missing: 308
+Total docstring coverage: 31.4%;  Grade: not so good
