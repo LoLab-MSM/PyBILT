@@ -4,7 +4,15 @@ These functions use matplotlib (http://matplotlib.org/index.html) along with Sea
 https://stanford.edu/~mwaskom/software/seaborn/index.html).
 
 '''
+import os
 import matplotlib as mpl
+#check for display and swith mpl backend to Agg is there is none
+_havedisplay = "DISPLAY" in os.environ
+if not _havedisplay:
+    exitval = os.system('python -c "import matplotlib.pyplot as plt; plt.figure()"')
+    _havedisplay = (exitval == 0)
+if not _havedisplay:
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as colors
