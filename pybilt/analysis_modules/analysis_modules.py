@@ -343,13 +343,13 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
     analyzer.remove_analysis('msd_1')
     #add the apl analyses
     #compute the displacment vectors for maps
-    analyzer.add_analysis("disp_vec disp_vec_upper scale True wrapped True leaflet upper")
-    analyzer.add_analysis("disp_vec disp_vec_lower scale True wrapped True leaflet lower")
+    analyzer.add_analysis("disp_vec disp_vec_upper scale True wrapped True leaflet upper interval "+str(frame_interval))
+    analyzer.add_analysis("disp_vec disp_vec_lower scale True wrapped True leaflet lower interval "+str(frame_interval))
     #compute the full correlation matrix between displacement vectors (i.e. cos(theta))
-    analyzer.add_analysis("disp_vec_corr disp_vec_corr")
+    analyzer.add_analysis("disp_vec_corr disp_vec_corr interval "+str(frame_interval))
     #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
-    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper")
-    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower leaflet lower")
+    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper interval "+str(frame_interval))
+    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower leaflet lower interval "+str(frame_interval))
     analyzer.print_analysis_protocol()
 
     #run analysis
