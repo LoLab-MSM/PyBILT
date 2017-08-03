@@ -436,8 +436,7 @@ class LipidGrids:
                 C = np.zeros((npoints, color_dict.shape[1])) 
         if color_type_dict is not None:
             dict_type = type(color_type_dict[color_type_dict.keys()[0]])
-            if dict_type is str:
-                C = np.zeros(npoints,dtype=np.str)
+            C = list()
         for leaf in do_leaflet:
             npt = 0
             cx=0
@@ -460,7 +459,7 @@ class LipidGrids:
                     if color_type_dict is not None:
                         ltype = self.frame.lipidcom[ic].type
                         color_curr = color_type_dict[ltype]
-                        C[npt]=color_curr
+                        C.append(color_curr)
                         
                     npt+=1
                     cy+=1
@@ -477,7 +476,8 @@ class LipidGrids:
            #     col_max = max(C)
            #     C/=col_max
                 
-            
+            if color_type_dict is not None:
+                C = np.array(C)
             out_dict[leaf]=(X,Y,Z,C)
         return out_dict
     
