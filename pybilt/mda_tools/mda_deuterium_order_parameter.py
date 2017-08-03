@@ -17,7 +17,7 @@ def angle_between_vectors(v1, v2):
     # dot product
     dot = np.dot(v1_u,v2_u)
     # clip the dot product to ensure it is in bounds for arccos
-    dot_clip = np.clip(dot, -1.0, 1.0) 
+    dot_clip = np.clip(dot, -1.0, 1.0)
     # get the angle
     theta = np.arccos(dot_clip)
     return theta
@@ -31,7 +31,7 @@ def cos_angle_between_vectors(v1, v2):
     # dot product
     dot = np.dot(v1_u,v2_u)
     # clip the dot product to ensure it is in bounds
-    dot_clip = np.clip(dot, -1.0, 1.0) 
+    dot_clip = np.clip(dot, -1.0, 1.0)
     return dot_clip
 
 
@@ -53,14 +53,14 @@ def build_acyl_index_lists(membrane_lipid_sel):
                         nch_c = btn == 'C'or btt == 'C'
                         #print "btn ",btn," btt ",btt
                         #print "nch_h ",nch_h," nch_c ",nch_c
-                        #make sure the carbon is only bonded to hydrogens other carbon                        
+                        #make sure the carbon is only bonded to hydrogens other carbon
                         if nch_flag:
                             nch_flag = nch_h or nch_c
                             #print "nch_flag ",nch_flag
                         #if the current bond is to hydrogen add it to list
                         if nch_h:
                             hbond.append(batom.index)
-                #passes if acyl carbon    
+                #passes if acyl carbon
                 #print "nch_flag ",nch_flag
                 if nch_flag and len(hbond) >= 2:
                     acyl_carbons.append(atom.index)
@@ -96,7 +96,7 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
 
     bilayer_norm = _get_bilayer_norm_vector(norm_axis)
     nframes = len(trajectory)
-    
+
     #adjust the frame end points for slicing
     fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(trajectory))
     nframes = (fend-fstart)/fstep
@@ -105,13 +105,13 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
     #build the index lists of acyl components
     print("building index lists for acyl groups")
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
-    print("there are {} acyl groups".format(len(acy_carbons)))
+    print("there are {} acyl groups".format(len(acyl_carbons)))
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
     Scd_out = np.zeros((nframes,3))
     f=0
     for frame in trajectory[fstart:fend:fstep]:
-        for i in xrange(len(acy_carbons)):
+        for i in xrange(len(acyl_carbons)):
 
             c_pos = frame.positions[acyl_carbons[i]]
             h1_pos = frame.positions[acyl_hydrogens[i][0]]
@@ -170,10 +170,10 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
 
     bilayer_norm = _get_bilayer_norm_vector(norm_axis)
     nframes = len(trajectory)
-    
+
     #adjust the frame end points for slicing
     fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, nframes)
-    
+
     nframes = (fend - fstart)/fstep
     print("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep))
     print("total of {} frames".format(nframes))
@@ -182,15 +182,15 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
     print "building index lists for acyl groups"
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
     n_acyl = len(acyl_carbons)
-    print "there are ",len(acy_carbons)," acyl groups"
+    print "there are ",len(acyl_carbons)," acyl groups"
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
     Scd_out = np.zeros((nframes,3))
     f=0
     for frame in trajectory[fstart:fend:fstep]:
         curr_time = frame.time
-        for i in xrange(len(acy_carbons)):
-            
+        for i in xrange(len(acyl_carbons)):
+
             c_i = acyl_carbons[i]
             h1_i = acyl_hydrogens[i][0]
             h2_i = acyl_hydrogens[i][1]
@@ -209,4 +209,4 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
         Scd_out[f,1]=Scd.mean()
         Scd_out[f,2]=Scd.deviation()
         f+=1
-    return Scd_out    
+    return Scd_out
