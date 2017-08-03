@@ -1852,7 +1852,15 @@ class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
         volume = dimensions.prod()
         #print(area)
         self.volume_run.push(volume)
-        Kv = (volume*scicon.k*self.settings['temperature'])/self.volume_run.deviation()**2
+
+        Kv = 1.0
+        if self.first_comp:
+            self.first_comp = False
+            self.n_frames += 1
+            # return
+            Ka = 0.0
+        else:
+            Kv = (volume * scicon.k * self.settings['temperature']) / self.volume_run.deviation() ** 2
         time = ba_reps['current_mda_frame'].time
         self.analysis_output.append([time, Kv])
         self.n_frames += 1
@@ -1934,8 +1942,8 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
             Ka = 0.0
         else:
             Ka = (self.area_run.mean()*scicon.k*self.settings['temperature'])/self.area_run.variance()
-        print "<A>: ", self.area_run.mean(), " var(A): ",self.area_run.variance()
-        print "T: ",self.settings['temperature']," k: ",scicon.k
+        #print "<A>: ", self.area_run.mean(), " var(A): ",self.area_run.variance()
+        #print "T: ",self.settings['temperature']," k: ",scicon.k
         #conversion factor for Joules/Angstrom^2 to milliNewtons/meter
         Ka*=10.0**23
 
