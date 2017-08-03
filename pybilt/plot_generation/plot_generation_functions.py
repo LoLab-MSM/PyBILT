@@ -7,6 +7,8 @@ https://stanford.edu/~mwaskom/software/seaborn/index.html).
 import os
 import matplotlib as mpl
 #check for display and swith mpl backend to Agg is there is none
+# solution based on answer by Jindra Helcl on
+# https://stackoverflow.com/questions/8257385/automatic-detection-of-display-availability-with-matplotlib
 _havedisplay = "DISPLAY" in os.environ
 if not _havedisplay:
     exitval = os.system('python -c "import matplotlib.pyplot as plt; plt.figure()"')
@@ -28,7 +30,7 @@ sfig_params = {
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-params = {'figure.figsize': [8.5, 6.0], 'font.size': 16, 'axes.labelsize': 20,
+params = {'figure.figsize': [8.5, 6.0], 'font.size': 16, 'axes.labelsize': 18,
     'legend.fontsize': 14,
     'xtick.labelsize': 14,
     'ytick.labelsize': 14,}
