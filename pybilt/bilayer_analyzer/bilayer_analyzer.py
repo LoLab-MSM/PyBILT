@@ -646,6 +646,8 @@ class BilayerAnalyzer:
         n_mda_frames = len(self.mda_data.mda_trajectory)
         if self.settings['frame_range'][1] < 0:
             self.settings['frame_range'][1]+=n_mda_frames+1
+        elif self.settings['frame_range'][1] > 0:
+            self.settings['frame_range'][1]+=1
         for frame in self.mda_data.mda_trajectory[
                      self.settings['frame_range'][0]:self.settings['frame_range'][1]:self.settings['frame_range'][
                          2]]:
