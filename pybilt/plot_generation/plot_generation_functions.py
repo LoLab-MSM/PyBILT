@@ -30,6 +30,7 @@ mpl.rcParams.update(params)
 #sns.set(context="paper", font="monospace")
 sns.set_style("ticks")
 
+_color_list = ['blue', 'green','orange','purple', 'black', 'red', 'yellow', 'gray']
 
 def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, show=False):
     '''
@@ -40,7 +41,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     generated using:
         MemSys.StepVectorColors
     '''
-    color_list = ['red','green', 'blue','black','orange','purple', 'yellow']
+    color_list = _color_list
     sns.set_style("whitegrid")
     x = vectors_resnames[0][:,0]
     y=vectors_resnames[0][:,1]
@@ -483,7 +484,7 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thicknes
 
 def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='normal_displacement_lipid_type_cross_correlation.eps',show=False, save=True):
 
-    color_list = ['red', 'green', 'blue', 'black', 'orange', 'purple', 'yellow']
+    color_list = _color_list
     #build the data objects
     leaflets = sorted(analyzer_data.keys(), reverse=True)
     count = 0
