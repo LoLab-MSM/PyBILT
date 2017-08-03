@@ -245,6 +245,14 @@ class COMFrame:
             output.append(lipid.leaflet)
         return output
 
+    def unique_resnames(self):
+
+        output = []
+        for lipid in self.lipidcom:
+            if lipid.type not in output:
+                output.append(lipid.type)
+        return output
+
     def write_xyz(self, xyz_name, wrapped=True):
         # Open up the file to write to
         xyz_out = open(xyz_name, "w")
