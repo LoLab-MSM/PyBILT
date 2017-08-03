@@ -396,7 +396,7 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
 
     return
 
-def PN_orientational_angle(structure_file, trajectory_file, selection_string, lipid_resnames, frame_start=0, frame_end=-1,
+def PN_orientational_angle(structure_file, trajectory_file, selection_string, lipid_resnames, PN_names='default', frame_start=0, frame_end=-1,
                   frame_interval=1, dump_path=None):
     analyzer = BilayerAnalyzer(structure=structure_file,
                              trajectory=trajectory_file,
@@ -406,9 +406,15 @@ def PN_orientational_angle(structure_file, trajectory_file, selection_string, li
     #remove the default msd analysis
     analyzer.remove_analysis('msd_1')
     #add the loa analyses
+    if PN_names is 'default':
+        PN_names = dict()
+        for resname in lipid_resnames:
+            PN_names[resname] = ('P', 'N')
     for resname in lipid_resnames:
-        analyzer.add_analysis("loa loa_"+resname+"_upper leaflet upper resname "+resname)
-        analyzer.add_analysis("loa loa_"+resname+"_lower leaflet lower resname "+resname)
+        Pn = PN_names[resname][0]
+        Nn = PN_names[resname][1]
+        analyzer.add_analysis("loa loa_"+resname+"_upper leaflet upper resname "+resname+" ref_atom_1 "+Pn+" ref_atom_2 "+Nn)
+        analyzer.add_analysis("loa loa_"+resname+"_lower leaflet lower resname "+resname+" ref_atom_1 "+Pn+" ref_atom_2 "+Nn)
     #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
     analyzer.print_analysis_protocol()
 
