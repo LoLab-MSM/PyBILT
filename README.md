@@ -20,7 +20,6 @@ The analyses include:
    * Mass and Electron Density Estimators
    * and more!
 
-![| msd plot](./_images/msd.png "MSD Plot") | ![2d Displacement Vectors](./_images/dv.png "Lateral Displacement Vectors") | ![position density map](./_images/pos_map.png "2d Position density map") |
 ------
 
 ### Install
