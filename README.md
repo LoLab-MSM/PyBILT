@@ -11,7 +11,6 @@
 
 The analyses include:
    * Mean Squared Displacement (MSD)
-       ![msd plot](./_images/msd.png "MSD Plot")
    * Diffusion coefficent estimators (from MSD curves) - includes Einstein relation, linear fit, and anomalous diffusion fit.
    * Area per lipid estimators
    * Bilayer thickness
@@ -20,6 +19,8 @@ The analyses include:
    * Orientation parameters
    * Mass and Electron Density Estimators
    * and more!
+
+![msd plot](./_images/msd.png "MSD Plot") ![2d Displacement Vectors](./_images/dv.png "Lateral Displacement Vectors") ![position density map](./_images/pos_map.png "2d Position density map")
 ------
 
 ### Install
