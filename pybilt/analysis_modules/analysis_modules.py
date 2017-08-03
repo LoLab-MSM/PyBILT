@@ -507,3 +507,56 @@ def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, 
 
     return
 
+_color_list = ['red', 'green', 'blue', 'black', 'orange', 'purple', 'yellow']
+
+def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path="./", name_dict=None, n_xbins=100, n_ybins=100, type_colors='auto'):
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
+    #analyzer.settings['print_interval']=1
+    # add the analysis
+    if type_colors is 'auto':
+        type_colors = {}
+        for _frame in analyzer:
+            unique_resnames = sorted(analyzer.reps['com_frame'].unique_resnames())
+            i = 0
+            for resname in unique_resnames:
+                type_colors[resname] = _color_list[i]
+                i+=1
+                if i == len(_color_list):
+                    i=0
+            break
+        analyzer.reset()
+
+    analyzer.analysis_protocol.use_objects['lipid_grid'] = True
+    #adjust the number of bins for gridding
+    analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
+    analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
+    #run analysis
+    for _frame in analyzer:
+        fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
+        frame_curr = analyzer.reps['com_frame'].number
+        xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_type_dict=type_colors)['lower']
+
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_lower_' + fs + '.png')
+
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_lower_' + fs + '.eps')
+
+        xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='upper', color_type_dict=type_colors)['upper']
+
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_upper_' + fs + '.png')
+
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_upper_' + fs + '.eps')
+
+
+    for resname in sorted(type_colors.keys()):
+        print("lipid resname {} is color {}".format(resname,type_colors[resname]))
+    return
+
