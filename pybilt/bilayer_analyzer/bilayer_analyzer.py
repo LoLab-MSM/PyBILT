@@ -592,6 +592,18 @@ class BilayerAnalyzer:
              loop.
 
         """
+        #first check for float type fractions
+        if isinstance(first, (float, np.float, np.double)):
+            if first < 1.0 and first > 0.0:
+                first = int(first* self.mda_data.nframes)
+            else:
+                first = int(first)
+        if isinstance(last, (float, np.float, np.double)):
+            if last < 1.0 and last > 0.0:
+                last = int(last* self.mda_data.nframes)
+            else:
+                last = int(last)
+
         if first != self.settings['frame_range'][0]:
             self.settings['frame_range'][0] = first
         if last != self.settings['frame_range'][1]:
