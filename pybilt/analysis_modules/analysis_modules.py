@@ -3,7 +3,7 @@ import numpy as np
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 from pybilt.diffusion import diffusion_coefficients as dc
 import pybilt.plot_generation.plot_generation_functions as pgf
-
+from pybilt.plot_generation.plot_generation_functions import _color_list
 
 
 def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=None, frame_start=0, frame_end=-1, frame_interval=1, dump_path=None):
@@ -507,7 +507,6 @@ def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, 
 
     return
 
-_color_list = ['red', 'green', 'blue', 'black', 'orange', 'purple', 'yellow']
 
 def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
                   frame_interval=1, dump_path="./", name_dict=None, n_xbins=100, n_ybins=100, type_colors='auto'):
