@@ -513,9 +513,11 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
     unique_lipid_types = set(lipid_types)
     color_dict = {}
     i =0
-    for type in unique_lipid_types:
+    for type in sorted(unique_lipid_types):
         color_dict[type] = color_list[i]
         i+=1
+        if i == len(unique_lipid_types):
+            i = 0
     colors = []
     for type in lipid_types:
         colors.append(color_dict[type])
@@ -564,7 +566,7 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
 
     return
 
-def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filename='position_density_2d.eps', show=False, colorbar=True, vmin=0.0, vmax=None, normalized=False, scaled_to_max=False):
+def plot_position_density_map_2d_scatter(x_centers, y_centers, counts, save=True, filename='position_density_2d.eps', show=False, colorbar=True, vmin=0.0, vmax=None, normalized=False, scaled_to_max=False):
     #cma = plt.cm.get_cmap('YlGnBu_r')
     cma = plt.cm.get_cmap('jet')
    # fig = plt.figure()
@@ -594,6 +596,59 @@ def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filena
         plt.scatter(x_pos, y_pos, c=color_vals, marker='s', s=50, cmap=cma, vmin=vmin, vmax=vmax, edgecolors='face')
     else:
         plt.scatter(x_pos, y_pos, c=color_vals, marker='s',s=50, cmap=cma, edgecolors='face')
+    plt.xlabel('x ($\AA$)')
+    plt.ylabel('y ($\AA$)')
+
+    #print in_xyzc[3]
+    #plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s',s=50, cmap=cma)
+    #cax, kw = mpl.colorbar.make_axes(plt.gca())
+    #norm = mpl.colors.Normalize(vmin = min(in_xyzc[3]), vmax = max(in_xyzc[3]), clip = False)
+
+    #c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)
+    if colorbar:
+        cbar = plt.colorbar()
+        if normalized:
+            cbar.ax.set_ylabel('Count (normalized)')
+        elif scaled_to_max:
+            cbar.ax.set_ylabel('Count (scaled to maximum)')
+        else:
+            cbar.ax.set_ylabel('Count')
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filename='position_density_2d.eps',
+                                 show=False, colorbar=True, vmin=0.0, vmax=None, normalized=False,
+                                 scaled_to_max=False, interpolation='none'):
+    #cma = plt.cm.get_cmap('YlGnBu_r')
+    cma = plt.cm.get_cmap('jet')
+    nbins = len(x_centers)
+    #need to rearrange the array order for imshow to match the same x and y values as is assumed with input counts
+    counts_swapped = np.zeros((nbins,nbins), dtype=counts.dtype)
+    for i in range(nbins):
+        ii = nbins-i - 1
+        for j in range(nbins):
+            counts_swapped[i,j] = counts[j,ii]
+    if normalized:
+        vmax = 1.0
+        vmin = 0.0
+    if vmin is not None and vmax is None:
+        plt.imshow(counts_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)], vmin=vmin)
+    elif vmax is not None and vmin is None:
+        plt.imshow(counts_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)], vmax=vmax)
+    elif vmin is not None and vmax is not None:
+        plt.imshow(counts_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)],
+                   vmin=vmin, vmax=vmax)
+    else:
+        plt.imshow(counts_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)])
+
     plt.xlabel('x ($\AA$)')
     plt.ylabel('y ($\AA$)')
 
