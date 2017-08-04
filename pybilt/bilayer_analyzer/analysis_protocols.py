@@ -1005,10 +1005,11 @@ analysis_obj_name_dict['nnf'] = 'com_frame'
 
 #Found in: M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249-272
 #Originally described in: A. H. de Vries, A. E. Mark and S. J. Marrink, J. Phys. Chem. B, 2004, 108, 2454-2463
-#similar method 'fractional interactions' used in: Koldso H, Shorthouse D, He ́lie J, Sansom MSP (2014) Lipid
-#  Clustering Correlates with Membrane Curvature as Revealed by Molecular Simulations of
-# Complex Lipid Bilayers. PLoS Comput Biol 10(10): e1003911. doi:10.1371/journal.pcbi.1003911
+#similar method 'fractional interactions' used in: Koldso H, Shorthouse D, He Lie Sansom MSP (2014) "Lipid Clustering
+# Correlates with Membrane Curvature as Revealed by Molecular Simulations of Complex Lipid Bilayers." PloS Comput Biol
+# 10(10): e1003911. doi.10.1371/journal.pcbi.1003911
 class NNFProtocol(AnalysisProtocol):
+
     def __init__(self, args):
 
         # required
@@ -1572,9 +1573,9 @@ valid_analysis.append('ndcorr')
 analysis_obj_name_dict['ndcorr'] = 'com_frame'
 
 #Based on print "Correlation between bilayer surfucace curvature and the clustering of lipid molecules"
-# cross correlation method described in: Koldsø H, Shorthouse D, He ́lie J, Sansom MSP (2014) Lipid
-#  Clustering Correlates with Membrane Curvature as Revealed by Molecular Simulations of
-# Complex Lipid Bilayers. PLoS Comput Biol 10(10): e1003911. doi:10.1371/journal.pcbi.1003911
+# cross correlation method described in: Koldso H, Shorthouse D, He Lie Sansom MSP (2014) "Lipid Clustering
+# Correlates with Membrane Curvature as Revealed by Molecular Simulations of Complex Lipid Bilayers." PloS Comput Biol
+# 10(10): e1003911. doi.10.1371/journal.pcbi.1003911
 class NDCorrProtocol(AnalysisProtocol):
     def __init__(self, args):
         # required
