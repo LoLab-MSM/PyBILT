@@ -447,10 +447,10 @@ def nearest_neighbor_fraction(structure_file, trajectory_file, selection_string,
     analyzer.remove_analysis('msd_1')
     nres = len(lipid_resnames)
     pairs = []
+    #for i in range(nres):
+    #    pairs.append([lipid_resnames[i], lipid_resnames[i]])
     for i in range(nres):
-        pairs.append([lipid_resnames[i], lipid_resnames[i]])
-    for i in range(nres-1):
-        for j in range(i+1, nres):
+        for j in range(nres):
             pairs.append([lipid_resnames[i], lipid_resnames[j]])
     #add the loa analyses
     for pair in pairs:
@@ -565,3 +565,42 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_sta
         print("lipid resname {} is color {}".format(resname,type_colors[resname]))
     return
 
+def distance_cutoff_clustering(structure_file, trajectory_file, selection_string, resnames, frame_start=0, frame_end=-1,
+                  frame_interval=1, dump_path="./"):
+
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    #add the analyses
+    for resname in resnames:
+        add_in = "dc_cluster dc_cluster_{}_upper resname {} leaflet upper".format(resname,resname)
+        analyzer.add_analysis(add_in)
+        add_in = "dc_cluster dc_cluster_{}_lower resname {} leaflet lower".format(resname,resname)
+        analyzer.add_analysis(add_in)
+
+    analyzer.print_analysis_protocol()
+
+    analyzer.run_analysis()
+
+    analyzer.dump_data(path=dump_path)
+    print("         ")
+    for resname in resnames:
+        results = analyzer.get_analysis_data("dc_cluster_{}_upper".format(resname))
+        print("resname {} has distance cutoff cluster results in upper leaflet: ".format(resname))
+        for key in results.keys():
+            if key is not 'clusters':
+               # print(results[key][-1])
+                print("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3]))
+
+        results = analyzer.get_analysis_data("dc_cluster_{}_lower".format(resname))
+        print("resname {} has distance cutoff cluster results in lower leaflet: ".format(resname))
+        for key in results.keys():
+            if key is not 'clusters':
+                print("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3]))
+        print("------------------------------------------")
+
+    return
