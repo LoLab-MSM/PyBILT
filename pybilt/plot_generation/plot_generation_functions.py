@@ -42,7 +42,7 @@ sns.set_style("ticks")
 
 _color_list = ['blue', 'green','orange','purple', 'black', 'red', 'yellow', 'gray']
 
-def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, show=False):
+def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, show=False, scaled=False, wrapped=False):
     '''
     Generates a single plot with the lipid displacement vectors (or step vectors)
     Takes a single frame of the output from:
@@ -69,8 +69,11 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     colors = []
     for residue in vectors_resnames[1]:
         colors.append(color_dict[residue])
-
-    Q = plt.quiver(x,y,vx,vy,color=colors)
+    #print(x)
+   # Q = plt.quiver(x,y,vx,vy,color=colors)
+    #vector = np.array([vx[0], vy[1]])
+    #print("vector 0 length is: {}".format(np.sqrt(np.dot(vector,vector))))
+    Q = plt.quiver(x, y, vx, vy, color=colors, angles='xy', scale_units='xy', scale=1)
     label_string = ""
     for resname in color_dict:
         label_string+=resname+":"+color_dict[resname]+" "
@@ -79,6 +82,15 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     #else:
     #    plt.quiver(x,y,vx,vy)
     #plt.title('Lateral Displacement Vectors')
+    if scaled:
+        plt.xlabel("x (scaled coordinates)")
+        plt.ylabel("y (scaled coordinates)")
+    else:
+         plt.xlabel("x ($\AA$)")
+         plt.ylabel("y ($\AA$)")
+    if scaled and wrapped:
+        plt.xlim((-0.1, 1.1))
+        plt.ylim((-0.1, 1.1))
     if save:
         plt.savefig(filename)
     if show:
@@ -379,6 +391,17 @@ def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.eps', show=Fal
     return
 
 
+def plot_corr_mat(in_corrmat, save=True, filename='correlation_matrix.eps', show=False ):
+    cma = plt.cm.get_cmap('inferno')
+    plt.imshow(in_corrmat, cmap=cma, interpolation='none', vmin=-1.0, vmax=1.0)
+    plt.colorbar()
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
 def plot_corr_mat_as_scatter(in_corrmat, save=True, filename='correlation_matrix.eps', show=False ):
     ax_l = len(in_corrmat)
 
@@ -666,6 +689,59 @@ def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filena
             cbar.ax.set_ylabel('Count (scaled to maximum)')
         else:
             cbar.ax.set_ylabel('Count')
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_lipid_grid_thickness_map_2d(x_centers, y_centers, thickness_grid, save=True, filename='bilayer_thickness_map_2d.eps',
+                                 show=False, colorbar=True, vmin=0.0, vmax=None, interpolation='none'):
+    #cma = plt.cm.get_cmap('YlGnBu_r')
+    cma = plt.cm.get_cmap('viridis')
+    nx = thickness_grid.shape[0]
+    ny = thickness_grid.shape[1]
+    #need to rearrange the array order for imshow to match the same x and y values as is assumed with input thickness_grid
+    thickness_swapped = np.zeros((ny,nx), dtype=thickness_grid.dtype)
+    for i in range(ny):
+        if i < nx:
+            ii = ny-i - 1
+            for j in range(nx):
+                if j < nx:
+                    thickness_swapped[i,j] = thickness_grid[j,ii]
+    for i in range(nx):
+        if i < ny:
+            ii = nx - i - 1
+            for j in range(ny):
+                if j < ny:
+                    thickness_swapped[i, j] = thickness_grid[j, ii]
+    if vmin is not None and vmax is None:
+        plt.imshow(thickness_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)], vmin=vmin)
+    elif vmax is not None and vmin is None:
+        plt.imshow(thickness_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)], vmax=vmax)
+    elif vmin is not None and vmax is not None:
+        plt.imshow(thickness_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)],
+                   vmin=vmin, vmax=vmax)
+    else:
+        plt.imshow(thickness_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)])
+
+    plt.xlabel('x ($\AA$)')
+    plt.ylabel('y ($\AA$)')
+
+    #print in_xyzc[3]
+    #plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s',s=50, cmap=cma)
+    #cax, kw = mpl.colorbar.make_axes(plt.gca())
+    #norm = mpl.colors.Normalize(vmin = min(in_xyzc[3]), vmax = max(in_xyzc[3]), clip = False)
+
+    #c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)
+    if colorbar:
+        cbar = plt.colorbar()
+        cbar.ax.set_ylabel('Thickness ($\AA$)')
     if save:
         plt.savefig(filename)
     if show:
