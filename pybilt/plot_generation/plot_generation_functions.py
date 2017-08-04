@@ -221,6 +221,127 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
     return
 
 
+def plot_dc_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',
+                               save=True, show=False):
+    """Generates a plot of the average number of clusters (vs. time)
+    This function generates a plot of the average number of clusters vs. time for data output with key 'nclusters'
+     from the 'dc_cluster' analysis in the BilayerAnalyzer, which corresponds to the
+    bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.
+    Args:
+        clust_dat_list (list): This is a list of all data to plot and should be a list of tuples/lists where
+            each element tuple has the data arrays for each time series curve to include in the plot: e.g.
+            [ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]
+        name_list (list, optional): This is a list of string names to assign each curve included in the plot. It
+            should have len(name_list) == len(clust_dat_list) = True.
+                Default: None
+        filename (str, optional): This a string containing the filename for the output plot if save is set to True.
+                Default: 'clust_number.eps'
+        time_in (str, optional): This is a string specifying the time units of values in the input arrays. Acceptible values
+            are 'ps' for picosecond and 'ns' nanosecond.
+                Default: 'ps'
+        time_out (str, optional): This is a string specifying the time units to use in the output plot. Acceptible values
+            are 'ps' for picosecond and 'ns' nanosecond. If this is different than the value for time_in then the time
+            values will be scaled accordingly.
+                Default: 'ns'
+        save (bool, optional): This is boolean switch to set whether or not to save the generated plot to disc.
+            plt.savefig is called.
+                Default: True
+        show (bool, optional): This is boolean switch to set whether or not the generated plot is displayed in interactive
+            mode using plt.show.
+                Default: False
+    """
+    i = 0
+    for cl_dat in clust_dat_list:
+        t = cl_dat[0]
+        if time_in == 'ps' and time_out == 'ns':
+            #print "switching time units from ps to ns"
+            t/=1000.0
+        elif time_in == 'ns' and time_out == 'ps':
+            t*=1000.0
+        means = cl_dat[1]
+        stds = cl_dat[2]
+        if name_list is not None:
+            #print "plotting",name_list[i]," with errorbars"
+            #print t
+            #print apl
+            plt.errorbar(t, means, yerr=stds,linewidth=2.0,label=name_list[i])
+        else:
+            plt.errorbar(t, means, yerr=stds,linewidth=2.0)
+        i+=1
+        #plt.title("Mean Sqared Displacement vs. Time")
+    xlabel = "Time ("+time_out+")"
+    plt.xlabel(xlabel)
+    plt.ylabel("Average Number of Clusters")
+    if name_list is not None:
+        plt.legend(loc=0)
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+
+def plot_dc_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',
+                               save=True, show=False):
+    """Generates a plot of the average cluster size (vs. time)
+    This function generates a plot of the average cluster size vs. time for data output with key 'avg_size' from the
+    'dc_cluster' analysis in the BilayerAnalyzer, which corresponds to the
+    bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.
+    Args:
+        clust_dat_list (list): This is a list of all data to plot and should be a list of tuples/lists where
+            each element tuple has the data arrays for each time series curve to include in the plot: e.g.
+            [ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]
+        name_list (list, optional): This is a list of string names to assign each curve included in the plot. It
+            should have len(name_list) == len(clust_dat_list) = True.
+                Default: None
+        filename (str, optional): This a string containing the filename for the output plot if save is set to True.
+                Default: 'clust_number.eps'
+        time_in (str, optional): This is a string specifying the time units of values in the input arrays. Acceptible values
+            are 'ps' for picosecond and 'ns' nanosecond.
+                Default: 'ps'
+        time_out (str, optional): This is a string specifying the time units to use in the output plot. Acceptible values
+            are 'ps' for picosecond and 'ns' nanosecond. If this is different than the value for time_in then the time
+            values will be scaled accordingly.
+                Default: 'ns'
+        save (bool, optional): This is boolean switch to set whether or not to save the generated plot to disc.
+            plt.savefig is called.
+                Default: True
+        show (bool, optional): This is boolean switch to set whether or not the generated plot is displayed in interactive
+            mode using plt.show.
+                Default: False
+    """
+    i = 0
+    for cl_dat in clust_dat_list:
+        t = cl_dat[0]
+        if time_in == 'ps' and time_out == 'ns':
+            #print "switching time units from ps to ns"
+            t/=1000.0
+        elif time_in == 'ns' and time_out == 'ps':
+            t*=1000.0
+        means = cl_dat[1]
+        stds = cl_dat[2]
+        if name_list is not None:
+            #print "plotting",name_list[i]," with errorbars"
+            #print t
+            #print apl
+            plt.errorbar(t, means, yerr=stds,linewidth=2.0,label=name_list[i])
+        else:
+            plt.errorbar(t, means, yerr=stds,linewidth=2.0)
+        i+=1
+        #plt.title("Mean Sqared Displacement vs. Time")
+    xlabel = "Time ("+time_out+")"
+    plt.xlabel(xlabel)
+    plt.ylabel("Average Size of Cluster")
+    if name_list is not None:
+        plt.legend(loc=0)
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
 def plot_dc_cluster_dat_number_comtraj(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',show=False):
     '''
     Generates a single of the average number of clusters (vs. time)
