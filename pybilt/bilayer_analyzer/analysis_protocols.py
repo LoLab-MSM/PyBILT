@@ -740,6 +740,7 @@ class DispVecProtocol(AnalysisProtocol):
                     arg_dict[arg_key] = arg_arg
                 elif arg_key == 'scale':
                     arg_arg = arg_arg in ['True', 'true']
+                    arg_dict[arg_key] = arg_arg
             elif arg_key == 'analysis_id':
                 pass
             else:
@@ -761,9 +762,11 @@ class DispVecProtocol(AnalysisProtocol):
         if self.first_comp:
             self.last_com_frame = ba_reps['com_frame']
             self.first_comp = False
+            self.last_frame = ba_settings['frame_range'][0]
             return
         current_frame = ba_reps['current_mda_frame'].frame
-
+        #print(self.settings['leaflet'])
+        #print(self.settings['scale'])
         interval = (current_frame) - (self.last_frame)
         #print (interval, " ", self.settings['interval'])
         if interval == self.settings['interval']:
@@ -816,6 +819,12 @@ class DispVecProtocol(AnalysisProtocol):
                     ba_settings['lateral']]
                 com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
                 if self.settings['scale']:
+                    #print("scaling coordinates..")
+                    #print(self.settings['leaflet'])
+                    #print(self.settings['scale'])
+                    #print(type(self.settings['scale']))
+                    #print(type(self.settings['wrapped']))
+                    #quit()
                     com_i[0]/=box_lateral[0]
                     com_i[1]/=box_lateral[1]
                     com_j[0]/=box_lateral[0]
