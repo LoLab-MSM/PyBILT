@@ -221,7 +221,7 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
     return
 
 
-def plot_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',show=False):
+def plot_dc_cluster_dat_number_comtraj(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',show=False):
     '''
     Generates a single of the average number of clusters (vs. time)
     using output data from:
@@ -260,7 +260,7 @@ def plot_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_number
     plt.close()
     return
 
-def plot_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_size.eps',time_in='ps',time_out='ns',show=False):
+def plot_dc_cluster_dat_size_comtraj(clust_dat_list,name_list=None,filename='clust_size.eps',time_in='ps',time_out='ns',show=False):
     '''
     Generates a single plot of the average cluster size (vs time)
     using output data from:
@@ -300,7 +300,7 @@ def plot_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_size.eps
     return
 
 
-def plot_cluster_maps(clusters, filename='cluster_map.eps',show=False):
+def plot_dc_cluster_maps_comtraj(clusters, filename='cluster_map.eps',show=False):
     '''
     Generates a single plot of the lipid cluster map
     Takes a single frame of the output from:
