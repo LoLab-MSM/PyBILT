@@ -287,10 +287,13 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
         xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_grid=thickgrid)['lower']
 
         # with sns.color_palette("PuBuGn_d"):
+        pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
+                                             filename=dump_path+'thickness_grid_'+fs+'_a.png',
+                                             vmin=20.0, vmax=50.0, interpolation='gaussian')
         pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.png', colorbar=True, vmin=20.0,
                                  vmax=50.0)
-        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
-                                 vmax=50.0)
+       # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
+      #                           vmax=50.0)
 
     #output data and plots
     analyzer.dump_data(path=dump_path)
