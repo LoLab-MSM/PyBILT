@@ -397,8 +397,8 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
         count = form.format(counter)
         filename = "step_vector_correlation_map_" + count + ".eps"
         filename_b = "step_vector_correlation_map_" + count + ".png"
-        #pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
-        #pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
+        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
+        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
         counter+=1
     return
 
