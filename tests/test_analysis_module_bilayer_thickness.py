@@ -9,7 +9,7 @@ def test_analysis_module_bilayer_thickness():
                   selection_string=sel_string,
                   name_dict=name_dict,
                   frame_start=2, frame_end=-2, frame_interval=2,
-                  n_xbins=30, n_ybins=30)
+                  n_xbins=60, n_ybins=60)
 
     return
 

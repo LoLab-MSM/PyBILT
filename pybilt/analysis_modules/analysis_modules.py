@@ -288,10 +288,11 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
 
         # with sns.color_palette("PuBuGn_d"):
         pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
-                                             filename=dump_path+'thickness_grid_'+fs+'_a.png',
-                                             vmin=20.0, vmax=50.0, interpolation='gaussian')
-        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.png', colorbar=True, vmin=20.0,
-                                 vmax=50.0)
+                                             filename=dump_path+'thickness_grid_'+fs+'.png',
+                                             vmin=30.0, vmax=50.0, interpolation='gaussian')
+        pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
+                                             filename=dump_path+'thickness_grid_'+fs+'.eps',
+                                             vmin=30.0, vmax=50.0, interpolation='gaussian')
        # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
       #                           vmax=50.0)
 
@@ -371,8 +372,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
         count = form.format(counter)
         filename = "step_vector_map_upper_"+count+".eps"
         filename_b = "step_vector_map_upper_"+count+".png"
-        pgf.plot_step_vectors(disp_vec, filename=filename)
-        pgf.plot_step_vectors(disp_vec, filename=filename_b)
+        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True, wrapped=True)
+        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True, wrapped=True)
+        counter+=1
 
     disp_vecs = analyzer.get_analysis_data('disp_vec_lower')
     counter=0
@@ -382,8 +384,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
         count = form.format(counter)
         filename = "step_vector_map_lower_"+count+".eps"
         filename_b = "step_vector_map_lower_"+count+".png"
-        pgf.plot_step_vectors(disp_vec, filename=filename)
-        pgf.plot_step_vectors(disp_vec, filename=filename_b)
+        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True, wrapped=True)
+        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True, wrapped=True)
+        counter+=1
 
     disp_vec_corrs = analyzer.get_analysis_data('disp_vec_corr')
     counter = 0
@@ -394,9 +397,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
         count = form.format(counter)
         filename = "step_vector_correlation_map_" + count + ".eps"
         filename_b = "step_vector_correlation_map_" + count + ".png"
-        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
-        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
-
+        #pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
+        #pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
+        counter+=1
     return
 
 def PN_orientational_angle(structure_file, trajectory_file, selection_string, lipid_resnames, PN_names='default', frame_start=0, frame_end=-1,
