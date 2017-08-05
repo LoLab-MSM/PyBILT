@@ -4,15 +4,11 @@ import numpy as np
 
 class Gaussian(object):
     def __init__(self, mean,std):
-
         stdinv = 1.0/std
-        stdinvsq = stdinv**2
         normalc = stdinv*(1.0/np.sqrt(np.pi))
-
         self.sigma = std
         self.mean = mean
         self.normconst = normalc
-
         return
 
 
@@ -30,8 +26,8 @@ class Gaussian(object):
 
 
 class GaussianRange(object):
-    def __init__(self,lower,upper,mean,std,npoints=200):
-        x_p = np.linspace(lower,upper,npoints,endpoint=True)
+    def __init__(self,in_range,mean,std,npoints=200):
+        x_p = np.linspace(in_range[0],in_range[1],npoints,endpoint=True)
         y_p = np.zeros(npoints)
         yc = 0
         stdinv = 1.0/std
@@ -47,8 +43,8 @@ class GaussianRange(object):
         self.sigma = std
         self.mean = mean
         self.normconst = normalc
-        self.upper = upper
-        self.lower = lower
+        self.upper = in_range[1]
+        self.lower = in_range[0]
         self.dx = x_p[1]-x_p[0]
         self.npoints = npoints
         return
@@ -75,7 +71,7 @@ class GaussianRange(object):
         #print "i_l ",i_l," i_u ",i_u
         total = 0.0
         for i in xrange(i_l,i_u):
-             total+= self.y[i]*self.dx
+            total+= self.y[i]*self.dx
         return total
 
     def sum_range(self, lower, upper):
@@ -88,7 +84,7 @@ class GaussianRange(object):
         i_u = int(np.floor((upper-self.lower)/self.dx))
         total = 0.0
         for i in xrange(i_l,i_u):
-             total+= self.y[i]
+            total+= self.y[i]
         return total
 
     def normalize(self):
@@ -100,4 +96,5 @@ class GaussianRange(object):
         return
 
     def reset_mean(self,new_mean):
+        self.mean = new_mean
         return

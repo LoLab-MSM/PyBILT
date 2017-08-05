@@ -25,12 +25,8 @@ def diffusion_coefficient_Einstein(times, msd_vals, dim=2, time_range=None):
     if time_range is not None:
         t, msd = _time_block(times, msd_vals, time_range[0], time_range[1])
     nvals = len(msd)
-    diff_con = []
     dt = t - t[0]
     D = msd[nvals-1]/(2.0*dim*dt[nvals-1])
-    print(dt[nvals-1]," ",t[nvals-1])
- #   D_b = msd_vals.mean()/(2.0*dim*dt[nvals-1])
-#    D_c = (msd_vals[1:]/(2.0*dim*dt[1:])).mean()
     return D
 
 def diffusion_coefficient_linear_fit(times, msd_vals, dim=2, time_range=None):
@@ -38,7 +34,8 @@ def diffusion_coefficient_linear_fit(times, msd_vals, dim=2, time_range=None):
     msd = msd_vals
     if time_range is not None:
         t, msd = _time_block(times, msd_vals, time_range[0], time_range[1])
-    slope, intercept, r_value, p_value, std_err = stats.linregress(t,msd)
+    slope, unused_intercept, unused_r_value, unused_p_value, \
+        std_err = stats.linregress(t,msd)
     return (slope/(2.0*dim), std_err/(2.0*dim))
 
 
@@ -74,7 +71,7 @@ def diffusion_coefficient_anomalous_fit(times, msd_vals, dim=2, time_range=None)
         func = _msd_anom_1d
     if time_range is not None:
         t, msd = _time_block(times, msd_vals, time_range[0], time_range[1])
-    popt, pcov = curve_fit(func, t, msd)
+    popt, unused_pcov = curve_fit(func, t, msd)
     return popt
 
 
@@ -90,4 +87,3 @@ def _time_block(times, values, t_lower, t_upper):
             t.append(time)
             val.append(value)
     return (np.array(t), np.array(val))
-

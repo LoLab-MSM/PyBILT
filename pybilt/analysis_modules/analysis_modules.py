@@ -282,7 +282,6 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     #run analysis
     for _frame in analyzer:
         fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
-        frame_curr = analyzer.reps['com_frame'].number
         thickgrid = analyzer.reps['lipid_grid'].thickness_grid()
         xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_grid=thickgrid)['lower']
 
@@ -293,8 +292,8 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
         pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
                                              filename=dump_path+'thickness_grid_'+fs+'.eps',
                                              vmin=30.0, vmax=50.0, interpolation='gaussian')
-       # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
-      #                           vmax=50.0)
+        # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
+        #                           vmax=50.0)
 
     #output data and plots
     analyzer.dump_data(path=dump_path)
@@ -553,7 +552,6 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_sta
     #run analysis
     for _frame in analyzer:
         fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
-        frame_curr = analyzer.reps['com_frame'].number
         xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_type_dict=type_colors)['lower']
 
         pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_lower_' + fs + '.png')
@@ -612,7 +610,6 @@ def distance_cutoff_clustering(structure_file, trajectory_file, selection_string
         print("resname {} has distance cutoff cluster results in upper leaflet: ".format(resname))
         for key in results.keys():
             if key is not 'clusters':
-               # print(results[key][-1])
                 print("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3]))
 
         results = analyzer.get_analysis_data("dc_cluster_{}_lower".format(resname))

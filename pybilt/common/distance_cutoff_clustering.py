@@ -52,7 +52,7 @@ def distance_cutoff_clustering(vectors, cutoff, dist_func, min_size=1, *df_args,
     for i in range(nvecs):
         master.append([i, False])
     #print(master)
-    clustind = 0
+    #clustind = 0
     neighbors = []
 
     while len(master)>0:
@@ -72,7 +72,7 @@ def distance_cutoff_clustering(vectors, cutoff, dist_func, min_size=1, *df_args,
             for j in range(len(master)):
                 b = master[j][0]
                 if not master[j][1]:
-                #print "a ",a," b ",b
+                    #print "a ",a," b ",b
                     #vec_b = vectors[b]
                     if dist_bool[a][b]:
                         neighbors.append(b)
@@ -80,7 +80,7 @@ def distance_cutoff_clustering(vectors, cutoff, dist_func, min_size=1, *df_args,
                         #print(neighbors)
             #print(master)
             i+=1
-        master = list([v for v in master if v[1] == False])
+        master = list([v for v in master if not v[1]])
         #print(master)
         if len(neighbors) > min_size:
             clusters.append(list(neighbors))

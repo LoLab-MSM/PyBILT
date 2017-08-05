@@ -1,5 +1,5 @@
 import numpy as np
-from pybilt.mda_tools import diffusion_coefficients as dc
+from pybilt.diffusion import diffusion_coefficients as dc
 
 def test_diffusion_coefficient_estimation():
     #set known diffusion coefficient for test data
@@ -32,5 +32,3 @@ def test_diffusion_coefficient_estimation():
 
 if __name__ == '__main__':
     test_diffusion_coefficient_estimation()
-
-

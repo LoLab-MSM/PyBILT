@@ -41,13 +41,13 @@ class MDAData(object):
         #print('pickling....')
         return odict
 
-    def __setstate__(self, dict):
+    def __setstate__(self, in_dict):
         #print("unpickling...")
         #mda_universe = mda.Universe(dict['psf_file'], dict['trajectory_file'])
         #mda_universe = None
         #print(mda_universe)
         #mda_trajectory = mda_universe.trajectory
-       # print(mda_trajectory)
+        # print(mda_trajectory)
         #bilayer_sel = mda_universe.select_atoms(dict['bilayer_sel_string'])
         #print(bilayer_sel)
         #residues = bilayer_sel.residues
@@ -56,7 +56,7 @@ class MDAData(object):
         #dict['mda_trajectory'] = mda_trajectory
         #dict['bilayer_sel'] = bilayer_sel
         #dict['residues'] = residues
-        self.__dict__ = dict
+        self.__dict__ = in_dict
 
     def reduced(self):
         return MDADataReduced(self)

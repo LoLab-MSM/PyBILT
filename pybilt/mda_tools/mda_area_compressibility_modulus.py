@@ -36,7 +36,7 @@ def area_compressibility_modulus(mda_trajectory, bilayer_selection, temperature,
     elif normal == 'y':
         lateral_index = [0, 2]
     nlipids = len(bilayer_selection.residues)
-    per_leaflet = nlipids / 2
+    #per_leaflet = nlipids / 2
     # get the lateral area at each frame
     area_run = RunningStats()
     times = []

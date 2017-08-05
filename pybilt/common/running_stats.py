@@ -60,7 +60,7 @@ def gen_running_average(onednparray):
         averager.push(onednparray[i])
         run_avg = averager.mean()
         run_dev = averager.deviation()
-       # print run_avg, run_dev, averager.mean(), onednparray[i]
+        # print run_avg, run_dev, averager.mean(), onednparray[i]
         output[i,0] = run_avg
         output[i,1] = run_dev
     return output

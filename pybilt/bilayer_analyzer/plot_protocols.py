@@ -135,6 +135,7 @@ class PlotFunctionProtocol(object):
             arg_key = args[i]
             arg_arg = args[i + 1]
             if arg_key in self.valid_args:
+                print(arg_arg)
                 pass
             else:
                 raise RuntimeError(
@@ -148,9 +149,11 @@ class PlotFunctionProtocol(object):
 
     def generate_plot(self, bilayer_analyzer):
         # generate and save plot
+        print(bilayer_analyzer)
         return
 
-    def show_plot(self):
+    def show_plot(self, analysis_protocol):
+        print(analysis_protocol)
         # generate and show/display plot
         return
 
