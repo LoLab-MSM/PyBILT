@@ -12,11 +12,11 @@ Example:
 """
 
 # imports
-import MDAnalysis as mda
 import numpy as np
+import warnings
 try:
     import cPickle as pickle
-except:
+except ImportWarning as warn:
     import pickle
 
 import os
@@ -28,7 +28,7 @@ import leaflet as lf
 import pybilt.lipid_grid.lipid_grid as lg
 import analysis_protocols as ap
 import plot_protocols as pp
-from pybilt.common.running_stats import *
+from pybilt.common.running_stats import RunningStats
 import mda_data as md
 
 # import the coordinate wrapping function--for unwrapping
@@ -53,7 +53,7 @@ def print_valid_analyses(show_settings=True):
         analyses.add_analysis(key+" "+a_id)
     for a_id in analyses.command_protocol.keys():
         a_key = analyses.command_protocol[a_id].analysis_key
-        descript = analyses.command_protocol[a_id]._short_description
+        descript = analyses.command_protocol[a_id].short_description()
         print("analysis_key: {} ---> {}".format(a_key,descript))
         if show_settings:
             print("  with settings:")
@@ -69,7 +69,7 @@ def print_analysis_settings(analysis_key):
         analyses.add_analysis(analysis_key+" "+a_id)
         for a_id in analyses.command_protocol.keys():
             a_key = analyses.command_protocol[a_id].analysis_key
-            descript = analyses.command_protocol[a_id]._short_description
+            descript = analyses.command_protocol[a_id].short_description()
             print("analysis_key: {} ---> {}".format(a_key,descript))
             print("  with settings:")
             for setting in analyses.command_protocol[a_id].settings.keys():
@@ -396,7 +396,6 @@ class BilayerAnalyzer(object):
             if required not in commands.keys():
                 error_string = self.required_command_error_strings[required]
                 raise RuntimeError(error_string)
-                exit
 
         return commands
 
@@ -650,7 +649,7 @@ class BilayerAnalyzer(object):
         oldcoord = np.zeros((natoms, 3))
         currcoord = np.zeros((natoms, 3))
         wrapcoord = np.zeros((natoms, 3))
-        first_frame_coord = np.zeros((natoms, 3))
+        #first_frame_coord = np.zeros((natoms, 3))
         index = self.mda_data.bilayer_sel.indices
         firstframe = True
         first_com = True
@@ -664,10 +663,10 @@ class BilayerAnalyzer(object):
                      self.settings['frame_range'][0]:self.settings['frame_range'][1]:self.settings['frame_range'][
                          2]]:
             self.reps['current_mda_frame'] = frame
-            currcoord = frame._pos[index]
+            currcoord = frame.positions[index]
             if firstframe:
                 oldcoord = np.copy(currcoord)
-                first_frame_coord = np.copy(oldcoord)
+                #first_frame_coord = np.copy(oldcoord)
                 firstframe = False
                 wrapcoord = np.copy(currcoord)
             else:
@@ -781,7 +780,7 @@ class BilayerAnalyzer(object):
         oldcoord = np.zeros((natoms, 3))
         currcoord = np.zeros((natoms, 3))
         wrapcoord = np.zeros((natoms, 3))
-        first_frame_coord = np.zeros((natoms, 3))
+        #first_frame_coord = np.zeros((natoms, 3))
         index = self.mda_data.bilayer_sel.indices
         firstframe = True
         first_com = True
@@ -795,9 +794,7 @@ class BilayerAnalyzer(object):
         run_serial = []
         run_parallel = []
         for a_id in self.analysis_protocol.command_protocol.keys():
-        #    print a_id, " ", self.analysis_protocol.command_protocol[a_id]._pickleable
-            if self.analysis_protocol.command_protocol[a_id]._pickleable:
-        #        print(a_id)
+            if self.analysis_protocol.command_protocol[a_id].pickleable():
                 run_parallel.append(a_id)
             else:
                 run_serial.append(a_id)
@@ -814,10 +811,10 @@ class BilayerAnalyzer(object):
                      self.settings['frame_range'][0]:self.settings['frame_range'][1]:self.settings['frame_range'][
                          2]]:
             self.reps['current_mda_frame'] = frame
-            currcoord = frame._pos[index]
+            currcoord = frame.positions[index]
             if firstframe:
                 oldcoord = np.copy(currcoord)
-                first_frame_coord = np.copy(oldcoord)
+                #first_frame_coord = np.copy(oldcoord)
                 firstframe = False
                 wrapcoord = np.copy(currcoord)
             else:
@@ -898,16 +895,7 @@ class BilayerAnalyzer(object):
                     print ("analysis " + analysis_id)
 
             for a_id in run_parallel:
-            #    print(a_id)
                 r_analyses.append([self.analysis_protocol.command_protocol[a_id], self])
-                #r_analyses.append('hello')
-            #print(r_analyses)
-
-            #execute the analyses using pool.map
-            #print("in_func")
-            #print(in_func)
-            #print("r_analyses")
-            #print(r_analyses)
             results = pool.map(in_func, r_analyses)
 
             #print(results)
@@ -923,7 +911,7 @@ class BilayerAnalyzer(object):
                     self.mda_data)
 
             if self._frame_loop_count % self.settings['print_interval'] == 0:
-                    print(" ")
+                print(" ")
             self.settings['frame_index'] += self.settings['frame_range'][2]
             self._frame_loop_count += 1
             # print ('analysis_out:')
@@ -948,7 +936,7 @@ class BilayerAnalyzer(object):
         return
 
     @staticmethod
-    def available_analysis():
+    def available_plots():
         """Returns the list of the keys of the available plot types.
 
         Returns:
@@ -992,7 +980,7 @@ class BilayerAnalyzer(object):
         oldcoord = np.zeros((natoms, 3))
         currcoord = np.zeros((natoms, 3))
         wrapcoord = np.zeros((natoms, 3))
-        first_frame_coord = np.zeros((natoms, 3))
+        #first_frame_coord = np.zeros((natoms, 3))
         index = self.mda_data.bilayer_sel.indices
         firstframe = self._first_frame
         first_com = self._first_com
@@ -1007,10 +995,10 @@ class BilayerAnalyzer(object):
         #frame = self.mda_data.mda_trajectory[self._current_frame]
         for frame in self.mda_data.mda_trajectory[self._current_frame:self._current_frame+1]:
             self.reps['current_mda_frame'] = frame
-            currcoord = frame._pos[index]
+            currcoord = frame.positions[index]
             if firstframe:
                 oldcoord = np.copy(currcoord)
-                first_frame_coord = np.copy(oldcoord)
+                #first_frame_coord = np.copy(oldcoord)
                 self._first_frame = False
                 wrapcoord = np.copy(currcoord)
             else:
@@ -1081,7 +1069,6 @@ class BilayerAnalyzer(object):
                         frame.frame) + ".pickle"
                     with open(ofname, 'wb') as ofile:
                         pickle.dump(self.reps['lipid_grid'], ofile)
-
                         # lipid_grid = None
             # now do analyses
             if self._frame_loop_count % self.settings['print_interval'] == 0:
@@ -1102,8 +1089,4 @@ class BilayerAnalyzer(object):
         self._frame_loop_count+=1
         self._current_frame+=self.settings['frame_range'][2]
         if self._current_frame <= self._last_frame:
-
-        #    return self._current_frame-self.frame_range[2]
             return
-        #else:
-         #   raise StopIteration()

@@ -14,10 +14,7 @@ def wrap_coordinates(abc, coord, refcoord):
 	Ah = A/2.0
 	Bh = B/2.0
 	Ch = C/2.0
-	iA = 1.0/A
-	iB = 1.0/B
-	iC = 1.0/C
-	
+
 	natoms = len(coord)
 	#list to hold shifts
 	sAs = np.zeros(natoms)
@@ -72,7 +69,7 @@ def wrap_coordinates(abc, coord, refcoord):
 				shift-=1
 		elif dx < -Ah:
 			shift+=1
-			while (dz+shift*A)<-Ah:
+			while (dx+shift*A)<-Ah:
 				shift+=1
 		sAs[i]=shift
 		i+=1
@@ -82,7 +79,7 @@ def wrap_coordinates(abc, coord, refcoord):
 
 
 def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
-	
+
 	index_ranges = []
 	total_atoms = len(coord)
 	atoms_per_proc_base = total_atoms/nprocs
@@ -95,7 +92,7 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 		fs = i*atoms_per_proc_base
 		fe = fs + atoms_per_proc_base - 1
 		index_ranges.append([fs,fe])
-	#print "index_ranges (pre-adjust):"	
+	#print "index_ranges (pre-adjust):"
 	#print index_ranges
 	#now adjust for leftovers - divide them "equally" over the processes
 	lo = left_over
@@ -108,7 +105,7 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 			lo-=1
 			if lo == 0:
 				break
-	
+
 	#print "nprocs ",nprocs
 	#print "index_ranges (post adjust): "
 	#print index_ranges
@@ -116,14 +113,14 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 	#coords
 	c = []
 	#reference
-	r = []	
+	r = []
 	for i in xrange(nprocs):
 		sfs = index_ranges[i][0]
 		sfe = index_ranges[i][1]+1
 		c.append(coord[sfs:sfe])
 		r.append(refcoord[sfs:sfe])
 
-	wrap_func = wrap_coordinates 
+	wrap_func = wrap_coordinates
 	#create process pool
 	pool = mp.Pool(processes=nprocs)
 	results = [pool.apply_async(wrap_func,args=(abc,c[i],r[i])) for i in range(0,nprocs)]
@@ -146,7 +143,7 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 		i+=1
 	pool.close()
 	pool.join()
-	
+
 	return wrapcoord
 
 
@@ -154,7 +151,6 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 def mda_unwrap(universe, out_file_name):
 	frames = universe.trajectory
 	print "unwrapping coordinates - ouput is ",out_file_name
-	nframes=len(frames)
 	# Setup writer to write aligned dcd file
 	writer = mda.coordinates.DCD.DCDWriter(
 		out_file_name, frames.n_atoms,
@@ -166,7 +162,7 @@ def mda_unwrap(universe, out_file_name):
 	oldcoord = np.zeros((natoms,3), dtype=np.double)
 	firstframe = True
 	for frame in frames:
-		currcoord = frame._pos[:]
+		currcoord = frame.positions[:]
 		if firstframe:
 			oldcoord = currcoord
 			firstframe = False
@@ -181,7 +177,6 @@ def mda_unwrap(universe, out_file_name):
 def mda_unwrap_parallel(universe, out_file_name,nprocs=2):
 	frames = universe.trajectory
 	print "unwrapping coordinates - ouput is ",out_file_name
-	nframes=len(frames)
 	# Setup writer to write aligned dcd file
 	writer = mda.coordinates.DCD.DCDWriter(
 		out_file_name, frames.n_atoms,
@@ -193,14 +188,14 @@ def mda_unwrap_parallel(universe, out_file_name,nprocs=2):
 	oldcoord = np.zeros((natoms,3), dtype=np.double)
 	firstframe = True
 	for frame in frames:
-		currcoord = frame._pos[:]
+		currcoord = frame.positions[:]
 		if firstframe:
 			oldcoord = currcoord
 			firstframe = False
 			writer.write(universe.atoms)
 		else:
 			abc = frame.dimensions[0:3]
-			wrapcoord = wrap_coordinates_parallel(abc, currcoord, oldcoord,nprocs=2)
+			wrapcoord = wrap_coordinates_parallel(abc, currcoord, oldcoord,nprocs=nprocs)
 			frame._pos[:] = wrapcoord[:]
 			writer.write(universe.atoms)
 
@@ -217,7 +212,7 @@ def mda_unwrap_parallel(universe, out_file_name,nprocs=2):
 #	iA = 1.0/A
 #	iB = 1.0/B
 #	iC = 1.0/C
-#	
+#
 #	natoms = 1
 #	#list to hold shifts
 #	sAs = np.zeros(natoms)
@@ -272,7 +267,7 @@ def mda_unwrap_parallel(universe, out_file_name,nprocs=2):
 #		while (dz+shift*A)<-Ah:
 #			shift+=1
 #	sAs[i]=shift
-#	
+#
 #	#apply shift
 #	wrapcoord[0] += (sAs*A)
-#	return wrapcoord			
+#	return wrapcoord

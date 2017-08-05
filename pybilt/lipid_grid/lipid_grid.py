@@ -8,10 +8,10 @@
 
 import numpy as np
 #import my running stats class
-from pybilt.common.running_stats import *
+from pybilt.common.running_stats import RunningStats
 
 class LipidGrid_2d(object):
-    def __init__(self, com_frame, com_frame_indices,plane,nxbins=50,nybins=50, embedded_protein=None):
+    def __init__(self, com_frame, com_frame_indices,plane,nxbins=50,nybins=50):
         #store the frame and leaflet
         self.frame = com_frame
         #self.leaflet = ms_leaflet
@@ -54,7 +54,6 @@ class LipidGrid_2d(object):
         self.y_length = self.y_max-self.y_min
         # get the lipid indices for this leaflet
         indices = com_frame_indices
-        void_ind = max(indices)+1
         #now assign lipids to the gridpoints
         self.lipid_grid = np.zeros((nxbins,nybins),dtype=np.int)
         self.lipid_grid_z = np.zeros((nxbins,nybins))
@@ -85,12 +84,7 @@ class LipidGrid_2d(object):
                         r_min=rxy
                         i_min = i
                         z_min = zi
-                #if embedded_protein is not None:
 
-                #print "i_min ",i_min," z_min ",z_min
-               # if cutoff is not None:
-
-               # else:
                 self.lipid_grid[cx,cy]=i_min
                 self.lipid_grid_z[cx,cy]=z_min
                 cy+=1
@@ -143,7 +137,7 @@ class LipidGrid_2d(object):
 
 
 class LipidGrids(object):
-    def __init__(self, com_frame, leaflets,plane,nxbins=50,nybins=50, embedded_protein=None):
+    def __init__(self, com_frame, leaflets,plane,nxbins=50,nybins=50):
         #store the frame and leaflet
         self.frame = com_frame
         self.leaflets = leaflets
@@ -253,7 +247,7 @@ class LipidGrids(object):
             std = area_run_per_res_type[name].deviation()
             average_per_res[name] = (average,std)
         system_average = area_run.mean()
-        system_dev = area_run.deviation()
+        #system_dev = area_run.deviation()
 
         output = (system_average, average_per_res, area_per_lipid)
         return output
@@ -381,11 +375,11 @@ class LipidGrids(object):
                 ssx = ssx_l[ix,iy]
                 ssy = ssy_l[ix,iy]
                 ssxy = ssxy_l[ix,iy]
-                sx_v = np.array([self.leaf_grid['lower'].x_centers[ix]+dx_u,0.0,sx])
-                sy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_u,sy])
-                ssx_v = np.array([self.leaf_grid['lower'].x_centers[ix]+dx_u,0.0,ssx])
-                ssy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_u,ssy])
-                ssxy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_u,ssxy])
+                sx_v = np.array([self.leaf_grid['lower'].x_centers[ix]+dx_l,0.0,sx])
+                sy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_l,sy])
+                ssx_v = np.array([self.leaf_grid['lower'].x_centers[ix]+dx_l,0.0,ssx])
+                ssy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_l,ssy])
+                ssxy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_l,ssxy])
                 E = np.dot(sx_v,sx_v)
                 F = np.dot(sx_v,sy_v)
                 G = np.dot(sy_v,sy_v)
@@ -435,7 +429,7 @@ class LipidGrids(object):
             if len(color_dict.shape)==2:
                 C = np.zeros((npoints, color_dict.shape[1]))
         if color_type_dict is not None:
-            dict_type = type(color_type_dict[color_type_dict.keys()[0]])
+            #dict_type = type(color_type_dict[color_type_dict.keys()[0]])
             C = list()
         for leaf in do_leaflet:
             npt = 0
@@ -464,17 +458,6 @@ class LipidGrids(object):
                     npt+=1
                     cy+=1
                 cx+=1
-           # if color_dict is not None and len(color_dict.shape)==1:
-           #     col_min = min(C)
-           #     C-=col_min
-           #     col_max = max(C)
-           #     C/=col_max
-
-           # elif color_grid is not None:
-           #     col_min = min(C)
-           #     C-=col_min
-           #     col_max = max(C)
-           #     C/=col_max
 
             if color_type_dict is not None:
                 C = np.array(C)
@@ -543,7 +526,6 @@ class LipidGrids(object):
         for leaf in self.leaflets.keys():
             #groups in the leaflet
             lgroups = self.leaflets[leaf].get_group_names()
-            ngroups = len(groups)
             # build dictionary for string group name to integer type
             for name in lgroups:
                 if name not in groups:
@@ -555,9 +537,9 @@ class LipidGrids(object):
             nybins = self.leaf_grid[leaf].y_nbins
             type_array = np.zeros((nxbins, nybins), dtype=np.int)
             cx=0
-            for x in self.leaf_grid[leaf].x_centers:
+            for dummy_x in self.leaf_grid[leaf].x_centers:
                 cy=0
-                for y in self.leaf_grid[leaf].y_centers:
+                for dummy_y in self.leaf_grid[leaf].y_centers:
                     #get the z coordinate
                     ic = self.leaf_grid[leaf].get_index_at(cx,cy)
                     oname = self.frame.lipidcom[ic].type
@@ -578,7 +560,6 @@ class LipidGrids(object):
         for leaf in self.leaf_grid.keys():
             #groups in the leaflet
             lgroups = self.leaflets[leaf].get_group_names()
-            ngroups = len(groups)
             # build dictionary for string group name to integer type
             for name in lgroups:
                 if name not in groups:
@@ -586,8 +567,6 @@ class LipidGrids(object):
                     group_to_int[name] = i
                     i+=1
         for leaf in self.leaf_grid.keys():
-            nxbins = self.leaf_grid[leaf].x_nbins
-            nybins = self.leaf_grid[leaf].y_nbins
             #type_array = np.zeros((nxbins, nybins, 4))
             type_array = []
             cx=0

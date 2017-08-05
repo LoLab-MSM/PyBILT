@@ -351,7 +351,12 @@ class AnalysisProtocol(object):
                     "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_key)
         return
 
+    def short_description(self):
+        return self._short_description
 
+    def pickleable(self):
+        return self._pickleable
+            
     def print_protocol(self):
         print ("Analysis: "+self._short_description)
         print ("  with analysis_id: {} ".format(self.analysis_id))
