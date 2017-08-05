@@ -133,9 +133,8 @@ class PlotFunctionProtocol(object):
         nargs = len(args)
         for i in range(1, nargs, 2):
             arg_key = args[i]
-            arg_arg = args[i + 1]
+            dummy_arg_arg = args[i + 1]
             if arg_key in self.valid_args:
-                print(arg_arg)
                 pass
             else:
                 raise RuntimeError(

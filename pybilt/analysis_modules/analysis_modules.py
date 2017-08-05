@@ -280,7 +280,7 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     analyzer.print_plot_protocol()
 
     #run analysis
-    for _frame in analyzer:
+    for dummy_frame in analyzer:
         fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
         thickgrid = analyzer.reps['lipid_grid'].thickness_grid()
         xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_grid=thickgrid)['lower']
@@ -534,7 +534,7 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_sta
     # add the analysis
     if type_colors is 'auto':
         type_colors = {}
-        for _frame in analyzer:
+        for dummy_frame in analyzer:
             unique_resnames = sorted(analyzer.reps['com_frame'].unique_resnames())
             i = 0
             for resname in unique_resnames:
@@ -550,7 +550,7 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_sta
     analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
     analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
     #run analysis
-    for _frame in analyzer:
+    for dummy_frame in analyzer:
         fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
         xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_type_dict=type_colors)['lower']
 

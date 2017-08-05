@@ -41,14 +41,15 @@ Example:
 
 # imports
 import scipy.constants as scicon
-
+import numpy as np
 try:
     import cPickle as pickle
-except:
+except ImportError as error:
     import pickle
+import warnings
 
 # PyBILT imports
-from pybilt.common.running_stats import *
+from pybilt.common.running_stats import RunningStats
 import pybilt.mda_tools.mda_density_profile as mda_dp
 import pybilt.lipid_grid.lipid_grid_curv as lgc
 from pybilt.common import distance_cutoff_clustering as dc_cluster
@@ -124,11 +125,11 @@ class Analyses(object):
 
     def add_analysis(self, inputs):
         if isinstance(inputs, (str, basestring)):
-           self._add_analysis_from_string(inputs)
+            self._add_analysis_from_string(inputs)
         elif isinstance(inputs, (list, tuple)):
             self._add_analysis_from_list(inputs)
         elif isinstance(inputs, dict):
-           self._add_analysis_from_dict(inputs)
+            self._add_analysis_from_dict(inputs)
         return
 
     def _add_analysis_from_string(self, analysis_string):
@@ -221,7 +222,7 @@ class Analyses(object):
             del self.analysis_ids[index]
             self.n_commands -= 1
         else:
-            raise RuntimeWarning("no analysis with id '{}'".format(analysis_id))
+            warnings.warn("no analysis with id '{}'".format(analysis_id))
         return
 
     def remove_all(self):
@@ -324,14 +325,14 @@ class AnalysisProtocol(object):
             if arg_key in self._valid_settings:
                 arg_dict[arg_key] =  arg_arg
             else:
-                raise RuntimeError(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_key)
         return arg_dict
 
     # cast the input string values of settings to appropriate types -- should be overwritten in derived classes to
     # properly type cast their own settings.
     def _cast_settings(self, arg_dict):
-        for setting_key in arg_dict:
+        for dummy_setting_key in arg_dict:
             pass
         return arg_dict
 
@@ -345,7 +346,7 @@ class AnalysisProtocol(object):
             elif arg_key == 'analysis_id':
                 self.analysis_id = arg_arg
             else:
-                raise RuntimeError(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_key)
         return
 
@@ -362,6 +363,9 @@ class AnalysisProtocol(object):
         # do some stuff
         # get an output
         output = np.zeros(self.return_length)
+        dummy_ba_settings = ba_settings
+        dummy_ba_reps = ba_reps
+        dummy_ba_mda_data = ba_mda_data
         # save the output
         self.analysis_output.append(output)
         return
@@ -744,7 +748,7 @@ class DispVecProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -784,7 +788,7 @@ class DispVecProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
-                raise RuntimeWarning(
+                warnings.warn(
                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.settings['leaflet'] = 'both'
                 for leaflets in ba_reps['leaflets']:
@@ -792,12 +796,6 @@ class DispVecProtocol(AnalysisProtocol):
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             n_com = len(indices)
 
-            # print "there are ",len(indices)," members"
-            xi = ba_settings['lateral'][0]
-            yi = ba_settings['lateral'][1]
-            zi = ba_settings['norm']
-
-            vec_ends_out = []
             # get the current frame
             curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
@@ -938,7 +936,7 @@ class MassDensProtocol(AnalysisProtocol):
                     read_sel_string = True
                     n_bins_arg = False
             elif not (read_sel_string or n_bins_arg):
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_id)
         return arg_dict
 
@@ -1002,8 +1000,8 @@ class MassDensProtocol(AnalysisProtocol):
         odict['selection'] = None
         return odict
 
-    def __setstate__(self, dict):
-        self.__dict__ = dict
+    def __setstate__(self, in_dict):
+        self.__dict__ = in_dict
 
 
 command_protocols['mass_dens'] = MassDensProtocol
@@ -1060,7 +1058,7 @@ class NNFProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -1069,10 +1067,6 @@ class NNFProtocol(AnalysisProtocol):
         self.analysis_output = []
         self.first_frame = True
         return
-
-
-
-
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         do_leaflet = []
@@ -1123,7 +1117,6 @@ class NNFProtocol(AnalysisProtocol):
 
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
                 ltype_a_indices = leaflet.get_group_indices(ltype_a)
-                ltype_b_indices = leaflet.get_group_indices(ltype_b)
                 all_index = leaflet.get_member_indices()
                 for i in ltype_a_indices:
                     neighbors = []
@@ -1292,7 +1285,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -1329,7 +1322,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
-                raise RuntimeWarning(
+                warnings.warn(
                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.settings['leaflet'] = 'both'
                 for leaflets in ba_reps['leaflets']:
@@ -1337,12 +1330,6 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             n_com = len(indices)
 
-            # print "there are ",len(indices)," members"
-            xi = ba_settings['lateral'][0]
-            yi = ba_settings['lateral'][1]
-            zi = ba_settings['norm']
-
-            vec_ends_out = []
             # get the current frame
             curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
@@ -1455,7 +1442,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -1492,7 +1479,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(self.settings['resname'])
             else:
                 # unknown option--use default "both"
-                raise RuntimeWarning(
+                warnings.warn(
                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
                 self.settings['leaflet'] = 'both'
                 for leaflets in ba_reps['leaflets']:
@@ -1500,12 +1487,6 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             n_com = len(indices)
 
-            # print "there are ",len(indices)," members"
-            xi = ba_settings['lateral'][0]
-            yi = ba_settings['lateral'][1]
-            zi = ba_settings['norm']
-
-            vec_ends_out = []
             # get the current frame
             curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
@@ -1715,7 +1696,7 @@ class DCClusterProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -1730,7 +1711,6 @@ class DCClusterProtocol(AnalysisProtocol):
             #pass
             # build group/resname/lipid type list
             lipid_types = []
-            nlipids = 0
             for leaflet_name in do_leaflet:
                 leaflet = ba_reps['leaflets'][leaflet_name]
                 groups = leaflet.get_group_names()
@@ -1750,7 +1730,6 @@ class DCClusterProtocol(AnalysisProtocol):
             pos.append(ba_reps['com_frame'].lipidcom[index].com[ba_settings['lateral']])
         pos = np.array(pos)
         box = ba_reps['com_frame'].box[ba_settings['lateral']]
-        cutoff = self.settings['cutoff']
         dist_func = dc_cluster.distance_euclidean_pbc
         clusters = dc_cluster.distance_cutoff_clustering(pos, self.settings['cutoff'], dist_func, 1, box, center='box_half')
 
@@ -1850,7 +1829,7 @@ class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -1874,7 +1853,7 @@ class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
             self.first_comp = False
             self.n_frames += 1
             # return
-            Ka = 0.0
+            Kv = 0.0
         else:
             Kv = (volume * scicon.k * self.settings['temperature']) / self.volume_run.deviation() ** 2
         time = ba_reps['current_mda_frame'].time
@@ -1932,7 +1911,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -2140,7 +2119,7 @@ class AreaCompressibilityProtocol(AnalysisProtocol):
             elif arg_key == 'analysis_id':
                 pass
             else:
-                raise RuntimeWarning(
+                warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
         return arg_dict
 
@@ -2157,13 +2136,10 @@ class AreaCompressibilityProtocol(AnalysisProtocol):
 
         dimensions = ba_reps['current_mda_frame'].dimensions[0:3]
         area = dimensions.prod()/dimensions[ba_settings['norm']]
-        #print(area)
         self.area_run.push(area)
         area_mean = self.area_run.mean()
         fluctuation = (area - area_mean)**2
         self.area_fluctuation.push(fluctuation)
-        avg_area_fluctuation = self.area_fluctuation.mean()
-       # X_T = avg_area_fluctuation/(area_mean*scicon.k*self.settings['temperature'])
         X_T = self.area_run.variance() / (area_mean * scicon.k * self.settings['temperature'])
         #conversion factor for Angstrom^2/Joules to meter^2/Joule
         X_T*=10.0**(-23)
@@ -2241,8 +2217,8 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
             atom_2 = eval("residue."+self.settings['ref_atom_2'])
             atom_1_i = atom_1.index
             atom_2_i = atom_2.index
-            atom_1_coord = ba_reps['current_mda_frame']._pos[atom_1_i]
-            atom_2_coord = ba_reps['current_mda_frame']._pos[atom_2_i]
+            atom_1_coord = ba_reps['current_mda_frame'].positions[atom_1_i]
+            atom_2_coord = ba_reps['current_mda_frame'].positions[atom_2_i]
             diff = atom_2_coord - atom_1_coord
 
             dist = np.sqrt(np.dot(diff, diff))
@@ -2336,8 +2312,8 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
             atom_2 = eval("residue."+self.settings['ref_atom_2'])
             atom_1_i = atom_1.index
             atom_2_i = atom_2.index
-            atom_1_coord = ba_reps['current_mda_frame']._pos[atom_1_i]
-            atom_2_coord = ba_reps['current_mda_frame']._pos[atom_2_i]
+            atom_1_coord = ba_reps['current_mda_frame'].positions[atom_1_i]
+            atom_2_coord = ba_reps['current_mda_frame'].positions[atom_2_i]
             diff = atom_2_coord - atom_1_coord
 
             dist = np.sqrt(np.dot(diff, diff))

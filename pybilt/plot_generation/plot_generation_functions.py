@@ -16,8 +16,8 @@ if not _havedisplay:
 if not _havedisplay:
     mpl.use('Agg')
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors as colors
+#import matplotlib.cm as cm
+#import matplotlib.colors as colors
 import seaborn as sns
 import numpy as np
 
@@ -57,7 +57,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     y=vectors_resnames[0][:,1]
     vx = vectors_resnames[0][:,2]
     vy = vectors_resnames[0][:,3]
-    step_vec_plot = plt.figure()
+    plt.figure()
     resnames = sorted(set(vectors_resnames[1]))
     i = 0
     color_dict = {}
@@ -77,7 +77,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     label_string = ""
     for resname in color_dict:
         label_string+=resname+":"+color_dict[resname]+" "
-    qk = plt.quiverkey(Q, 0.25, 0.95, 2, label_string, labelpos='E',
+    dummy_qk = plt.quiverkey(Q, 0.25, 0.95, 2, label_string, labelpos='E',
                    coordinates='figure')
     #else:
     #    plt.quiver(x,y,vx,vy)
@@ -86,8 +86,8 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
         plt.xlabel("x (scaled coordinates)")
         plt.ylabel("y (scaled coordinates)")
     else:
-         plt.xlabel("x ($\AA$)")
-         plt.ylabel("y ($\AA$)")
+        plt.xlabel("x ($\AA$)")
+        plt.ylabel("y ($\AA$)")
     if scaled and wrapped:
         plt.xlim((-0.1, 1.1))
         plt.ylim((-0.1, 1.1))
@@ -112,7 +112,7 @@ def plot_step_vectors_comtraj(vectors, colors=None, filename='step_vectors.eps',
     y=vectors[:,1]
     vx = vectors[:,2]
     vy = vectors[:,3]
-    step_vec_plot = plt.figure()
+    dummy_step_vec_plot = plt.figure()
     if colors is not None:
         plt.quiver(x,y,vx,vy,color=colors)
     else:
@@ -185,8 +185,6 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
     i = 0
     for apl_dat in apl_dat_list:
         apl_d = apl_dat.copy()
-      #  print "apl_d"
-      #  print apl_d
         t = apl_d[::interval,0]
         if time_in == 'ps' and time_out == 'ns':
             #print "switching time units from ps to ns"
@@ -478,16 +476,6 @@ def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.eps', show=Fal
     cma = plt.cm.get_cmap('viridis')
     if cmap is not None:
         cma = cmap
-   # fig = plt.figure()
-   # ax = fig.add_subplot(111)
-   ## dx = np.abs(in_xyzc[0][1]-in_xyzc[0][0])
-    #dy = np.abs(in_xyzc[1][1]-in_xyzc[1][0])
-    #ds = [dx]
-    #if dy > dx:
-    #    ds = [dy]
-
-    #ds_in_points = np.diff(ax.transData.transform(zip([0]*1, ds)))[0]
-    #print ds_in_points
     if vmin is not None and vmax is None:
         plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s',s=50, cmap=cma, vmin=vmin)
     elif vmax is not None and vmin is None:
@@ -496,12 +484,6 @@ def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.eps', show=Fal
         plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s', s=50, cmap=cma, vmin=vmin, vmax=vmax)
     else:
         plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s',s=50, cmap=cma)
-    #print in_xyzc[3]
-    #plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s',s=50, cmap=cma)
-    #cax, kw = mpl.colorbar.make_axes(plt.gca())
-    #norm = mpl.colors.Normalize(vmin = min(in_xyzc[3]), vmax = max(in_xyzc[3]), clip = False)
-
-    #c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)
     if colorbar:
         plt.colorbar()
     if save:
@@ -585,25 +567,16 @@ def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.eps',tim
     plt.close()
     return
 
-def plot_bilayer_thickness(bt_dat_list,name_list=None,filename='bilayer_thickness.eps',time_in='ps',time_out='ns',show=False, interval=1,save=True, xlim = None, ylim=None):
+def plot_bilayer_thickness(bt_dat_list,name_list=None,
+                        filename='bilayer_thickness.eps',
+                        time_in='ps',time_out='ns',show=False,
+                        interval=1, save=True, xlim = None, ylim=None):
     '''
     Generates a single plot with bilayer thickness curves
     Takes outputs from:
 
     The outputs are passed to function in a list input: bt_dat_list
     '''
-#    params = {
-#    'axes.labelsize': 20,
-#    'text.fontsize': 20,
-#    'legend.fontsize': 20,
-#    'xtick.labelsize': 16,
-#    'ytick.labelsize': 16,
-#    'text.usetex': False,
-#    'figure.figsize': [8.0, 6.0]
-#    }
-#    params = {'figure.figsize': [10.0, 8.0]}
-#    mpl.rcParams.update(params)
-#
     i = 0
     for bt_dat in bt_dat_list:
         bt_d = bt_dat.copy()
@@ -657,14 +630,14 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
     unique_lipid_types = set(lipid_types)
     color_dict = {}
     i =0
-    for type in sorted(unique_lipid_types):
-        color_dict[type] = color_list[i]
+    for l_type in sorted(unique_lipid_types):
+        color_dict[l_type] = color_list[i]
         i+=1
         if i == len(unique_lipid_types):
             i = 0
     colors = []
-    for type in lipid_types:
-        colors.append(color_dict[type])
+    for l_type in lipid_types:
+        colors.append(color_dict[l_type])
 
     xval = np.arange(len(yvals))
     val_by_lipid = {}
@@ -710,12 +683,15 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
 
     return
 
-def plot_position_density_map_2d_scatter(x_centers, y_centers, counts, save=True, filename='position_density_2d.eps', show=False, colorbar=True, vmin=0.0, vmax=None, normalized=False, scaled_to_max=False):
-    #cma = plt.cm.get_cmap('YlGnBu_r')
+def plot_position_density_map_2d_scatter(x_centers, y_centers, counts,
+                                            save=True,
+                                            filename='position_density_2d.eps',
+                                            show=False, colorbar=True,
+                                            vmin=0.0, vmax=None,
+                                            normalized=False,
+                                            scaled_to_max=False):
+
     cma = plt.cm.get_cmap('jet')
-   # fig = plt.figure()
-   # ax = fig.add_subplot(111)
-    #create the linear arrays of positions and colors values
     x_pos = []
     y_pos = []
     color_vals = []
@@ -726,8 +702,6 @@ def plot_position_density_map_2d_scatter(x_centers, y_centers, counts, save=True
             color_vals.append(counts[i][j])
     x_pos = np.array(x_pos)
     y_pos = np.array(y_pos)
-   # print(len(x_pos))
-   # print(len(y_pos))
     color_vals = np.array(color_vals)
     if normalized:
         vmax = 1.0

@@ -1,7 +1,18 @@
 import numpy as np
 from MDAnalysis.analysis import align
 
-
+def _adjust_frame_range_for_slicing(fstart, fend, nframes):
+    if fend != -1:
+        fend+=1
+    if fend == (nframes-1) and fstart == (nframes-1):
+        fend+=1
+    if fend == fstart:
+        fend+=1
+    if fstart<0:
+        fstart+=nframes
+    if fend < 0:
+        fend+=nframes+1
+    return fstart, fend
 
 def com_com_distances(universe, mda_selection_pairs, fstart=0, fend=-1, fstep=1):
     """Center of mass to Center of mass distance.
@@ -23,18 +34,7 @@ def com_com_distances(universe, mda_selection_pairs, fstart=0, fend=-1, fstep=1)
             order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.
     """
 
-    nframes = len(universe.trajectory)
-    # adjust the end point for slicing
-    if fend != -1:
-        fend += 1
-    if fend == (nframes - 1) and fstart == (nframes - 1):
-        fend += 1
-    if fend == fstart:
-        fend += 1
-    if fstart < 0:
-        fstart += nframes
-    if fend < 0:
-        fend += nframes + 1
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(universe.trajectory))
     times = []
     pair_dists = []
     for pair in mda_selection_pairs:
@@ -79,30 +79,15 @@ def com_com_distances_plane(universe, mda_selection_pairs, fstart=0, fend=-1, fs
             order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.
     """
     lat_ind = [0, 1]
-    dir_ind = 2
     if plane is 'yx':
-        dir_ind = 2
         lat_ind = [0, 1]
     elif plane is 'xz' or plane is 'zx':
-        dir_ind = 1
         lat_ind = [0, 2]
     elif plane is 'zy' or plane is 'yz':
-        dir_ind = 0
         lat_ind = [1, 2]
     #indices = mda_selection.indices
 
-    nframes = len(universe.trajectory)
-    # adjust the end point for slicing
-    if fend != -1:
-        fend += 1
-    if fend == (nframes - 1) and fstart == (nframes - 1):
-        fend += 1
-    if fend == fstart:
-        fend += 1
-    if fstart < 0:
-        fstart += nframes
-    if fend < 0:
-        fend += nframes + 1
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(universe.trajectory))
     times = []
     pair_dists = []
     for pair in mda_selection_pairs:
@@ -149,28 +134,15 @@ def com_com_distances_axis(universe, mda_selection_pairs, fstart=0, fend=-1, fst
             corresponding to the frames in the analysis. The second is list of Numpy arrays with the distances; the
             order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.
     """
-    lat_ind = [0, 1]
+
     dir_ind = 2
     if axis is 'x':
         dir_ind = 0
-        lat_ind = [1, 2]
     elif axis is 'y':
         dir_ind = 1
-        lat_ind = [0, 2]
     #indices = mda_selection.indices
 
-    nframes = len(universe.trajectory)
-    # adjust the end point for slicing
-    if fend != -1:
-        fend += 1
-    if fend == (nframes - 1) and fstart == (nframes - 1):
-        fend += 1
-    if fend == fstart:
-        fend += 1
-    if fstart < 0:
-        fstart += nframes
-    if fend < 0:
-        fend += nframes + 1
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(universe.trajectory))
     times = []
     pair_dists = []
     for pair in mda_selection_pairs:
@@ -221,28 +193,13 @@ def com_com_distances_axis_align(universe, mda_selection_pairs, align_struct_uni
             order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.
     """
 
-    lat_ind = [0, 1]
     dir_ind = 2
     if axis is 'x':
         dir_ind = 0
-        lat_ind = [1, 2]
     elif axis is 'y':
         dir_ind = 1
-        lat_ind = [0, 2]
     #indices = mda_selection.indices
-
-    nframes = len(universe.trajectory)
-    # adjust the end point for slicing
-    if fend != -1:
-        fend += 1
-    if fend == (nframes - 1) and fstart == (nframes - 1):
-        fend += 1
-    if fend == fstart:
-        fend += 1
-    if fstart < 0:
-        fstart += nframes
-    if fend < 0:
-        fend += nframes + 1
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(universe.trajectory))
     times = []
     pair_dists = []
     for pair in mda_selection_pairs:
@@ -268,4 +225,3 @@ def com_com_distances_axis_align(universe, mda_selection_pairs, align_struct_uni
         pair_dists[i] = np.array(vals)
         i+=1
     return times, pair_dists
-
