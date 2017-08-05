@@ -1,9 +1,9 @@
 '''
     Classes and functions to implement lipid COM gridding and analysis for lipid bilayers. Acts on MemSys objects.
-    The gridding and anlaysis procedures are based on 
+    The gridding and anlaysis procedures are based on
     the decriptions given in Gapsys et al. J Comput Aided Mol Des (2013) 27:845-858,
     which is itself a modified version of the GridMAT-MD method by Allen et al. Vol. 30, No. 12 Journal of Computational Chemistry.
-    However, I have currently left out several bits of the extra functionality, e.g. the handling of an embedded protein. 
+    However, I have currently left out several bits of the extra functionality, e.g. the handling of an embedded protein.
 '''
 
 import numpy as np
@@ -11,7 +11,7 @@ import numpy as np
 from pybilt.common.running_stats import *
 
 
-class LipidGrid_2d:
+class LipidGrid_2d(object):
     def __init__(self, mda_frame, mda_universe, mda_frame_resids, plane, nxbins=50, nybins=50, embedded_protein=None):
         # store the frame and leaflet
         self.frame = mda_frame
@@ -147,7 +147,7 @@ class LipidGrid_2d:
         return
 
 
-class LipidGrids:
+class LipidGrids(object):
     def __init__(self, mda_frame, mda_universe, leaflets, plane, nxbins=50, nybins=50, embedded_protein=None):
         # store the frame and leaflet
         self.frame = mda_frame
@@ -610,4 +610,4 @@ class LipidGrids:
                 cx += 1
             type_array = np.array(type_array, dtype='f8, f8, i4, i4, |S10')
             grids_dict[leaf] = np.copy(type_array)
-        return grids_dict   
+        return grids_dict

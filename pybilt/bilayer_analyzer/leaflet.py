@@ -2,7 +2,7 @@
 
 
 # leaflet object
-class Leaflet:
+class Leaflet(object):
     """ Create a bilayer Leaflet representation.
     This class object is used to group lipids together according to their bilayer leaflet. It is primarily meant to
     store the indices of LipidCOMs as they are in a Frame.lipidcom list. This class also
@@ -185,7 +185,7 @@ class Leaflet:
         return [group.lg_name for group in self.groups]
 
 
-class LipidGroup:
+class LipidGroup(object):
     """ Object to group lipid indices by type/resname/name.
         Instances of this object are created by the Leaflet class.
 

@@ -1,12 +1,12 @@
 import numpy as np
 #Running Statistics
-class RunningStats:
-    
-    
+class RunningStats(object):
+
+
     def __init__(self):
         self.n=0
         self.Mnold = self.Mnnew = self.Snold = self.Snnew = 0.0
-        
+
     def push(self, val):
         self.n += 1
         if self.n == 1:
@@ -17,7 +17,7 @@ class RunningStats:
             self.Snnew = self.Snold + (val - self.Mnold)*(val-self.Mnnew);
             self.Mnold = self.Mnnew;
             self.Snold = self.Snnew;
-            
+
     def mean(self):
         if self.n == 1:
             return self.Mnold
@@ -39,18 +39,18 @@ class RunningStats:
         self.n = 0
 
 
-# assumes that a 1d numpy array of floats is pass as input, but 
+# assumes that a 1d numpy array of floats is pass as input, but
 # does not check this
 def gen_running_average(onednparray):
-    """ Generates a running average 
-                 
+    """ Generates a running average
+
     Args:
-    onednparray (numpy.array): A 1d numpy array of measurements (e.g. over time)     
-    
+    onednparray (numpy.array): A 1d numpy array of measurements (e.g. over time)
+
     Returns:
     numpy.array: 2d array of dim len(onednparray)x2
         2dnparray[i][0] = running average at i
-        2dnparray[i][1] = running standard deviation at i    
+        2dnparray[i][1] = running standard deviation at i
         for i in range(0,len(onednparray))
     """
     averager = RunningStats()

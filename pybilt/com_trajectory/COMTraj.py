@@ -39,7 +39,7 @@ def colorize_step_vector_clusters(vectors):
     return "nothing yet!"
 
 
-class LipidCOM:
+class LipidCOM(object):
     """ A lipid center of mass (COM) object.
 
     This object stores the COM coordinates of a lipid (or other molecule or group
@@ -98,7 +98,7 @@ class LipidCOM:
         return
 
 # a frame object
-class Frame:
+class Frame(object):
     """ A molecular dynamics style Frame object. """
 
     # does not check that nlipids is an int
@@ -238,7 +238,7 @@ class Frame:
 
 
 #frame wrapper - the name of this class may be changed. e.g. FrameShelve
-class FrameShelve:
+class FrameShelve(object):
     """ Container for Frame objects
     This class object serves as a container to store a set of Frame objects
     corresponding to a molecular dynamics trajectory. This class saves the Frame objects
@@ -384,7 +384,7 @@ class FrameShelve:
 #    Exception OSError: OSError(2, 'No such file or directory') in  ignored
 # I'm not sure why, but it is marked as ignored and it doesn't seem to cause any problems with the Frame shelve
 # database file.
-class ParFrames:
+class ParFrames(object):
     """ Read-Only version of frames object
     This class is effectively used to generate read-only copies of the frames class, which can be passed
     to functions that do parallelized computations over the number of frames.  Unlike frames ParFrames
@@ -440,7 +440,7 @@ class ParFrames:
 
 
 # leaflet object
-class Leaflet:
+class Leaflet(object):
     """ Create a bilayer Leaflet representation.
     This class object is used to group lipids together according to their bilayer leaflet. It is primarily meant to
     store the indices of LipidCOMs as they are in a Frame.lipidcom list. This class also
@@ -595,7 +595,7 @@ class Leaflet:
         return [group.lg_name for group in self.groups]
 
 
-class LipidGroup:
+class LipidGroup(object):
     """ Object to group lipid indices by type/resname/name.
         Instances of this object are created by the Leaflet class.
 
@@ -910,7 +910,7 @@ def thickness_frames(frames, fstart, fend, leaflets, nlipids, plane, norm):
 # is split according to residues with each (full) residue assigned as a LipidCOM. However,
 # it would nice to make it possible to something like a list of selections. That way
 # you could for example use selections of the lipid headgroups as the LipidCOMs representation.
-class COMTraj:
+class COMTraj(object):
     """ This is the main class object.
     An instance of this class reads in the trajectory and a selection (both MDAnalysis objects)
     and creates/reduces the lipids to center of mass (COM) representations; i.e. a center of mass trajectory. There are several member

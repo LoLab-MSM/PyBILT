@@ -91,7 +91,7 @@ def _run_analysis_alias(protocol_analyzer):
 
 # the main analyzer class
 
-class BilayerAnalyzer:
+class BilayerAnalyzer(object):
     """An analyzer class to facilitate building analyses of the bilayers
 
     Attributes:

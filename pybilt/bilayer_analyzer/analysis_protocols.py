@@ -83,7 +83,7 @@ def _run_analysis_alias(protocol_analyzer):
     return protocol_analyzer
 
 # protocol for the analysis to run during the frame loop
-class Analyses:
+class Analyses(object):
     """A class to facilitate analysis of the bilayers
     This object stores all the analyses that being performed and provides fucntionality to add and remove
     analyses.
@@ -254,7 +254,7 @@ class Analyses:
         return
 
 #base class for analysis protocols
-class AnalysisProtocol:
+class AnalysisProtocol(object):
     """Base class for analysis protocols.
 
     Args:

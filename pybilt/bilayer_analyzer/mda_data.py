@@ -3,7 +3,7 @@
 
 import MDAnalysis as mda
 
-class MDAData:
+class MDAData(object):
     """Store the MDAnalysis objects used in the analyses.
      Attributes:
          mda_universe (
@@ -64,7 +64,7 @@ class MDAData:
     #def __getinitargs__(self):
     #    return (self.psf_file, self.trajectory_file, self.bilayer_sel_string)
 
-class MDADataReduced:
+class MDADataReduced(object):
     def __init__(self, mda_data):
         self.psf_file = mda_data.psf_file
         self.trajectory_file = mda_data.trajectory_file

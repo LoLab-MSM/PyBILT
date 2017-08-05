@@ -8,7 +8,7 @@ plot_analysis_dict = {}
 
 
 # protocol for the  plots to run after the frame loop
-class PlotProtocol:
+class PlotProtocol(object):
     def __init__(self, plot_commands, analysis_protocol):
         self.in_commands = plot_commands
         self.analysis_protocol = analysis_protocol
@@ -110,7 +110,7 @@ class PlotProtocol:
             self.command_protocol[plot_id].generate_plot(analysis_protocol)
 
 
-class PlotFunctionProtocol:
+class PlotFunctionProtocol(object):
     def __init__(self, args):
 
         # required

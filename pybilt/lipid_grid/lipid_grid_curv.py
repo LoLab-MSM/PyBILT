@@ -14,7 +14,7 @@ import numpy as np
 #import my running stats class
 from pybilt.common.running_stats import *
 
-class LipidGrid_2d:
+class LipidGrid_2d(object):
     def __init__(self, com_frame, com_frame_indices,plane,nxbins=20,nybins=20):
         #store the frame and leaflet
         self.frame = com_frame
@@ -113,7 +113,7 @@ class LipidGrid_2d:
 
 
 
-class LipidGrids:
+class LipidGrids(object):
     def __init__(self, com_frame, leaflets,plane,nxbins=3,nybins=3):
         #store the frame and leaflet
         self.frame = com_frame

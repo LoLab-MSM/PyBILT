@@ -2,7 +2,7 @@
 import MDAnalysis as mda
 import numpy as np
 
-class LipidCOM:
+class LipidCOM(object):
     """ A lipid center of mass (COM) object.
 
     This object stores the COM coordinates of a lipid (or other molecule or group
@@ -76,7 +76,7 @@ class LipidCOM:
         return
 
 # a Center of Mass frame object
-class COMFrame:
+class COMFrame(object):
     """ A molecular dynamics style Frame object for LipidCOM objects.
 
     Atrributes:

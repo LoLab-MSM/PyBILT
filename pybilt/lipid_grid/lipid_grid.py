@@ -1,16 +1,16 @@
 '''
     Classes and functions to implement lipid COM gridding and analysis for lipid bilayers. Acts on MemSys objects.
-    The gridding and anlaysis procedures are based on 
+    The gridding and anlaysis procedures are based on
     the decriptions given in Gapsys et al. J Comput Aided Mol Des (2013) 27:845-858,
     which is itself a modified version of the GridMAT-MD method by Allen et al. Vol. 30, No. 12 Journal of Computational Chemistry.
-    However, I have currently left out several bits of the extra functionality, e.g. the handling of an embedded protein. 
+    However, I have currently left out several bits of the extra functionality, e.g. the handling of an embedded protein.
 '''
 
 import numpy as np
 #import my running stats class
 from pybilt.common.running_stats import *
 
-class LipidGrid_2d:
+class LipidGrid_2d(object):
     def __init__(self, com_frame, com_frame_indices,plane,nxbins=50,nybins=50, embedded_protein=None):
         #store the frame and leaflet
         self.frame = com_frame
@@ -75,7 +75,7 @@ class LipidGrid_2d:
                     #print "iz ",iz," zi ",zi
                     dx = x-xi
                     dy = y-yi
-                    #Minimum image -- coordinates must be pre-wrapped 
+                    #Minimum image -- coordinates must be pre-wrapped
                     if np.absolute(dx) > bxh:
                         dx = boxx - np.absolute(x-bxh) - np.absolute(xi-bxh)
                     if np.absolute(dy) > bxh:
@@ -86,16 +86,16 @@ class LipidGrid_2d:
                         i_min = i
                         z_min = zi
                 #if embedded_protein is not None:
-                    
+
                 #print "i_min ",i_min," z_min ",z_min
                # if cutoff is not None:
-                    
+
                # else:
                 self.lipid_grid[cx,cy]=i_min
                 self.lipid_grid_z[cx,cy]=z_min
                 cy+=1
             cx+=1
-    
+
     def get_index_at(self,ix,iy):
         return self.lipid_grid[ix,iy]
 
@@ -119,7 +119,7 @@ class LipidGrid_2d:
         xyz_out.write("\n")
         xyz_out.write(comment)
         xyz_out.write("\n")
-        
+
         cx=0
         for x in self.x_centers:
             cy=0
@@ -130,19 +130,19 @@ class LipidGrid_2d:
                 ic = self.lipid_grid[cx,cy]
                 oname = self.frame.lipidcom[ic].type
                 #write to file
-                
-            
+
+
                 line = str(oname)+" "+str(x)+" "+str(y)+" "+str(z)
-            
+
                 xyz_out.write(line)
                 xyz_out.write("\n")
                 cy+=1
-            cx+=1            
+            cx+=1
         xyz_out.close()
         return
 
-        
-class LipidGrids:
+
+class LipidGrids(object):
     def __init__(self, com_frame, leaflets,plane,nxbins=50,nybins=50, embedded_protein=None):
         #store the frame and leaflet
         self.frame = com_frame
@@ -166,21 +166,21 @@ class LipidGrids:
         tgrid = np.zeros((self.nbins_x,self.nbins_y))
         for ix in xrange(self.nbins_x):
             for iy in xrange(self.nbins_y):
-                zu = self.leaf_grid['upper'].get_z_at(ix,iy) 
+                zu = self.leaf_grid['upper'].get_z_at(ix,iy)
                 zl = self.leaf_grid['lower'].get_z_at(ix,iy)
                 dz = zu - zl
-                tgrid[ix,iy]=dz 
+                tgrid[ix,iy]=dz
                 if dz < 0.0:
-                    print "Warning!!--MD frame number ",self.myframe," --Value thickness less than zero (",dz,") at grid point ",ix," ",iy 
+                    print "Warning!!--MD frame number ",self.myframe," --Value thickness less than zero (",dz,") at grid point ",ix," ",iy
         return tgrid
-    
+
     def average_thickness(self,return_grid=False):
         trun = RunningStats()
         tgrid = self.thickness_grid()
         for ix in xrange(self.nbins_x):
             for iy in xrange(self.nbins_y):
                 tc = tgrid[ix,iy]
-                trun.push(tc) 
+                trun.push(tc)
         avg_out = (trun.mean(),trun.deviation())
         if return_grid:
             return avg_out,tgrid
@@ -200,8 +200,8 @@ class LipidGrids:
             print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
             do_leaflet.append('upper')
             do_leaflet.append('lower')
-        
-        out_dict = {}        
+
+        out_dict = {}
         for leaf in do_leaflet:
             out_dict[leaf] = np.zeros((self.nbins_x,self.nbins_y))
             for ix in xrange(self.nbins_x):
@@ -209,9 +209,9 @@ class LipidGrids:
                     com_ind=self.leaf_grid[leaf].get_index_at(ix,iy)
                     value = com_values_dict[com_ind]
                     out_dict[leaf][ix,iy]=value
-                    
+
         return out_dict
-    
+
     def area_per_lipid(self):
         do_leaflet = []
         do_leaflet.append('upper')
@@ -225,12 +225,12 @@ class LipidGrids:
                     resnames.append(gname)
         #initialize counters for each residue/type
         area_run_per_res_type = {}
-        
+
         for name in resnames:
             area_run_per_res_type[name]=RunningStats()
-            
+
         area_per_lipid = {}
-        
+
         area_run = RunningStats()
         for leaf in do_leaflet:
             area_per_bin = self.leaf_grid[leaf].x_incr*self.leaf_grid[leaf].y_incr
@@ -244,18 +244,18 @@ class LipidGrids:
                 area = area_per_bin*nlocs
                 area_per_lipid[i]=area
                 area_run_per_res_type[rname].push(area)
-                
+
                 area_run.push(area)
-        
+
         average_per_res = {}
         for name in resnames:
-            average = area_run_per_res_type[name].mean()    
+            average = area_run_per_res_type[name].mean()
             std = area_run_per_res_type[name].deviation()
-            average_per_res[name] = (average,std)        
+            average_per_res[name] = (average,std)
         system_average = area_run.mean()
-        system_dev = area_run.deviation()            
-        
-        output = (system_average, average_per_res, area_per_lipid)        
+        system_dev = area_run.deviation()
+
+        output = (system_average, average_per_res, area_per_lipid)
         return output
 
     def curvature(self):
@@ -276,7 +276,7 @@ class LipidGrids:
                 if ixn >= nxb:
                     ixn-=nxb
                 iyp = ix-1
-                if iyp < 0: 
+                if iyp < 0:
                     iyp+=nyb
                 iyn = iy+1
                 if iyn >= nyb:
@@ -306,13 +306,13 @@ class LipidGrids:
         for ix in xrange(nxb):
             for iy in xrange(nyb):
                 ixp = ix-1
-                if ixp < 0: 
+                if ixp < 0:
                     ixp+=nxb
                 ixn = ix+1
                 if ixn >= nxb:
                     ixn-=nxb
                 iyp = ix-1
-                if iyp < 0: 
+                if iyp < 0:
                     iyp+=nyb
                 iyn = iy+1
                 if iyn >= nyb:
@@ -328,7 +328,7 @@ class LipidGrids:
                 ssx_u[ix,iy]=ssx
                 ssy_u[ix,iy]=ssy
                 ssxy_u[ix,iy]=ssxy
-                
+
                 #lower
                 ssx = sx_l[ixn,iy]-sx_l[ixp,iy]
                 ssx/= (self.leaf_grid['lower'].x_incr)**2
@@ -367,7 +367,7 @@ class LipidGrids:
                 n = np.cross(sx_v,sy_v)
                 n /=np.linalg.norm(n)
                 L = np.dot(ssx_v,n)
-                M = np.dot(ssxy_v,n)    
+                M = np.dot(ssxy_v,n)
                 N = np.dot(ssy_v,n)
                 #mean curvature
                 J = (E*N+G*L-2.0*F*M)/(2.0*(E*G-F)**2)
@@ -392,7 +392,7 @@ class LipidGrids:
                 n = np.cross(sx_v,sy_v)
                 n /=np.linalg.norm(n)
                 L = np.dot(ssx_v,n)
-                M = np.dot(ssxy_v,n)    
+                M = np.dot(ssxy_v,n)
                 N = np.dot(ssy_v,n)
                 #mean curvature
                 J = (E*N+G*L-2.0*F*M)/(2.0*(E*G-F)**2)
@@ -400,18 +400,18 @@ class LipidGrids:
                 K = (L*N-M**2)/(E*G-F**2)
                 curv_mean_l[ix,iy] = J
                 curv_gauss_l[ix,iy] = K
-                
+
         return ((curv_mean_u,curv_gauss_u),(curv_mean_l,curv_gauss_l))
 
     def grid_to_dict(self,in_grid,leaflet='upper'):
         out_dict = {}
         for ix in xrange(self.nbins_x):
             for iy in xrange(self.nbins_y):
-                l_i = self.leaf_grid[leaflet].get_index_at(ix,iy) 
+                l_i = self.leaf_grid[leaflet].get_index_at(ix,iy)
                 grid_val = in_grid[ix,iy]
-                out_dict[l_i]=grid_val         
+                out_dict[l_i]=grid_val
         return out_dict
-    
+
     def get_xyzc(self,leaflet='both',zvalue_dict=None,color_dict=None,color_grid=None, color_type_dict=None):
         do_leaflet = []
         if leaflet == "both":
@@ -433,7 +433,7 @@ class LipidGrids:
         C = np.zeros(npoints)
         if color_dict is not None:
             if len(color_dict.shape)==2:
-                C = np.zeros((npoints, color_dict.shape[1])) 
+                C = np.zeros((npoints, color_dict.shape[1]))
         if color_type_dict is not None:
             dict_type = type(color_type_dict[color_type_dict.keys()[0]])
             C = list()
@@ -448,7 +448,7 @@ class LipidGrids:
                     ic = self.leaf_grid[leaf].get_index_at(cx,cy)
                     #optionally pull z value from lipid index dictionary
                     if zvalue_dict is not None:
-                        z = zvalue_dict[ic] 
+                        z = zvalue_dict[ic]
                     X[npt]=x
                     Y[npt]=y
                     Z[npt]=z
@@ -460,27 +460,27 @@ class LipidGrids:
                         ltype = self.frame.lipidcom[ic].type
                         color_curr = color_type_dict[ltype]
                         C.append(color_curr)
-                        
+
                     npt+=1
                     cy+=1
-                cx+=1    
+                cx+=1
            # if color_dict is not None and len(color_dict.shape)==1:
            #     col_min = min(C)
            #     C-=col_min
            #     col_max = max(C)
            #     C/=col_max
-                
+
            # elif color_grid is not None:
            #     col_min = min(C)
            #     C-=col_min
            #     col_max = max(C)
            #     C/=col_max
-                
+
             if color_type_dict is not None:
                 C = np.array(C)
             out_dict[leaf]=(X,Y,Z,C)
         return out_dict
-    
+
     def write_xyz(self,leaflet='both',zvalue_dict='Default',out_path="./"):
         do_leaflet = []
         if leaflet == "both":
@@ -497,7 +497,7 @@ class LipidGrids:
         out_name = out_path+"leaflet_grid_f"+str(self.myframe)+"_"
         for leaf in do_leaflet:
             out_name+=leaf[0]
-        out_name+=".xyz"    
+        out_name+=".xyz"
         # Open up the file to write to
         xyz_out = open(out_name, "w")
         npoints = (self.nbins_x*self.nbins_y)*len(do_leaflet)
@@ -506,7 +506,7 @@ class LipidGrids:
         xyz_out.write("\n")
         xyz_out.write(comment)
         xyz_out.write("\n")
-        
+
         for leaf in do_leaflet:
             cx=0
             for x in self.leaf_grid[leaf].x_centers:
@@ -517,19 +517,19 @@ class LipidGrids:
                     ic = self.leaf_grid[leaf].get_index_at(cx,cy)
                     #optionally pull z value from lipid index dictionary
                     if zvalue_dict is not 'Default':
-                        z = zvalue_dict[ic] 
+                        z = zvalue_dict[ic]
                     #get the lipid resname
-                    
+
                     oname = self.frame.lipidcom[ic].type
                     #write to file
-                
-            
+
+
                     line = str(oname)+" "+str(x)+" "+str(y)+" "+str(z)
-            
+
                     xyz_out.write(line)
                     xyz_out.write("\n")
                     cy+=1
-                cx+=1            
+                cx+=1
         xyz_out.close()
         return
 
@@ -559,14 +559,14 @@ class LipidGrids:
                 cy=0
                 for y in self.leaf_grid[leaf].y_centers:
                     #get the z coordinate
-                    ic = self.leaf_grid[leaf].get_index_at(cx,cy)                    
+                    ic = self.leaf_grid[leaf].get_index_at(cx,cy)
                     oname = self.frame.lipidcom[ic].type
                     itype = group_to_int[oname]
                     type_array[cx,cy] = itype
                     cy+=1
                 cx+=1
             grids_dict[leaf] = np.copy(type_array)
-            
+
         return grids_dict, group_to_int
 
     def get_one_array_per_leaflet(self):
@@ -595,17 +595,16 @@ class LipidGrids:
                 cy=0
                 for y in self.leaf_grid[leaf].y_centers:
                     #get the z coordinate
-                    ic = self.leaf_grid[leaf].get_index_at(cx,cy)                    
+                    ic = self.leaf_grid[leaf].get_index_at(cx,cy)
                     oname = self.frame.lipidcom[ic].type
                     itype = group_to_int[oname]
                     #type_array[cx,cy,0] = x
                     #type_array[cx,cy,1] = y
                     #type_array[cx,cy,2] = self.leaflets[leaf].lipid_grid[cx,cy]
                     #type_array[cx,cy,3] = itype
-                    type_array.append((x, y, self.leaf_grid[leaf].lipid_grid[cx,cy], itype, oname)) 
+                    type_array.append((x, y, self.leaf_grid[leaf].lipid_grid[cx,cy], itype, oname))
                     cy+=1
                 cx+=1
             type_array = np.array(type_array, dtype='f8, f8, i4, i4, |S10')
-            grids_dict[leaf] = np.copy(type_array)   
-        return grids_dict   
-                    
+            grids_dict[leaf] = np.copy(type_array)
+        return grids_dict
