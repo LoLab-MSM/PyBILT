@@ -30,7 +30,7 @@ sfig_params = {
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-params = {'figure.figsize': [8.5, 6.0], 'font.size': 16, 'axes.labelsize': 18,
+params = {'figure.figsize': [8.5, 7.0], 'font.size': 16, 'axes.labelsize': 18,
     'legend.fontsize': 14,
     'xtick.labelsize': 14,
     'ytick.labelsize': 14,}
