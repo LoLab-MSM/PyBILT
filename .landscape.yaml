@@ -1,7 +1,7 @@
 
 pylint:
     options:
-        dummy-variables-rgx=dummy
+        dummy-variables-rgx: dummy
 
 ignore-patterns:
     - __init__.py
