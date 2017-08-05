@@ -596,6 +596,19 @@ def distance_cutoff_clustering(structure_file, trajectory_file, selection_string
     print("         ")
     for resname in resnames:
         results = analyzer.get_analysis_data("dc_cluster_{}_upper".format(resname))
+        plotname_png = "{}dc_cluster_upper_{}_nclusters.png".format(dump_path,resname)
+        plotname_eps = "{}dc_cluster_upper_{}_nclusters.eps".format(dump_path, resname)
+        times = results['nclusters'][:,0]
+        means = results['nclusters'][:,2]
+        stds = results['nclusters'][:,3]
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
+        plotname_png = "{}dc_cluster_upper_{}_avg_size.png".format(dump_path, resname)
+        plotname_eps = "{}dc_cluster_upper_{}_avg_size.eps".format(dump_path, resname)
+        means = results['avg_size'][:, 2]
+        stds = results['avg_size'][:, 3]
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
         print("resname {} has distance cutoff cluster results in upper leaflet: ".format(resname))
         for key in results.keys():
             if key is not 'clusters':
@@ -603,6 +616,19 @@ def distance_cutoff_clustering(structure_file, trajectory_file, selection_string
                 print("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3]))
 
         results = analyzer.get_analysis_data("dc_cluster_{}_lower".format(resname))
+        plotname_png = "{}dc_cluster_lower_{}_nclusters.png".format(dump_path,resname)
+        plotname_eps = "{}dc_cluster_lower_{}_nclusters.eps".format(dump_path, resname)
+        times = results['nclusters'][:,0]
+        means = results['nclusters'][:,2]
+        stds = results['nclusters'][:,3]
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
+        plotname_png = "{}dc_cluster_lower_{}_avg_size.png".format(dump_path, resname)
+        plotname_eps = "{}dc_cluster_lower_{}_avg_size.eps".format(dump_path, resname)
+        means = results['avg_size'][:, 2]
+        stds = results['avg_size'][:, 3]
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
+        pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
         print("resname {} has distance cutoff cluster results in lower leaflet: ".format(resname))
         for key in results.keys():
             if key is not 'clusters':
