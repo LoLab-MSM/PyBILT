@@ -2,20 +2,20 @@
 #numpy
 import numpy as np
 #import my running stats class
-from pybilt.common.running_stats import *
+from pybilt.common.running_stats import RunningStats
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates
 
 
 '''
  function to compute the mean square displacement (MSD) and diffusion constant
- of a list of MDAnalysis atom selections (atom_sel_list). The list of atom selections 
+ of a list of MDAnalysis atom selections (atom_sel_list). The list of atom selections
  are averaged at each timestep.
- Returns 2d numpy array with len(atom_sel_list)X6 elements: 
- [:,0]=dt [:,1]=msd [:,2]=msd_dev [:,3]=diff_con_instantaneous 
+ Returns 2d numpy array with len(atom_sel_list)X6 elements:
+ [:,0]=dt [:,1]=msd [:,2]=msd_dev [:,3]=diff_con_instantaneous
  [:,4]=diff_con_running_average [:,5]=diff_con_running_dev
- 
- Long time mean squared displacement: 
+
+ Long time mean squared displacement:
     MSD = lim_(t->inf) <||r_i(t) - r_i(0)||**2>_(nsels) = 2*dim*D*t
 '''
 def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, verbose=False):
@@ -63,7 +63,7 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
         if	unwrap:
             if	verbose:
                 print "unwrapping frame ",ts.frame
-            currcoord = ts._pos[index]
+            currcoord = ts.positions[index]
             if firstframe:
                 oldcoord = currcoord
                 firstframe = False
@@ -120,10 +120,8 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
         msd[i,4]=diff_stat.mean()
         msd[i,5]=diff_stat.deviation()
         if	verbose:
-                print "selection number ",i," has msd ",msdcurr," with deviation ",devcurr
+            print "selection number ",i," has msd ",msdcurr," with deviation ",devcurr
         #reset the running stats object--prepare for next selection
         drs_stat.Reset()
     #return msd array
     return msd
-
-

@@ -95,7 +95,7 @@ def electron_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1,
         by = frame.dimensions[lat_ind[1]]
         binvolume = incr*bx*by
         counts_f = np.zeros(nbins)
-        sel_pos = frame._pos[indices]
+        sel_pos = frame.positions[indices]
         zpos = sel_pos[:,dir_ind]
         sel_z_curr = sel_z[f]
         zpos+= sel_z_curr
@@ -203,7 +203,7 @@ def electron_density_profile_gaussians(trajectory,mda_selection, fstart=0,fend=-
         by = frame.dimensions[lat_ind[1]]
         binvolume = incr*bx*by
         counts_f = np.zeros(nbins)
-        sel_pos = frame._pos[indices]
+        sel_pos = frame.positions[indices]
         zpos = sel_pos[:,dir_ind]
         sel_z_curr = sel_z[f]
         zpos+= sel_z_curr
@@ -304,7 +304,7 @@ def mass_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axi
         by = frame.dimensions[lat_ind[1]]
         binvolume = incr*bx*by
         counts_f = np.zeros(nbins)
-        sel_pos = frame._pos[indices]
+        sel_pos = frame.positions[indices]
         zpos = sel_pos[:,dir_ind]
         sel_z_curr = sel_z[f]
         zpos+= sel_z_curr
@@ -414,7 +414,7 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         #now do the alignment and get new com and axis coordinates
         align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
         system_com_a = system_sel.atoms.center_of_mass()
-        system_z_a = system_com[dir_ind]
+        system_z_a = system_com_a[dir_ind]
         dz_a = system_z_a - system_z
         bzc = frame.dimensions[dir_ind]
         if bzc > bzm:
@@ -443,7 +443,6 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         j = i - 1
         centers[j] = edges[j] + incr_h
 
-    counts = np.zeros(nbins)
     if refsel is None:
         sel_z = np.zeros(nframes)
     else:
@@ -462,7 +461,7 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         for key in mda_selections.keys():
             indices = mda_selections[key].indices
             counts_f = np.zeros(nbins)
-            sel_pos = frame._pos[indices]
+            sel_pos = frame.positions[indices]
             zpos = sel_pos[:, dir_ind]
             sel_z_curr = sel_z[f]
             zpos += sel_z_curr

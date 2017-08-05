@@ -1,31 +1,30 @@
 import numpy as np
 from MDAnalysis.analysis import align
 
+def _adjust_frame_range_for_slicing(fstart, fend, nframes):
+    if fend != -1:
+        fend+=1
+    if fend == (nframes-1) and fstart == (nframes-1):
+        fend+=1
+    if fend == fstart:
+        fend+=1
+    if fstart<0:
+        fstart+=nframes
+    if fend < 0:
+        fend+=nframes+1
+    return fstart, fend
 
 def position_density_map_2d_multi_align(universe, mda_selections, align_struct_universe, align_sel_string, fstart=0, fend=-1,
                                      fstep=1, norm_axis='z', nbins=100, reference=(0.0, 0.0), refsel=None, normalize=False, scale_to_max=False):
     lat_ind = [0, 1]
-    dir_ind = 2
     if norm_axis is 'x':
-        dir_ind = 0
         lat_ind = [1, 2]
     elif norm_axis is 'y':
-        dir_ind = 1
         lat_ind = [0, 2]
     #indices = mda_selection.indices
 
-    nframes = len(universe.trajectory)
     # adjust the end point for slicing
-    if fend != -1:
-        fend += 1
-    if fend == (nframes - 1) and fstart == (nframes - 1):
-        fend += 1
-    if fend == fstart:
-        fend += 1
-    if fstart < 0:
-        fstart += nframes
-    if fend < 0:
-        fend += nframes + 1
+    fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(universe.trajectory))
 
     # get the maximum box dimensions in the lateral plane
     bxm = 0.0
@@ -40,10 +39,10 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
         system_x = system_com[lat_ind][0]
         system_y = system_com[lat_ind][1]
         #now do the alignment and get new com and axis coordinates
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         system_com_a = system_sel.atoms.center_of_mass()
-        system_x_a = system_com[lat_ind][0]
-        system_y_a = system_com[lat_ind][1]
+        system_x_a = system_com_a[lat_ind][0]
+        system_y_a = system_com_a[lat_ind][1]
         dx_a = system_x_a - system_x
         dy_a = system_y_a - system_y
         bxc = frame.dimensions[lat_ind][0]
@@ -109,12 +108,12 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
     for frame in universe.trajectory[fstart:fend:fstep]:
 
         # now do the alignment
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
 
         for key in mda_selections.keys():
             indices = mda_selections[key].indices
             counts_f = np.zeros((nbins, nbins))
-            sel_pos = frame._pos[indices]
+            sel_pos = frame.positions[indices]
             xpos = sel_pos[:, lat_ind[0]]
             ypos = sel_pos[:, lat_ind[1]]
             sel_x_curr = sel_x[f]
@@ -154,4 +153,3 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
     y_centers -= reference[1]
 
     return x_centers, y_centers, out_counts
-

@@ -25,8 +25,8 @@ from pybilt.common.running_stats import *
 import scipy.constants as scicon
 
 
-def area_compressibility_modulus(mda_trajectory, bilayer_selection, temperature, normal='z', first=0, last=-1,
-                                 interval=1):
+def area_compressibility_modulus(mda_trajectory, temperature, normal='z',
+                                first=0, last=-1, interval=1):
     # set the indices for indexing the lateral dimensions
     lateral_index = [0, 1]
     if normal == 'z':
@@ -41,9 +41,7 @@ def area_compressibility_modulus(mda_trajectory, bilayer_selection, temperature,
     times = []
     K_a = []
     for frame in mda_trajectory[first:last:interval]:
-        lateral_edges = frame.dimensions[lateral_index]
-        area = lateral_edges.prod()
-        area_run.push(area)
+        area_run.push(frame.dimensions[lateral_index].prod())
         # compute the modulus
         Ka = (scicon.k * temperature * area_run.mean())/area_run.variance()
         #conversion factor for Joules/Angstrom^2 to milliNewtons/meter

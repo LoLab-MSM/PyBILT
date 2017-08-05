@@ -42,6 +42,7 @@ Example:
 # imports
 import scipy.constants as scicon
 import numpy as np
+#import ast
 try:
     import cPickle as pickle
 except ImportError as error:
@@ -2213,8 +2214,10 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
         residues = self.selection.residues
         cos_run = RunningStats()
         for residue in residues:
-            atom_1 = eval("residue."+self.settings['ref_atom_1'])
-            atom_2 = eval("residue."+self.settings['ref_atom_2'])
+            atom_1 = eval("residue.{}".format(self.settings['ref_atom_1']))
+            atom_2 = eval("residue.{}".format(self.settings['ref_atom_2']))
+            #atom_1 = ast.literal_eval("residue.{}".format(self.settings['ref_atom_1']))
+            #atom_2 = ast.literal_eval("residue.{}".format(self.settings['ref_atom_2']))
             atom_1_i = atom_1.index
             atom_2_i = atom_2.index
             atom_1_coord = ba_reps['current_mda_frame'].positions[atom_1_i]

@@ -181,7 +181,6 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
     #build the index lists of acyl components
     print "building index lists for acyl groups"
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
-    n_acyl = len(acyl_carbons)
     print "there are ",len(acyl_carbons)," acyl groups"
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
@@ -202,9 +201,9 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
             cos_beta_ch1 = cos_angle_between_vectors(v_ch1,bilayer_norm)
             #cos_beta_ch2 = cos_angle_between_vectors(v_ch2,bilayer_norm)
             scd_ch1 = 0.50*(3.0* cos_beta_ch1**2 -1.0)
-            scd_ch2 = 0.50*(3.0* cos_beta_ch1**2 -1.0)
+            #scd_ch2 = 0.50*(3.0* cos_beta_ch1**2 -1.0)
             Scd.push(scd_ch1)
-            Scd.push(scd_ch2)
+            #Scd.push(scd_ch2)
         Scd_out[f,0]=curr_time
         Scd_out[f,1]=Scd.mean()
         Scd_out[f,2]=Scd.deviation()
