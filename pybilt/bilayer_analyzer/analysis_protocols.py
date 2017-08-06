@@ -74,6 +74,19 @@ use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
 
 
 def word_list_to_string(word_list, delimeter=" "):
+    """Creates a single string from a list of strings
+
+    This function can be used to combine words in a list into one long sentence
+    string.
+
+    Args:
+        word_list (list/tuple): A list (or other container) of strings.
+        delimeter (str, Optional): A string to delimit the strings in the list
+            when combining the strings.
+
+    Returns:
+        A string.
+    """
     string = ""
     for word in word_list:
         string+=word+delimeter
@@ -87,19 +100,28 @@ def word_list_to_string(word_list, delimeter=" "):
 #    return protocol
 
 def _run_analysis_alias(protocol_analyzer):
+    """ An alias function to pass to multiprocessing threads
+
+    This function is used internally in the BilayerAnalyzer.run_analysis_mp
+    function to pass to the multiprocessing threads.
+    """
     print(protocol_analyzer)
     return protocol_analyzer
 
 # protocol for the analysis to run during the frame loop
 class Analyses(object):
-    """A class to facilitate analysis of the bilayers
-    This object stores all the analyses that being performed and provides fucntionality to add and remove
+    """A class to facilitate analysis of the bilayers via the BilayerAnalyzer
+
+    This object stores all the analyses that are being performed  by the
+    BilayerAnalyzer class, and it provides functionality to add and remove
     analyses.
 
     Attributes:
-        use_objects (list of str): A list of buildable objects that need to contructed in the BilayerAnalyzer for the
-            analysis defined in this protocol.
-        in_commands (list): A list of the input strings for the analysis to be used.
+        use_objects (dict): A dictionary of buildable objects that need to be
+            contructed in the BilayerAnalyzer for the analysis defined in this
+            protocol.
+        in_commands (list): A list of the input strings for the analysis to be
+            used.
         arguments (list): A list of the arguments for analysis.
         analysis_keys (list): A list of the keys assigned to analysis.
         command_protocol (dict): A dictionary of the analysis objects.
@@ -108,6 +130,14 @@ class Analyses(object):
 
     """
     def __init__(self, analysis_commands):
+        """Inits Analyses with input analysis_commands
+
+        Args:
+            analysis_commands (list): A list of the input strings for the
+                analyses to be used. This is internally parsed together by
+                the calling BilayerAnalyzer class object.
+
+        """
         self.use_objects = use_objects
         self.in_commands = analysis_commands
         self.arguments = []
@@ -125,12 +155,21 @@ class Analyses(object):
         return
 
     def __getitem__(self, item):
+        """ Define the getitem function """
         return self.command_protocol[item]
 
     def __len__(self):
+        """ Define the len function """
         return len(self.analysis_ids)
 
     def add_analysis(self, inputs):
+        """Used to add a new analysis to the internal set of analyses
+
+        Args:
+            inputs (str, list, tuple, or dict): The input to parsed for the
+                type of analysis and its settings to be added to set of
+                analyses.
+        """
         if isinstance(inputs, (str, basestring)):
             self._add_analysis_from_string(inputs)
         elif isinstance(inputs, (list, tuple)):
@@ -140,6 +179,7 @@ class Analyses(object):
         return
 
     def _add_analysis_from_string(self, analysis_string):
+        """ Parses string inputs. """
         command = analysis_string.split()
         comp_key = command[0]
         comp_id = command[1]
@@ -167,7 +207,7 @@ class Analyses(object):
         return
 
     def _add_analysis_from_list(self, analysis_list):
-
+        """ Parses list/tuple inputs. """
         if len(analysis_list) == 3:
             comp_key = analysis_list[0]
             comp_id = analysis_list[1]
@@ -194,6 +234,7 @@ class Analyses(object):
         return
 
     def _add_analysis_from_dict(self, analysis_dict):
+        """ Parses dict inputs. """
         for key in ['analysis_key', 'analysis_id', "analysis_settings"]:
             if key not in analysis_dict.keys():
                 raise RuntimeError("required key: {} , not in the input dictionary.".format(key))
@@ -221,6 +262,13 @@ class Analyses(object):
         return
 
     def remove_analysis(self, analysis_id):
+        """Removes the analysis with the given id from the set of analyses.
+
+        Args:
+            analysis_id (str): The string analysis_id of the analysis that is
+                to be removed from the internal set of analyses.
+
+        """
         if analysis_id in self.analysis_ids:
             del self.command_protocol[analysis_id]
             index = self.analysis_ids.index(analysis_id)
@@ -233,12 +281,16 @@ class Analyses(object):
         return
 
     def remove_all(self):
+        """ Removes all of the analyses from internal set. """
+
         a_ids = self.analysis_ids
         for a_id in a_ids:
             self.remove_analysis(a_id)
         return
 
     def print_protocol(self):
+        """ Prints to std out the protocol of the analyses. """
+
         print ('build objects:')
         for key in self.use_objects.keys():
             if self.use_objects[key]:
@@ -249,6 +301,12 @@ class Analyses(object):
         return
 
     def dump_data(self, path=None):
+        """ Calls the individual save_data functions of each AnalysisProtocol.
+
+        Args:
+            path (str, Optional): The string path where output files should be
+                dumped to disc.
+        """
         print ('dumping analysis data to pickle files...')
         for analysis_id in self.analysis_ids:
             print ("analysis id: {} ---> {} ".format(
@@ -257,6 +315,8 @@ class Analyses(object):
             self.command_protocol[analysis_id].save_data(path=path)
 
     def reset(self):
+        """ Calls the individual rest functions for each AnalysisProtocol. """
+
         for analysis_id in self.analysis_ids:
             self.command_protocol[analysis_id].reset()
         return
@@ -265,26 +325,26 @@ class Analyses(object):
 class AnalysisProtocol(object):
     """Base class for analysis protocols.
 
-    Args:
-        args (list): list of argument keys and values.
-
     Attributes:
-        valid_args (list): list of the valid arguemnt keys.
-        return_length (int): if applicable, length of the return vector
-        analysis_key (str): the key name of this analysis.
-        analysis_id (str): the unique id assigned to this analyisis.
-        save_file_name (str): the path and filename for the pickle file output of
+        analysis_key (str): The key name of this analysis.
+        analysis_id (str): The unique id assigned to this analyisis.
+        save_file_name (str): The path and filename for the pickle file output of
             this analysis' results.
+        settings (dict): A dict of the internal settings of the analysis.
         analysis_output (list or list like): Used to store the ouptut of this
-            analyis during the frame loop.
+            analysis during the frame loop.
     """
     _pickleable = True
 
     def __init__(self, args):
+        """ Inits the AnalysisProtocol using the input args.
 
+        Args:
+            args (list): list of argument keys and values.
+        """
         # required
         self._short_description = "parent analysis protocol"
-        self.return_length = 1
+        self._return_length = 1
         self.analysis_key = 'none'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -301,7 +361,7 @@ class AnalysisProtocol(object):
 
     # required- function to parse the input arguments
     def _parse_args(self, args):
-        """Parses the setup arguments for this analysis
+        """Parses the setup arguments for this analysis.
         Args:
             args (list): List of argument keys and values.
         """
@@ -315,6 +375,8 @@ class AnalysisProtocol(object):
         return
         # required - a check protocol function which reports relevant settings
     def _parse_string(self, args):
+        """Parses the input arguments from a string. """
+
         arg_dict = self._parse_str_to_dict(args)
         #type cast setttings if needed
         arg_dict = self._cast_settings(arg_dict)
@@ -322,6 +384,7 @@ class AnalysisProtocol(object):
         return
 
     def _parse_str_to_dict(self, args):
+        """Converts the input argument str to dict. """
         arg_dict = dict()
         args = args.split()
         nargs = len(args)
@@ -339,11 +402,15 @@ class AnalysisProtocol(object):
     # cast the input string values of settings to appropriate types -- should be overwritten in derived classes to
     # properly type cast their own settings.
     def _cast_settings(self, arg_dict):
+        """Cast the input arguments from str to the appropriate type (e.g. int)."""
+
         for dummy_setting_key in arg_dict:
             pass
         return arg_dict
 
     def _parse_dict(self, args):
+        """Parses the input arguments from a dict. """
+
         if 'analysis_id' not in args.keys():
             raise RuntimeError("required key \'anlaysis_id\' not assigned in input dict for analysis type: \'"+self.analysis_key+"\'")
         for arg_key in args.keys():
@@ -358,12 +425,15 @@ class AnalysisProtocol(object):
         return
 
     def short_description(self):
+        """Returns the protocols short description."""
         return self._short_description
 
     def pickleable(self):
+        """Returns whether or not the protocol can be pickled."""
         return self._pickleable
 
     def print_protocol(self):
+        """Prints to std out the internal data and settings for the protocol."""
         print ("Analysis: "+self._short_description)
         print ("  with analysis_id: {} ".format(self.analysis_id))
         print ("   and settings: ")
@@ -372,9 +442,20 @@ class AnalysisProtocol(object):
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        """Performs the analysis that this protocol represents for the current
+        frame in the external BilayerAnalyzer's run_analysis function.
+
+        Args:
+            ba_settings (dict): The settings stored in the external
+                BilayerAnalyzer instance.
+            ba_reps (dict): The representation objects stored in the external
+                BilayerAnalyzer instance.
+            ba_mda_data (MDAData instance): The instance of MDAData stored in
+                the external BilayerAnalyzer instance.
+        """
         # do some stuff
         # get an output
-        output = np.zeros(self.return_length)
+        output = np.zeros(self._return_length)
         dummy_ba_settings = ba_settings
         dummy_ba_reps = ba_reps
         dummy_ba_mda_data = ba_mda_data
@@ -383,6 +464,12 @@ class AnalysisProtocol(object):
         return
 
     def save_data(self, path=None):
+        """Dumps the outputs of this protocol to disc.
+
+        Args:
+            path (str, Optional): The string containing the path to the location
+                that the analysis results should be dumped to on disc.
+        """
         save_file = self.save_file_name
         if path is not None:
             save_file = path+self.save_file_name
@@ -392,9 +479,13 @@ class AnalysisProtocol(object):
         return
 
     def get_data(self):
+        """Returns the analysis_output of this protocol. """
         return np.array(self.analysis_output)
 
     def reset(self):
+        """Resets the analysis by resetting the outputs and any necessary
+        internal variables.
+        """
         self.analysis_output = []
         return
 
@@ -405,15 +496,21 @@ analysis_obj_name_dict['msd'] = 'com_frame'
 
 
 class MSDProtocol(AnalysisProtocol):
-    """Mean squared displacement
-    Args:
-        args (list): list of string keys and arguments
-    """
-    def __init__(self, args):
 
+    def __init__(self, args):
+        """Inits the MSDProtocol.
+
+        The MSDProtocol is used to compute the mean squared displacement (MSD)
+        of the centers of mass of the specified lipids. The MSD is given by
+        MSD_i = <(r(t) - <r_0)**2>_i for lipid type i; the angle brackets denote
+        averaging over all lipids of type i.
+
+        Args:
+            args (list): list of string keys and arguments
+        """
         # required
         self._short_description = "Mean squared displacement."
-        self.return_length = 2
+        self._return_length = 2
         self.analysis_key = 'msd'
         self.analysis_id = 'none'
         # default function settings
@@ -425,10 +522,9 @@ class MSDProtocol(AnalysisProtocol):
         #self.leaflet = 'both'
         #self.resname = 'all'
 
-
-        self.first_frame = True
-        self.ref_coords = None
-        self.indices = []
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
         # parse input arguments if given
         self._parse_args(args)
         self.save_file_name = self.analysis_id + ".pickle"
@@ -440,7 +536,7 @@ class MSDProtocol(AnalysisProtocol):
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         leaflet = self.settings['leaflet']
         group = self.settings['resname']
-        if self.first_frame:
+        if self._first_frame:
             indices = []
             # parse the leaflet and group inputs
             if leaflet == "both":
@@ -460,8 +556,8 @@ class MSDProtocol(AnalysisProtocol):
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
-            self.indices = indices
-        indices = self.indices
+            self._indices = indices
+        indices = self._indices
         n_com = len(indices)
         selcoords = np.zeros((n_com, 2))
 
@@ -478,7 +574,7 @@ class MSDProtocol(AnalysisProtocol):
         drs_stat = RunningStats()
 
         ref_coords = np.zeros((n_com, 2))
-        if self.first_frame:
+        if self._first_frame:
             count = 0
             for i in indices:
                 com_curr = \
@@ -486,10 +582,10 @@ class MSDProtocol(AnalysisProtocol):
                         ba_settings['lateral']]
                 ref_coords[count] = com_curr[:]
                 count += 1
-            self.ref_coords = ref_coords[:]
-            self.first_frame = False
+            self._ref_coords = ref_coords[:]
+            self._first_frame = False
         else:
-            ref_coords = self.ref_coords
+            ref_coords = self._ref_coords
             # get the current com frame list
         tc = ba_reps['com_frame'].time
         dt = tc
@@ -518,9 +614,19 @@ analysis_obj_name_dict['apl_box'] = 'mda_frame'
 
 class APLBoxProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Inits the APLBoxProtocol.
+
+        The APLBoxProtocol is used to estimate the area per lipid (APL)
+        using the lateral box dimensions. This approach is only accurate for
+        homogenous lipid bilayers. If the bilayer is inhomogenous then tbis
+        estimate represents a composite average of the area per lipid.
+
+        Args:
+            args (list): list of string keys and arguments
+        """
         # required
         self._short_description = "Area per lipid using box dimensions."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'apl_box'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -546,7 +652,7 @@ class APLBoxProtocol(AnalysisProtocol):
         apl = area / nlipids
         time = ba_reps['current_mda_frame'].time
         self.running.push(apl)
-        apl_t = np.zeros(self.return_length)
+        apl_t = np.zeros(self._return_length)
         apl_t[0] = time
         apl_t[1] = apl
         apl_t[2] = self.running.mean()
@@ -572,7 +678,7 @@ class BTGridProtocol(AnalysisProtocol):
     def __init__(self, args):
         # required
         self._short_description = "Bilayer thickness using lipid_grid."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'bilayer_thickness'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -624,7 +730,7 @@ class APLGridProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Area per lipid using lipid_grid"
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'apl_grid'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -713,7 +819,7 @@ class DispVecProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Displacement vectors."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'disp_vec'
         self.analysis_id = 'none'
 
@@ -886,7 +992,7 @@ class MassDensProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Mass density."
-        self.return_length = None
+        self._return_length = None
         self.analysis_key = 'mass_dens'
         self.analysis_id = 'none'
 
@@ -1034,7 +1140,7 @@ class NNFProtocol(AnalysisProtocol):
         # required
         self._short_description = "Lateral order nearest neighbor fraction."
 
-        self.return_length = 2
+        self._return_length = 2
         self.analysis_key = 'nnf'
         self.analysis_id = 'none'
 
@@ -1051,9 +1157,9 @@ class NNFProtocol(AnalysisProtocol):
         self.save_file_name = self.analysis_id + ".pickle"
 
         # for outputs
-        self.first_frame = True
-        self.ref_coords = None
-        self.indices = []
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
         self.running = RunningStats()
         # storage for output
         self.analysis_output = []
@@ -1077,7 +1183,7 @@ class NNFProtocol(AnalysisProtocol):
     def reset(self):
         self.running.reset()
         self.analysis_output = []
-        self.first_frame = True
+        self._first_frame = True
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
@@ -1087,7 +1193,7 @@ class NNFProtocol(AnalysisProtocol):
         else:
             do_leaflet = [self.settings['leaflet']]
 
-        if self.first_frame:
+        if self._first_frame:
             #pass
             # build group/resname/lipid type list
             lipid_types = []
@@ -1175,7 +1281,7 @@ class NNFProtocol(AnalysisProtocol):
 
     # def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
     #
-    #     if self.first_frame:
+    #     if self._first_frame:
     #         pass
     #         #build group/resname/lipid type list
     #         lipid_types = []
@@ -1259,7 +1365,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         # required
         self._short_description = "Displacement vector correlation matrix."
 
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'disp_vec_corr'
         self.analysis_id = 'none'
 
@@ -1418,7 +1524,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Displacement vector nearest neigbor correlations."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'disp_vec_nncorr'
         self.analysis_id = 'none'
 
@@ -1583,7 +1689,7 @@ class NDCorrProtocol(AnalysisProtocol):
         # required
         self._short_description = "Normal dimension displacement-lipid type cross correlation."
 
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'ndcorr'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -1598,7 +1704,7 @@ class NDCorrProtocol(AnalysisProtocol):
         self.save_file_name = self.analysis_id + ".pickle"
 
         #for analysis and outputs
-        self.first_frame = True
+        self._first_frame = True
         # storage for output
         self.analysis_output = dict()
         self.running_stats = dict()
@@ -1609,7 +1715,7 @@ class NDCorrProtocol(AnalysisProtocol):
         #construct the grids
         grids = lgc.LipidGrids(ba_reps['com_frame'],ba_reps['leaflets'],ba_settings['lateral'])
 
-        if self.first_frame:
+        if self._first_frame:
             leafs = grids.leaf_grid.keys()
             all_types = []
             for leaf in leafs:
@@ -1623,7 +1729,7 @@ class NDCorrProtocol(AnalysisProtocol):
                 for l_type in all_types:
                     self.analysis_output[leaf][l_type] = []
                     self.running_stats[leaf][l_type] = RunningStats()
-            self.first_frame = False
+            self._first_frame = False
         #analysis the correlations
         correlations = grids.norm_displacement_cross_correlation()
         time = ba_reps['current_mda_frame'].time
@@ -1640,7 +1746,7 @@ class NDCorrProtocol(AnalysisProtocol):
         return
 
     def reset(self):
-        self.first_frame = True
+        self._first_frame = True
         self.analysis_output = dict()
         self.running_stats = dict()
 
@@ -1664,7 +1770,7 @@ class DCClusterProtocol(AnalysisProtocol):
         # required
         self._short_description = "Distance cutoff clustering."
 
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'dc_cluster'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -1681,7 +1787,7 @@ class DCClusterProtocol(AnalysisProtocol):
         self.save_file_name = self.analysis_id + ".pickle"
 
         #for analysis and outputs
-        self.first_frame = True
+        self._first_frame = True
         self.converted = False
         # storage for output
         self.analysis_output = dict()
@@ -1719,7 +1825,7 @@ class DCClusterProtocol(AnalysisProtocol):
         else:
             do_leaflet = [self.settings['leaflet']]
 
-        if self.first_frame:
+        if self._first_frame:
             #pass
             # build group/resname/lipid type list
             lipid_types = []
@@ -1732,7 +1838,7 @@ class DCClusterProtocol(AnalysisProtocol):
                         lipid_types.append(group)
             if self.settings['resname'] == 'first':
                 self.settings['resname'] =  lipid_types[0]
-            self.first_frame = False
+            self._first_frame = False
         indices = []
         for leaflets in do_leaflet:
             curr_leaf = ba_reps['leaflets'][leaflets]
@@ -1776,7 +1882,7 @@ class DCClusterProtocol(AnalysisProtocol):
         return
 
     def reset(self):
-        self.first_frame = True
+        self._first_frame = True
 
         for key in self.analysis_output.keys():
             self.analysis_output[key] = []
@@ -1807,7 +1913,7 @@ class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Volume compressibility modulus."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'vcm'
         self.analysis_id = 'none'
 
@@ -1889,7 +1995,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Area compressibility modulus."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'acm'
         self.analysis_id = 'none'
 
@@ -1979,7 +2085,7 @@ class ALDProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Average lateral displacement."
-        self.return_length = 2
+        self._return_length = 2
         self.analysis_key = 'ald'
         self.analysis_id = 'none'
         # default function settings
@@ -1992,9 +2098,9 @@ class ALDProtocol(AnalysisProtocol):
         #self.resname = 'all'
 
 
-        self.first_frame = True
-        self.ref_coords = None
-        self.indices = []
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
         # parse input arguments if given
         self._parse_args(args)
         self.save_file_name = self.analysis_id + ".pickle"
@@ -2007,7 +2113,7 @@ class ALDProtocol(AnalysisProtocol):
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         leaflet = self.settings['leaflet']
         group = self.settings['resname']
-        if self.first_frame:
+        if self._first_frame:
             indices = []
             # parse the leaflet and group inputs
             if leaflet == "both":
@@ -2027,8 +2133,8 @@ class ALDProtocol(AnalysisProtocol):
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
-            self.indices = indices
-        indices = self.indices
+            self._indices = indices
+        indices = self._indices
         n_com = len(indices)
         selcoords = np.zeros((n_com, 2))
 
@@ -2045,7 +2151,7 @@ class ALDProtocol(AnalysisProtocol):
         #drs_stat = RunningStats()
 
         ref_coords = np.zeros((n_com, 2))
-        if self.first_frame:
+        if self._first_frame:
             count = 0
             for i in indices:
                 com_curr = \
@@ -2053,10 +2159,10 @@ class ALDProtocol(AnalysisProtocol):
                         ba_settings['lateral']]
                 ref_coords[count] = com_curr[:]
                 count += 1
-            self.ref_coords = ref_coords[:]
-            self.first_frame = False
+            self._ref_coords = ref_coords[:]
+            self._first_frame = False
         else:
-            ref_coords = self.ref_coords
+            ref_coords = self._ref_coords
             # get the current com frame list
         tc = ba_reps['com_frame'].time
         dt = tc
@@ -2076,7 +2182,7 @@ class ALDProtocol(AnalysisProtocol):
     def reset(self):
         self.L_stat.reset()
         self.analysis_output = []
-        self.first_frame = True
+        self._first_frame = True
         return
 # update the command_protocols dictionary
 command_protocols['ald'] = ALDProtocol
@@ -2096,7 +2202,7 @@ class AreaCompressibilityProtocol(AnalysisProtocol):
 
         # required
         self._short_description = "Isothermal area compressibility."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'ac'
         self.analysis_id = 'none'
 
@@ -2176,7 +2282,7 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
     def __init__(self, args):
         # required
         self._short_description = "Lateral orientation parameter."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'lop'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -2242,7 +2348,7 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
         self.running.push(cos_t_avg)
         time = ba_reps['current_mda_frame'].time
         #self.running.push(ap
-        cos_t = np.zeros(self.return_length)
+        cos_t = np.zeros(self._return_length)
         cos_t[0] = time
         cos_t[1] = cos_t_avg
         cos_t[2] = self.running.mean()
@@ -2273,7 +2379,7 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
     def __init__(self, args):
         # required
         self._short_description = "Lateral orientation angle."
-        self.return_length = 4
+        self._return_length = 4
         self.analysis_key = 'lop'
         self.analysis_id = 'none'
         #define adjustable settings
@@ -2339,7 +2445,7 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
         self.running.push(cos_t_avg)
         time = ba_reps['current_mda_frame'].time
         #self.running.push(ap
-        cos_t = np.zeros(self.return_length)
+        cos_t = np.zeros(self._return_length)
         cos_t[0] = time
         cos_t[1] = cos_t_avg
         cos_t[2] = self.running.mean()

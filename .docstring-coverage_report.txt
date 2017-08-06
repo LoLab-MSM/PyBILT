@@ -4,11 +4,15 @@ File ./pybilt/__init__.py
  Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
 
 File ./pybilt/plot_generation/plot_generation_functions.py
+ - No docstring for range!
  - No docstring for plot_grid_as_scatter!
+ - No docstring for plot_corr_mat!
  - No docstring for plot_corr_mat_as_scatter!
  - No docstring for plot_displacement_lipid_type_cross_correlation!
+ - No docstring for plot_position_density_map_2d_scatter!
  - No docstring for plot_position_density_map_2d!
- Needed: 15; Exist: 11; Missing: 4; Coverage: 73.3%
+ - No docstring for plot_lipid_grid_thickness_map_2d!
+ Needed: 21; Exist: 13; Missing: 8; Coverage: 61.9%
 
 File ./pybilt/plot_generation/__init__.py
  - File is empty.
@@ -24,7 +28,9 @@ File ./pybilt/analysis_modules/analysis_modules.py
  - No docstring for PN_orientational_angle!
  - No docstring for nearest_neighbor_fraction!
  - No docstring for normal_displacement_lipid_type_correlation!
- Needed: 9; Exist: 0; Missing: 9; Coverage: 0.0%
+ - No docstring for lipid_grid_maps!
+ - No docstring for distance_cutoff_clustering!
+ Needed: 11; Exist: 0; Missing: 11; Coverage: 0.0%
 
 File ./pybilt/analysis_modules/__init__.py
  Needed: 1; Exist: 1; Missing: 0; Coverage: 100.0%
@@ -71,12 +77,14 @@ File ./pybilt/mda_tools/mda_msd.py
 
 File ./pybilt/mda_tools/mda_density_map.py
  - No module dostring!
+ - No docstring for _adjust_frame_range_for_slicing!
  - No docstring for position_density_map_2d_multi_align!
- Needed: 2; Exist: 0; Missing: 2; Coverage: 0.0%
+ Needed: 3; Exist: 0; Missing: 3; Coverage: 0.0%
 
 File ./pybilt/mda_tools/mda_distance.py
  - No module dostring!
- Needed: 5; Exist: 4; Missing: 1; Coverage: 80.0%
+ - No docstring for _adjust_frame_range_for_slicing!
+ Needed: 6; Exist: 4; Missing: 2; Coverage: 66.7%
 
 File ./pybilt/mda_tools/mda_deuterium_order_parameter.py
  - No module dostring!
@@ -84,10 +92,12 @@ File ./pybilt/mda_tools/mda_deuterium_order_parameter.py
  - No docstring for angle_between_vectors!
  - No docstring for cos_angle_between_vectors!
  - No docstring for build_acyl_index_lists!
+ - No docstring for _get_bilayer_norm_vector!
+ - No docstring for _adjust_frame_range_for_slicing!
  - No docstring for average_deuterium_order_Moore!
  - No docstring for deuterium_order_Moore!
  - No docstring for average_deuterium_order_Vermeer!
- Needed: 8; Exist: 0; Missing: 8; Coverage: 0.0%
+ Needed: 10; Exist: 0; Missing: 10; Coverage: 0.0%
 
 File ./pybilt/mda_tools/mda_unwrap.py
  - No module dostring!
@@ -133,6 +143,7 @@ File ./pybilt/lipid_grid/lipid_grid_mda.py
  Needed: 18; Exist: 1; Missing: 17; Coverage: 5.6%
 
 File ./pybilt/lipid_grid/lipid_grid.py
+ - No docstring for range!
  - No docstring for LipidGrid_2d!
  - No docstring for LipidGrid_2d.__init__!
  - No docstring for LipidGrid_2d.get_index_at!
@@ -151,7 +162,7 @@ File ./pybilt/lipid_grid/lipid_grid.py
  - No docstring for LipidGrids.write_xyz!
  - No docstring for LipidGrids.get_integer_type_arrays!
  - No docstring for LipidGrids.get_one_array_per_leaflet!
- Needed: 19; Exist: 1; Missing: 18; Coverage: 5.3%
+ Needed: 20; Exist: 1; Missing: 19; Coverage: 5.0%
 
 File ./pybilt/lipid_grid/lipid_grid_curv.py
  - No docstring for LipidGrid_2d!
@@ -168,34 +179,10 @@ File ./pybilt/lipid_grid/__init__.py
  Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
 
 File ./pybilt/bilayer_analyzer/analysis_protocols.py
- - No docstring for word_list_to_string!
- - No docstring for _run_analysis_alias!
- - No docstring for Analyses.__init__!
- - No docstring for Analyses.__getitem__!
- - No docstring for Analyses.__len__!
- - No docstring for Analyses.add_analysis!
- - No docstring for Analyses._add_analysis_from_string!
- - No docstring for Analyses._add_analysis_from_list!
- - No docstring for Analyses._add_analysis_from_dict!
- - No docstring for Analyses.remove_analysis!
- - No docstring for Analyses.remove_all!
- - No docstring for Analyses.print_protocol!
- - No docstring for Analyses.dump_data!
- - No docstring for Analyses.reset!
- - No docstring for AnalysisProtocol.__init__!
- - No docstring for AnalysisProtocol._parse_string!
- - No docstring for AnalysisProtocol._parse_str_to_dict!
- - No docstring for AnalysisProtocol._cast_settings!
- - No docstring for AnalysisProtocol._parse_dict!
- - No docstring for AnalysisProtocol.print_protocol!
- - No docstring for AnalysisProtocol.run_analysis!
- - No docstring for AnalysisProtocol.save_data!
- - No docstring for AnalysisProtocol.get_data!
- - No docstring for AnalysisProtocol.reset!
- - No docstring for MSDProtocol.__init__!
+ - No docstring for range!
+ - No docstring for MSDProtocol!
  - No docstring for MSDProtocol.run_analysis!
  - No docstring for APLBoxProtocol!
- - No docstring for APLBoxProtocol.__init__!
  - No docstring for APLBoxProtocol.run_analysis!
  - No docstring for APLBoxProtocol.reset!
  - No docstring for BTGridProtocol!
@@ -281,9 +268,10 @@ File ./pybilt/bilayer_analyzer/analysis_protocols.py
  - No docstring for LateralOrientationAngleProtocol.__init__!
  - No docstring for LateralOrientationAngleProtocol.run_analysis!
  - No docstring for LateralOrientationAngleProtocol.reset!
- Needed: 119; Exist: 6; Missing: 113; Coverage: 5.0%
+ Needed: 122; Exist: 33; Missing: 89; Coverage: 27.0%
 
 File ./pybilt/bilayer_analyzer/bilayer_analyzer.py
+ - No docstring for range!
  - No docstring for word_list_to_string!
  - No docstring for print_valid_analyses!
  - No docstring for print_analysis_settings!
@@ -291,7 +279,7 @@ File ./pybilt/bilayer_analyzer/bilayer_analyzer.py
  - No docstring for _run_analysis_alias!
  - No docstring for BilayerAnalyzer.__repr__!
  - No docstring for BilayerAnalyzer.__iter__!
- Needed: 39; Exist: 32; Missing: 7; Coverage: 82.1%
+ Needed: 40; Exist: 32; Missing: 8; Coverage: 80.0%
 
 File ./pybilt/bilayer_analyzer/plot_protocols.py
  - No module dostring!
@@ -331,14 +319,16 @@ File ./pybilt/bilayer_analyzer/plot_protocols.py
 
 File ./pybilt/bilayer_analyzer/com_frame.py
  - No module dostring!
+ - No docstring for range!
  - No docstring for COMFrame.__repr__!
  - No docstring for COMFrame.coordinates!
  - No docstring for COMFrame.masses!
  - No docstring for COMFrame.resids!
  - No docstring for COMFrame.resnames!
  - No docstring for COMFrame.leaflets!
+ - No docstring for COMFrame.unique_resnames!
  - No docstring for COMFrame.write_xyz!
- Needed: 17; Exist: 9; Missing: 8; Coverage: 52.9%
+ Needed: 19; Exist: 9; Missing: 10; Coverage: 47.4%
 
 File ./pybilt/bilayer_analyzer/mda_data.py
  - No docstring for MDAData.__init__!
@@ -419,5 +409,5 @@ File ./pybilt/common/__init__.py
 
 
 Overall statistics for 35 files (5 files are empty):
-Docstrings needed: 449; Docstrings exist: 141; Docstrings missing: 308
-Total docstring coverage: 31.4%;  Grade: not so good
+Docstrings needed: 468; Docstrings exist: 170; Docstrings missing: 298
+Total docstring coverage: 36.3%;  Grade: not so good
