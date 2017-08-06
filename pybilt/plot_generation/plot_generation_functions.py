@@ -20,7 +20,12 @@ import matplotlib.pyplot as plt
 #import matplotlib.colors as colors
 import seaborn as sns
 import numpy as np
+import sys
 
+#range/xrange fix
+if sys.version_info < (3,0):
+    def range(*args, **kwargs):
+        return xrange(*args, **kwargs)
 
 # the default savefig params can be different from the display params
 # e.g., you may want a higher resolution, or to make the figure
@@ -512,8 +517,8 @@ def plot_corr_mat_as_scatter(in_corrmat, save=True, filename='correlation_matrix
     y_axes = np.zeros(ax_l ** 2, dtype=np.int)
     c = np.zeros(ax_l ** 2)
     k = 0
-    for i in xrange(ax_l):
-        for j in xrange(ax_l):
+    for i in range(ax_l):
+        for j in range(ax_l):
             x_axes[k] = i
             y_axes[k] = j
             c[k] = in_corrmat[i, j]

@@ -21,6 +21,12 @@ except ImportWarning as warn:
 
 import os
 import multiprocessing
+import sys
+
+#range/xrange fix
+if sys.version_info < (3,0):
+    def range(*args, **kwargs):
+        return xrange(*args, **kwargs)
 
 # PyBILT imports
 import com_frame as cf

@@ -7,6 +7,12 @@
 '''
 
 import numpy as np
+import sys
+
+#range/xrange fix
+if sys.version_info < (3,0):
+    def range(*args, **kwargs):
+        return xrange(*args, **kwargs)
 #import my running stats class
 from pybilt.common.running_stats import RunningStats
 
@@ -35,7 +41,7 @@ class LipidGrid_2d(object):
         x_incr_h = self.x_incr/2.0
         self.x_centers = np.zeros(nxbins)
         self.x_nedges = len(self.x_edges)
-        for i in xrange(1,self.x_nedges):
+        for i in range(1,self.x_nedges):
             j=i-1
             self.x_centers[j]=self.x_edges[j]+x_incr_h
 
@@ -47,7 +53,7 @@ class LipidGrid_2d(object):
         y_incr_h = self.y_incr/2.0
         self.y_centers = np.zeros(nybins)
         self.y_nedges = len(self.y_edges)
-        for i in xrange(1,self.x_nedges):
+        for i in range(1,self.x_nedges):
             j=i-1
             self.y_centers[j]=self.y_edges[j]+y_incr_h
         self.x_length = self.x_max-self.x_min
@@ -158,8 +164,8 @@ class LipidGrids(object):
 
     def thickness_grid(self):
         tgrid = np.zeros((self.nbins_x,self.nbins_y))
-        for ix in xrange(self.nbins_x):
-            for iy in xrange(self.nbins_y):
+        for ix in range(self.nbins_x):
+            for iy in range(self.nbins_y):
                 zu = self.leaf_grid['upper'].get_z_at(ix,iy)
                 zl = self.leaf_grid['lower'].get_z_at(ix,iy)
                 dz = zu - zl
@@ -171,8 +177,8 @@ class LipidGrids(object):
     def average_thickness(self,return_grid=False):
         trun = RunningStats()
         tgrid = self.thickness_grid()
-        for ix in xrange(self.nbins_x):
-            for iy in xrange(self.nbins_y):
+        for ix in range(self.nbins_x):
+            for iy in range(self.nbins_y):
                 tc = tgrid[ix,iy]
                 trun.push(tc)
         avg_out = (trun.mean(),trun.deviation())
@@ -198,8 +204,8 @@ class LipidGrids(object):
         out_dict = {}
         for leaf in do_leaflet:
             out_dict[leaf] = np.zeros((self.nbins_x,self.nbins_y))
-            for ix in xrange(self.nbins_x):
-                for iy in xrange(self.nbins_y):
+            for ix in range(self.nbins_x):
+                for iy in range(self.nbins_y):
                     com_ind=self.leaf_grid[leaf].get_index_at(ix,iy)
                     value = com_values_dict[com_ind]
                     out_dict[leaf][ix,iy]=value
@@ -261,8 +267,8 @@ class LipidGrids(object):
         sx_l = np.zeros((nxb,nyb))
         sy_l = np.zeros((nxb,nyb))
 
-        for ix in xrange(nxb):
-            for iy in xrange(nyb):
+        for ix in range(nxb):
+            for iy in range(nyb):
                 ixp = ix-1
                 if ixp < 0:
                     ixp+=nxb
@@ -297,8 +303,8 @@ class LipidGrids(object):
         ssx_l = np.zeros((nxb,nyb))
         ssy_l = np.zeros((nxb,nyb))
         ssxy_l = np.zeros((nxb,nyb))
-        for ix in xrange(nxb):
-            for iy in xrange(nyb):
+        for ix in range(nxb):
+            for iy in range(nyb):
                 ixp = ix-1
                 if ixp < 0:
                     ixp+=nxb
@@ -342,8 +348,8 @@ class LipidGrids(object):
         dy_u = self.leaf_grid['upper'].y_incr
         dx_l = self.leaf_grid['lower'].x_incr
         dy_l = self.leaf_grid['lower'].y_incr
-        for ix in xrange(nxb):
-            for iy in xrange(nyb):
+        for ix in range(nxb):
+            for iy in range(nyb):
                 #upper
                 sx = sx_u[ix,iy]
                 sy = sy_u[ix,iy]
@@ -399,8 +405,8 @@ class LipidGrids(object):
 
     def grid_to_dict(self,in_grid,leaflet='upper'):
         out_dict = {}
-        for ix in xrange(self.nbins_x):
-            for iy in xrange(self.nbins_y):
+        for ix in range(self.nbins_x):
+            for iy in range(self.nbins_y):
                 l_i = self.leaf_grid[leaflet].get_index_at(ix,iy)
                 grid_val = in_grid[ix,iy]
                 out_dict[l_i]=grid_val

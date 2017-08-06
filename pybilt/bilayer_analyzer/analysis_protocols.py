@@ -48,6 +48,12 @@ try:
 except ImportError as error:
     import pickle
 import warnings
+import sys
+
+#range/xrange fix
+if sys.version_info < (3,0):
+    def range(*args, **kwargs):
+        return xrange(*args, **kwargs)
 
 # PyBILT imports
 from pybilt.common.running_stats import RunningStats
@@ -356,7 +362,7 @@ class AnalysisProtocol(object):
 
     def pickleable(self):
         return self._pickleable
-            
+
     def print_protocol(self):
         print ("Analysis: "+self._short_description)
         print ("  with analysis_id: {} ".format(self.analysis_id))

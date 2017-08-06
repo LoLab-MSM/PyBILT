@@ -2,6 +2,13 @@
 import MDAnalysis as mda
 import numpy as np
 
+import sys
+
+#range/xrange fix
+if sys.version_info < (3,0):
+    def range(*args, **kwargs):
+        return xrange(*args, **kwargs)
+
 class LipidCOM(object):
     """ A lipid center of mass (COM) object.
 
