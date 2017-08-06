@@ -31,13 +31,20 @@ from pybilt.common.running_stats import *
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
 
+
+#range/range fix
+if sys.version_info < (3,0):
+    def range(*args, **kwargs):
+        return range(*args, **kwargs)
+
+
 # This function is incomplete!
 def colorize_step_vector_clusters(vectors):
-    nvecs = len(vectors)
-    np.zeros(nvecs,dtype=np.int)
-    colors_out = np.zeros(nvecs)
-    return "nothing yet!"
-
+    #nvecs = len(vectors)
+    #np.zeros(nvecs,dtype=np.int)
+    #colors_out = np.zeros(nvecs)
+    #return "nothing yet!"
+    pass
 
 class LipidCOM(object):
     """ A lipid center of mass (COM) object.
@@ -129,8 +136,7 @@ class Frame(object):
         # frame number in the MD trajectory
         self.mdnumber = np.zeros(1,dtype=np.int)
         # initialize all the LipidCOM objects
-        for i in xrange(nlipids):
-            self.lipidcom.append(LipidCOM())
+        self.lipidcom = [LipidCOM() for i in range(nlipids)]
 
         return
 
@@ -210,18 +216,15 @@ class Frame(object):
         xyz_out.write(comment)
         xyz_out.write("\n")
 
-
-
-        i=0
-        for lip in self.lipidcom:
+        for i in range(len(self.lipidcom)):
             #get the coordinates
             x = self.lipidcom[i].com[0]
             y = self.lipidcom[i].com[1]
             z = self.lipidcom[i].com_unwrap[2]
             if not wrapped:
-               x = self.lipidcom[i].com_unwrap[0]
-               y = self.lipidcom[i].com_unwrap[1]
-               #z = self.lipidcom[i].com_unwrap[2]
+                x = self.lipidcom[i].com_unwrap[0]
+                y = self.lipidcom[i].com_unwrap[1]
+                #z = self.lipidcom[i].com_unwrap[2]
 
             #get the lipid resname
             oname = self.lipidcom[i].type
@@ -351,7 +354,6 @@ class FrameShelve(object):
         """
         if not isinstance(item, Frame):
             raise TypeError(self._type_error)
-            return
         if key < 0:
             key+=self.nframes
         elif key >= self.nframes:
@@ -675,11 +677,6 @@ def msd_frames(frames, fstart, fend, indices, refframe, plane):
         com_i = ref_frame.lipidcom[i].com_unwrap[plane]
         com_ref[count]=com_i[:]
         count+=1
-    time_ref = ref_frame.time
-    #print "nframes ",len(frames)
-    #print "process; fstart ",fstart," fend ",fend
-    #print "process; loop range "
-    #print range(fstart,(fend+1))
     # now begin loop over the frames for this process
     for f in range(fstart, (fend+1)):
         # get the current frame
@@ -702,7 +699,7 @@ def msd_frames(frames, fstart, fend, indices, refframe, plane):
             drs_stat.push(drs_mag)
         #get the msd for the current selection
         msdcurr = drs_stat.mean()
-        devcurr = drs_stat.deviation()
+        #devcurr = drs_stat.deviation()
         drs_stat.reset()
         findex = f-fstart
         output[findex, 0]=tc
@@ -745,7 +742,7 @@ def thickness_frames(frames, fstart, fend, leaflets, nlipids, plane, norm):
                 thickness[i,0] = simulation time for frame f = i + fstart.
                 thickness[i,1] = the configurational average thickness for frame f = i + fstart.
                 thickness[i,2] = the standard deviation of the configurational average thickness for frame f = i + fstart.
-                For i in xrange( (fend-fstar) + 1).
+                For i in range( (fend-fstar) + 1).
             tuple[1] => thickness_map: A nxNx6 numpy array containing the thickness data that can be
             used to generate a 3d thickness map/plot. Specifically:
                 thickness[i,j,0] = simulation time for frame f = i + fstart and lipid j.
@@ -755,7 +752,7 @@ def thickness_frames(frames, fstart, fend, leaflets, nlipids, plane, norm):
                 thickness[i,j,4] = the upper z position for lipid j and its cross leaflet partner at frame f = i + fstart.
                 thickness[i,j,5] = the difference between the upper and lower z positions
                 for lipid j and its cross leaflet partner at frame f = i + fstart.
-                For i in xrange((fend-fstar) + 1) and For j in xrange(nlipids).
+                For i in range((fend-fstar) + 1) and For j in range(nlipids).
     """
     #upper_match = []
     #lower_match = []
@@ -787,7 +784,7 @@ def thickness_frames(frames, fstart, fend, leaflets, nlipids, plane, norm):
             comcup = fr.lipidcom[idu].com
             distxy = 10000.0
             distz = 0.0
-            mindex = 0
+            #mindex = 0
             zlom = 0.0
             zhim = 0.0
             xavgm = 0.0
@@ -865,7 +862,7 @@ def thickness_frames(frames, fstart, fend, leaflets, nlipids, plane, norm):
                 if    rxy<distxy:
                     distxy=rxy
                     distz = np.absolute(dz)
-                    mindex=meml
+                    #mindex=meml
                     xavgm = xavg
                     yavgm = yavg
                     zlom = zlo
@@ -884,8 +881,8 @@ def thickness_frames(frames, fstart, fend, leaflets, nlipids, plane, norm):
 
         #break
     zavgs = np.zeros((nfc, 3))
-    zdtstat = RunningStats()
-    for fr in xrange(nfc):
+    #zdtstat = RunningStats()
+    for fr in range(nfc):
         currtime = times[fr]
         dt = currtime
         curr = zdists[fr,:]
@@ -1073,7 +1070,7 @@ class COMTraj(object):
         for frame in mda_traj[fstart:fend:fskip]:
             #first we unwrapp
             #print "unwrapping frame ",frame.frame
-            currcoord = frame._pos[index]
+            currcoord = frame.positions[index]
             if firstframe:
                 oldcoord = np.copy(currcoord)
                 firstframe = False
@@ -1190,7 +1187,7 @@ class COMTraj(object):
         #store the coordinates of the selected LipidCOMs in a single numpy array
         selcoords = np.zeros((self.nframes,n_com,2))
 
-        for f in xrange(self.nframes):
+        for f in range(self.nframes):
             count=0
             for i in indices:
                 com_curr = self.frame[f].lipidcom[i].com_unwrap[self.plane]
@@ -1209,9 +1206,8 @@ class COMTraj(object):
         #print comlist
         #print len(comlist)
         coml0 = selcoords[0,:,:]
-        t0 = self.frame[0].time
         #print coml0
-        for i in xrange(1, self.nframes):
+        for i in range(1, self.nframes):
             # get the current com frame list
             tc = self.frame[i].time
             dt = tc
@@ -1225,11 +1221,11 @@ class COMTraj(object):
                 drs_stat.push(drs_mag)
             #get the msd for the current selection
             msdcurr = drs_stat.mean()
-            devcurr = drs_stat.deviation()
+            #devcurr = drs_stat.deviation()
             drs_stat.reset()
             msd_stat.push(msdcurr)
             msd_tavg = msd_stat.mean()
-            msd_dev = msd_stat.deviation()
+            #msd_dev = msd_stat.deviation()
             #dt = times[i]-times[0]
             DiffCon = msd_tavg/(2.0*dim*dt)
             diff_stat.push(DiffCon)
@@ -1262,7 +1258,7 @@ class COMTraj(object):
                     thickness[i,2] = the standard deviation of the configurational average thickness for frame f = i + fstart.
                     thickness[i,3] = the running time average of the configurational average thickness for frame f = i + fstart.
                     thickness[i,4] = the running standard deviation of the time averaged configurational average thickness for frame f = i + fstart.
-                    For i in xrange( (fend-fstar) + 1).
+                    For i in range( (fend-fstar) + 1).
                 tuple[1] => thickness_map: A nxNx6 numpy array containing the thickness data that can be
                 used to generate a 3d thickness map/plot. Specifically:
                     thickness[i,j,0] = simulation time for frame f = i + fstart and lipid j.
@@ -1272,7 +1268,7 @@ class COMTraj(object):
                     thickness[i,j,4] = the upper z position for lipid j and its cross leaflet partner at frame f = i + fstart.
                     thickness[i,j,5] = the difference between the upper and lower z positions
                     for lipid j and its cross leaflet partner at frame f = i + fstart.
-                    For i in xrange((fend-fstar) + 1) and For j in xrange(nlipids).
+                    For i in range((fend-fstar) + 1) and For j in range(nlipids).
         """
         #upper_match = []
         #lower_match = []
@@ -1287,7 +1283,7 @@ class COMTraj(object):
         #dcoms = np.zeros(3)
         f=0
 
-        for f in xrange(self.nframes):
+        for f in range(self.nframes):
             n=0
             fr = self.frame[f]
             boxc = fr.box
@@ -1299,7 +1295,7 @@ class COMTraj(object):
                 comcup = fr.lipidcom[idu].com
                 distxy = 10000.0
                 distz = 0.0
-                mindex = 0
+                #mindex = 0
                 zlom = 0.0
                 zhim = 0.0
                 xavgm = 0.0
@@ -1376,7 +1372,7 @@ class COMTraj(object):
                     if    rxy<distxy:
                         distxy=rxy
                         distz = np.absolute(dz)
-                        mindex=meml
+                        #mindex=meml
                         xavgm = xavg
                         yavgm = yavg
                         zlom = zlo
@@ -1396,7 +1392,7 @@ class COMTraj(object):
             #break
         zavgs = np.zeros((self.nframes, 5))
         zdtstat = RunningStats()
-        for fr in xrange(self.nframes):
+        for fr in range(self.nframes):
             currtime = self.frame[fr].time
             dt = currtime
             curr = zdists[fr,:]
@@ -1444,7 +1440,7 @@ class COMTraj(object):
         indices = []
 
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
+        #dim=2
         if leaflet == "both":
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
@@ -1462,12 +1458,12 @@ class COMTraj(object):
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
-        n_com = len(indices)
+        #n_com = len(indices)
 
         #print "there are ",len(indices)," members"
         xi = self.plane[0]
         yi = self.plane[1]
-        zi = self.norm
+        #zi = self.norm
         #reset the system cluster list
         self.clusters = []
         # numpy array to store output for return
@@ -1479,7 +1475,7 @@ class COMTraj(object):
         masstat = RunningStats() # maximum cluster size
         #loop over frames
 
-        for f in xrange(self.nframes):
+        for f in range(self.nframes):
             fr = self.frame[f]
             ctime = fr.time
             clusters = []
@@ -1513,11 +1509,11 @@ class COMTraj(object):
                     coms = fr.lipidcom[startn].com
                     #get neighbors of the start
                     #mindex=0
-                    for j in xrange(len(masterlistf)):
+                    for j in range(len(masterlistf)):
                     #for elem in masterlistf:
                         elem = masterlistf[j]
                         incluster = elem[1]
-                    #    print "second incluster ",incluster
+                        #    print "second incluster ",incluster
                         if not incluster:
                             ci = elem[0]
                             comc = fr.lipidcom[ci].com
@@ -1541,8 +1537,8 @@ class COMTraj(object):
                         #mindex+=1
                     i+=1
                 #filter the masterlistf
-            #    print "neighlist", neighborlist
-                masterlistf=list([v for v in masterlistf if v[1] == False])
+                #    print "neighlist", neighborlist
+                masterlistf=list([v for v in masterlistf if not v[1]])
                 if len(neighborlist) > 1:
                     clusters.append([])
                     clusters[clustind]=list(neighborlist)
@@ -1567,38 +1563,17 @@ class COMTraj(object):
             avgsize = clsizestat.mean()
             #store instantaneous values
             outdata[f,0] = ctime
-#            outdata[f,1]= nclusters
-#            outdata[f,2] = avgsize
-#            outdata[f,3] = mini
-#            outdata[f,4] = maxi
             #push to the time averages
             ncstat.push(nclusters)
             asstat.push(avgsize)
             misstat.push(mini)
             masstat.push(maxi)
-            #store current time averages
-#            outdata[f,5] = ncstat.mean()
-#            outdata[f,6] = ncstat.deviation()
-#            outdata[f,7] = asstat.mean()
-#            outdata[f,8] = asstat.deviation()
-#            outdata[f,9] = misstat.mean()
-#            outdata[f,10] = misstat.deviation()
-#            outdata[f,11] = masstat.mean()
-#            outdata[f,12] = masstat.deviation()
             outdata[f,1] = ncstat.mean()
             outdata[f,2] = ncstat.deviation()
             outdata[f,3] = asstat.mean()
             outdata[f,4] = asstat.deviation()
-#            outdata[f,5] = misstat.mean()
-#            outdata[f,6] = misstat.deviation()
-#            outdata[f,7] = masstat.mean()
-#            outdata[f,8] = masstat.deviation()
             # now add cluster list to the system storage
             self.clusters.append(list(clusters))
-            #print clusters
-           # print "Frame ",f
-           # print "There are ",nclusters," clusters with an average size of ",avgsize
-           # print "the largest cluster was ",maxi," and the smallest was ",mini
 
         return outdata
     #takes the cluster lists from self.clusters and gets the plane coordinates
@@ -1637,16 +1612,15 @@ class COMTraj(object):
         yi = self.plane[1]
         #get the maximum number of clusters from any of the frames
         maxsize = 0
-        for f in xrange(len(self.clusters)):
+        for f in range(len(self.clusters)):
             nclust = len(self.clusters[f])
             if nclust>maxsize:
                 maxsize=nclust
         #generate a color array
         colors = cm.rainbow(np.linspace(0, 1, maxsize))
         output = []
-        for f in xrange(len(self.clusters)):
+        for f in range(len(self.clusters)):
             frame_clusters = self.clusters[f]
-            frame_data = []
             nclust = len(frame_clusters)
             #print len(frame_clusters)
             #print len(colors)
@@ -1703,17 +1677,16 @@ class COMTraj(object):
                 For i in range( nframes ).
         """
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
         do_leaflet = []
-        nlip = 0
+        #nlip = 0
         if leaflet == "both":
             do_leaflet.append('upper')
             do_leaflet.append('lower')
-            nlip=self.nlipids
+            #nlip=self.nlipids
 
         elif leaflet == "upper" or leaflet == "lower":
             do_leaflet.append(leaflet)
-            nlip = len(self.leaflets[leaflet])
+            #nlip = len(self.leaflets[leaflet])
         else:
             #unknown option--use default "both"
             print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
@@ -1721,13 +1694,12 @@ class COMTraj(object):
 
         xi = self.plane[0]
         yi = self.plane[1]
-        zi = self.norm
         sub_fact = (2.0*np.pi/3.0 - np.sqrt(3.0)/2.0)
         #initialize a numpy array to hold the msd for the selection
         areas = np.zeros((self.nframes, 4))
         #initialize a running stats object to do the averaging
         area_stat = RunningStats()
-        n_leaflet = len(do_leaflet)
+        #n_leaflet = len(do_leaflet)
         #build the index lists
         indices_leaflet = {}
         all_mem_leaflet = {}
@@ -1735,14 +1707,13 @@ class COMTraj(object):
             indices = list()
             curr_leaf = self.leaflets[leaflets]
             indices+=curr_leaf.get_group_indices(group)
-            n_com = len(indices)
             all_mem = list(self.leaflets[leaflets].get_member_indices())
             all_mem_leaflet[leaflets] = list(all_mem)
             indices_leaflet[leaflets]=list(indices)
 
 
         #loop over the frames
-        for f in xrange(self.nframes):
+        for f in range(self.nframes):
             fr = self.frame[f]
             dt = fr.time
             boxc=fr.box
@@ -1819,7 +1790,7 @@ class COMTraj(object):
                 For i in range( nframes ).
         """
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
+        #dim=2
         do_leaflet = []
         nlip = 0
         if leaflet == "both":
@@ -1842,17 +1813,16 @@ class COMTraj(object):
 
         xi = self.plane[0]
         yi = self.plane[1]
-        zi = self.norm
+        #zi = self.norm
 
         #initialize a numpy array to hold the msd for the selection
         areas = np.zeros((self.nframes, 4))
         #initialize a running stats object to do the averaging
         area_stat = RunningStats()
-        n_leaflet = len(do_leaflet)
-
+        #n_leaflet = len(do_leaflet)
 
         #loop over the frames
-        for f in xrange(self.nframes):
+        for f in range(self.nframes):
             fr = self.frame[f]
             dt = fr.time
             boxc=fr.box
@@ -1877,7 +1847,7 @@ class COMTraj(object):
         indices = []
 
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
+        #dim=2
         if leaflet == "both":
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
@@ -1898,11 +1868,11 @@ class COMTraj(object):
         n_com = len(indices)
 
         #print "there are ",len(indices)," members"
-        xi = self.plane[0]
-        yi = self.plane[1]
-        zi = self.norm
+        #xi = self.plane[0]
+        #yi = self.plane[1]
+        #zi = self.norm
         out_tess = []
-        for    f in xrange(self.nframes):
+        for    f in range(self.nframes):
             # get the current frame
             curr_frame = self.frame[f]
             # get the coordinates for the selection at this frame
@@ -1922,7 +1892,7 @@ class COMTraj(object):
         indices = []
 
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
+        #dim=2
         if leaflet == "both":
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
@@ -1942,12 +1912,8 @@ class COMTraj(object):
                 indices+=curr_leaf.get_group_indices(group)
         n_com = len(indices)
 
-        #print "there are ",len(indices)," members"
-        xi = self.plane[0]
-        yi = self.plane[1]
-        zi = self.norm
         out_tess = []
-        for    f in xrange(self.nframes):
+        for    f in range(self.nframes):
             # get the current frame
             curr_frame = self.frame[f]
             # get the coordinates for the selection at this frame
@@ -1973,7 +1939,7 @@ class COMTraj(object):
         if fstep == 'single':
             fstep = fend-fstart
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
+        #dim=2
         if leaflet == "both":
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
@@ -1995,13 +1961,8 @@ class COMTraj(object):
                 indices+=curr_leaf.get_group_indices(group)
         n_com = len(indices)
 
-        #print "there are ",len(indices)," members"
-        xi = self.plane[0]
-        yi = self.plane[1]
-        zi = self.norm
-
         vec_ends_out = []
-        for    f in xrange(fstart+fstep,fend+1,fstep):
+        for    f in range(fstart+fstep,fend+1,fstep):
             fprev = f-fstep
             # get the current frame
             curr_frame = self.frame[f]
@@ -2040,7 +2001,7 @@ class COMTraj(object):
             fstep = fend-fstart
         output = []
 
-        for f in xrange(fstart+fstep,fend+1,fstep):
+        for f in range(fstart+fstep,fend+1,fstep):
             fprev = f-fstep
             output.append([fprev, f])
         return np.array(output, dtype=np.int)
@@ -2051,7 +2012,7 @@ class COMTraj(object):
         ngroups = 1
         group_names = []
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
+        #dim=2
         if leaflet == "both":
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
@@ -2154,7 +2115,7 @@ class COMTraj(object):
             leaf_indices[leaf]=list(self.leaflets[leaf].get_member_indices())
 
 
-        for f in xrange(self.nframes):
+        for f in range(self.nframes):
             fr = self.frame[f]
 
             for leaf in do_leaflet:
@@ -2200,7 +2161,7 @@ class COMTraj(object):
         """
         indices = []
         #diffusion dimension - assume lateral so, dim=2
-        dim=2
+        #dim=2
         if leaflet == "both":
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
@@ -2218,37 +2179,30 @@ class COMTraj(object):
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
-        n_com = len(indices)
+        #n_com = len(indices)
 
         frame_ranges = []
         total_frames = self.nframes
         frames_per_proc_base = total_frames/nprocs
         left_over = total_frames % (frames_per_proc_base * nprocs)
-#        print "total frames ",total_frames
-#        print "frames per proc ",frames_per_proc_base
-#        print "left over ",left_over
         #assign base ranges
-        for i in xrange(nprocs):
+        for i in range(nprocs):
             fs = i*frames_per_proc_base
             fe = fs + frames_per_proc_base - 1
             frame_ranges.append([fs,fe])
-#        print "frame_ranges (pre-adjust):"
-#        print frame_ranges
+
         #now adjust for leftovers - divide them "equally" over the processes
         lo = left_over
         while lo > 0:
-            for i in xrange(nprocs):
+            for i in range(nprocs):
                 frame_ranges[i][1]+=1
-                for j in xrange(i+1,nprocs):
+                for j in range(i+1,nprocs):
                     frame_ranges[j][0]+=1
                     frame_ranges[j][1]+=1
                 lo-=1
                 if lo == 0:
                     break
 
-#        print "nprocs ",nprocs
-#        print "frame_ranges (post adjust): "
-#        print frame_ranges
         #initialize a numpy array to hold the msd for the selection
         msd = np.zeros((self.nframes, 2))
         #
@@ -2262,14 +2216,11 @@ class COMTraj(object):
         #create process pool
         pool = mp.Pool(processes=nprocs)
         results = [pool.apply_async(loc_msd_frames,args=(frames_local,frame_ranges[i][0],frame_ranges[i][1],indices,0,plane_local)) for i in range(0,nprocs)]
-    #    print "results:"
-    #    print results
+
         results_ordered = [p.get() for p in results]
-    #    print "results ordered: "
-    #    print results_ordered
+
 #        #collect results  into single array for return
         i = 0
-    #    print "len(results_ordered) ",len(results_ordered)
         for p in results_ordered:
             fs = frame_ranges[i][0]
             fe = frame_ranges[i][1]
@@ -2304,7 +2255,7 @@ class COMTraj(object):
                     thickness[i,2] = the standard deviation of the configurational average thickness for frame f = i + fstart.
                     thickness[i,3] = the running time average of the configurational average thickness for frame f = i + fstart.
                     thickness[i,4] = the running standard deviation of the time averaged configurational average thickness for frame f = i + fstart.
-                    For i in xrange( (fend-fstar) + 1).
+                    For i in range( (fend-fstar) + 1).
                 tuple[1] => thickness_map: A nxNx6 numpy array containing the thickness data that can be
                 used to generate a 3d thickness map/plot. Specifically:
                     thickness[i,j,0] = simulation time for frame f = i + fstart and lipid j.
@@ -2314,12 +2265,9 @@ class COMTraj(object):
                     thickness[i,j,4] = the upper z position for lipid j and its cross leaflet partner at frame f = i + fstart.
                     thickness[i,j,5] = the difference between the upper and lower z positions
                     for lipid j and its cross leaflet partner at frame f = i + fstart.
-                    For i in xrange((fend-fstar) + 1) and For j in xrange(nlipids).
+                    For i in range((fend-fstar) + 1) and For j in range(nlipids).
         """
         nlip = self.nlipids
-        comcup = np.zeros(3)
-        comclo = np.zeros(3)
-        dcom = np.zeros(3)
         zdists = np.zeros((self.nframes, 3))
         zmaps = np.zeros((self.nframes, self.nlipids, 6))
         frame_ranges = []
@@ -2330,7 +2278,7 @@ class COMTraj(object):
 #        print "frames per proc ",frames_per_proc_base
 #        print "left over ",left_over
         #assign base ranges
-        for i in xrange(nprocs):
+        for i in range(nprocs):
             fs = i*frames_per_proc_base
             fe = fs + frames_per_proc_base - 1
             frame_ranges.append([fs,fe])
@@ -2339,9 +2287,9 @@ class COMTraj(object):
         #now adjust for leftovers - divide them "equally" over the processes
         lo = left_over
         while lo > 0:
-            for i in xrange(nprocs):
+            for i in range(nprocs):
                 frame_ranges[i][1]+=1
-                for j in xrange(i+1,nprocs):
+                for j in range(i+1,nprocs):
                     frame_ranges[j][0]+=1
                     frame_ranges[j][1]+=1
                 lo-=1
