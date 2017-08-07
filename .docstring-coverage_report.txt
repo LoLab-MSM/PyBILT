@@ -36,6 +36,7 @@ File ./pybilt/analysis_modules/__init__.py
  Needed: 1; Exist: 1; Missing: 0; Coverage: 100.0%
 
 File ./pybilt/com_trajectory/COMTraj.py
+ - No docstring for range!
  - No docstring for colorize_step_vector_clusters!
  - No docstring for Frame.write_xyz!
  - No docstring for Leaflet.__str__!
@@ -47,7 +48,7 @@ File ./pybilt/com_trajectory/COMTraj.py
  - No docstring for COMTraj.step_vector!
  - No docstring for COMTraj.step_vector_frames!
  - No docstring for COMTraj.step_vector_colors!
- Needed: 60; Exist: 49; Missing: 11; Coverage: 81.7%
+ Needed: 61; Exist: 49; Missing: 12; Coverage: 80.3%
 
 File ./pybilt/com_trajectory/__init__.py
  - File is empty.
@@ -186,24 +187,20 @@ File ./pybilt/bilayer_analyzer/analysis_protocols.py
  - No docstring for APLBoxProtocol.run_analysis!
  - No docstring for APLBoxProtocol.reset!
  - No docstring for BTGridProtocol!
- - No docstring for BTGridProtocol.__init__!
  - No docstring for BTGridProtocol.run_analysis!
  - No docstring for BTGridProtocol.reset!
  - No docstring for APLGridProtocol!
- - No docstring for APLGridProtocol.__init__!
  - No docstring for APLGridProtocol.run_analysis!
  - No docstring for APLGridProtocol.save_data!
  - No docstring for APLGridProtocol.get_data!
  - No docstring for APLGridProtocol.reset!
  - No docstring for DispVecProtocol!
- - No docstring for DispVecProtocol.__init__!
  - No docstring for DispVecProtocol._cast_settings!
  - No docstring for DispVecProtocol.reset!
  - No docstring for DispVecProtocol.run_analysis!
  - No docstring for DispVecProtocol.save_data!
  - No docstring for DispVecProtocol.get_data!
  - No docstring for MassDensProtocol!
- - No docstring for MassDensProtocol.__init__!
  - No docstring for MassDensProtocol._cast_settings!
  - No docstring for MassDensProtocol._parse_str_to_dict!
  - No docstring for MassDensProtocol.reset!
@@ -213,19 +210,16 @@ File ./pybilt/bilayer_analyzer/analysis_protocols.py
  - No docstring for MassDensProtocol.__getstate__!
  - No docstring for MassDensProtocol.__setstate__!
  - No docstring for NNFProtocol!
- - No docstring for NNFProtocol.__init__!
  - No docstring for NNFProtocol._cast_settings!
  - No docstring for NNFProtocol.reset!
  - No docstring for NNFProtocol.run_analysis!
  - No docstring for DispVecCorrelationProtocol!
- - No docstring for DispVecCorrelationProtocol.__init__!
  - No docstring for DispVecCorrelationProtocol._cast_settings!
  - No docstring for DispVecCorrelationProtocol.reset!
  - No docstring for DispVecCorrelationProtocol.run_analysis!
  - No docstring for DispVecCorrelationProtocol.save_data!
  - No docstring for DispVecCorrelationProtocol.get_data!
  - No docstring for DispVecNNCorrelationProtocol!
- - No docstring for DispVecNNCorrelationProtocol.__init__!
  - No docstring for DispVecNNCorrelationProtocol._cast_settings!
  - No docstring for DispVecNNCorrelationProtocol.reset!
  - No docstring for DispVecNNCorrelationProtocol.run_analysis!
@@ -268,7 +262,7 @@ File ./pybilt/bilayer_analyzer/analysis_protocols.py
  - No docstring for LateralOrientationAngleProtocol.__init__!
  - No docstring for LateralOrientationAngleProtocol.run_analysis!
  - No docstring for LateralOrientationAngleProtocol.reset!
- Needed: 122; Exist: 33; Missing: 89; Coverage: 27.0%
+ Needed: 122; Exist: 40; Missing: 82; Coverage: 32.8%
 
 File ./pybilt/bilayer_analyzer/bilayer_analyzer.py
  - No docstring for range!
@@ -409,5 +403,5 @@ File ./pybilt/common/__init__.py
 
 
 Overall statistics for 35 files (5 files are empty):
-Docstrings needed: 468; Docstrings exist: 170; Docstrings missing: 298
-Total docstring coverage: 36.3%;  Grade: not so good
+Docstrings needed: 469; Docstrings exist: 177; Docstrings missing: 292
+Total docstring coverage: 37.7%;  Grade: not so good

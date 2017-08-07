@@ -498,15 +498,28 @@ analysis_obj_name_dict['msd'] = 'com_frame'
 class MSDProtocol(AnalysisProtocol):
 
     def __init__(self, args):
-        """Inits the MSDProtocol.
+        """Estimate the mean squared displacement.
 
         The MSDProtocol is used to compute the mean squared displacement (MSD)
         of the centers of mass of the specified lipids. The MSD is given by
         MSD_i = <(r(t) - <r_0)**2>_i for lipid type i; the angle brackets denote
         averaging over all lipids of type i.
 
+        This protocol is identified by the analysis key: 'msd'
+
         Args:
             args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', averages over all lipid types.
+
+        References:
+            1.
+            2. Section 8.7,
+                http://manual.gromacs.org/documentation/5.1.4/manual-5.1.4.pdf
         """
         # required
         self._short_description = "Mean squared displacement."
@@ -614,15 +627,20 @@ analysis_obj_name_dict['apl_box'] = 'mda_frame'
 
 class APLBoxProtocol(AnalysisProtocol):
     def __init__(self, args):
-        """Inits the APLBoxProtocol.
+        """Estimate the area per lipid using the lateral area.
 
         The APLBoxProtocol is used to estimate the area per lipid (APL)
         using the lateral box dimensions. This approach is only accurate for
         homogenous lipid bilayers. If the bilayer is inhomogenous then tbis
         estimate represents a composite average of the area per lipid.
 
+        This protocol is identified by the analysis key: 'apl_box'
+
         Args:
             args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            None
         """
         # required
         self._short_description = "Area per lipid using box dimensions."
@@ -676,6 +694,20 @@ analysis_obj_name_dict['bilayer_thickness'] = 'lipid_grid'
 
 class BTGridProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Estimate the bilayer thickness using a gridding procedure.
+
+        This protocol is identified by the analysis key: 'bilayer_thickness'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            None
+
+        References:
+            1. Allen et al. Vol. 30, No. 12 Journal of Computational Chemistry
+            2. Gapsys et al. J Comput Aided Mol Des (2013) 27:845-858
+        """
         # required
         self._short_description = "Bilayer thickness using lipid_grid."
         self._return_length = 4
@@ -726,8 +758,23 @@ analysis_obj_name_dict['apl_grid'] = 'lipid_grid'
 
 
 class APLGridProtocol(AnalysisProtocol):
-    def __init__(self, args):
 
+    def __init__(self, args):
+        """Estimate the indvidual area per lipid for each lipid type using a
+         gridding procedure.
+
+        This protocol is identified by the analysis key: 'apl_grid'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            None
+
+        References:
+            1. Allen et al. Vol. 30, No. 12 Journal of Computational Chemistry
+            2. Gapsys et al. J Comput Aided Mol Des (2013) 27:845-858
+        """
         # required
         self._short_description = "Area per lipid using lipid_grid"
         self._return_length = 4
@@ -816,7 +863,30 @@ analysis_obj_name_dict['disp_vec'] = 'com_frame'
 # will scale by the box size of the reference frame
 class DispVecProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Comute displacement vectors for each lipid in the specified
+        leaflet(s) of bilayer.
 
+        This protocol is identified by the analysis key: 'disp_vec'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', includes all lipid types.
+            wrapped (bool): Specify whether to use the wrapped ('True') or
+                un-wrapped ('False') coordintes for the base of the vectors.
+                Default: False
+            interval (int): Sets the frame interval over which to compute the
+                    displacement vectors. f
+            scale (bool): Specify whether to scale the coordinates by the box
+                dimensions of the reference frame. Default: False
+
+        References:
+            1. Needed!
+        """
         # required
         self._short_description = "Displacement vectors."
         self._return_length = 4
@@ -989,9 +1059,32 @@ analysis_obj_name_dict['mass_dens'] = 'mda_frame'
 class MassDensProtocol(AnalysisProtocol):
     _pickleable = False
     def __init__(self, args):
+        """Estimate the mass density profile for the specified selection.
+
+        This protocol is used to estimate the 1-dimensional mass density profile
+        for a selection of atoms along the bilayer normal. The profile is
+        automatically centered on the bilayer's center of mass along the
+        bilayer normal.
+
+        This protocol is identified by the analysis key: 'mass_dens'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            selection_string (str): Provide the MDAnalysis compatible selection
+                for the atoms to include in this analysis. Default: 'BILAYER',
+                use all the lipids of the bilayer as recovered from the
+                selection given to the external BilayerAnalyzer.
+            n_bins (int): Set the number of bins to divide the normal dimensions
+                into for binning.
+
+        References:
+            1. Needed!
+        """
 
         # required
-        self._short_description = "Mass density."
+        self._short_description = "Mass density profile."
         self._return_length = None
         self.analysis_key = 'mass_dens'
         self.analysis_id = 'none'
@@ -1136,7 +1229,39 @@ analysis_obj_name_dict['nnf'] = 'com_frame'
 class NNFProtocol(AnalysisProtocol):
 
     def __init__(self, args):
+        """Estimate the nearest neighbor fraction for one lipid type with
+        another.
 
+        This analysis picks a specified number (n_neighbors) of nearest
+        neighbors centered on a lipid of reference lipid type and then counts
+        the number of lipids (M) of target lipid type and estimates the
+        fraction, nnf = M/n_neighbors. This metric is also referred to as
+        fractional interations.
+
+        This protocol is identified by the analysis key: 'nnf'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname_1 (str): Specify the resname of the reference lipid type to
+                include in this analysis. Default: 'first', the first lipid in
+                the list pulled from the com_frame representation.
+            resname_2 (str): Specify the resname of the target lipid type to
+                include in this analysis. Default: 'first', the first lipid in
+                the list pulled from the com_frame representation.
+
+        References:
+            1. A. H. de Vries, A. E. Mark and S. J. Marrink, J. Phys. Chem. B,
+                2004, 108, 2454-2463
+            2. M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249-272
+            3. Koldso H, Shorthouse D, He Lie Sansom MSP (2014) "Lipid
+                Clustering Correlates with Membrane Curvature as Revealed by
+                Molecular Simulations of Complex Lipid Bilayers." PloS Comput
+                Biol 10(10): e1003911. doi.10.1371/journal.pcbi.1003911
+        """
         # required
         self._short_description = "Lateral order nearest neighbor fraction."
 
@@ -1361,7 +1486,33 @@ analysis_obj_name_dict['disp_vec_corr'] = 'com_frame'
 
 class DispVecCorrelationProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Comute the pair-wise cross correlation matrix for the displacement
+        vectors for each lipid in the specified leaflet(s) of bilayer.
 
+        This analysis computes the displacement vectors as in DispVecProtocol,
+        but then continues to compute the pair-wise cross correlation matrix
+        between each vector. i.e. the cos(theta) for the angle theta between the
+        vectors.
+
+        This protocol is identified by the analysis key: 'disp_vec_corr'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', includes all lipid types.
+            wrapped (bool): Specify whether to use the wrapped ('True') or
+                un-wrapped ('False') coordintes for the base of the vectors.
+                Default: False
+            interval (int): Sets the frame interval over which to compute the
+                    displacement vectors. f
+
+        References:
+            None
+        """
         # required
         self._short_description = "Displacement vector correlation matrix."
 
@@ -1521,7 +1672,34 @@ analysis_obj_name_dict['disp_vec_nncorr'] = 'com_frame'
 
 class DispVecNNCorrelationProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Comute the pair-wise cross correlations for the displacement
+        vectors for each lipid in the specified leaflet(s) of bilayer and its
+        nearest neighbor.
 
+        This analysis computes the displacement vectors as in DispVecProtocol,
+        but then continues to compute the pair-wise cross correlation between
+        each vector and its nearest neighbor. i.e. the cos(theta) for the angle
+        theta between the vectors.
+
+        This protocol is identified by the analysis key: 'disp_vec_nncorr'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', includes all lipid types.
+            wrapped (bool): Specify whether to use the wrapped ('True') or
+                un-wrapped ('False') coordintes for the base of the vectors.
+                Default: False
+            interval (int): Sets the frame interval over which to compute the
+                    displacement vectors. f
+
+        References:
+            None
+        """
         # required
         self._short_description = "Displacement vector nearest neigbor correlations."
         self._return_length = 4
