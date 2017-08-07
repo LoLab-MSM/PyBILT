@@ -257,7 +257,7 @@ def area_per_lipid(structure_file, trajectory_file, selection_string, frame_star
     return
 
 def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path="./", name_dict=None, n_xbins=100, n_ybins=100):
+                  frame_interval=1, dump_path="./", name_dict=None, n_xbins=100, n_ybins=100, plot_grid_map=True):
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
@@ -281,17 +281,18 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
 
     #run analysis
     for dummy_frame in analyzer:
-        fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
-        thickgrid = analyzer.reps['lipid_grid'].thickness_grid()
-        xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_grid=thickgrid)['lower']
+        if plot_grid_map:
+            fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
+            thickgrid = analyzer.reps['lipid_grid'].thickness_grid()
+            xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='lower', color_grid=thickgrid)['lower']
 
-        # with sns.color_palette("PuBuGn_d"):
-        pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
-                                             filename=dump_path+'thickness_grid_'+fs+'.png',
-                                             vmin=30.0, vmax=50.0, interpolation='gaussian')
-        pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
-                                             filename=dump_path+'thickness_grid_'+fs+'.eps',
-                                             vmin=30.0, vmax=50.0, interpolation='gaussian')
+            # with sns.color_palette("PuBuGn_d"):
+            pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
+                                                 filename=dump_path+'thickness_grid_'+fs+'.png',
+                                                 vmin=30.0, vmax=50.0, interpolation='gaussian')
+            pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
+                                                 filename=dump_path+'thickness_grid_'+fs+'.eps',
+                                                 vmin=30.0, vmax=50.0, interpolation='gaussian')
         # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
         #                           vmax=50.0)
 
