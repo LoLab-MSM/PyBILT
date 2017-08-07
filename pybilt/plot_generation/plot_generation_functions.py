@@ -47,6 +47,61 @@ sns.set_style("ticks")
 
 _color_list = ['blue', 'green','orange','purple', 'black', 'red', 'yellow', 'gray']
 
+def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True, show=False, xlabel=None, ylabel=None,
+         marker=None):
+    """Generic plotting function for (multiple) xy datasets.
+
+    Args:
+        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]
+        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]
+        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.
+        filename (str, Optional): The string containing the path and filename for the exported plot file.
+        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True
+        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+            Default: False
+        xlabel (str, Optional): Specify a x-axis label.
+        ylabel (str, Optional): Specify a y-axis label
+        marker (str, Optional): Specify a matplotlib marker type for data points.
+
+    """
+    i = 0
+    for dat in dat_list:
+        if yerr_list is None:
+            if name_list is not None:
+                if marker is None:
+                    plt.plot(dat[0], dat[1], linewidth=2.0,label=name_list[i])
+                else:
+                   plt.plot(dat[0], dat[1], linewidth=2.0,label=name_list[i], marker=marker)
+            else:
+                if marker is None:
+                    plt.plot(dat[0], dat[1], linewidth=2.0)
+                else:
+                    plt.plot(dat[0], dat[1], linewidth=2.0, marker=marker)
+        else:
+            if name_list is not None:
+                if marker is None:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0,label=name_list[i])
+                else:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0,label=name_list[i], marker=marker)
+            else:
+                if marker is None:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0)
+                else:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0, marker=marker)
+        i+=1
+    if xlabel is not None:
+        plt.xlabel(xlabel)
+    if ylabel is not None:
+        plt.ylabel(ylabel)
+    if name_list is not None:
+        plt.legend(loc=0)
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
 def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, show=False, scaled=False, wrapped=False):
     '''
     Generates a single plot with the lipid displacement vectors (or step vectors)
