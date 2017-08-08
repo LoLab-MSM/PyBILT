@@ -12,7 +12,7 @@ File ./pybilt/plot_generation/plot_generation_functions.py
  - No docstring for plot_position_density_map_2d_scatter!
  - No docstring for plot_position_density_map_2d!
  - No docstring for plot_lipid_grid_thickness_map_2d!
- Needed: 21; Exist: 13; Missing: 8; Coverage: 61.9%
+ Needed: 22; Exist: 14; Missing: 8; Coverage: 63.6%
 
 File ./pybilt/plot_generation/__init__.py
  - File is empty.
@@ -55,13 +55,12 @@ File ./pybilt/com_trajectory/__init__.py
  Needed: 0; Exist: 0; Missing: 0; Coverage: 0.0%
 
 File ./pybilt/diffusion/diffusion_coefficients.py
- - No docstring for diffusion_coefficient_linear_fit!
  - No docstring for _msd_anom_1d!
  - No docstring for _msd_anom_2d!
  - No docstring for _msd_anom_3d!
  - No docstring for diffusion_coefficient_anomalous_fit!
  - No docstring for _time_block!
- Needed: 8; Exist: 2; Missing: 6; Coverage: 25.0%
+ Needed: 8; Exist: 3; Missing: 5; Coverage: 37.5%
 
 File ./pybilt/diffusion/__init__.py
  - No module dostring!
@@ -226,27 +225,23 @@ File ./pybilt/bilayer_analyzer/analysis_protocols.py
  - No docstring for DispVecNNCorrelationProtocol.save_data!
  - No docstring for DispVecNNCorrelationProtocol.get_data!
  - No docstring for NDCorrProtocol!
- - No docstring for NDCorrProtocol.__init__!
  - No docstring for NDCorrProtocol.run_analysis!
  - No docstring for NDCorrProtocol.reset!
  - No docstring for NDCorrProtocol.get_data!
  - No docstring for DCClusterProtocol!
- - No docstring for DCClusterProtocol.__init__!
  - No docstring for DCClusterProtocol._cast_settings!
  - No docstring for DCClusterProtocol.run_analysis!
  - No docstring for DCClusterProtocol.reset!
  - No docstring for DCClusterProtocol.get_data!
  - No docstring for VolumeCompressibilityModulusProtocol!
- - No docstring for VolumeCompressibilityModulusProtocol.__init__!
  - No docstring for VolumeCompressibilityModulusProtocol._cast_settings!
  - No docstring for VolumeCompressibilityModulusProtocol.reset!
  - No docstring for VolumeCompressibilityModulusProtocol.run_analysis!
  - No docstring for AreaCompressibilityModulusProtocol!
- - No docstring for AreaCompressibilityModulusProtocol.__init__!
  - No docstring for AreaCompressibilityModulusProtocol._cast_settings!
  - No docstring for AreaCompressibilityModulusProtocol.reset!
  - No docstring for AreaCompressibilityModulusProtocol.run_analysis!
- - No docstring for ALDProtocol.__init__!
+ - No docstring for ALDProtocol!
  - No docstring for ALDProtocol.run_analysis!
  - No docstring for ALDProtocol.reset!
  - No docstring for AreaCompressibilityProtocol!
@@ -262,7 +257,7 @@ File ./pybilt/bilayer_analyzer/analysis_protocols.py
  - No docstring for LateralOrientationAngleProtocol.__init__!
  - No docstring for LateralOrientationAngleProtocol.run_analysis!
  - No docstring for LateralOrientationAngleProtocol.reset!
- Needed: 122; Exist: 40; Missing: 82; Coverage: 32.8%
+ Needed: 122; Exist: 44; Missing: 78; Coverage: 36.1%
 
 File ./pybilt/bilayer_analyzer/bilayer_analyzer.py
  - No docstring for range!
@@ -403,5 +398,5 @@ File ./pybilt/common/__init__.py
 
 
 Overall statistics for 35 files (5 files are empty):
-Docstrings needed: 469; Docstrings exist: 177; Docstrings missing: 292
-Total docstring coverage: 37.7%;  Grade: not so good
+Docstrings needed: 470; Docstrings exist: 183; Docstrings missing: 287
+Total docstring coverage: 38.9%;  Grade: not so good

@@ -1869,12 +1869,34 @@ command_protocols['disp_vec_nncorr'] = DispVecNNCorrelationProtocol
 valid_analysis.append('ndcorr')
 analysis_obj_name_dict['ndcorr'] = 'com_frame'
 
-#Based on print "Correlation between bilayer surfucace curvature and the clustering of lipid molecules"
-# cross correlation method described in: Koldso H, Shorthouse D, He Lie Sansom MSP (2014) "Lipid Clustering
-# Correlates with Membrane Curvature as Revealed by Molecular Simulations of Complex Lipid Bilayers." PloS Comput Biol
-# 10(10): e1003911. doi.10.1371/journal.pcbi.1003911
 class NDCorrProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Correlation between bilayer surfucace curvature and the clustering of
+        lipid molecules.
+
+        This protocol is used to estimate the cross correlation between the
+        normal dimension deflection of lipids and the lipid types in local
+        blocks of the bilayer. This serves as a measure of the correlation
+        between the local curvature and composition of the bilayer.
+
+        This protocol is identified by the analysis key: 'ndcorr'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            None
+
+        Note:
+            Automatically estimates the correlations with each lipid type in the
+            bilayer selection provided to the external BilayerAnalyzer object.
+
+        References:
+            1. Koldso H, Shorthouse D, He Lie Sansom MSP (2014) "Lipid
+                Clustering Correlates with Membrane Curvature as Revealed by
+                Molecular Simulations of Complex Lipid Bilayers." PloS Comput
+                Biol 10(10): e1003911. doi.10.1371/journal.pcbi.1003911
+        """
         # required
         self._short_description = "Normal dimension displacement-lipid type cross correlation."
 
@@ -1956,6 +1978,30 @@ analysis_obj_name_dict['dc_cluster'] = 'com_frame'
 #
 class DCClusterProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """A type of hiearchical clustering where points (lipid centers of mass)
+        are are added to a cluster if they are within a specified distance
+        of any other point within the cluster.
+
+        This protocol is identified by the analysis key: 'dc_cluster'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', includes all lipid types.
+            cutoff (float): The cutoff distance to use for the clustering.
+                Default: 12.0
+
+        Note:
+            Only finds the self clusters for a single lipid type as specified by
+            the 'resname' setting.
+
+        References:
+            None
+        """
         # required
         self._short_description = "Distance cutoff clustering."
 
@@ -2094,12 +2140,30 @@ command_protocols['dc_cluster'] = DCClusterProtocol
 # define a new analysis 'apl_box'
 valid_analysis.append('vcm')
 analysis_obj_name_dict['vcm'] = 'mda_frame'
-#Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular Dynamics
-# Simulations of Phospholipid Bilayers with Cholesterol", Biophys J.
-# 2003 Apr; 84(4): 2192-2206. doi:  10.1016/S0006-3495(03)75025-5
+
 class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Estimate the isothermal volume compressibility modulus.
 
+        This protocol is used to estimate the volume compressibility modulus,
+            K_V = (<V>kT) / var(V),
+        where V is the volume.
+
+        This protocol is identified by the analysis key: 'vcm'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            temperature (float): The absolute temperature that the simulation
+                was run at (i.e. in Kelvin). Default: 298.15 K
+
+        References:
+            1. Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular
+                Dynamics Simulations of Phospholipid Bilayers with Cholesterol",
+                Biophys J. 2003 Apr; 84(4): 2192-2206.
+                doi:  10.1016/S0006-3495(03)75025-5
+        """
         # required
         self._short_description = "Volume compressibility modulus."
         self._return_length = 4
@@ -2162,7 +2226,9 @@ class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
             # return
             Kv = 0.0
         else:
-            Kv = (volume * scicon.k * self.settings['temperature']) / self.volume_run.deviation() ** 2
+            Kv = ( (self.volume_run.mean() * scicon.k *
+                self.settings['temperature'])
+                / self.volume_run.deviation() ** 2)
         time = ba_reps['current_mda_frame'].time
         self.analysis_output.append([time, Kv])
         self.n_frames += 1
@@ -2173,15 +2239,34 @@ command_protocols['vcm'] = VolumeCompressibilityModulusProtocol
 # define a new analysis 'apl_box'
 valid_analysis.append('acm')
 analysis_obj_name_dict['acm'] = 'mda_frame'
-#Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular Dynamics
-# Simulations of Phospholipid Bilayers with Cholesterol", Biophys J.
-# 2003 Apr; 84(4): 2192-2206. doi:  10.1016/S0006-3495(03)75025-5
-#Also see:
-#L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6, 3267-3273
-#D. Aguayo, F. D. Gonzalez-Nilo, and C. Chipot, J. Chem. Theory Comput. 2012, 8, 1765-1773
+
 class AreaCompressibilityModulusProtocol(AnalysisProtocol):
     def __init__(self, args):
+        """Estimate the isothermal area compressibility modulus.
 
+        This protocol is used to estimate the area compressibility modulus,
+            K_A = (<A>kT) / var(A),
+        where A is the area in the lateal dimension of the bilayer.
+
+        This protocol is identified by the analysis key: 'acm'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            temperature (float): The absolute temperature that the simulation
+                was run at (i.e. in Kelvin). Default: 298.15 K
+
+        References:
+            1. Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular
+                Dynamics Simulations of Phospholipid Bilayers with Cholesterol",
+                Biophys J. 2003 Apr; 84(4): 2192-2206.
+                doi:  10.1016/S0006-3495(03)75025-5
+            2. L. Janosi and A. A. Gorfe, J. Chem. Theory Comput. 2010, 6,
+                3267-3273
+            3. D. Aguayo, F. D. Gonzalez-Nilo, and C. Chipot, J. Chem. Theory
+                Comput. 2012, 8, 1765-1773
+        """
         # required
         self._short_description = "Area compressibility modulus."
         self._return_length = 4
@@ -2266,12 +2351,27 @@ analysis_obj_name_dict['ald'] = 'com_frame'
 # induced by shock waves: Effects of incident angles", Biochimica et Biophysica
 # Acta (BBA) - Biomembranes, Volume 1778, Issue 6, June 2008, Pages 1423-1428
 class ALDProtocol(AnalysisProtocol):
-    """Average lateral displacement
-    Args:
-        args (list): list of string keys and arguments
-    """
     def __init__(self, args):
+        """Estimate the average lateral displacement of lipids.
 
+        This protocol is identified by the analysis key: 'ald'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', includes all lipid types.
+
+        References:
+            1. Kenichiro Koshiyama, Tetsuya Kodama, Takeru Yano, Shigeo
+                Fujikawa, "Molecular dynamics simulation of structural changes
+                of lipid bilayers induced by shock waves: Effects of incident
+                angles", Biochimica et Biophysica Acta (BBA) - Biomembranes,
+                Volume 1778, Issue 6, June 2008, Pages 1423-1428
+        """
         # required
         self._short_description = "Average lateral displacement."
         self._return_length = 2
