@@ -517,7 +517,10 @@ class MSDProtocol(AnalysisProtocol):
                 this analysis. Default: 'all', averages over all lipid types.
 
         References:
-            1.
+            1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer
+                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,
+                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
+                (http://www.sciencedirect.com/science/article/pii/S0006349501758948)
             2. Section 8.7,
                 http://manual.gromacs.org/documentation/5.1.4/manual-5.1.4.pdf
         """
@@ -641,6 +644,12 @@ class APLBoxProtocol(AnalysisProtocol):
 
         Settings (parsed from args to settings dict):
             None
+
+        References:
+            1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer
+                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,
+                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
+                (http://www.sciencedirect.com/science/article/pii/S0006349501758948)
         """
         # required
         self._short_description = "Area per lipid using box dimensions."
@@ -885,7 +894,9 @@ class DispVecProtocol(AnalysisProtocol):
                 dimensions of the reference frame. Default: False
 
         References:
-            1. Needed!
+            1. Emma Falck, Tomasz Rog, Mikko Karttunen, and Ilpo Vattulainen, Lateral Diffusion in Lipid Membranes
+                through Collective Flows Journal of the American Chemical Society 2008 130 (1), 44-45
+                DOI: 10.1021/ja7103558
         """
         # required
         self._short_description = "Displacement vectors."

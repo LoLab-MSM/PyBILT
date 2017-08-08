@@ -17,8 +17,15 @@ def diffusion_coefficient_Einstein(times, msd_vals, dim=2, time_range=None):
         MSD = lim_(t->inf) <||r_i(t) - r_i(0)||**2>_(nsels) = 2*dim*D*t
     where D is the diffusion coefficient.
 
-    Returns
+    Returns:
 
+    References:
+        1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer
+            from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,
+            Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
+            (http://www.sciencedirect.com/science/article/pii/S0006349501758948)
+        2. Section 8.7,
+            http://manual.gromacs.org/documentation/5.1.4/manual-5.1.4.pdf
     """
     t = times
     msd = msd_vals
@@ -29,7 +36,25 @@ def diffusion_coefficient_Einstein(times, msd_vals, dim=2, time_range=None):
     D = msd[nvals-1]/(2.0*dim*dt[nvals-1])
     return D
 
+
 def diffusion_coefficient_linear_fit(times, msd_vals, dim=2, time_range=None):
+    """
+
+    Args:
+        times ():
+        msd_vals ():
+        dim ():
+        time_range ():
+
+    Returns:
+
+    References:
+        1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer
+                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,
+                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
+                (http://www.sciencedirect.com/science/article/pii/S0006349501758948)
+
+    """
     t = times
     msd = msd_vals
     if time_range is not None:

@@ -10,7 +10,10 @@ Z_dict = {'H':1,'C':6,'N':7,'O':8,'P':15}
 #dictionary of elements and their LJ sizes -- CHARMM 36 forcefield
 LJ_dict = {'H':1.25,'C':2.00,'N':1.85,'O':1.70,'P':2.15}
 
-
+#Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer
+#                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,
+#                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
+#                (http://www.sciencedirect.com/science/article/pii/S0006349501758948)
 def electron_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None,valence=True):
     lat_ind = [0,1]
     dir_ind = 2
@@ -117,6 +120,10 @@ def electron_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1,
     return (centers, counts)
 
 #assigns the charge of each atom as a gaussian along the profile direction
+#Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer
+#                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,
+#                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
+#                (http://www.sciencedirect.com/science/article/pii/S0006349501758948)
 def electron_density_profile_gaussians(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axis='z',nbins=100,reference=0.0,refsel=None,valence=True,size_to_sigma=2.0):
     lat_ind = [0,1]
     dir_ind = 2
