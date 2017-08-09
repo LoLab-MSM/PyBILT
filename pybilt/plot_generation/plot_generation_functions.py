@@ -35,7 +35,7 @@ sfig_params = {
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-params = {'figure.figsize': [8.75, 7.25], 'font.size': 32, 'axes.labelsize': 32,
+params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
     'legend.fontsize': 28,
     'xtick.labelsize': 28,
     'ytick.labelsize': 28,
@@ -140,7 +140,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     label_string = ""
     for resname in color_dict:
         label_string+=resname+":"+color_dict[resname]+" "
-    dummy_qk = plt.quiverkey(Q, 0.25, 0.95, 2, label_string, labelpos='E',
+    dummy_qk = plt.quiverkey(Q, 0.20, 0.975, 2, label_string, labelpos='E',
                    coordinates='figure')
     #else:
     #    plt.quiver(x,y,vx,vy)
