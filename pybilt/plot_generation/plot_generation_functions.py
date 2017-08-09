@@ -31,7 +31,7 @@ if sys.version_info < (3,0):
 # e.g., you may want a higher resolution, or to make the figure
 # background white
 sfig_params = {
-    'savefig.dpi' : 300,
+    'savefig.dpi' : 400,
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
