@@ -4,7 +4,7 @@ from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 from pybilt.diffusion import diffusion_coefficients as dc
 import pybilt.plot_generation.plot_generation_functions as pgf
 from pybilt.plot_generation.plot_generation_functions import _color_list
-
+from pybilt.common.running_stats import BlockAverager
 
 def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=None, frame_start=0, frame_end=-1, frame_interval=1, dump_path=None):
 
@@ -247,13 +247,32 @@ def area_per_lipid(structure_file, trajectory_file, selection_string, frame_star
     analyzer.save_all_plots()
     #print final ensemble averages to stdout
     apl_box = analyzer.get_analysis_data('apl_box')
-    print("Area per lipid estimates (squared Angstrom): ")
+
+    print("Final running average Area per lipid estimates (squared Angstrom): ")
     print("  via the box dimensions: {:0.4f} +- {:0.4f}".format(apl_box[-1][2], apl_box[-1][3]))
     print("  via the gridding procedure: ")
     apl_grid = analyzer.get_analysis_data('apl_grid')
     for item in apl_grid.keys():
         print("    {}: {:0.4f} +- {:0.4f}".format(item, apl_grid[item][-1][2], apl_grid[item][-1][3]))
-
+    ppb = len(apl_box)/10
+    if ppb > 1000:
+        ppb=1000
+    n_b = 9
+    while ppb < 3:
+        ppb = len(apl_box)/n_b
+        n_b-=1
+    block_averager = BlockAverager(points_per_block=ppb)
+    block_averager.push_container(apl_box[:,1])
+    block_average, std_err = block_averager.get()
+    print("Block Averaged ({} points with {} blocks) Area per lipid estimates (squared Angstrom): ".format(len(apl_box),block_averager.number_of_blocks()))
+    print("  via the box dimensions: {:0.4f} +- {:0.4f}".format(block_average, std_err))
+    print("  via the gridding procedure: ")
+    apl_grid = analyzer.get_analysis_data('apl_grid')
+    for item in apl_grid.keys():
+        block_averager = BlockAverager(points_per_block=ppb)
+        block_averager.push_container(apl_grid[item][:, 1])
+        block_average, std_err = block_averager.get()
+        print("    {}: {:0.4f} +- {:0.4f}".format(item, block_average, std_err))
     return
 
 def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,

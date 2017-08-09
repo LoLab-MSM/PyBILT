@@ -87,8 +87,10 @@ class BlockAverager(object):
         self.n_blocks = 1
         self._points_per_block = points_per_block
         if min_points_in_block > points_per_block:
-            min_points_in_block = points_per_block
-        self._min_points_in_block = min_points_in_block
+            self._min_points_in_block = points_per_block-1
+        else:
+            self._min_points_in_block = min_points_in_block
+        #print "points_per_block ",self._points_per_block, " min_p ",self._min_points_in_block
         return
 
     def _add_block(self):
@@ -119,6 +121,7 @@ class BlockAverager(object):
 
         """
         block_i = self.n_blocks-1
+        #print "pushing datum ",datum
         if self._store_data:
             self._blocks[block_i].append(datum)
         else:
@@ -134,17 +137,26 @@ class BlockAverager(object):
 
         """
         for datum in data:
+            #print(datum)
             self.push_single(datum)
         return
 
     def _get_running(self):
         means = []
         for block in self._blocks:
+            #print "block.n ",block.n, " min_p ",self._min_points_in_block
             if block.n >= self._min_points_in_block:
                 means.append(block.mean())
         means = np.array(means)
-        block_average = means.mean()
-        std_err = means.std()/np.sqrt(len(means))
+        if len(means) > 1:
+            block_average = means.mean()
+            std_err = means.std()/np.sqrt(len(means))
+        elif len(means) == 1:
+            block_average = means[0]
+            std_err = None
+        else:
+            block_average = None
+            std_err = None
         return block_average, std_err
 
     def _get_np(self):
@@ -153,8 +165,16 @@ class BlockAverager(object):
             if len(block) >= self._min_points_in_block:
                 means.append(np.array(block).mean())
         means = np.array(means)
-        block_average = means.mean()
-        std_err = means.std()/np.sqrt(len(means))
+        if len(means) > 1:
+            block_average = means.mean()
+            std_err = means.std()/np.sqrt(len(means))
+        elif len(means) == 1:
+            block_average = means[0]
+            std_err = None
+        else:
+            block_average = None
+            std_err = None
+
         return block_average, std_err
 
     def get(self):
@@ -163,13 +183,14 @@ class BlockAverager(object):
         Returns:
             tuple: Returns a length two tuple with the block average and standard error estimates.
         """
+        #print(self._blocks)
         if self._store_data:
             return self._get_np()
         else:
             return self._get_running()
 
 
-    def n_blocks(self):
+    def number_of_blocks(self):
         """Return the current number of blocks.
 
         Returns:
