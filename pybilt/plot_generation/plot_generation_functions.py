@@ -35,10 +35,12 @@ sfig_params = {
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 22,
-    'legend.fontsize': 18,
-    'xtick.labelsize': 18,
-    'ytick.labelsize': 18,}
+params = {'figure.figsize': [8.75, 7.25], 'font.size': 32, 'axes.labelsize': 32,
+    'legend.fontsize': 28,
+    'xtick.labelsize': 28,
+    'ytick.labelsize': 28,
+    'lines.linewidth': 6.0,
+    'lines.markersize': 20}
 mpl.rcParams.update(params)
 #sns.set_style("whitegrid")
 #sns.set_style("white")
@@ -69,25 +71,25 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
         if yerr_list is None:
             if name_list is not None:
                 if marker is None:
-                    plt.plot(dat[0], dat[1], linewidth=2.0,label=name_list[i])
+                    plt.plot(dat[0], dat[1],label=name_list[i])
                 else:
-                   plt.plot(dat[0], dat[1], linewidth=2.0,label=name_list[i], marker=marker)
+                   plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle='--')
             else:
                 if marker is None:
-                    plt.plot(dat[0], dat[1], linewidth=2.0)
+                    plt.plot(dat[0], dat[1])
                 else:
-                    plt.plot(dat[0], dat[1], linewidth=2.0, marker=marker)
+                    plt.plot(dat[0], dat[1], marker=marker, linestyle='--')
         else:
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0,label=name_list[i])
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i])
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0,label=name_list[i], marker=marker)
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle='--')
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0)
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i])
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linewidth=2.0, marker=marker)
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle='--')
         i+=1
     if xlabel is not None:
         plt.xlabel(xlabel)
@@ -95,6 +97,7 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
         plt.ylabel(ylabel)
     if name_list is not None:
         plt.legend(loc=0)
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -151,6 +154,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     if scaled and wrapped:
         plt.xlim((-0.1, 1.1))
         plt.ylim((-0.1, 1.1))
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -178,6 +182,7 @@ def plot_step_vectors_comtraj(vectors, colors=None, filename='step_vectors.eps',
     else:
         plt.quiver(x,y,vx,vy)
     #plt.title('Lateral Displacement Vectors')
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -215,9 +220,9 @@ def plot_msd(msd_dat_list,name_list=None,filename='msd.eps',time_in='ps',time_ou
             t*=1000.0
         msd = msd_d[::interval,1]
         if name_list is not None:
-            plt.plot(t, msd, linewidth=2.0,label=name_list[i])
+            plt.plot(t, msd, linewidth=4.0,label=name_list[i])
         else:
-            plt.plot(t, msd, linewidth=2.0)
+            plt.plot(t, msd, linewidth=4.0)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -225,6 +230,7 @@ def plot_msd(msd_dat_list,name_list=None,filename='msd.eps',time_in='ps',time_ou
     plt.ylabel("Distance in the lateral plane ($\AA^2$)")
     if name_list is not None:
         plt.legend(loc=0)
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -257,9 +263,9 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
             #print "plotting",name_list[i]," with errorbars"
             #print t
             #print apl
-            plt.errorbar(t, apl, yerr=apl_dev,linewidth=2.0,label=name_list[i])
+            plt.errorbar(t, apl, yerr=apl_dev, label=name_list[i])
         else:
-            plt.errorbar(t, apl, yerr=apl_dev,linewidth=2.0)
+            plt.errorbar(t, apl, yerr=apl_dev)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -271,6 +277,7 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
         plt.ylim(ylim)
     if name_list is not None:
         plt.legend(loc=0)
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -322,9 +329,9 @@ def plot_dc_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_num
             #print "plotting",name_list[i]," with errorbars"
             #print t
             #print apl
-            plt.errorbar(t, means, yerr=stds,linewidth=2.0,label=name_list[i])
+            plt.errorbar(t, means, yerr=stds, label=name_list[i])
         else:
-            plt.errorbar(t, means, yerr=stds,linewidth=2.0)
+            plt.errorbar(t, means, yerr=stds)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -332,6 +339,7 @@ def plot_dc_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_num
     plt.ylabel("Average Number of Clusters")
     if name_list is not None:
         plt.legend(loc=0)
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -383,9 +391,9 @@ def plot_dc_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_numbe
             #print "plotting",name_list[i]," with errorbars"
             #print t
             #print apl
-            plt.errorbar(t, means, yerr=stds,linewidth=2.0,label=name_list[i])
+            plt.errorbar(t, means, yerr=stds, label=name_list[i])
         else:
-            plt.errorbar(t, means, yerr=stds,linewidth=2.0)
+            plt.errorbar(t, means, yerr=stds)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -393,6 +401,7 @@ def plot_dc_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_numbe
     plt.ylabel("Average Size of Cluster")
     if name_list is not None:
         plt.legend(loc=0)
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -422,9 +431,9 @@ def plot_dc_cluster_dat_number_comtraj(clust_dat_list,name_list=None,filename='c
             #print "plotting",name_list[i]," with errorbars"
             #print t
             #print apl
-            plt.errorbar(t, cl, yerr=cl_dev,linewidth=2.0,label=name_list[i])
+            plt.errorbar(t, cl, yerr=cl_dev, label=name_list[i])
         else:
-            plt.errorbar(t, cl, yerr=cl_dev,linewidth=2.0)
+            plt.errorbar(t, cl, yerr=cl_dev)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -432,7 +441,7 @@ def plot_dc_cluster_dat_number_comtraj(clust_dat_list,name_list=None,filename='c
     plt.ylabel("Average Number of Clusters")
     if name_list is not None:
         plt.legend(loc=0)
-
+    plt.tight_layout()
     plt.savefig(filename)
     if show:
         return plt.show()
@@ -461,9 +470,9 @@ def plot_dc_cluster_dat_size_comtraj(clust_dat_list,name_list=None,filename='clu
             #print "plotting",name_list[i]," with errorbars"
             #print t
             #print apl
-            plt.errorbar(t, cl, yerr=cl_dev,linewidth=2.0,label=name_list[i])
+            plt.errorbar(t, cl, yerr=cl_dev, label=name_list[i])
         else:
-            plt.errorbar(t, cl, yerr=cl_dev,linewidth=2.0)
+            plt.errorbar(t, cl, yerr=cl_dev)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -471,7 +480,7 @@ def plot_dc_cluster_dat_size_comtraj(clust_dat_list,name_list=None,filename='clu
     plt.ylabel("Average Size of Cluster (lipids per cluster)")
     if name_list is not None:
         plt.legend(loc=0)
-
+    plt.tight_layout()
     plt.savefig(filename)
     if show:
         return plt.show()
@@ -491,6 +500,7 @@ def plot_dc_cluster_maps_comtraj(clusters, filename='cluster_map.eps',show=False
     c = clusters[2]
     plt.scatter(x,y,c=c,s=800)
     #plt.title('Lateral Displacement Vectors')
+    plt.tight_layout()
     plt.savefig(filename)
     if show:
         return plt.show()
@@ -514,9 +524,9 @@ def plot_density_profile(dp_out_list, save=True, filename='density_profile.eps',
     for item in dp_out_list:
         if label_list is not None:
 
-            plt.plot(item[0], item[1], linewidth=2.0, label=label_list[i])
+            plt.plot(item[0], item[1], label=label_list[i])
         else:
-            plt.plot(item[0], item[1], linewidth=2.0)
+            plt.plot(item[0], item[1])
         i+=1
     if label_list is not None:
         plt.legend(loc=0)
@@ -524,6 +534,7 @@ def plot_density_profile(dp_out_list, save=True, filename='density_profile.eps',
     plt.xlabel('Position Along the Normal')
     #plt.xlabel(ylabel)
     #plt.ylabel('Position Along the Normal')
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -546,6 +557,7 @@ def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.eps', show=Fal
         plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker='s',s=50, cmap=cma)
     if colorbar:
         plt.colorbar()
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -558,6 +570,7 @@ def plot_corr_mat(in_corrmat, save=True, filename='correlation_matrix.eps', show
     cma = plt.cm.get_cmap('inferno')
     plt.imshow(in_corrmat, cmap=cma, interpolation='none', vmin=-1.0, vmax=1.0)
     plt.colorbar()
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -581,6 +594,7 @@ def plot_corr_mat_as_scatter(in_corrmat, save=True, filename='correlation_matrix
     cma = plt.cm.get_cmap('viridis')
     plt.scatter(x_axes, y_axes, c=c, marker='s', s=10, edgecolors='none', cmap=cma, vmin=-1.0, vmax=1.0)
     plt.colorbar()
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -610,9 +624,9 @@ def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.eps',tim
             #print "plotting",name_list[i]," with errorbars"
             #print t
             #print dop
-            plt.errorbar(t, dop, yerr=dop_dev,linewidth=2.0,label=name_list[i])
+            plt.errorbar(t, dop, yerr=dop_dev,label=name_list[i])
         else:
-            plt.errorbar(t, dop, yerr=dop_dev,linewidth=2.0)
+            plt.errorbar(t, dop, yerr=dop_dev)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -620,7 +634,7 @@ def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.eps',tim
     plt.ylabel("Average Deuterium Order Parameter")
     if name_list is not None:
         plt.legend(loc=0)
-
+    plt.tight_layout()
     plt.savefig(filename)
     if show:
         return plt.show()
@@ -648,9 +662,9 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,
         bt = bt_d[::interval,2]
         error = bt_d[::interval,3]
         if name_list is not None:
-            plt.errorbar(t, bt, yerr=error,linewidth=2.0,label=name_list[i])
+            plt.errorbar(t, bt, yerr=error, label=name_list[i])
         else:
-            plt.errorbar(t, bt, yerr=error,linewidth=2.0)
+            plt.errorbar(t, bt, yerr=error)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -662,6 +676,7 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,
         plt.ylim(ylim)
     if name_list is not None:
         plt.legend(loc=0)
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -735,6 +750,7 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
     plt.xlabel('Lipid type')
     plt.ylabel('Cross correlation')
     plt.tick_params(labelbottom='off')
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -791,6 +807,7 @@ def plot_position_density_map_2d_scatter(x_centers, y_centers, counts,
             cbar.ax.set_ylabel('Count (scaled to maximum)')
         else:
             cbar.ax.set_ylabel('Count')
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -844,6 +861,7 @@ def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filena
             cbar.ax.set_ylabel('Count (scaled to maximum)')
         else:
             cbar.ax.set_ylabel('Count')
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
@@ -897,6 +915,7 @@ def plot_lipid_grid_thickness_map_2d(x_centers, y_centers, thickness_grid, save=
     if colorbar:
         cbar = plt.colorbar()
         cbar.ax.set_ylabel('Thickness ($\AA$)')
+    plt.tight_layout()
     if save:
         plt.savefig(filename)
     if show:
