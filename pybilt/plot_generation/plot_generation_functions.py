@@ -35,10 +35,10 @@ sfig_params = {
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-params = {'figure.figsize': [8.75, 7.25], 'font.size': 16, 'axes.labelsize': 18,
-    'legend.fontsize': 14,
-    'xtick.labelsize': 14,
-    'ytick.labelsize': 14,}
+params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 22,
+    'legend.fontsize': 18,
+    'xtick.labelsize': 18,
+    'ytick.labelsize': 18,}
 mpl.rcParams.update(params)
 #sns.set_style("whitegrid")
 #sns.set_style("white")
