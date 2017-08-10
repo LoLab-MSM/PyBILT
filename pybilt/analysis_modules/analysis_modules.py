@@ -57,6 +57,9 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
 
     times = msd_dat[:,0]
     msd_vals = msd_dat[:,1]
+    t0 = times[0]
+    t10 = t0+10000.0
+    t100 = t0+100000.0
     #diffusion coeff, whole range
     # Simple application of Einstein relation
     D_e = dc.diffusion_coefficient_Einstein(times, msd_vals)
@@ -74,11 +77,11 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
     print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
     #diffusion coeff, first 10 ns
     # Simple application of Einstein relation
-    D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[0.0, 10000.0])
+    D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t0, t10])
     # Use linear fit
-    D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[0.0, 10000.0])
+    D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t0, t10])
     # Use anomalous diffusion fit
-    D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[0.0, 10000.0])
+    D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t0, t10])
     print("Composite for all lipids and both leaflets; 0-10 ns")
     print("Values from estimators:")
     print("  Basic Einstein relation:")
@@ -88,13 +91,13 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
     print("  Anomalous diffusion fit:")
     print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
     #diffusion coeff,  10-100 ns
-    if max(times)>10000.0:
+    if max(times)>t10:
         # Simple application of Einstein relation
-        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[10000.0, 100000.0])
+        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t10, t100])
         # Use linear fit
-        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[10000.0, 100000.0])
+        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t10, t100])
         # Use anomalous diffusion fit
-        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[10000.0, 100000.0])
+        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t10, t100])
         print("Composite for all lipids and both leaflets; 10-100 ns")
         print("Values from estimators:")
         print("  Basic Einstein relation:")
@@ -110,6 +113,9 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
 
         times = msd_dat[:, 0]
         msd_vals = msd_dat[:, 1]
+        t0 = times[0]
+        t10 = t0 + 10000.0
+        t100 = t0 + 100000.0
         # diffusion coeff, whole range
         # Simple application of Einstein relation
         D_e = dc.diffusion_coefficient_Einstein(times, msd_vals)
@@ -127,11 +133,11 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
         print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
         # diffusion coeff, first 10 ns
         # Simple application of Einstein relation
-        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[0.0, 10000.0])
+        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t0, t10])
         # Use linear fit
-        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[0.0, 10000.0])
+        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t0, t10])
         # Use anomalous diffusion fit
-        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[0.0, 10000.0])
+        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t0, t10])
         print("Composite for "+lipid_type+" and both leaflets; 0-10 ns")
         print("Values from estimators:")
         print("  Basic Einstein relation:")
@@ -140,14 +146,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
         print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
         print("  Anomalous diffusion fit:")
         print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
-        if max(times)>10000.0:
+        if max(times)>t10:
             # diffusion coeff,  10-100 ns
             # Simple application of Einstein relation
-            D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[10000.0, 100000.0])
+            D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t10, t100])
             # Use linear fit
-            D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[10000.0, 100000.0])
+            D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t10, t100])
             # Use anomalous diffusion fit
-            D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[10000.0, 100000.0])
+            D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t10, t100])
             print("Composite for "+lipid_type+" and both leaflets; 10-100 ns")
             print("Values from estimators:")
             print("  Basic Einstein relation:")
@@ -162,6 +168,9 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
 
             times = msd_dat[:, 0]
             msd_vals = msd_dat[:, 1]
+            t0 = times[0]
+            t10 = t0 + 10000.0
+            t100 = t0 + 100000.0
             # diffusion coeff, whole range
             # Simple application of Einstein relation
             D_e = dc.diffusion_coefficient_Einstein(times, msd_vals)
@@ -179,11 +188,11 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
             print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
             # diffusion coeff, first 10 ns
             # Simple application of Einstein relation
-            D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[0.0, 10000.0])
+            D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t0, t10])
             # Use linear fit
-            D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[0.0, 10000.0])
+            D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t0, t10])
             # Use anomalous diffusion fit
-            D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[0.0, 10000.0])
+            D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t0, t10])
             print("Composite for " + lipid_type + " and "+leaflet+" leaflet; 0-10 ns")
             print("Values from estimators:")
             print("  Basic Einstein relation:")
@@ -192,14 +201,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
             print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
             print("  Anomalous diffusion fit:")
             print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
-            if max(times) > 10000.0:
+            if max(times) > t10:
                 # diffusion coeff,  10-100 ns
                 # Simple application of Einstein relation
-                D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[10000.0, 100000.0])
+                D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t10, t100])
                 # Use linear fit
-                D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[10000.0, 100000.0])
+                D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t10, t100])
                 # Use anomalous diffusion fit
-                D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[10000.0, 100000.0])
+                D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t10, t100])
                 print("Composite for " + lipid_type + " and "+leaflet+" leaflet; 10-100 ns")
                 print("Values from estimators:")
                 print("  Basic Einstein relation:")
