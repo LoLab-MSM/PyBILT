@@ -1,12 +1,15 @@
 import numpy as np
+import MDAnalysis as mda
 
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 from pybilt.diffusion import diffusion_coefficients as dc
 import pybilt.plot_generation.plot_generation_functions as pgf
 from pybilt.plot_generation.plot_generation_functions import _color_list
 from pybilt.common.running_stats import BlockAverager
+from pybilt.mda_tools.mda_density_map import position_density_map_2d_leaflet_simple
 
-def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=None, frame_start=0, frame_end=-1, frame_interval=1, dump_path=None):
+def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=None, frame_start=0,
+                  frame_end=-1, frame_interval=1, dump_path=None):
 
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
@@ -661,4 +664,27 @@ def distance_cutoff_clustering(structure_file, trajectory_file, selection_string
                 print("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3]))
         print("------------------------------------------")
 
+    return
+
+def position_density_maps_2d(structure_file, trajectory_file, bilayer_selection_string, resnames,
+                             frame_start=0, frame_end=-1,frame_interval=1, dump_path="./"):
+
+    u = mda.Universe(structure_file, trajectory_file)
+    bilayer_sel = u.select_atoms(bilayer_selection_string)
+    x_centers, y_centers, counts = position_density_map_2d_leaflet_simple(u, bilayer_sel, resnames,
+                                                            fstart=frame_start, fend=frame_end, fstep=frame_interval,
+                                                                          refsel=bilayer_sel, scale_to_max=False)
+    for key in counts.keys():
+        outname_eps = 'position_density_2d_{}_upper.eps'.format(key)
+        outname_png = 'position_density_2d_{}_upper.png'.format(key)
+        pgf.plot_position_density_map_2d(x_centers, y_centers, counts[key]['upper'], filename=outname_eps, scaled_to_max=False,
+                                         interpolation='gaussian')
+        pgf.plot_position_density_map_2d(x_centers, y_centers, counts[key]['upper'], filename=outname_png, scaled_to_max=False,
+                                     interpolation='gaussian')
+        outname_eps = 'position_density_2d_{}_lower.eps'.format(key)
+        outname_png = 'position_density_2d_{}_lower.png'.format(key)
+        pgf.plot_position_density_map_2d(x_centers, y_centers, counts[key]['lower'], filename=outname_eps, scaled_to_max=False,
+                                         interpolation='gaussian')
+        pgf.plot_position_density_map_2d(x_centers, y_centers, counts[key]['lower'], filename=outname_png, scaled_to_max=False,
+                                     interpolation='gaussian')
     return
