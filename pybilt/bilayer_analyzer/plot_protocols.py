@@ -181,7 +181,7 @@ class MSDPlotProtocol(PlotFunctionProtocol):
             i += 1
 
         # default function settings
-        self.save_file_name = self.plot_id + ".eps"
+        self.save_file_name = self.plot_id + ".pdf"
         self.interval = 1
         # parse input arguments if given
         self.include = []
@@ -264,7 +264,7 @@ class APLPlotProtocol(PlotFunctionProtocol):
             i += 1
 
         # default function settings
-        self.save_file_name = self.plot_id + ".eps"
+        self.save_file_name = self.plot_id + ".pdf"
         self.interval = 1
         # parse input arguments if given
         self.include = []
@@ -362,7 +362,7 @@ class DispVecPlotProtocol(PlotFunctionProtocol):
             i += 1
 
         # default function settings
-        self.save_file_name = self.plot_id + ".eps"
+        self.save_file_name = self.plot_id + ".pdf"
         self.interval = 1
         # parse input arguments if given
         self.include = []
@@ -459,7 +459,7 @@ class BTPlotProtocol(PlotFunctionProtocol):
             i += 1
 
         # default function settings
-        self.save_file_name = self.plot_id + ".eps"
+        self.save_file_name = self.plot_id + ".pdf"
         self.interval = 1
         # parse input arguments if given
         self.include = []

@@ -270,9 +270,13 @@ def area_per_lipid(structure_file, trajectory_file, selection_string, frame_star
     if ppb > 1000:
         ppb=1000
     n_b = 9
-    while ppb < 3:
+    while ppb < 10:
         ppb = len(apl_box)/n_b
         n_b-=1
+        if n_b == 0:
+            ppb=len(apl_box)
+            break
+    print("Will do block average with {} points per block".format(ppb))
     block_averager = BlockAverager(points_per_block=ppb)
     block_averager.push_container(apl_box[:,1])
     block_average, std_err = block_averager.get()
@@ -322,9 +326,9 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
                                                  filename=dump_path+'thickness_grid_'+fs+'.png',
                                                  vmin=30.0, vmax=50.0, interpolation='gaussian')
             pgf.plot_lipid_grid_thickness_map_2d(xyzc[0], xyzc[1], thickgrid,
-                                                 filename=dump_path+'thickness_grid_'+fs+'.eps',
+                                                 filename=dump_path+'thickness_grid_'+fs+'.pdf',
                                                  vmin=30.0, vmax=50.0, interpolation='gaussian')
-        # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.eps', colorbar=True, vmin=20.0,
+        # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.pdf', colorbar=True, vmin=20.0,
         #                           vmax=50.0)
 
     #output data and plots
@@ -401,7 +405,7 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
     form = "{:0"+number+"d}"
     for disp_vec in disp_vecs:
         count = form.format(counter)
-        filename = "step_vector_map_upper_"+count+".eps"
+        filename = "step_vector_map_upper_"+count+".pdf"
         filename_b = "step_vector_map_upper_"+count+".png"
         pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True, wrapped=True)
         pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True, wrapped=True)
@@ -413,7 +417,7 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
     form = "{:0"+number+"d}"
     for disp_vec in disp_vecs:
         count = form.format(counter)
-        filename = "step_vector_map_lower_"+count+".eps"
+        filename = "step_vector_map_lower_"+count+".pdf"
         filename_b = "step_vector_map_lower_"+count+".png"
         pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True, wrapped=True)
         pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True, wrapped=True)
@@ -426,7 +430,7 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
     for disp_vec_corr in disp_vec_corrs:
         corr_mat = disp_vec_corr[0]
         count = form.format(counter)
-        filename = "step_vector_correlation_map_" + count + ".eps"
+        filename = "step_vector_correlation_map_" + count + ".pdf"
         filename_b = "step_vector_correlation_map_" + count + ".png"
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
@@ -546,7 +550,7 @@ def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, 
             print("    Lipid resname {}: {:0.4f} +- {:0.4f}".format(lipid_resname, mean, deviation))
 
     pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.png")
-    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.eps")
+    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.pdf")
 
     return
 
@@ -588,13 +592,13 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_sta
 
         pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_lower_' + fs + '.png')
 
-        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_lower_' + fs + '.eps')
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_lower_' + fs + '.pdf')
 
         xyzc = analyzer.reps['lipid_grid'].get_xyzc(leaflet='upper', color_type_dict=type_colors)['upper']
 
         pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_upper_' + fs + '.png')
 
-        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_upper_' + fs + '.eps')
+        pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'lipid_grid_upper_' + fs + '.pdf')
 
 
     for resname in sorted(type_colors.keys()):
@@ -627,14 +631,14 @@ def distance_cutoff_clustering(structure_file, trajectory_file, selection_string
     for resname in resnames:
         results = analyzer.get_analysis_data("dc_cluster_{}_upper".format(resname))
         plotname_png = "{}dc_cluster_upper_{}_nclusters.png".format(dump_path,resname)
-        plotname_eps = "{}dc_cluster_upper_{}_nclusters.eps".format(dump_path, resname)
+        plotname_eps = "{}dc_cluster_upper_{}_nclusters.pdf".format(dump_path, resname)
         times = results['nclusters'][:,0]
         means = results['nclusters'][:,2]
         stds = results['nclusters'][:,3]
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
         plotname_png = "{}dc_cluster_upper_{}_avg_size.png".format(dump_path, resname)
-        plotname_eps = "{}dc_cluster_upper_{}_avg_size.eps".format(dump_path, resname)
+        plotname_eps = "{}dc_cluster_upper_{}_avg_size.pdf".format(dump_path, resname)
         means = results['avg_size'][:, 2]
         stds = results['avg_size'][:, 3]
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
@@ -646,14 +650,14 @@ def distance_cutoff_clustering(structure_file, trajectory_file, selection_string
 
         results = analyzer.get_analysis_data("dc_cluster_{}_lower".format(resname))
         plotname_png = "{}dc_cluster_lower_{}_nclusters.png".format(dump_path,resname)
-        plotname_eps = "{}dc_cluster_lower_{}_nclusters.eps".format(dump_path, resname)
+        plotname_eps = "{}dc_cluster_lower_{}_nclusters.pdf".format(dump_path, resname)
         times = results['nclusters'][:,0]
         means = results['nclusters'][:,2]
         stds = results['nclusters'][:,3]
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
         plotname_png = "{}dc_cluster_lower_{}_avg_size.png".format(dump_path, resname)
-        plotname_eps = "{}dc_cluster_lower_{}_avg_size.eps".format(dump_path, resname)
+        plotname_eps = "{}dc_cluster_lower_{}_avg_size.pdf".format(dump_path, resname)
         means = results['avg_size'][:, 2]
         stds = results['avg_size'][:, 3]
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
@@ -675,13 +679,13 @@ def position_density_maps_2d(structure_file, trajectory_file, bilayer_selection_
                                                             fstart=frame_start, fend=frame_end, fstep=frame_interval,
                                                                           refsel=bilayer_sel, scale_to_max=False)
     for key in counts.keys():
-        outname_eps = 'position_density_2d_{}_upper.eps'.format(key)
+        outname_eps = 'position_density_2d_{}_upper.pdf'.format(key)
         outname_png = 'position_density_2d_{}_upper.png'.format(key)
         pgf.plot_position_density_map_2d(x_centers, y_centers, counts[key]['upper'], filename=outname_eps, scaled_to_max=False,
                                          interpolation='gaussian')
         pgf.plot_position_density_map_2d(x_centers, y_centers, counts[key]['upper'], filename=outname_png, scaled_to_max=False,
                                      interpolation='gaussian')
-        outname_eps = 'position_density_2d_{}_lower.eps'.format(key)
+        outname_eps = 'position_density_2d_{}_lower.pdf'.format(key)
         outname_png = 'position_density_2d_{}_lower.png'.format(key)
         pgf.plot_position_density_map_2d(x_centers, y_centers, counts[key]['lower'], filename=outname_eps, scaled_to_max=False,
                                          interpolation='gaussian')

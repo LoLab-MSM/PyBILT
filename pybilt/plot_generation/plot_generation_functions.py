@@ -32,7 +32,7 @@ if sys.version_info < (3,0):
 # background white
 sfig_params = {
     'savefig.dpi' : 400,
-    'savefig.format' : 'eps'
+    'savefig.format' : 'pdf'
     }
 mpl.rcParams.update(sfig_params)
 params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
@@ -105,7 +105,7 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
     plt.close()
     return
 
-def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, show=False, scaled=False, wrapped=False):
+def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True, show=False, scaled=False, wrapped=False):
     '''
     Generates a single plot with the lipid displacement vectors (or step vectors)
     Takes a single frame of the output from:
@@ -162,7 +162,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.eps',save=True, s
     plt.close()
     return
 
-def plot_step_vectors_comtraj(vectors, colors=None, filename='step_vectors.eps',show=False, save=True):
+def plot_step_vectors_comtraj(vectors, colors=None, filename='step_vectors.pdf',show=False, save=True):
     '''
     Generates a single plot with the lipid displacement vectors (or step vectors)
     Takes a single frame of the output from:
@@ -190,7 +190,7 @@ def plot_step_vectors_comtraj(vectors, colors=None, filename='step_vectors.eps',
     plt.close()
     return
 
-def plot_msd(msd_dat_list,name_list=None,filename='msd.eps',time_in='ps',time_out='ns',show=False, interval=1,save=True):
+def plot_msd(msd_dat_list,name_list=None,filename='msd.pdf',time_in='ps',time_out='ns',show=False, interval=1,save=True):
     '''
     Generates a single plot with Mean Squared Displacement curves
     Takes outputs from:
@@ -239,7 +239,7 @@ def plot_msd(msd_dat_list,name_list=None,filename='msd.eps',time_in='ps',time_ou
     return
 
 
-def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='ps',time_out='ns',save=True,show=False, interval=1, ylim=None, xlim=None):
+def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.pdf',time_in='ps',time_out='ns',save=True,show=False, interval=1, ylim=None, xlim=None):
     '''
     Generates a single plot with area per lipid (apl) curves
     Takes outputs from:
@@ -252,6 +252,7 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
     for apl_dat in apl_dat_list:
         apl_d = apl_dat.copy()
         t = apl_d[::interval,0]
+        n_points = len(t)
         if time_in == 'ps' and time_out == 'ns':
             #print "switching time units from ps to ns"
             t/=1000.0
@@ -263,9 +264,20 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
             #print "plotting",name_list[i]," with errorbars"
             #print t
             #print apl
-            plt.errorbar(t, apl, yerr=apl_dev, label=name_list[i])
+            #plt.errorbar(t, apl, yerr=apl_dev, label=name_list[i])
+            if n_points <= 30:
+                plt.errorbar(t, apl, yerr=apl_dev, label=name_list[i])
+            else:
+                p = plt.plot(t, apl, label=name_list[i])
+                c = p[0].get_color()
+                plt.fill_between(t, apl-apl_dev, apl+apl_dev, alpha=0.25, interpolate=True, color=c)
         else:
-            plt.errorbar(t, apl, yerr=apl_dev)
+            if n_points <= 30:
+                plt.errorbar(t, apl, yerr=apl_dev)
+            else:
+                p = plt.plot(t, apl)
+                c = p[0].get_color()
+                plt.fill_between(t, apl - apl_dev, apl + apl_dev, alpha=0.25, interpolate=True, color=c)
         i+=1
         #plt.title("Mean Sqared Displacement vs. Time")
     xlabel = "Time ("+time_out+")"
@@ -286,7 +298,7 @@ def plot_area_per_lipid(apl_dat_list,name_list=None,filename='apl.eps',time_in='
     return
 
 
-def plot_dc_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',
+def plot_dc_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_number.pdf',time_in='ps',time_out='ns',
                                save=True, show=False):
     """Generates a plot of the average number of clusters (vs. time)
     This function generates a plot of the average number of clusters vs. time for data output with key 'nclusters'
@@ -300,7 +312,7 @@ def plot_dc_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_num
             should have len(name_list) == len(clust_dat_list) = True.
                 Default: None
         filename (str, optional): This a string containing the filename for the output plot if save is set to True.
-                Default: 'clust_number.eps'
+                Default: 'clust_number.pdf'
         time_in (str, optional): This is a string specifying the time units of values in the input arrays. Acceptible values
             are 'ps' for picosecond and 'ns' nanosecond.
                 Default: 'ps'
@@ -348,7 +360,7 @@ def plot_dc_cluster_dat_number(clust_dat_list,name_list=None,filename='clust_num
     return
 
 
-def plot_dc_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',
+def plot_dc_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_number.pdf',time_in='ps',time_out='ns',
                                save=True, show=False):
     """Generates a plot of the average cluster size (vs. time)
     This function generates a plot of the average cluster size vs. time for data output with key 'avg_size' from the
@@ -362,7 +374,7 @@ def plot_dc_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_numbe
             should have len(name_list) == len(clust_dat_list) = True.
                 Default: None
         filename (str, optional): This a string containing the filename for the output plot if save is set to True.
-                Default: 'clust_number.eps'
+                Default: 'clust_number.pdf'
         time_in (str, optional): This is a string specifying the time units of values in the input arrays. Acceptible values
             are 'ps' for picosecond and 'ns' nanosecond.
                 Default: 'ps'
@@ -409,7 +421,7 @@ def plot_dc_cluster_dat_size(clust_dat_list,name_list=None,filename='clust_numbe
     plt.close()
     return
 
-def plot_dc_cluster_dat_number_comtraj(clust_dat_list,name_list=None,filename='clust_number.eps',time_in='ps',time_out='ns',show=False):
+def plot_dc_cluster_dat_number_comtraj(clust_dat_list,name_list=None,filename='clust_number.pdf',time_in='ps',time_out='ns',show=False):
     '''
     Generates a single of the average number of clusters (vs. time)
     using output data from:
@@ -448,7 +460,7 @@ def plot_dc_cluster_dat_number_comtraj(clust_dat_list,name_list=None,filename='c
     plt.close()
     return
 
-def plot_dc_cluster_dat_size_comtraj(clust_dat_list,name_list=None,filename='clust_size.eps',time_in='ps',time_out='ns',show=False):
+def plot_dc_cluster_dat_size_comtraj(clust_dat_list,name_list=None,filename='clust_size.pdf',time_in='ps',time_out='ns',show=False):
     '''
     Generates a single plot of the average cluster size (vs time)
     using output data from:
@@ -488,7 +500,7 @@ def plot_dc_cluster_dat_size_comtraj(clust_dat_list,name_list=None,filename='clu
     return
 
 
-def plot_dc_cluster_maps_comtraj(clusters, filename='cluster_map.eps',show=False):
+def plot_dc_cluster_maps_comtraj(clusters, filename='cluster_map.pdf',show=False):
     '''
     Generates a single plot of the lipid cluster map
     Takes a single frame of the output from:
@@ -507,7 +519,7 @@ def plot_dc_cluster_maps_comtraj(clusters, filename='cluster_map.eps',show=False
     plt.close()
     return
 
-def plot_density_profile(dp_out_list, save=True, filename='density_profile.eps', show=False, label_list=None, ylabel='Density'):
+def plot_density_profile(dp_out_list, save=True, filename='density_profile.pdf', show=False, label_list=None, ylabel='Density'):
     """ Plot density profiles
     This function can be used to plot the results of density profiles functions
     in the mda_density_profile module.
@@ -543,7 +555,7 @@ def plot_density_profile(dp_out_list, save=True, filename='density_profile.eps',
     return
 
 
-def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.eps', show=False, colorbar=False, cmap=None, vmin=None, vmax=None):
+def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.pdf', show=False, colorbar=False, cmap=None, vmin=None, vmax=None):
     cma = plt.cm.get_cmap('viridis')
     if cmap is not None:
         cma = cmap
@@ -566,7 +578,7 @@ def plot_grid_as_scatter(in_xyzc, save=True, filename='lipid_grid.eps', show=Fal
     return
 
 
-def plot_corr_mat(in_corrmat, save=True, filename='correlation_matrix.eps', show=False ):
+def plot_corr_mat(in_corrmat, save=True, filename='correlation_matrix.pdf', show=False ):
     cma = plt.cm.get_cmap('inferno')
     plt.imshow(in_corrmat, cmap=cma, interpolation='none', vmin=-1.0, vmax=1.0)
     plt.colorbar()
@@ -578,7 +590,7 @@ def plot_corr_mat(in_corrmat, save=True, filename='correlation_matrix.eps', show
     plt.close()
     return
 
-def plot_corr_mat_as_scatter(in_corrmat, save=True, filename='correlation_matrix.eps', show=False ):
+def plot_corr_mat_as_scatter(in_corrmat, save=True, filename='correlation_matrix.pdf', show=False ):
     ax_l = len(in_corrmat)
 
     x_axes = np.zeros(ax_l ** 2, dtype=np.int)
@@ -602,7 +614,7 @@ def plot_corr_mat_as_scatter(in_corrmat, save=True, filename='correlation_matrix
     plt.close()
     return
 
-def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.eps',time_in='ps',time_out='ns',show=False, interval=1):
+def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.pdf',time_in='ps',time_out='ns',show=False, interval=1):
     '''
     Generates a single plot of the average deuterium order parameter vs. time
 
@@ -642,7 +654,7 @@ def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.eps',tim
     return
 
 def plot_bilayer_thickness(bt_dat_list,name_list=None,
-                        filename='bilayer_thickness.eps',
+                        filename='bilayer_thickness.pdf',
                         time_in='ps',time_out='ns',show=False,
                         interval=1, save=True, xlim = None, ylim=None):
     '''
@@ -684,7 +696,7 @@ def plot_bilayer_thickness(bt_dat_list,name_list=None,
     plt.close()
     return
 
-def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='normal_displacement_lipid_type_cross_correlation.eps',show=False, save=True):
+def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='normal_displacement_lipid_type_cross_correlation.pdf',show=False, save=True):
 
     color_list = _color_list
     #build the data objects
@@ -761,7 +773,7 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
 
 def plot_position_density_map_2d_scatter(x_centers, y_centers, counts,
                                             save=True,
-                                            filename='position_density_2d.eps',
+                                            filename='position_density_2d.pdf',
                                             show=False, colorbar=True,
                                             vmin=0.0, vmax=None,
                                             normalized=False,
@@ -815,7 +827,7 @@ def plot_position_density_map_2d_scatter(x_centers, y_centers, counts,
     plt.close()
     return
 
-def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filename='position_density_2d.eps',
+def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filename='position_density_2d.pdf',
                                  show=False, colorbar=True, vmin=0.0, vmax=None, normalized=False,
                                  scaled_to_max=False, interpolation='none'):
     #cma = plt.cm.get_cmap('YlGnBu_r')
@@ -869,7 +881,7 @@ def plot_position_density_map_2d(x_centers, y_centers, counts, save=True, filena
     plt.close()
     return
 
-def plot_lipid_grid_thickness_map_2d(x_centers, y_centers, thickness_grid, save=True, filename='bilayer_thickness_map_2d.eps',
+def plot_lipid_grid_thickness_map_2d(x_centers, y_centers, thickness_grid, save=True, filename='bilayer_thickness_map_2d.pdf',
                                  show=False, colorbar=True, vmin=0.0, vmax=None, interpolation='none'):
     #cma = plt.cm.get_cmap('YlGnBu_r')
     cma = plt.cm.get_cmap('viridis')
