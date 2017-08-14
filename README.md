@@ -87,3 +87,30 @@ before running PyBILT modules.
                        (using matplotlib and seaborn) for some of the properties
                        that can be computed from functions in the other modules.
                        e.g. mean squared displacement and area per lipid.
+
+## Documentation
+
+Detailed documentation for PyBILT is in the pipeline. There are currently a
+few Jupyter IPython [notebooks](jupyter_notebooks) that provide some examples and show some basic usage. More of these are also in the pipeline. Although they are also not fully extensive, the [tests](tests) can serve as a useful place to examine some basic usage and functionality.
+
+## Authors
+
+* **Blake A Wilson** - *Initial work* - Currently a Postdoctoral Fellow at Vanderbilt University
+  * Vandy e-mail: blake.a.wilson@vanderbilt.edu
+  * Gmail: blakeaw1102@gmail.com
+  * [Blake's VU Website]( https://my.vanderbilt.edu/blakeaw/)
+  * Also find me on [LinkedIn](https://www.linkedin.com/in/blakewilson3/) and [Research Gate](https://www.researchgate.net/profile/Blake_Wilson3)
+
+## Contact
+
+If you have any comments, suggestions, or feature requests for PyBILT please feel free to open a GitHub Issue (https://github.com/blakeaw/PyBILT/issues) with those comments, suggestions, or feature requests. Or you can contact Blake directly via e-mail at either blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com. You may also contact Blake with any questions about PyBILT use or implementation.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* A special thanks to James Pino (https://github.com/JamesPino) for his inciteful comments and suggestions that have helped improve the quality of this code, and thanks to him for pointing out some very useful coding tools.   
+* Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing this project and for providing me with the space and means to pursue it.    
+* Thanks to the developers of Landscape (https://landscape.io/), which has proved to be a powerful tool for improving the quality of this projects code.
