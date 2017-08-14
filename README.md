@@ -103,14 +103,22 @@ few Jupyter IPython [notebooks](jupyter_notebooks) that provide some examples an
 
 ## Contact
 
-If you have any comments, suggestions, or feature requests for PyBILT please feel free to open a GitHub Issue (https://github.com/blakeaw/PyBILT/issues) with those comments, suggestions, or feature requests. Or you can contact Blake directly via e-mail at either blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com. You may also contact Blake with any questions about PyBILT use or implementation.
+If you have any comments, suggestions, or feature requests for PyBILT please feel free to open a [GitHub Issue](https://github.com/blakeaw/PyBILT/issues) with those comments, suggestions, or feature requests. Or you can contact Blake directly via e-mail at either blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com. You may also contact Blake with any questions about PyBILT use or implementation.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## Built With
+
+* [PyCharm](https://www.jetbrains.com/pycharm/) - Primary Text Editor/IDE
+* [ATOM](https://atom.io/) - Secondary Text Editor
+* [Sublime Text](https://www.sublimetext.com/) - Text Editor used in earlier work
+* [Landscape](https://landscape.io/) - Code quality analysis and tracking
+* [Git](https://git-scm.com/) - Version control
+* [GitHub](https://github.com/) - Development Platform and repository storage
 
 ## Acknowledgments
 
 * A special thanks to James Pino (https://github.com/JamesPino) for his inciteful comments and suggestions that have helped improve the quality of this code, and thanks to him for pointing out some very useful coding tools.   
 * Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing this project and for providing me with the space and means to pursue it.    
-* Thanks to the developers of Landscape (https://landscape.io/), which has proved to be a powerful tool for improving the quality of this projects code.
