@@ -109,6 +109,11 @@ If you have any comments, suggestions, or feature requests for PyBILT please fee
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
+## Acknowledgments
+
+* A special thanks to James Pino (https://github.com/JamesPino) for his inciteful comments and suggestions that have helped improve the quality of this code, and thanks to him for pointing out some very useful coding tools.   
+* Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing this project and for providing me with the space and means to pursue it.  
+
 ## Built With
 
 * [PyCharm](https://www.jetbrains.com/pycharm/) - Primary Text Editor/IDE
@@ -116,9 +121,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 * [Sublime Text](https://www.sublimetext.com/) - Text Editor used in earlier work
 * [Landscape](https://landscape.io/) - Code quality analysis and tracking
 * [Git](https://git-scm.com/) - Version control
-* [GitHub](https://github.com/) - Development Platform and repository storage
-
-## Acknowledgments
-
-* A special thanks to James Pino (https://github.com/JamesPino) for his inciteful comments and suggestions that have helped improve the quality of this code, and thanks to him for pointing out some very useful coding tools.   
-* Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing this project and for providing me with the space and means to pursue it.    
+* [GitHub](https://github.com/) - Development Platform and repository storage  
