@@ -116,9 +116,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Built With
 
+* [ANACONDA](https://www.continuum.io/) - ANACONDA Python distribution and CONDA package and environment manager 
 * [PyCharm](https://www.jetbrains.com/pycharm/) - Primary Text Editor/IDE
 * [ATOM](https://atom.io/) - Secondary Text Editor
 * [Sublime Text](https://www.sublimetext.com/) - Text Editor used in earlier work
 * [Landscape](https://landscape.io/) - Code quality analysis and tracking
 * [Git](https://git-scm.com/) - Version control
 * [GitHub](https://github.com/) - Development Platform and repository storage  
+* [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  simple audit tool for examining python source files for missing docstrings.
