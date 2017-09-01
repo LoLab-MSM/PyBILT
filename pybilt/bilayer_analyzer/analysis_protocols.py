@@ -498,10 +498,11 @@ analysis_obj_name_dict['msd'] = 'com_frame'
 class MSDProtocol(AnalysisProtocol):
 
     def __init__(self, args):
-        """Estimate the mean squared displacement.
+        """Estimate the mean squared displacement from a single time origin.
 
         The MSDProtocol is used to compute the mean squared displacement (MSD)
-        of the centers of mass of the specified lipids. The MSD is given by
+        of the centers of mass of the specified lipids for a single time origin
+        (i.e. the first frame in the trajectory analysis) The MSD is given by
         MSD_i = <(r(t) - <r_0)**2>_i for lipid type i; the angle brackets denote
         averaging over all lipids of type i.
 
@@ -517,15 +518,26 @@ class MSDProtocol(AnalysisProtocol):
                 this analysis. Default: 'all', averages over all lipid types.
 
         References:
-            1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer
-                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,
-                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
+            1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical
+                Properties of a Hydrated Lipid Bilayer from a Multinanosecond
+                Molecular Dynamics Simulation, Biophysical Journal, Volume 81,
+                Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495,
+                http://dx.doi.org/10.1016/S0006-3495(01)75894-8.
                 (http://www.sciencedirect.com/science/article/pii/S0006349501758948)
-            2. Section 8.7,
+
+            2. Yoshimichi Andoh, Susumu Okazaki, Ryuichi Ueoka, Molecular
+                dynamics study of lipid bilayers modeling the plasma membranes
+                of normal murine thymocytes and leukemic GRSL cells, Biochimica
+                et Biophysica Acta (BBA) - Biomembranes, Volume 1828, Issue 4,
+                April 2013, Pages 1259-1270, ISSN 0005-2736,
+                https://doi.org/10.1016/j.bbamem.2013.01.005.
+                (http://www.sciencedirect.com/science/article/pii/S0005273613000096)
+
+            3. Section 8.7,
                 http://manual.gromacs.org/documentation/5.1.4/manual-5.1.4.pdf
         """
         # required
-        self._short_description = "Mean squared displacement."
+        self._short_description = "Single time origin mean squared displacement."
         self._return_length = 2
         self.analysis_key = 'msd'
         self.analysis_id = 'none'
@@ -622,6 +634,177 @@ class MSDProtocol(AnalysisProtocol):
 
 # update the command_protocols dictionary
 command_protocols['msd'] = MSDProtocol
+
+# define a new analysis 'msd'
+valid_analysis.append('msd_multi')
+analysis_obj_name_dict['msd_multi'] = 'com_frame'
+
+
+class MSDMultiProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Estimate the mean squared displacement using multiple time origins.
+
+        The MSDMultiProtocol is used to compute the mean squared displacement
+        (MSD) of the centers of mass of the specified lipids using multiple time
+        origins and thus multiple time blocks.
+        The MSD is given by
+        MSD_i = <(r(t) - <r_0)**2>_i for lipid type i; the angle brackets denote
+        averaging over all lipids of type i.
+
+        This protocol is identified by the analysis key: 'msd'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', averages over all lipid types.
+            tau (float): Specify the time block size in the trajectory time
+                units. Default: 1000.0 (assumed to be in picoseconds)
+            sigma (float): Specify the time between origins in trajectory time
+                units. Default 1.25*1000.0. Note: According to results in Ref 3
+                    the time blocks used to estimate the MSD should not be
+                    overlapping. Therefore, it is recommended to use
+                    sigma >= tau.
+
+        References:
+            1. Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular
+                Dynamics Simulations of Phospholipid Bilayers with Cholesterol",
+                Biophys J. 2003 Apr; 84(4): 2192-2206.
+                doi:  10.1016/S0006-3495(03)75025-5
+
+            2. Orsi, Mario, Julien Michel, and Jonathan W. Essex.
+                "Coarse-grain modelling of DMPC and DOPC lipid bilayers."
+                Journal of Physics: Condensed Matter 22.15 (2010): 155106.
+                http://iopscience.iop.org/article/10.1088/0953-8984/22/15/155106/meta
+
+            3. Gaurav Pranami and Monica H. Lamm, Estimating Error in Diffusion
+                Coefficients Derived from Molecular Dynamics Simulations,
+                Journal of Chemical Theory and Computation 2015 11 (10),
+                4586-4592, DOI: 10.1021/acs.jctc.5b00574,
+                http://pubs.acs.org/doi/full/10.1021/acs.jctc.5b00574
+        """
+        # required
+        self._short_description = "Multiple time origin mean squared displacement."
+        self._return_length = 2
+        self.analysis_key = 'msd_multi'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['leaflet'] = 'both'
+        self.settings['resname'] = 'all'
+        self.settings['tau'] = 1000.0
+        self.settings['sigma'] = 1.25*self.settings['tau']
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
+        self._tau_interval = 1
+        self._sigma_interval = 1
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        self.analysis_output = []
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'tau':
+                    arg_dict[arg_key] = float(arg_arg)
+                elif arg_key == 'sigma':
+                    arg_dict[arg_key] = float(arg_arg)
+                    arg_dict[arg_key] = arg_arg
+            else:
+                warnings.warn(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        leaflet = self.settings['leaflet']
+        group = self.settings['resname']
+        if self._first_frame:
+            #determine the frame intervals
+            indices = []
+            # parse the leaflet and group inputs
+            if leaflet == "both":
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            elif leaflet == "upper":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            elif leaflet == "lower":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            else:
+                # unknown option--use default "both"
+                print "!! Warning - request for unknown leaflet name \'", leaflet
+                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            self._indices = indices
+        indices = self._indices
+        n_com = len(indices)
+        selcoords = np.zeros((n_com, 2))
+
+        count = 0
+        for i in indices:
+            com_curr = ba_reps['com_frame'].lipidcom[i].com_unwrap[
+                ba_settings['lateral']]
+            selcoords[count] = com_curr[:]
+            count += 1
+
+        # initialize a numpy array to hold the msd for the selection
+        msd = np.zeros(2)
+        # initialize a running stats object to do the averaging over resids
+        drs_stat = RunningStats()
+
+        ref_coords = np.zeros((n_com, 2))
+        if self._first_frame:
+            count = 0
+            for i in indices:
+                com_curr = \
+                    ba_reps['first_com_frame'].lipidcom[i].com_unwrap[
+                        ba_settings['lateral']]
+                ref_coords[count] = com_curr[:]
+                count += 1
+            self._ref_coords = ref_coords[:]
+            self._first_frame = False
+        else:
+            ref_coords = self._ref_coords
+            # get the current com frame list
+        tc = ba_reps['com_frame'].time
+        dt = tc
+        dr = selcoords - ref_coords
+        drs = dr * dr
+        # loop over the selections for this frame
+        for val in drs:
+            drs_curr = val[:]
+            drs_mag = drs_curr.sum()
+            drs_stat.push(drs_mag)
+        # get the msd for the current selection
+        msdcurr = drs_stat.mean()
+        msd[0] = dt
+        msd[1] = msdcurr
+        self.analysis_output.append(msd)
+        return
+
+
+# update the command_protocols dictionary
+#command_protocols['msd_multi'] = MSDMultiProtocol
 
 # define a new analysis 'apl_box'
 valid_analysis.append('apl_box')
@@ -894,8 +1077,9 @@ class DispVecProtocol(AnalysisProtocol):
                 dimensions of the reference frame. Default: False
 
         References:
-            1. Emma Falck, Tomasz Rog, Mikko Karttunen, and Ilpo Vattulainen, Lateral Diffusion in Lipid Membranes
-                through Collective Flows Journal of the American Chemical Society 2008 130 (1), 44-45
+            1. Emma Falck, Tomasz Rog, Mikko Karttunen, and Ilpo Vattulainen,
+                Lateral Diffusion in Lipid Membranes through Collective Flows,
+                Journal of the American Chemical Society, 2008 130 (1), 44-45
                 DOI: 10.1021/ja7103558
         """
         # required
@@ -1267,7 +1451,9 @@ class NNFProtocol(AnalysisProtocol):
         References:
             1. A. H. de Vries, A. E. Mark and S. J. Marrink, J. Phys. Chem. B,
                 2004, 108, 2454-2463
+
             2. M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249-272
+            
             3. Koldso H, Shorthouse D, He Lie Sansom MSP (2014) "Lipid
                 Clustering Correlates with Membrane Curvature as Revealed by
                 Molecular Simulations of Complex Lipid Bilayers." PloS Comput

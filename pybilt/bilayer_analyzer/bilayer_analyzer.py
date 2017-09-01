@@ -209,7 +209,8 @@ class BilayerAnalyzer(object):
         #leaflets
         self.reps['leaflets'] = None
         self.rep_settings['leaflets'] = {'dump': False,
-                                         'dump_path' : "./"}
+                                         'dump_path' : "./",
+                                         'update_interval': 1}
         #lipid_grid
         self.reps['lipid_grid'] = None
         self.rep_settings['lipid_grid'] = {'dump' : False,
@@ -338,6 +339,8 @@ class BilayerAnalyzer(object):
 
         self._first_frame = True
         self._first_com = True
+        self._first_leaflet = True
+        self._leaflet_counter = 0
         #   for the iterator version of analysis loop
         self._current_frame = self.settings['frame_range'][0]
         self._last_frame = self.settings['frame_range'][1]
@@ -620,6 +623,18 @@ class BilayerAnalyzer(object):
             self.settings['frame_range'][2] = interval
         return
 
+    def adjust_rep_setting(self, rep_key, setting_key, setting_value):
+            self.rep_settings[rep_key][setting_key] = setting_value
+            return
+
+    def print_rep_settings(self):
+        for rep in self.rep_settings.keys():
+            print("represetation: {}".format(rep))
+            for setting in self.rep_settings[rep].keys():
+                print("  setting:value {}:{}".format(setting,
+                                            self.rep_settings[rep][setting]))
+        return
+
     def reset(self):
         """ Clears the analysis output stored in the analysiss.
         """
@@ -629,140 +644,26 @@ class BilayerAnalyzer(object):
         self._first_com = True
         self._current_frame = self.settings['frame_range'][0]
         self._frame_loop_count = 0
+        self._first_leaflet = True
+        self._frame_counter = 0
         #analyses
         self.analysis_protocol.reset()
         return
 
     # analysis
-    def run_analysis(self, nprocs=1):
+    def run_analysis(self):
         """ Runs the analsysis.
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
         analysis of each analysis that was initialized in the setup.
 
         Args:
-            nprocs (int): An integer specifying the number of cores to use in
-            multithreaded parallelelization.
 
         """
 
-        parallel = False
-        if nprocs > 1:
-            parallel = True
+        for _frame in self:
+            pass
 
-        # now we need to unwrap the coordinates
-        natoms = self.mda_data.natoms
-        oldcoord = np.zeros((natoms, 3))
-        currcoord = np.zeros((natoms, 3))
-        wrapcoord = np.zeros((natoms, 3))
-        #first_frame_coord = np.zeros((natoms, 3))
-        index = self.mda_data.bilayer_sel.indices
-        firstframe = True
-        first_com = True
-        self.settings['frame_index'] = self.settings['frame_range'][0]
-        n_mda_frames = len(self.mda_data.mda_trajectory)
-        if self.settings['frame_range'][1] < 0:
-            self.settings['frame_range'][1]+=n_mda_frames+1
-        elif self.settings['frame_range'][1] > 0:
-            self.settings['frame_range'][1]+=1
-        for frame in self.mda_data.mda_trajectory[
-                     self.settings['frame_range'][0]:self.settings['frame_range'][1]:self.settings['frame_range'][
-                         2]]:
-            self.reps['current_mda_frame'] = frame
-            currcoord = frame.positions[index]
-            if firstframe:
-                oldcoord = np.copy(currcoord)
-                #first_frame_coord = np.copy(oldcoord)
-                firstframe = False
-                wrapcoord = np.copy(currcoord)
-            else:
-                abc = frame.dimensions[0:3]
-                #oldcoord = self._oldcoords
-                if parallel:
-                    wrapcoord = wrap_coordinates_parallel(abc, currcoord,
-                                                          oldcoord,
-                                                          nprocs=nprocs)
-                else:
-                    #oldcoord = self._oldcoords.copy()
-                    wrapcoord = wrap_coordinates(abc, currcoord, oldcoord)
-                # frame._pos[index] = wrapcoord[:]
-                oldcoord = np.copy(wrapcoord)
-            #self._oldcoords = oldcoord
-                # print ("wrapped coords:")
-            # print (wrapcoord)
-            #if self.analysis_protocol.use_objects['com_frame']:
-            # now build the COMFrame
-            self.reps['com_frame'] = cf.COMFrame(frame, self.mda_data.bilayer_sel,
-                                         wrapcoord, name_dict=self.rep_settings['com_frame']['name_dict'])
-            if first_com:
-                self.reps['first_com_frame'] = self.reps['com_frame']
-                first_com = False
-            # now we can assign the lipids to the leaflets
-            self.reps['leaflets'] = {'upper': lf.Leaflet('upper'),
-                             'lower': lf.Leaflet('lower')}
-            if self.rep_settings['com_frame']['dump']:
-                ofname = self.rep_settings['com_frame']['dump_path'] + "com_frame_" + str(
-                    frame.frame) + ".pickle"
-                with open(ofname, 'wb') as ofile:
-                    pickle.dump(self.reps['com_frame'], ofile)
-            if self.rep_settings['leaflets']['dump']:
-                ofname = self.rep_settings['leaflets']['dump_path'] + "leaflets_" + str(
-                    frame.frame) + ".pickle"
-                with open(ofname, 'wb') as ofile:
-                    pickle.dump(self.reps['leaflets'], ofile)
-
-            # first compute the average position along the normal direction
-            zstat = RunningStats()
-            for lipcom in self.reps['com_frame'].lipidcom:
-                zstat.push(lipcom.com_unwrap[self.settings['norm']])
-            zavg = zstat.mean()
-            # now loop over the lipids
-            l = 0
-            for lipcom in self.reps['com_frame'].lipidcom:
-                pos = ""
-                # decide which leaflet
-                #    print (lipcom.com_unwrap)
-                #    print (lipcom.com)
-                if lipcom.com_unwrap[self.settings['norm']] > zavg:
-                    pos = 'upper'
-                elif lipcom.com_unwrap[self.settings['norm']] < zavg:
-                    pos = 'lower'
-                # add to the chosen leaflet
-                self.reps['com_frame'].lipidcom[l].leaflet = pos
-                self.reps['leaflets'][pos].add_member(l, lipcom.type, lipcom.resid)
-                l += 1
-
-            if self.analysis_protocol.use_objects['lipid_grid']:
-                self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
-                                                self.settings['lateral'],
-                                                nxbins=self.rep_settings['lipid_grid']['n_xbins'],
-                                                nybins=self.rep_settings['lipid_grid']['n_ybins'])
-                if self.rep_settings['lipid_grid']['dump']:
-                    ofname = self.rep_settings['lipid_grid']['dump_path'] + "lipid_grid_" + str(
-                        frame.frame) + ".pickle"
-                    with open(ofname, 'wb') as ofile:
-                        pickle.dump(self.reps['lipid_grid'], ofile)
-
-                        # lipid_grid = None
-            # now do analyses
-            if self._frame_loop_count % self.settings['print_interval'] == 0:
-                print("Frame", frame.frame)
-            i = 0
-            for analysis_id in self.analysis_protocol.analysis_ids:
-                if self._frame_loop_count % self.settings['print_interval'] == 0:
-                    print ("analysis " + analysis_id)
-                self.analysis_protocol.command_protocol[analysis_id].run_analysis(
-                    self.settings, self.reps, self.mda_data)
-                # comp_out = analysis.run_analysis(self)
-                # print (comp_out)
-                #   analysis_out[i].append(comp_out)
-                i += 1
-            if self._frame_loop_count % self.settings['print_interval'] == 0:
-                print(" ")
-            self.settings['frame_index'] += self.settings['frame_range'][2]
-            self._frame_loop_count+=1
-            # print ('analysis_out:')
-            # print (analysis_out)
 
     # analysis
     def run_analysis_mp(self, nprocs=1):
@@ -960,6 +861,30 @@ class BilayerAnalyzer(object):
 
         """
         return ap.command_protocols.keys()
+
+    def _build_leaflets(self):
+        com_frame = self.reps['com_frame']
+        leaflets = {'upper': lf.Leaflet('upper'),
+                         'lower': lf.Leaflet('lower')}
+        # first compute the average position along the normal direction
+        zstat = RunningStats()
+        for lipcom in com_frame.lipidcom:
+            zstat.push(lipcom.com_unwrap[self.settings['norm']])
+        zavg = zstat.mean()
+        # now loop over the lipids
+        l = 0
+        for lipcom in com_frame.lipidcom:
+            pos = ""
+            if lipcom.com_unwrap[self.settings['norm']] > zavg:
+                pos = 'upper'
+            elif lipcom.com_unwrap[self.settings['norm']] < zavg:
+                pos = 'lower'
+            # add to the chosen leaflet
+            self.reps['com_frame'].lipidcom[l].leaflet = pos
+            leaflets[pos].add_member(l, lipcom.type, lipcom.resid)
+            l += 1
+        return leaflets
+
     #iterator functions --
     def __iter__(self):
         return self
@@ -1031,8 +956,12 @@ class BilayerAnalyzer(object):
                 self.reps['first_com_frame'] = self.reps['com_frame']
                 self._first_com = False
             # now we can assign the lipids to the leaflets
-            self.reps['leaflets'] = {'upper': lf.Leaflet('upper'),
-                             'lower': lf.Leaflet('lower')}
+            if self._first_leaflet:
+                self._first_leaflet = False
+                self.reps['leaflets'] = self._build_leaflets()
+            elif (self._leaflet_counter%self.rep_settings['leaflets']['update_interval'])==0:
+                self.reps['leaflets'] = self._build_leaflets()
+
             if self.rep_settings['com_frame']['dump']:
                 ofname = self.rep_settings['com_frame']['dump_path'] + "com_frame_" + str(
                     frame.frame) + ".pickle"
@@ -1044,26 +973,7 @@ class BilayerAnalyzer(object):
                 with open(ofname, 'wb') as ofile:
                     pickle.dump(self.reps['leaflets'], ofile)
 
-            # first compute the average position along the normal direction
-            zstat = RunningStats()
-            for lipcom in self.reps['com_frame'].lipidcom:
-                zstat.push(lipcom.com_unwrap[self.settings['norm']])
-            zavg = zstat.mean()
-            # now loop over the lipids
-            l = 0
-            for lipcom in self.reps['com_frame'].lipidcom:
-                pos = ""
-                # decide which leaflet
-                #    print (lipcom.com_unwrap)
-                #    print (lipcom.com)
-                if lipcom.com_unwrap[self.settings['norm']] > zavg:
-                    pos = 'upper'
-                elif lipcom.com_unwrap[self.settings['norm']] < zavg:
-                    pos = 'lower'
-                # add to the chosen leaflet
-                self.reps['com_frame'].lipidcom[l].leaflet = pos
-                self.reps['leaflets'][pos].add_member(l, lipcom.type, lipcom.resid)
-                l += 1
+
 
             if self.analysis_protocol.use_objects['lipid_grid']:
                 self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
@@ -1093,6 +1003,7 @@ class BilayerAnalyzer(object):
             print(" ")
         self.settings['frame_index'] += self.settings['frame_range'][2]
         self._frame_loop_count+=1
+        self._leaflet_counter+=1
         self._current_frame+=self.settings['frame_range'][2]
         if self._current_frame <= self._last_frame:
             return
