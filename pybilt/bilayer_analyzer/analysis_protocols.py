@@ -662,13 +662,15 @@ class MSDMultiProtocol(AnalysisProtocol):
                 leaflet to include in the estimate. Default: 'both'
             resname (str): Specify the resname of the lipid type to include in
                 this analysis. Default: 'all', averages over all lipid types.
-            tau (float): Specify the time block size in the trajectory time
-                units. Default: 1000.0 (assumed to be in picoseconds)
-            sigma (float): Specify the time between origins in trajectory time
-                units. Default 1.25*1000.0. Note: According to results in Ref 3
-                    the time blocks used to estimate the MSD should not be
-                    overlapping. Therefore, it is recommended to use
-                    sigma >= tau.
+            n_tau (int): Specify the time block size in number of frames.
+                Default: 50 ( 1000 picoseconds for timestep of 2 fs and frame
+                output ever 100 timesteps).
+            n_sigma (int): Specify the time between origins in number of frames.
+                Default: 50.
+        Note:
+            According to results in Ref 3 the time blocks used to estimate the
+                MSD should not be overlapping. Therefore, it is recommended to
+                use n_sigma >= n_tau.
 
         References:
             1. Christofer Hofsab, Erik Lindahl, and Olle Edholm, "Molecular
@@ -697,8 +699,8 @@ class MSDMultiProtocol(AnalysisProtocol):
         self.settings = dict()
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
-        self.settings['tau'] = 1000.0
-        self.settings['sigma'] = 1.25*self.settings['tau']
+        self.settings['n_tau'] = 50
+        self.settings['n_sigma'] = 50
         self._valid_settings = self.settings.keys()
         #self.leaflet = 'both'
         #self.resname = 'all'
@@ -706,8 +708,12 @@ class MSDMultiProtocol(AnalysisProtocol):
         self._first_frame = True
         self._ref_coords = None
         self._indices = []
-        self._tau_interval = 1
-        self._sigma_interval = 1
+        self._tau_counter = 0
+        self._sigma_counter = 0
+        self._counters = [0]
+        self._frame_counter = 0
+        self._have_tau = False
+        self._tau = 0.0
         # parse input arguments if given
         self._parse_args(args)
         self.save_file_name = self.analysis_id + ".pickle"
@@ -721,11 +727,10 @@ class MSDMultiProtocol(AnalysisProtocol):
         for arg_key in arg_dict.keys():
             arg_arg = arg_dict[arg_key]
             if arg_key in self._valid_settings:
-                if arg_key == 'tau':
-                    arg_dict[arg_key] = float(arg_arg)
-                elif arg_key == 'sigma':
-                    arg_dict[arg_key] = float(arg_arg)
-                    arg_dict[arg_key] = arg_arg
+                if arg_key == 'n_tau':
+                    arg_dict[arg_key] = int(arg_arg)
+                elif arg_key == 'n_sigma':
+                    arg_dict[arg_key] = int(arg_arg)
             else:
                 warnings.warn(
                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
@@ -756,6 +761,7 @@ class MSDMultiProtocol(AnalysisProtocol):
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
             self._indices = indices
+            #self.analysis_output.append([])
         indices = self._indices
         n_com = len(indices)
         selcoords = np.zeros((n_com, 2))
@@ -767,44 +773,127 @@ class MSDMultiProtocol(AnalysisProtocol):
             selcoords[count] = com_curr[:]
             count += 1
 
-        # initialize a numpy array to hold the msd for the selection
-        msd = np.zeros(2)
         # initialize a running stats object to do the averaging over resids
-        drs_stat = RunningStats()
 
-        ref_coords = np.zeros((n_com, 2))
         if self._first_frame:
             count = 0
+            ref_coords = []
             for i in indices:
                 com_curr = \
                     ba_reps['first_com_frame'].lipidcom[i].com_unwrap[
                         ba_settings['lateral']]
-                ref_coords[count] = com_curr[:]
+                ref_coords.append(com_curr[:])
                 count += 1
-            self._ref_coords = ref_coords[:]
+            self._ref_coords = [np.array(ref_coords)]
+            self.analysis_output = [0.0]
             self._first_frame = False
-        else:
-            ref_coords = self._ref_coords
             # get the current com frame list
-        tc = ba_reps['com_frame'].time
-        dt = tc
-        dr = selcoords - ref_coords
-        drs = dr * dr
-        # loop over the selections for this frame
-        for val in drs:
-            drs_curr = val[:]
-            drs_mag = drs_curr.sum()
-            drs_stat.push(drs_mag)
-        # get the msd for the current selection
-        msdcurr = drs_stat.mean()
-        msd[0] = dt
-        msd[1] = msdcurr
-        self.analysis_output.append(msd)
+        #print(self._sigma_counter)
+        #print(type(self.settings['n_sigma']))
+        if self._sigma_counter < self.settings['n_sigma']:
+            #print("{} {}".format(self._sigma_counter, self.settings['n_sigma']))
+            #print("{}".format(self._sigma_counter < self.settings['n_sigma']))
+            n_blocks = len(self.analysis_output)
+            for b in range(self._tau_counter, n_blocks):
+                if self._counters[b] < self.settings['n_tau']:
+                    self._counters[b] += 1
+                if self._counters[b] == self.settings['n_tau']:
+                    drs_stat = RunningStats()
+                    ref_coords = self._ref_coords[b]
+                    dr = selcoords - ref_coords
+                    drs = dr * dr
+                    # loop over the selections for this frame
+                    for val in drs:
+                        drs_curr = val[:]
+                        drs_mag = drs_curr.sum()
+                        drs_stat.push(drs_mag)
+                    # get the msd for the current selection
+                    msdcurr = drs_stat.mean()
+                    self.analysis_output[b] = msdcurr
+                    self._tau_counter+=1
+        elif self._sigma_counter == self.settings['n_sigma']:
+            count = 0
+            ref_coords = []
+            for i in indices:
+                com_curr = \
+                    ba_reps['com_frame'].lipidcom[i].com_unwrap[
+                        ba_settings['lateral']]
+                ref_coords.append(com_curr[:])
+                count += 1
+            self._ref_coords.append(np.array(ref_coords))
+            self.analysis_output.append(0.0)
+            self._counters.append(0)
+            n_blocks = len(self.analysis_output)
+            for b in range(self._tau_counter, n_blocks):
+                if self._counters[b] < self.settings['n_tau']:
+                    self._counters[b] += 1
+                if self._counters[b] == self.settings['n_tau']:
+                    drs_stat = RunningStats()
+                    ref_coords = self._ref_coords[b]
+                    dr = selcoords - ref_coords
+                    drs = dr * dr
+                    # loop over the selections for this frame
+                    for val in drs:
+                        drs_curr = val[:]
+                        drs_mag = drs_curr.sum()
+                        drs_stat.push(drs_mag)
+                    # get the msd for the current selection
+                    msdcurr = drs_stat.mean()
+                    self.analysis_output[b] = msdcurr
+                    self._tau_counter+=1
+            self._sigma_counter = 0
+
+        self._sigma_counter += 1
+        if not self._have_tau:
+            self._frame_counter+=1
+            if self._frame_counter == self.settings['n_tau']:
+                self._tau = ba_reps['com_frame'].time \
+                    - ba_reps['first_com_frame'].time
+                self._have_tau = True
+        return
+    def _process_output(self, analysis_output):
+        analysis_output = [val for val in analysis_output if val > 0.0]
+        #print(analysis_output)
+        msd_array = np.array(analysis_output)
+        msd_average = msd_array.mean()
+        msd_std_err = msd_array.std()/np.sqrt(len(msd_array))
+        tau = self._tau
+        diffusion_coeff = msd_average/(4.0*tau)
+        diffusion_coeff_std_err = msd_std_err/(4.0*tau)
+        analysis_output = np.array([msd_average, msd_std_err,
+                                    diffusion_coeff, diffusion_coeff_std_err])
+        return analysis_output
+
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
+
+        analysis_output = self._process_output(self.analysis_output)
+        with open(save_file, 'wb') as outfile:
+            pickle.dump(analysis_output, outfile)
+
         return
 
+    def get_data(self):
+        analysis_output = self._process_output(self.analysis_output)
+        return analysis_output
+
+    def reset(self):
+        self.analysis_output = []
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
+        self._tau_counter = 0
+        self._sigma_counter = 0
+        self._counters = [0]
+        self._frame_counter = 0
+        self._have_tau = False
+
+        return
 
 # update the command_protocols dictionary
-#command_protocols['msd_multi'] = MSDMultiProtocol
+command_protocols['msd_multi'] = MSDMultiProtocol
 
 # define a new analysis 'apl_box'
 valid_analysis.append('apl_box')
@@ -1453,7 +1542,7 @@ class NNFProtocol(AnalysisProtocol):
                 2004, 108, 2454-2463
 
             2. M. Orsi and J. W. Essex, Faraday Discuss., 2013, 161, 249-272
-            
+
             3. Koldso H, Shorthouse D, He Lie Sansom MSP (2014) "Lipid
                 Clustering Correlates with Membrane Curvature as Revealed by
                 Molecular Simulations of Complex Lipid Bilayers." PloS Comput
