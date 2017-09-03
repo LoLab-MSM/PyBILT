@@ -333,10 +333,7 @@ class BilayerAnalyzer(object):
                                    self._commands['trajectory'],
                                    sel_string)
 
-
-
         #more non-adjustable internal settings and data
-
         self._first_frame = True
         self._first_com = True
         self._first_leaflet = True
@@ -645,7 +642,7 @@ class BilayerAnalyzer(object):
         self._current_frame = self.settings['frame_range'][0]
         self._frame_loop_count = 0
         self._first_leaflet = True
-        self._frame_counter = 0
+        self._leaflet_counter = 0
         #analyses
         self.analysis_protocol.reset()
         return
@@ -663,8 +660,8 @@ class BilayerAnalyzer(object):
 
         for _frame in self:
             pass
-
-
+        return
+           
     # analysis
     def run_analysis_mp(self, nprocs=1):
         """ Runs the analsysis.
@@ -880,10 +877,17 @@ class BilayerAnalyzer(object):
             elif lipcom.com_unwrap[self.settings['norm']] < zavg:
                 pos = 'lower'
             # add to the chosen leaflet
-            self.reps['com_frame'].lipidcom[l].leaflet = pos
+            #self.reps['com_frame'].lipidcom[l].leaflet = pos
             leaflets[pos].add_member(l, lipcom.type, lipcom.resid)
             l += 1
         return leaflets
+
+    def _update_com_frame_leaflet_positions(self):
+        for leaflet in self.reps['leaflets'].keys():
+            leaf_lipidcom = self.reps['leaflets'][leaflet].get_member_indices()
+            for index in leaf_lipidcom:
+                self.reps['com_frame'].lipidcom[index].leaflet = leaflet
+        return
 
     #iterator functions --
     def __iter__(self):
@@ -959,9 +963,10 @@ class BilayerAnalyzer(object):
             if self._first_leaflet:
                 self._first_leaflet = False
                 self.reps['leaflets'] = self._build_leaflets()
+                self._update_com_frame_leaflet_positions()
             elif (self._leaflet_counter%self.rep_settings['leaflets']['update_interval'])==0:
                 self.reps['leaflets'] = self._build_leaflets()
-
+                self._update_com_frame_leaflet_positions()
             if self.rep_settings['com_frame']['dump']:
                 ofname = self.rep_settings['com_frame']['dump_path'] + "com_frame_" + str(
                     frame.frame) + ".pickle"
@@ -972,8 +977,6 @@ class BilayerAnalyzer(object):
                     frame.frame) + ".pickle"
                 with open(ofname, 'wb') as ofile:
                     pickle.dump(self.reps['leaflets'], ofile)
-
-
 
             if self.analysis_protocol.use_objects['lipid_grid']:
                 self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
