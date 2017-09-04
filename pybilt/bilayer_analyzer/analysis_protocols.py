@@ -3116,19 +3116,21 @@ class FlipFlopProtocol(AnalysisProtocol):
             backward_diff = ref.difference(curr)
             if len(forward_diff) > 0:
                 for index in forward_diff:
-                    resname = ba_reps['com_frame'].lipidcom[index].resname
+                    resname = ba_reps['com_frame'].lipidcom[index].type
                     resid = ba_reps['com_frame'].lipidcom[index].resid
                     time = ba_reps['com_frame'].time
+                    frame = ba_reps['com_frame'].mdnumber
                     self.analysis_output[resname]['count']+=1
-                    self.analysis_output[resname]['events'].append([time, resid,
+                    self.analysis_output[resname]['events'].append([frame, time, resid,
                                                             o_leaf, leaflet])
             if len(backward_diff) > 0:
                 for index in backward_diff:
-                    resname = ba_reps['com_frame'].lipidcom[index].resname
+                    resname = ba_reps['com_frame'].lipidcom[index].type
                     resid = ba_reps['com_frame'].lipidcom[index].resid
                     time = ba_reps['com_frame'].time
+                    frame = ba_reps['com_frame'].mdnumber
                     self.analysis_output[resname]['count']+=1
-                    self.analysis_output[resname]['events'].append([time, resid,
+                    self.analysis_output[resname]['events'].append([frame, time, resid,
                                                             leaflet, o_leaf])
             break
 
