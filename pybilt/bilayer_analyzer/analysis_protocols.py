@@ -3030,3 +3030,138 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
         return
 
 command_protocols['loa'] = LateralOrientationAngleProtocol
+
+# define a new analysis 'flip_flop'
+valid_analysis.append('flip_flop')
+analysis_obj_name_dict['flip_flop'] = 'com_frame'
+
+
+class FlipFlopProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Count any lipid flips flops between the leaflets.
+
+        This protocol is identified by the analysis key: 'flip_flop'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            None
+
+        References:
+            1. Andrey A. Gurtovenko, and Ilpo Vattulainen, Molecular Mechanism
+                for Lipid Flip-Flops, The Journal of Physical Chemistry B, 2007
+                111 (48), 13554-13559, DOI: 10.1021/jp077094k
+                http://pubs.acs.org/doi/abs/10.1021/jp077094k?journalCode=jpcbfk
+
+            2. Nicolas Sapay, W. F. Drew Bennett, and D. Peter Tieleman,
+                Molecular Simulations of Lipid Flip-Flop in the Presence of
+                Model Transmembrane Helices, Biochemistry, 2010 49 (35),
+                7665-7673, DOI: 10.1021/bi100878q
+                http://pubs.acs.org/doi/abs/10.1021/bi100878q
+        """
+        # required
+        self._short_description = "Count lipid flip flops."
+        self._return_length = 2
+        self.analysis_key = 'flip_flop'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['none'] = None
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+        self._first_frame = True
+        self._resnames = []
+        self._reference_leaf = None
+        self._reference_com_frame = None
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        self.analysis_output = {}
+        return
+
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        if self._first_frame:
+            self._reference_leaf = ba_reps['leaflets']
+            self._reference_com_frame = ba_reps['com_frame']
+            for leaflet in ba_reps['leaflets'].keys():
+                resnames = ba_reps['leaflets'][leaflet].get_group_names()
+                for resname in resnames:
+                    if resname not in self._resnames:
+                        self._resnames.append(resname)
+            for resname in self._resnames:
+
+                self.analysis_output[resname] = {'count': 0, 'events':[]}
+            self._first_frame = False
+            return
+        curr_leaflets = ba_reps['leaflets']
+        for leaflet in curr_leaflets.keys():
+            o_leaf = [leaf for leaf in curr_leaflets.keys() if leaf != leaflet]
+            if len(o_leaf) == 1:
+                o_leaf = o_leaf[0]
+            else:
+                o_leaf = None
+            curr = set(curr_leaflets[leaflet].get_member_indices())
+            ref = set(self._reference_leaf[leaflet].get_member_indices())
+            # o_leaf -> leaflet
+            forward_diff = curr.difference(ref)
+            # leaflet -> o_leaf
+            backward_diff = ref.difference(curr)
+            if len(forward_diff) > 0:
+                for index in forward_diff:
+                    resname = ba_reps['com_frame'].lipidcom[index].resname
+                    resid = ba_reps['com_frame'].lipidcom[index].resid
+                    time = ba_reps['com_frame'].time
+                    self.analysis_output[resname]['count']+=1
+                    self.analysis_output[resname]['events'].append([time, resid,
+                                                            o_leaf, leaflet])
+            if len(backward_diff) > 0:
+                for index in backward_diff:
+                    resname = ba_reps['com_frame'].lipidcom[index].resname
+                    resid = ba_reps['com_frame'].lipidcom[index].resid
+                    time = ba_reps['com_frame'].time
+                    self.analysis_output[resname]['count']+=1
+                    self.analysis_output[resname]['events'].append([time, resid,
+                                                            leaflet, o_leaf])
+            break
+
+        return
+
+    def save_data(self, path=None):
+        """Dumps the outputs of this protocol to disc.
+
+        Args:
+            path (str, Optional): The string containing the path to the location
+                that the analysis results should be dumped to on disc.
+        """
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
+        with open(save_file, 'wb') as outfile:
+            pickle.dump(self.analysis_output, outfile)
+
+        return
+
+    def get_data(self):
+        """Returns the analysis_output of this protocol. """
+        return self.analysis_output
+
+    def reset(self):
+        """Resets the analysis by resetting the outputs and any necessary
+        internal variables.
+        """
+        self.analysis_output = {}
+        self._first_frame = True
+        self._resnames = []
+        self._reference_leaf = None
+        self._reference_com_frame = None
+        return
+# update the command_protocols dictionary
+command_protocols['flip_flop'] = FlipFlopProtocol
