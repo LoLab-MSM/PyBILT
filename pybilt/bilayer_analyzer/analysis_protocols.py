@@ -649,10 +649,15 @@ class MSDMultiProtocol(AnalysisProtocol):
         (MSD) of the centers of mass of the specified lipids using multiple time
         origins and thus multiple time blocks.
         The MSD is given by
-        MSD_i = <(r(t) - <r_0)**2>_i for lipid type i; the angle brackets denote
-        averaging over all lipids of type i.
+            MSD_i = <<(r(tau) - r_0)**2>_i>_tau
+        for lipid type i; the inner angle
+        brackets denote averaging over all lipids of type i and the
+        outer brackets denote averaging over all time origins. The diffusion
+        coefficient is estimated from the MSD using a simplified version
+        Einstein's relation
+            D_i ~ MSD_i/(4.0*tau)
 
-        This protocol is identified by the analysis key: 'msd'
+        This protocol is identified by the analysis key: 'msd_multi'
 
         Args:
             args (list): list of string keys and arguments
