@@ -3132,6 +3132,9 @@ class FlipFlopProtocol(AnalysisProtocol):
                     self.analysis_output[resname]['count']+=1
                     self.analysis_output[resname]['events'].append([frame, time, resid,
                                                             leaflet, o_leaf])
+            if len(forward_diff) > 0 or len(backward_diff) > 0:
+                self._reference_leaf = ba_reps['leaflets']
+                self._reference_com_frame = ba_reps['com_frame']
             break
 
         return
