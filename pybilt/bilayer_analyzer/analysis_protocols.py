@@ -8,7 +8,7 @@ individual analysis functions/protocols are derived classes of AnalysisProtocol,
 extended by simply defining a new protocol.
 Example:
     # define a new analysis 'my_analysis'
-    # add it to the valid_analysislist
+    # add it to the valid_analysis list
     valid_analysis.append('my_analysis')
     #add it to analysis_obj_name_dict dictionary with the buildable object (e.g. mda_frame)  needed for the analysis.
     #The buildables are built by the bilayer analyzer and can accessed from it for the analysisanalysis.
@@ -66,7 +66,8 @@ valid_analysis= []
 analysis_obj_name_dict = {}
 # obj_dict = {"com_frame":COMFrame}
 #define the buildable objects that are used by the analysisfunctions
-use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False}
+use_objects = {"mda_frame": True, "com_frame": True, "lipid_grid": False,
+    "vector_frame": False}
 
 
 # TO DO:
@@ -3170,3 +3171,123 @@ class FlipFlopProtocol(AnalysisProtocol):
         return
 # update the command_protocols dictionary
 command_protocols['flip_flop'] = FlipFlopProtocol
+
+# define a new analysis 'lipid_length'
+valid_analysis.append('lipid_length')
+analysis_obj_name_dict['lipid_length'] = 'vector_frame'
+
+class LipidLengthProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Estimate the lipids length using the defined lipid vector.
+
+        The LipidLengthProtocol is used to compute the mean lipid length using
+        the vector represetation of the specified lipids.
+
+        This protocol is identified by the analysis key: 'lipid_length'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', averages over all lipid types.
+
+        References:
+            1. Anton O. Chugunov,  Pavel E. Volynsky, Nikolay A. Krylov,
+                Ivan A. Boldyrev, and Roman G. Efremov,  Liquid but Durable:
+                Molecular Dynamics Simulations Explain the Unique Properties of
+                Archaeal-Like Membranes, Scientific Reports, 4:7462, 2014,
+                doi:10.1038/srep07462
+                (https://www.nature.com/articles/srep07462)
+
+        """
+        # required
+        self._short_description = "Estimate of lipid length using the lipid vectors."
+        self._return_length = 2
+        self.analysis_key = 'lipid_length'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['leaflet'] = 'both'
+        self.settings['resname'] = 'all'
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        self.analysis_output = []
+        return
+
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        leaflet = self.settings['leaflet']
+        group = self.settings['resname']
+        if self._first_frame:
+            indices = []
+            # parse the leaflet and group inputs
+            if leaflet == "both":
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            elif leaflet == "upper":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            elif leaflet == "lower":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            else:
+                # unknown option--use default "both"
+                print "!! Warning - request for unknown leaflet name \'", leaflet
+                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            self._indices = indices
+        indices = self._indices
+        n_com = len(indices)
+        lengths = np.zeros((n_com, 1))
+        count = 0
+        for i in indices:
+            vec_curr = ba_reps['vector_frame'].lipidvec[i].vector
+            lengths[count] = np.sqrt(np.dot(vec_curr, vec_curr))
+            count += 1
+
+        # initialize a numpy array to hold the msd for the selection
+        msd = np.zeros(2)
+        # initialize a running stats object to do the averaging over resids
+        drs_stat = RunningStats()
+
+        ref_coords = np.zeros((n_com, 2))
+        if self._first_frame:
+            count = 0
+            for i in indices:
+                com_curr = \
+                    ba_reps['first_com_frame'].lipidcom[i].com_unwrap[
+                        ba_settings['lateral']]
+                ref_coords[count] = com_curr[:]
+                count += 1
+            self._ref_coords = ref_coords[:]
+            self._first_frame = False
+        else:
+            ref_coords = self._ref_coords
+            # get the current com frame list
+        tc = ba_reps['com_frame'].time
+        # get the msd for the current selection
+        mean_length = lengths.mean()
+        lipid_length = np.array([tc, mean_length])
+        self.analysis_output.append(lipid_length)
+        return
+
+
+# update the command_protocols dictionary
+command_protocols['lipid_length'] = LipidLengthProtocol

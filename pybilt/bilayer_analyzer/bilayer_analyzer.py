@@ -31,6 +31,7 @@ if sys.version_info < (3,0):
 # PyBILT imports
 import com_frame as cf
 import leaflet as lf
+import vector_frame as vf
 import pybilt.lipid_grid.lipid_grid as lg
 import analysis_protocols as ap
 import plot_protocols as pp
@@ -123,7 +124,7 @@ class BilayerAnalyzer(object):
             Default: 'z'
         lateral_dimension (str): A string representing the bilayer's lateral dimensions (i.e. 'xy', 'yz', 'xz', etc.).
             Default: 'xy'
-        current_mda_frame (obj:MDAnalsysis-->Timestep): This variable is used during the analysis loop to store a copy
+        current_mda_frame (obj:MDAnalysis-->Timestep): This variable is used during the analysis loop to store a copy
             of current frame in the MDAnalysis trajectory.
         frame_range (list): A three element list containing the range of frames and the skipping interval for the
             analysis (i.e. which frames to include in the loop over the trajectory).
@@ -217,6 +218,11 @@ class BilayerAnalyzer(object):
                                            'dump_path' : "./",
                                            'n_xbins' : 10,
                                            'n_ybins' : 10}
+        #com_frame
+        self.reps['vector_frame'] = None
+        self.rep_settings['vector_frame'] = {'dump' : False,
+                                         'dump_path' : "./",
+                                         'ref_atoms' : None}
         #first_com_frame
         self.reps['first_com_frame'] = None
 
@@ -649,7 +655,7 @@ class BilayerAnalyzer(object):
 
     # analysis
     def run_analysis(self):
-        """ Runs the analsysis.
+        """ Runs the analysis.
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
         analysis of each analysis that was initialized in the setup.
@@ -661,10 +667,10 @@ class BilayerAnalyzer(object):
         for _frame in self:
             pass
         return
-           
+
     # analysis
     def run_analysis_mp(self, nprocs=1):
-        """ Runs the analsysis.
+        """ Runs the analysis.
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
         analysis of each analysis that was initialized in the setup.
@@ -757,27 +763,6 @@ class BilayerAnalyzer(object):
                 with open(ofname, 'wb') as ofile:
                     pickle.dump(self.reps['leaflets'], ofile)
 
-            # first compute the average position along the normal direction
-            zstat = RunningStats()
-            for lipcom in self.reps['com_frame'].lipidcom:
-                zstat.push(lipcom.com_unwrap[self.settings['norm']])
-            zavg = zstat.mean()
-            # now loop over the lipids
-            l = 0
-            for lipcom in self.reps['com_frame'].lipidcom:
-                pos = ""
-                # decide which leaflet
-                #    print (lipcom.com_unwrap)
-                #    print (lipcom.com)
-                if lipcom.com_unwrap[self.settings['norm']] > zavg:
-                    pos = 'upper'
-                elif lipcom.com_unwrap[self.settings['norm']] < zavg:
-                    pos = 'lower'
-                # add to the chosen leaflet
-                self.reps['com_frame'].lipidcom[l].leaflet = pos
-                self.reps['leaflets'][pos].add_member(l, lipcom.type, lipcom.resid)
-                l += 1
-
             if self.analysis_protocol.use_objects['lipid_grid']:
                 self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
                                                 self.settings['lateral'],
@@ -854,7 +839,7 @@ class BilayerAnalyzer(object):
         """ Returns the available analysiss.
         Returns:
             (list): A list of string keys corresponding to the available
-            analysiss.
+            analysis.
 
         """
         return ap.command_protocols.keys()
@@ -888,12 +873,18 @@ class BilayerAnalyzer(object):
             for index in leaf_lipidcom:
                 self.reps['com_frame'].lipidcom[index].leaflet = leaflet
         return
+    def _update_vector_frame_leaflet_positions(self):
+        for leaflet in self.reps['leaflets'].keys():
+            leaf_lipidvec = self.reps['leaflets'][leaflet].get_member_indices()
+            for index in leaf_lipidvec:
+                self.reps['vector_frame'].lipidvec[index].leaflet = leaflet
+        return
 
     #iterator functions --
     def __iter__(self):
         return self
     def next(self):
-        """ Runs the analsysis as an iterator.
+        """ Runs the analysis as an iterator.
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
         analysis of each analysis that was initialized in the setup.
@@ -989,6 +980,11 @@ class BilayerAnalyzer(object):
                     with open(ofname, 'wb') as ofile:
                         pickle.dump(self.reps['lipid_grid'], ofile)
                         # lipid_grid = None
+            if self.analysis_protocol.use_objects['vector_frame']:
+                self.reps['vector_frame'] = vf.VectorFrame(frame,
+                                self.mda_data.bilayer_sel,
+                                self.rep_settings['vector_frame']['ref_atoms'])
+                self._update_vector_frame_leaflet_positions()
             # now do analyses
             if self._frame_loop_count % self.settings['print_interval'] == 0:
                 print("Frame: {}".format(frame.frame))
