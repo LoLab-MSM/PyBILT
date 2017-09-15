@@ -3399,3 +3399,167 @@ class LipidTiltProtocol(AnalysisProtocol):
 
 # update the command_protocols dictionary
 command_protocols['lipid_tilt'] = LipidTiltProtocol
+
+# define a new analysis
+valid_analysis.append('lipid_collinearity')
+analysis_obj_name_dict['lipid_collinearity'] = 'vector_frame'
+
+class LipidCollinearityProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Estimate the lipid-lipid collinearity angles.
+
+        The LipidCollinearityProtocol is used to compute the mean lipid-lipid
+        collinearity angle (or order parameter) using the vector represetation
+        of the specified lipids.
+
+        This protocol is identified by the analysis key: 'lipid_collinearity'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'upper'
+            resname_1 (str): Specify the resname of the reference lipid type to
+                include in this analysis. Default: 'first', the first lipid in
+                the list pulled from the com_frame representation.
+            resname_2 (str): Specify the resname of the target lipid type to
+                include in this analysis. Default: 'first', the first lipid in
+                the list pulled from the com_frame representation.
+            style (str: 'angle', 'order'): Specify whether to compute the
+                tilt angle ('angle') or the tilt angle order parameter ('order').
+                Default: 'angle'
+
+        References:
+            1. Anton O. Chugunov,  Pavel E. Volynsky, Nikolay A. Krylov,
+                Ivan A. Boldyrev, and Roman G. Efremov,  Liquid but Durable:
+                Molecular Dynamics Simulations Explain the Unique Properties of
+                Archaeal-Like Membranes, Scientific Reports, 4:7462, 2014,
+                doi:10.1038/srep07462
+                (https://www.nature.com/articles/srep07462)
+
+        """
+        # required
+        self._short_description = "Estimate of lipid-lipid collinearity."
+        self._return_length = 2
+        self.analysis_key = 'lipid_collinearity'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['leaflet'] = 'upper'
+        self.settings['resname_1'] = 'first'
+        self.settings['resname_2'] = 'first'
+        self.settings['style'] = 'angle'
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices_1 = []
+        self._indices_2 = []
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        self.analysis_output = []
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        if self._first_frame:
+            leaflet = self.settings['leaflet']
+            print("leaflet: {}".format(leaflet))
+            group_1 = self.settings['resname_1']
+            group_2 = self.settings['resname_2']
+            lipid_types = []
+            nlipids = 0
+            do_leaflet = [self.settings['leaflet']]
+            for leaflet_name in do_leaflet:
+                leaf = ba_reps['leaflets'][leaflet_name]
+                groups = leaf.get_group_names()
+                nlipids += len(leaf.get_member_indices())
+                for group in groups:
+                    if group not in lipid_types:
+                        lipid_types.append(group)
+            if self.settings['resname_1'] == 'first':
+                self.settings['resname_1'] =  lipid_types[0]
+            if self.settings['resname_2'] == 'first':
+                self.settings['resname_2'] = lipid_types[0]
+            indices_1 = []
+            indices_2 = []
+            # parse the leaflet and group inputs
+            if leaflet == "both":
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices_1 += curr_leaf.get_group_indices(group_1)
+                    indices_2 += curr_leaf.get_group_indices(group_2)
+            elif leaflet == "upper":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices_1 = curr_leaf.get_group_indices(group_1)
+                indices_2 = curr_leaf.get_group_indices(group_2)
+            elif leaflet == "lower":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices_1 = curr_leaf.get_group_indices(group_1)
+                indices_2 = curr_leaf.get_group_indices(group_2)
+            else:
+                # unknown option--use default "both"
+                print "!! Warning - request for unknown leaflet name \'", leaflet
+                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices_1 += curr_leaf.get_group_indices(group_1)
+                    indices_2 += curr_leaf.get_group_indices(group_2)
+            self._indices_1 = indices_1
+            self._indices_2 = indices_2
+            self._first_frame = False
+
+        indices_1 = self._indices_1
+        indices_2 = self._indices_2
+        n_com_1 = len(indices_1)
+        n_com_2 = len(indices_2)
+        values = []
+        count = 0
+        if self.settings['resname_1'] == self.settings['resname_2']:
+            for i in range(n_com_1-1):
+                ii = indices_1[i]
+                vec_i = ba_reps['vector_frame'].lipidvec[ii].vector
+                vec_i_l = np.sqrt(np.dot(vec_i, vec_i))
+                for j in range(i+1, n_com_1):
+                    jj = indices_1[j]
+                    vec_j = ba_reps['vector_frame'].lipidvec[jj].vector
+                    vec_j_l = np.sqrt(np.dot(vec_j, vec_j))
+                    if self.settings['style'] == 'angle':
+                        angle_rad = np.arccos(np.dot(vec_i, vec_j)/(vec_i_l*vec_j_l))
+                        values.append(angle_rad*180.0/np.pi)
+                    elif self.settings['style'] == 'order':
+                        values.append( np.dot(vec_i, vec_j)/(vec_i_l*vec_j_l))
+        else:
+            for i in range(n_com_1):
+                ii = indices_1[i]
+                vec_i = ba_reps['vector_frame'].lipidvec[ii].vector
+                vec_i_l = np.sqrt(np.dot(vec_i, vec_i))
+                for j in range(n_com_2):
+                    jj = indices_2[j]
+                    vec_j = ba_reps['vector_frame'].lipidvec[jj].vector
+                    vec_j_l = np.sqrt(np.dot(vec_j, vec_j))
+                    if self.settings['style'] == 'angle':
+                        angle_rad = np.arccos(np.dot(vec_i, vec_j)/(vec_i_l*vec_j_l))
+                        values.append(angle_rad*180.0/np.pi)
+                    elif self.settings['style'] == 'order':
+                        values.append( np.dot(vec_i, vec_j)/(vec_i_l*vec_j_l))
+
+        values = np.array(values)
+            # get the current com frame list
+        tc = ba_reps['vector_frame'].time
+        # get the msd for the current selection
+        mean_value = values.mean()
+        lipid_collinearity = np.array([tc, mean_value])
+        self.analysis_output.append(lipid_collinearity)
+        return
+
+
+# update the command_protocols dictionary
+command_protocols['lipid_collinearity'] = LipidCollinearityProtocol
