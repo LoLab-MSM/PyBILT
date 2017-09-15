@@ -3262,26 +3262,8 @@ class LipidLengthProtocol(AnalysisProtocol):
             lengths[count] = np.sqrt(np.dot(vec_curr, vec_curr))
             count += 1
 
-        # initialize a numpy array to hold the msd for the selection
-        msd = np.zeros(2)
-        # initialize a running stats object to do the averaging over resids
-        drs_stat = RunningStats()
-
-        ref_coords = np.zeros((n_com, 2))
-        if self._first_frame:
-            count = 0
-            for i in indices:
-                com_curr = \
-                    ba_reps['first_com_frame'].lipidcom[i].com_unwrap[
-                        ba_settings['lateral']]
-                ref_coords[count] = com_curr[:]
-                count += 1
-            self._ref_coords = ref_coords[:]
-            self._first_frame = False
-        else:
-            ref_coords = self._ref_coords
             # get the current com frame list
-        tc = ba_reps['com_frame'].time
+        tc = ba_reps['vector_frame'].time
         # get the msd for the current selection
         mean_length = lengths.mean()
         lipid_length = np.array([tc, mean_length])
@@ -3291,3 +3273,129 @@ class LipidLengthProtocol(AnalysisProtocol):
 
 # update the command_protocols dictionary
 command_protocols['lipid_length'] = LipidLengthProtocol
+
+# define a new analysis
+valid_analysis.append('lipid_tilt')
+analysis_obj_name_dict['lipid_tilt'] = 'vector_frame'
+
+class LipidTiltProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Estimate the lipids tilt angles using the defined lipid vector.
+
+        The LipidTiltProtocol is used to compute the mean lipid tilt using
+        the vector represetation of the specified lipids in reference to
+        a particular axis, typically the bilayer normal.
+
+        This protocol is identified by the analysis key: 'lipid_tilt'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'upper'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', averages over all lipid types.
+            style (str: 'angle', 'order'): Specify whether to compute the
+                tilt angle ('angle') or the tilt angle order parameter ('order').
+                Default: 'angle'
+            ref_axis (str: 'x', 'y', or 'z'): Specify the reference axis that
+                should be used to estimate the tilt. This is typically the
+                axis along the bilayer normal. Default: 'z'
+
+        References:
+            1. Anton O. Chugunov,  Pavel E. Volynsky, Nikolay A. Krylov,
+                Ivan A. Boldyrev, and Roman G. Efremov,  Liquid but Durable:
+                Molecular Dynamics Simulations Explain the Unique Properties of
+                Archaeal-Like Membranes, Scientific Reports, 4:7462, 2014,
+                doi:10.1038/srep07462
+                (https://www.nature.com/articles/srep07462)
+
+        """
+        # required
+        self._short_description = "Estimate of lipid tilt using the lipid vectors."
+        self._return_length = 2
+        self.analysis_key = 'lipid_tilt'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['leaflet'] = 'upper'
+        self.settings['resname'] = 'all'
+        self.settings['style'] = 'angle'
+        self.settings['ref_axis'] = 'z'
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
+        self._ref_axis = np.array([0.0, 0.0, 1.0])
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        self.analysis_output = []
+        return
+
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        leaflet = self.settings['leaflet']
+        group = self.settings['resname']
+        if self._first_frame:
+            indices = []
+            # parse the leaflet and group inputs
+            if leaflet == "both":
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            elif leaflet == "upper":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            elif leaflet == "lower":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_group_indices(group)
+            else:
+                # unknown option--use default "both"
+                print "!! Warning - request for unknown leaflet name \'", leaflet
+                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(group)
+            self._indices = indices
+            if self.settings['ref_axis'] != 'z':
+                if self.settings['ref_axis'] == 'x':
+                    self._ref_axis = np.array([1.0, 0.0, 0.0])
+                elif self.settings['ref_axis'] == 'y':
+                    self._ref_axis = np.array([0.0, 1.0, 0.0])
+
+        indices = self._indices
+        n_com = len(indices)
+        values = np.zeros((n_com, 1))
+        count = 0
+        for i in indices:
+            vec_curr = ba_reps['vector_frame'].lipidvec[i].vector
+            if self.settings['style'] == 'angle':
+                vec_length = np.sqrt(np.dot(vec_curr, vec_curr))
+                angle_rad = np.arccos(np.dot(vec_curr,
+                                                    self._ref_axis)/vec_length)
+                values[count] = 90.0 - angle_rad*180.0/np.pi
+            elif self.settings['style'] == 'order':
+                vec_length = np.sqrt(np.dot(vec_curr, vec_curr))
+                values[count] = np.dot(vec_curr, self._ref_axis)/vec_length
+
+            count += 1
+
+            # get the current com frame list
+        tc = ba_reps['vector_frame'].time
+        # get the msd for the current selection
+        mean_value = values.mean()
+        lipid_tilt = np.array([tc, mean_value])
+        self.analysis_output.append(lipid_tilt)
+        return
+
+
+# update the command_protocols dictionary
+command_protocols['lipid_tilt'] = LipidTiltProtocol
