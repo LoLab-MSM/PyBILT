@@ -1,4 +1,4 @@
-from pybilt.analysis_modules import bilayer_thickness
+from pybilt.bilayer_analyzer.canned_analysis_protocols import bilayer_thickness
 
 
 def test_analysis_module_bilayer_thickness():

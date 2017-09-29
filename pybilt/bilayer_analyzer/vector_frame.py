@@ -1,7 +1,8 @@
 #imports
 import MDAnalysis as mda
 import numpy as np
-
+from mpl_toolkits.mplot3d import axes3d
+import matplotlib.pyplot as plt
 import sys
 
 #range/xrange fix
@@ -89,7 +90,7 @@ class LipidVec(object):
             atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+end_atoms)])
             self.end = atom_group.center_of_mass()
             self.end_mass = atom_group.total_mass()
-        self.vector = self.end - self.start    
+        self.vector = self.end - self.start
         self.mass = mda_residue.atoms.total_mass()
         return
 
@@ -252,3 +253,6 @@ class VectorFrame(object):
     #
     #     xyz_out.close()
     #     return
+
+    def to_quiver(self):
+        pass
