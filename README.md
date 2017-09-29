@@ -67,22 +67,38 @@ before running PyBILT modules.
 ------
 
 #### Quick overview of PyBILT
-**PyBILT** is composed of 5 major modules:
-  * bilayer_analyzer -- The bilayer_analyzer is the primary analysis module.
-                        This object has the most comprehensive set of built-in
-                        features (types of analyses and use of different bilayer
-                        representations) and makes use of much of the
-                        functionality from proceeding modules.  
-  * mda_tools -- This module has various sets of functions for directly
+**PyBILT** is composed of 2 primary analysis packages:
+  * bilayer_analyzer -- The bilayer_analyzer is an analysis package that
+                        is designed to analyze (quasi) planar lipid bilayer systems. It is accessed through the BilayerAnalyzer object, which can be imported via:
+                        ```from pybilt.bilayer_analyzer import BilayerAnalyzer```.
+                        The BilayerAnalyzer features automatic dynamic unwrapping of coordinates and leaflet detection.   
+                        The bilayer_analyzer works on a multiple-representation
+                        model, whereby the various analyses are conducted using different representations of the bilayer lipids. Bilayer lipids can be represented using the following four representations:
+                        * All atom
+                        * Centers-of-mass - Each lipid (or selection of atoms from each lipid) is reduced to a center-of-mass.
+                        * Grid (or lipid grid) - The lipids are mapped to
+                        two-dimensional grids (one for each leaflet) in the
+                        style of the [GridMAT-MD method](http://www.bevanlab.biochem.vt.edu/GridMAT-MD/)
+                        * Vectors - Each lipid is converted to a vector representation using select reference atoms (or sets of reference atoms) that are used to compute the head and tail of the vector; e.g., a lipid tail atom to lipid head atom, or P-N vectors.
+
+                        The bilayer_analyzer features various types of analyses and the use of different representations
+                        is handled internally based the requirements and design
+                        of each analysis type. See the documentation (coming soon) for more details on individual analyses and the
+                        representations they use.   
+  * mda_tools -- This package includes various modules and functions for directly
                  analyzing and operating on MDAnalysis trajectories and objects.
                  e.g. functions to compute density profiles.
-  * lipid_grid -- The lipid grid module can be used construct "lipid grid" grid
+
+ Additional packages include:
+   * analysis_modules -- 
+   * lipid_grid -- The lipid grid module can be used construct "lipid grid" grid
                   representations of lipid bilayers, which can be used to
                   accurately estimate quantities such as area per lipid.
   * com_trajectory -- This module can be used to construct a center of mass
                       trajectory (COMTraj) out of an MDAnalysis trajectory,
                       which is useful for computing quantities like mean squared
-                      displacement.
+                      displacement. The COMTraj is designed to work with bilayers.
+
   * plot_generation -- This module has several pre-written plotting functions
                        (using matplotlib and seaborn) for some of the properties
                        that can be computed from functions in the other modules.
@@ -93,9 +109,9 @@ before running PyBILT modules.
 Detailed documentation for PyBILT is in the pipeline. There are currently a
 few Jupyter IPython [notebooks](jupyter_notebooks) that provide some examples and show some basic usage. More of these are also in the pipeline. Although they are also not fully extensive, the [tests](tests) can serve as a useful place to examine some basic usage and functionality.
 
-## Authors
+## Core Developers
 
-* **Blake A Wilson** - *Initial work* - Currently a Postdoctoral Fellow at Vanderbilt University
+* **Blake A Wilson** - Currently a Postdoctoral Fellow at Vanderbilt University
   * Vandy e-mail: blake.a.wilson@vanderbilt.edu
   * Gmail: blakeaw1102@gmail.com
   * [Blake's VU Website]( https://my.vanderbilt.edu/blakeaw/)
@@ -116,7 +132,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Built With
 
-* [ANACONDA](https://www.continuum.io/) - ANACONDA Python distribution and CONDA package and environment manager 
+* [ANACONDA](https://www.continuum.io/) - ANACONDA Python distribution and CONDA package and environment manager
 * [PyCharm](https://www.jetbrains.com/pycharm/) - Primary Text Editor/IDE
 * [ATOM](https://atom.io/) - Secondary Text Editor
 * [Sublime Text](https://www.sublimetext.com/) - Text Editor used in earlier work
