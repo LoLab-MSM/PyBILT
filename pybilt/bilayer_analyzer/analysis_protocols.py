@@ -49,7 +49,7 @@ except ImportError as error:
     import pickle
 import warnings
 import sys
-
+import cmath
 #range/xrange fix
 if sys.version_info < (3,0):
     def range(*args, **kwargs):
@@ -60,6 +60,7 @@ from pybilt.common.running_stats import RunningStats
 import pybilt.mda_tools.mda_density_profile as mda_dp
 import pybilt.lipid_grid.lipid_grid_curv as lgc
 from pybilt.common import distance_cutoff_clustering as dc_cluster
+from scipy.spatial.distance import cdist
 #need some containers for bookkeeping
 command_protocols = {}
 valid_analysis= []
@@ -3563,3 +3564,166 @@ class LipidCollinearityProtocol(AnalysisProtocol):
 
 # update the command_protocols dictionary
 command_protocols['lipid_collinearity'] = LipidCollinearityProtocol
+
+
+# define a new analysis 'msd'
+valid_analysis.append('halperin_nelson')
+analysis_obj_name_dict['halperin_nelson'] = 'com_frame'
+
+
+class HalperinNelsonProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Estimate the mean Halperin and Nelson's rotational invariant.
+
+        The HalperinNelsonProtocol is used to compute the mean Halperin and
+        Nelson's rotational invariant. The value for lipid l is given by:
+            phi_l = | (1/6) * sum_{j element nn(l)} exp(6i*theta_{lj}) |^2
+        where i is complex and nn(l) are the 6 nearest neighbors of lipid
+        l; theta_{lj} is the angle between the vector formed by beads
+        representing lipid l and j and an arbitrary axis. The value is unity
+        for perfect hexagonal packing, and it is zero to the extent that
+        hexagonal packing is entirely absent. This protocol uses the 'com_frame'
+        representation of the bilayer.
+
+        This protocol is identified by the analysis key: 'halperin_nelson'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'upper'
+
+        References:
+            1. Shachi Katira, Kranthi K. Mandadapu, Suriyanarayanan
+                Vaikuntanathan, Berend Smit, and David Chandler, The
+                order-disorder transition in model lipid bilayers is a
+                first-order hexatic to liquid phase transition, arXiv preprint
+                [cond-mat.soft] 2015, arXiv:1506.04310.
+                https://arxiv.org/pdf/1506.04310.pdf
+
+
+        """
+        # required
+        self._short_description = "Halperin and Nelson's rotational invariant."
+        self._return_length = 2
+        self.analysis_key = 'halperin_nelson'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['leaflet'] = 'upper'
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+        self._first_frame = True
+        self._indices = []
+        self._ref_axis = np.array([1.0, 0.0])
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        self.analysis_output = []
+        return
+
+    def _distance_euclidean_pbc(self, v_a, v_b, box_lengths, center='box_half'):
+        if isinstance(center, (str, basestring)):
+            if center == 'zero':
+                center = np.zeros(len(v_a))
+            elif center == 'box_half':
+                center = box_lengths/2.0
+        #shift center to zero for minimum image
+        v_a = v_a - center
+        v_b = v_b - center
+        #difference
+        d_v = v_a - v_b
+        d_v_a = np.absolute(d_v)
+        dim = len(v_a)
+        #check for minimum image
+        for i in range(dim):
+            v_i = d_v_a[i]
+            box_i = box_lengths[i]
+            box_i_h = box_i/2.0
+            if v_i > box_i_h:
+                d_v[i] = box_i - np.absolute(v_a[i]) - np.absolute(v_b[i])
+        r = np.sqrt(np.dot(d_v, d_v))
+        return (r, d_v)
+
+    def _6nn(self, indices, com_frame, lateral):
+        k=6
+        #initialize knn dict
+        knn = {key: [] for key in indices}
+        #make sure X has the right shape for the cdist function
+        nX = len(indices)
+        distances = [[indices[i], indices[j],\
+         self._distance_euclidean_pbc(com_frame.lipidcom[indices[i]].com[lateral],\
+         com_frame.lipidcom[indices[j]].com[lateral], com_frame.box[lateral], center='box_half')] \
+         for i in xrange(nX-1) for j in xrange(i+1,nX)]
+        #sort distances
+        distances.sort(key=lambda x: x[2][0])
+        #pick up the k nearest
+        for d in distances:
+            i = d[0]
+            j = d[1]
+            dist = d[2][0]
+            vec = d[2][1]
+            if len(knn[i]) < k:
+                knn[i].append([j, dist, -vec])
+            if len(knn[j]) < k:
+                knn[j].append([i, dist, vec])
+        return knn
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        leaflet = self.settings['leaflet']
+        if self._first_frame:
+            #determine the frame intervals
+            indices = []
+            # parse the leaflet and group inputs
+            if leaflet == "upper":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_member_indices()
+            elif leaflet == "lower":
+                curr_leaf = ba_reps['leaflets'][leaflet]
+                indices = curr_leaf.get_member_indices()
+            else:
+                curr_leaf = ba_reps['leaflets']['upper']
+                indices = curr_leaf.get_member_indices()
+            self._indices = indices
+            #self.analysis_output.append([])
+        indices = self._indices
+        n_com = len(indices)
+
+        # initialize a running stats object to do the averaging over resids
+
+        if self._first_frame:
+
+            self._first_frame = False
+        nn = self._6nn(indices, ba_reps['com_frame'],
+                                    ba_settings['lateral'])
+        hn = []
+        for key in nn.keys():
+            nn_curr = nn[key]
+            nn_sum = 0.0
+            for n in nn_curr:
+                n_ind = n[0]
+                vec = n[2]
+                vec_l = n[1]
+                angle = np.dot(vec, self._ref_axis)/vec_l
+                nn_sum+=cmath.exp(6j*angle)
+            hn.append(abs(nn_sum/6.0)**2)
+        #for val in hn:
+        #    print("hn: {}".format(val))
+        hn_mean = np.array(hn).mean()
+        self.analysis_output.append([ba_reps['com_frame'].time, hn_mean])
+        return
+
+    def reset(self):
+        self.analysis_output = []
+        self._first_frame = True
+        self._indices = []
+        return
+
+# update the command_protocols dictionary
+command_protocols['halperin_nelson'] = HalperinNelsonProtocol
