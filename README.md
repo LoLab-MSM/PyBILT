@@ -1,3 +1,4 @@
+![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
 # PyBILT
 ------
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
@@ -69,26 +70,32 @@ before running PyBILT modules.
 #### Quick overview of PyBILT
 **PyBILT** is composed of 2 primary analysis packages:
   * bilayer_analyzer -- The bilayer_analyzer is an analysis package that
-                        is designed to analyze (quasi) planar lipid bilayer systems. It is accessed through the BilayerAnalyzer object, which can be imported via:
-                        ```from pybilt.bilayer_analyzer import BilayerAnalyzer```.
-                        The BilayerAnalyzer features automatic dynamic unwrapping of coordinates and leaflet detection. The bilayer_analyzer works on a multiple-representation model, whereby the various analyses are conducted using different representations of the bilayer lipids. Bilayer lipids can be represented using the following four representations:
+                        is designed to analyze (quasi) planar lipid bilayer
+                        systems. It is accessed through the BilayerAnalyzer
+                        object, which can be imported via: ```from
+                        pybilt.bilayer_analyzer import BilayerAnalyzer```. The
+                        BilayerAnalyzer features automatic dynamic unwrapping of
+                        coordinates and leaflet detection. The bilayer_analyzer
+                        works on a multiple-representation model, whereby the
+                        various analyses are conducted using different
+                        representations of the bilayer lipids. Bilayer lipids
+                        can be represented using the following four
+                        representations:
     * All atom
-    * Centers-of-mass -- Each lipid (or selection of atoms from each lipid) is reduced to a center-of-mass.
-    * Grid (or lipid grid) -- The lipids are mapped to
-                        two-dimensional grids (one for each leaflet) in the
-                        style of the [GridMAT-MD method](http://www.bevanlab.biochem.vt.edu/GridMAT-MD/)
+    * Centers-of-mass -- Each lipid (or selection of atoms from each lipid) is reduced to a
+center-of-mass.
+    * Grid (or lipid grid) -- The lipids are mapped to two-dimensional grids (one for each leaflet) in the
+style of the [GridMAT-MD method](http://www.bevanlab.biochem.vt.edu/GridMAT-MD/)
     * Vectors - Each lipid is converted to a vector representation using select reference atoms (or sets of reference atoms) that are used to compute the head and tail of the vector; e.g., a lipid tail atom to lipid head atom, or P-N vectors.
-
-                        The bilayer_analyzer features various types of analyses and the use of different representations
-                        is handled internally based the requirements and design
-                        of each analysis type. See the documentation (coming soon) for more details on individual analyses and the
-                        representations they use.   
+The bilayer_analyzer features various types of analyses and the use of different
+representations is handled internally based the requirements and design of each
+analysis type. See the documentation (coming soon) for more details on
+individual analyses and the representations they use.   
   * mda_tools -- This package includes various modules and functions for directly
                  analyzing and operating on MDAnalysis trajectories and objects.
                  e.g. functions to compute density profiles.
 
  Additional packages include:
-   * analysis_modules --
    * lipid_grid -- The lipid grid module can be used construct "lipid grid" grid
                   representations of lipid bilayers, which can be used to
                   accurately estimate quantities such as area per lipid.
