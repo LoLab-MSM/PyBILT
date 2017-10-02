@@ -1,13 +1,11 @@
 ![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
-## *Py*thon based lipid *BIL*ayer analysis *T*oolkit
+## *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
 ------
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
 [![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
 [![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-38.9%25-orange.svg)](.docstring-coverage_report.txt)
 ------
-------
-![alt text](./_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
 The analyses include:
@@ -22,7 +20,8 @@ The analyses include:
    * and more!
 
 ------
-
+![alt text](./_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
+------
 ### Install
 
 #### Warning: PyBILT is still under heavy development and may rapidly change.
@@ -86,10 +85,12 @@ center-of-mass.
     * Grid (or lipid grid) -- The lipids are mapped to two-dimensional grids (one for each leaflet) in the
 style of the [GridMAT-MD method](http://www.bevanlab.biochem.vt.edu/GridMAT-MD/)
     * Vectors - Each lipid is converted to a vector representation using select reference atoms (or sets of reference atoms) that are used to compute the head and tail of the vector; e.g., a lipid tail atom to lipid head atom, or P-N vectors.
+
 The bilayer_analyzer features various types of analyses and the use of different
 representations is handled internally based the requirements and design of each
 analysis type. See the documentation (coming soon) for more details on
 individual analyses and the representations they use.   
+
   * mda_tools -- This package includes various modules and functions for directly
                  analyzing and operating on MDAnalysis trajectories and objects.
                  e.g. functions to compute density profiles.
@@ -98,6 +99,7 @@ individual analyses and the representations they use.
    * lipid_grid -- The lipid grid module can be used construct "lipid grid" grid
                   representations of lipid bilayers, which can be used to
                   accurately estimate quantities such as area per lipid.
+                  
   * com_trajectory -- This module can be used to construct a center of mass
                       trajectory (COMTraj) out of an MDAnalysis trajectory,
                       which is useful for computing quantities like mean squared
