@@ -1,4 +1,4 @@
-from pybilt.bilayer_analyzer.canned_analysis_protocols import normal_displacement_lipid_type_correlation
+from pybilt.bilayer_analyzer.prefab_analysis_protocols import normal_displacement_lipid_type_correlation
 
 
 def test_analysis_module_normal_displacement_lipid_type_correlation():

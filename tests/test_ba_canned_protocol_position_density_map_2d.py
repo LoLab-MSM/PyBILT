@@ -1,4 +1,4 @@
-from pybilt.bilayer_analyzer.canned_analysis_protocols import position_density_maps_2d
+from pybilt.bilayer_analyzer.prefab_analysis_protocols import position_density_maps_2d
 
 
 def test_analysis_module_position_density_maps_2d():

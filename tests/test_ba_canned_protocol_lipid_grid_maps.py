@@ -1,4 +1,4 @@
-from pybilt.bilayer_analyzer.canned_analysis_protocols import lipid_grid_maps
+from pybilt.bilayer_analyzer.prefab_analysis_protocols import lipid_grid_maps
 
 
 def test_analysis_module_lipid_grid_maps():

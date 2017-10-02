@@ -1,4 +1,4 @@
-from pybilt.bilayer_analyzer.canned_analysis_protocols import area_per_lipid
+from pybilt.bilayer_analyzer.prefab_analysis_protocols import area_per_lipid
 
 def test_analysis_module_area_per_lipid():
     sel_string = "not resname CLA and not resname TIP3 and not resname POT"

@@ -1,5 +1,5 @@
 
-from pybilt.bilayer_analyzer.canned_analysis_protocols import compressibility
+from pybilt.bilayer_analyzer.prefab_analysis_protocols import compressibility
 
 
 def test_analysis_module_compressibility():
