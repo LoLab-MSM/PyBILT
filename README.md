@@ -1,4 +1,5 @@
-# ![alt text](./_images/PyBILT_logo.png "PyBILT Logo") *Py*thon based lipid *BIL*ayer analysis *T*oolkit
+![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
+## *Py*thon based lipid *BIL*ayer analysis *T*oolkit
 ------
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
 [![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
