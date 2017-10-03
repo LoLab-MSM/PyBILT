@@ -677,14 +677,50 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
 def PN_orientational_angle(structure_file, trajectory_file, selection_string,
                            lipid_resnames, PN_names='default', frame_start=0,
                            frame_end=-1, frame_interval=1, dump_path=None):
+    """Protocol to compute PN orientational angles.
+
+    This function uses the BilayerAnalyzer to compute the PN orientational
+    angles of the specified lipids (by resname). Reports of data are
+    printed to standard out, while pickled data is dumped to disk and plots are
+    generated and also dumped to disk.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        lipid_resnames (list): A list of lipid types as specified by their
+            resnames.
+        PN_names (Optional(dict)): A dictionary specifying the atom names for
+            the phosphorous and nitrogen atoms to use for the PN vector. This
+            should have the format {'lipid_resname_1':('phosphorous_name',
+            nitrogen_name)}. Defaults to 'default', which uses ('P', 'N') for
+            all lipid types.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
-    #remove the default msd analysis
+    # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
-    #add the loa analyses
+    # add the loa analyses
     if PN_names is 'default':
         PN_names = dict()
         for resname in lipid_resnames:
@@ -692,94 +728,175 @@ def PN_orientational_angle(structure_file, trajectory_file, selection_string,
     for resname in lipid_resnames:
         Pn = PN_names[resname][0]
         Nn = PN_names[resname][1]
-        analyzer.add_analysis("loa loa_"+resname+"_upper leaflet upper resname "+resname+" ref_atom_1 "+Pn+" ref_atom_2 "+Nn)
-        analyzer.add_analysis("loa loa_"+resname+"_lower leaflet lower resname "+resname+" ref_atom_1 "+Pn+" ref_atom_2 "+Nn)
-    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
+        analyzer.add_analysis("loa loa_" + resname +
+                              "_upper leaflet upper resname " +
+                              resname+" ref_atom_1 " + Pn + " ref_atom_2 " +
+                              Nn)
+        analyzer.add_analysis("loa loa_" + resname +
+                              "_lower leaflet lower resname " +
+                              resname + " ref_atom_1 " + Pn + " ref_atom_2 " +
+                              Nn)
+    # compute the correlations between a displacement vector and that lipids
+    # closest neighbor in the lateral dimensions
     analyzer.print_analysis_protocol()
 
-    #run analysis
+    # run analysis
     analyzer.run_analysis()
 
-    #output data and plots
+    # output data and plots
     analyzer.dump_data(path=dump_path)
 
     for resname in lipid_resnames:
-        loa_upper = analyzer.get_analysis_data("loa_"+resname+"_upper")
-        loa_lower = analyzer.get_analysis_data("loa_"+resname+"_lower")
-        print("Lipid resname {} has average PN orientation anlge of {} in the upper leaflet".format(resname,loa_upper[-1][1]))
+        loa_upper = analyzer.get_analysis_data("loa_" + resname + "_upper")
+        loa_lower = analyzer.get_analysis_data("loa_" + resname + "_lower")
+        print("Lipid resname {} has average PN orientation anlge of {} in\
+              the upper leaflet".format(resname, loa_upper[-1][1]))
         complement = 90.0 - loa_upper[-1][1]
         print("    complement angle: {}".format(complement))
-        print("Lipid resname {} has average PN orientation anlge of {} in the lower leaflet".format(resname,np.abs(loa_lower[-1][1])))
+        print("Lipid resname {} has average PN orientation anlge\
+               of {} in the lower leaflet".format(resname,
+                                                  np.abs(loa_lower[-1][1])))
         complement = 90.0 - np.abs(loa_lower[-1][1])
         print("    complement angle: {}".format(complement))
         print(" ")
     return
 
-def nearest_neighbor_fraction(structure_file, trajectory_file, selection_string, lipid_resnames, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None):
+
+def nearest_neighbor_fraction(structure_file, trajectory_file,
+                              selection_string, lipid_resnames, frame_start=0,
+                              frame_end=-1, frame_interval=1, dump_path=None):
+    """Protocol to compute the nearest neigbor fraction.
+
+    This function uses the BilayerAnalyzer to estimate the nearest neighbor
+    fractions (also known as fractional interactions) of the specified lipids
+    (by resname). Reports of data are printed to standard out, while pickled
+    data is dumped to disk and plots are generated and also dumped to disk.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        lipid_resnames (list): A list of lipid types as specified by their
+            resnames.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
-                             trajectory=trajectory_file,
-                             selection=selection_string)
+                               trajectory=trajectory_file,
+                               selection=selection_string)
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
-    #remove the default msd analysis
+    # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
     nres = len(lipid_resnames)
     pairs = []
-    #for i in range(nres):
-    #    pairs.append([lipid_resnames[i], lipid_resnames[i]])
     for i in range(nres):
         for j in range(nres):
             pairs.append([lipid_resnames[i], lipid_resnames[j]])
-    #add the loa analyses
+    # add the loa analyses
     for pair in pairs:
         l1 = pair[0]
         l2 = pair[1]
-        analyzer.add_analysis("nnf nnf_"+l1+"_"+l2+" resname_1 "+l1+" resname_2 "+l2)
-    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
+        analyzer.add_analysis("nnf nnf_" + l1 + "_" + l2 + " resname_1 " +
+                              l1 + " resname_2 " + l2)
+    # compute the correlations between a displacement vector and that lipids
+    # closest neighbor in the lateral dimensions
     analyzer.print_analysis_protocol()
     print(" ")
 
-    #run analysis
+    # run analysis
     analyzer.run_analysis()
 
-    #output data and plots
+    # output data and plots
     analyzer.dump_data(path=dump_path)
 
     for pair in pairs:
         l1 = pair[0]
         l2 = pair[1]
         t_nnf = analyzer.get_analysis_data("nnf_"+l1+"_"+l2)
-        print("Nearest neighbor fraction for lipid pair {} and {} : {:0.4f} +- {:0.4f}".format(l1,l2,t_nnf[-1][2],t_nnf[-1][3]))
+        print("Nearest neighbor fraction for lipid \
+              pair {} and {} : {:0.4f} +- {:0.4f}".format(l1, l2, t_nnf[-1][2],
+                                                          t_nnf[-1][3]))
     return
 
-def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None, com_sub_selection_dict=None):
 
+def normal_displacement_lipid_type_correlation(structure_file, trajectory_file,
+                                               selection_string, frame_start=0,
+                                               frame_end=-1, frame_interval=1,
+                                               dump_path=None,
+                                               com_sub_selection_dict=None):
+    """Protocol to compute the normal dimension displacement lipid type correlation.
+
+    This function uses the BilayerAnalyzer to with a local grid analysis to
+    estimate the correlation between between lipid types and their deflection
+    along the bilayer normal; this analysis includes all lipid types. Reports
+    of data are printed to standard out, while pickled data is dumped to disk
+    and plots are generated and also dumped to disk.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
                              trajectory=trajectory_file,
                              selection=selection_string)
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
-    #remove the default msd analysis
+    # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
 
     if com_sub_selection_dict is not None:
-        analyzer.rep_settings['com_frame']['name_dict'] = com_sub_selection_dict
+        analyzer.rep_settings['com_frame']['name_dict'] = \
+                                            com_sub_selection_dict
     analyzer.add_analysis("ndcorr norm_disp_correlation")
-    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
+    # compute the correlations between a displacement vector and that lipids
+    # closest neighbor in the lateral dimensions
     analyzer.print_analysis_protocol()
     print("--------")
 
-    #run analysis
+    # run analysis
     analyzer.run_analysis()
 
-    #output data and plots
+    # output data and plots
     analyzer.dump_data(path=dump_path)
 
     ndcorr = analyzer.get_analysis_data('norm_disp_correlation')
     print(" ")
-    print("Normal dimension displacement-lipid type cross correlation results:")
+    print("Normal dimension displacement-lipid type cross correlation results:"
+          )
     for leaflet in ndcorr.keys():
         print("  {} leaflet:".format(leaflet))
         for lipid_resname in ndcorr[leaflet].keys():
@@ -787,14 +904,18 @@ def normal_displacement_lipid_type_correlation(structure_file, trajectory_file, 
             deviation = ndcorr[leaflet][lipid_resname][-1][3]
             print("    Lipid resname {}: {:0.4f} +- {:0.4f}".format(lipid_resname, mean, deviation))
 
-    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.png")
-    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr, filename="ndcorr.pdf")
+    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr,
+                                                       filename="ndcorr.png")
+    pgf.plot_displacement_lipid_type_cross_correlation(ndcorr,
+                                                       filename="ndcorr.pdf")
 
     return
 
 
-def lipid_grid_maps(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path="./", name_dict=None, n_xbins=100, n_ybins=100, type_colors='auto'):
+def lipid_grid_maps(structure_file, trajectory_file, selection_string,
+                    frame_start=0, frame_end=-1, frame_interval=1,
+                    dump_path="./", name_dict=None, n_xbins=100, n_ybins=100,
+                    type_colors='auto'):
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
