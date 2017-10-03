@@ -1,3 +1,18 @@
+"""Prefab analysis protocols for lipid bilayers.
+
+This module defines a set of functions that perform bilayer analysis using
+pre-designed (prefab) protocols that automatically setup and run the analyses,
+extract and output data, and generate plots. Most of these protocols make use of
+the BilayerAnalyzer class, but some use tools from the mda_tools package. These
+analyses are meant for quasi-planar lipid bilayer systems.
+
+Example:
+    >> from pybilt.bilayer_analyzer import prefab_analysis_protocols as ba_pap
+    >> ba_pap.msd_diffusion(structure_file='my_structure',
+    ... trajectory_file='my_trajectory', selection_string='resname DOPE POPC',
+    ... dump_path='./my_output_directory/')
+"""
+
 import numpy as np
 import MDAnalysis as mda
 
@@ -8,62 +23,110 @@ from pybilt.plot_generation.plot_generation_functions import _color_list
 from pybilt.common.running_stats import BlockAverager
 from pybilt.mda_tools.mda_density_map import position_density_map_2d_leaflet_simple
 
-def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=None, frame_start=0,
-                  frame_end=-1, frame_interval=1, dump_path=None):
 
+def msd_diffusion(structure_file, trajectory_file, selection_string,
+                  resnames=None, frame_start=0, frame_end=-1, frame_interval=1,
+                  dump_path=None):
+    """Protocol to compute MSD curves and estimate diffusion coefficents.
+
+    This function uses the BilayerAnalyzer to compute the time series curves
+    for the mean squared displacements of lipids in the selection and then uses
+    tools from the diffusion package to estimate the diffusion coefficents uses
+    three different estimators; i.e., the Einstein relation, linear
+    (least squares) line fit, and a non-linear anomalous diffusion model fit.
+    The protocol uses two different time ranges for the diffusion coefficent
+    estimations: 0 (or first frame) to 10000.0 (assumed to be 10000 ps or
+    10 ns) and 10000.0 to 100000.0 (assumed to 10000 ps or 10 ns to 100000 ps
+    or 100 ns). Reports of data are printed to standard out, while pickled
+    data is dumped to disk and MSD time series plots are generated and also
+    dumped to disk.
+
+     Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        resnames (Optional[str, list]): Specify the resnames of the lipid types
+            that are to be included in this analysis. Defaults to None, which
+            includes all lipid types.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    Notes:
+        This function summarizes the diffusion coefficent estimates by
+        printing to the std out, which could be redirected into a file.
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
-    #for each lipid resname in the input resnames add an msd analysis for both, upper, and lower leaflets
+    # for each lipid resname in the input resnames add an msd analysis for
+    # both, upper, and lower leaflets
     if resnames is None:
         resnames = []
     for lipid_type in resnames:
         a_name = "msd_"+lipid_type
         add_string = "msd "+a_name+" resname "+lipid_type
-        add_string_upper = "msd "+a_name+"_upper resname "+lipid_type+" leaflet upper"
-        add_string_lower = "msd "+a_name+"_lower resname "+lipid_type+" leaflet lower"
+        add_string_upper = "msd " + a_name + "_upper resname " + \
+            lipid_type + " leaflet upper"
+        add_string_lower = "msd " + a_name + "_lower resname " + \
+            lipid_type + " leaflet lower"
         analyzer.add_analysis(add_string)
         analyzer.add_analysis(add_string_upper)
         analyzer.add_analysis(add_string_lower)
 
-    #now add plot protocols
+    # now add plot protocols
     analyzer.add_plot('msd msd_a msd_1 All')
     # plot with each of the lipid types on same plot (leaflet=both)
     l_msd_string = "msd msd_l"
     for lipid_type in resnames:
-        l_msd_string+=" msd_"+lipid_type+" "+lipid_type
+        l_msd_string += " msd_"+lipid_type+" "+lipid_type
     analyzer.add_plot(l_msd_string)
 
-    #plots for each lipid with upper, lower, both on same plot
+    # plots for each lipid with upper, lower, both on same plot
     for lipid_type in resnames:
-        add_string = "msd "+lipid_type+"_cul msd_"+lipid_type+" Composite msd_"+lipid_type+"_upper Upper msd_"+lipid_type+"_lower Lower"
+        add_string = "msd " + lipid_type + "_cul msd_" + lipid_type + \
+            " Composite msd_" + lipid_type + "_upper Upper msd_" + \
+            lipid_type + "_lower Lower"
         analyzer.add_plot(add_string)
 
     analyzer.print_analysis_protocol()
     analyzer.print_plot_protocol()
 
-    #run the analyzer
+    # run the analyzer
     analyzer.run_analysis()
 
-    #dump the output
+    # dump the output
     analyzer.dump_data(path=dump_path)
 
-    #make MSD vs time plots
+    # make MSD vs time plots
     analyzer.save_all_plots()
 
-    #compute diffusion coefficients
-    #composite
+    # compute diffusion coefficients
+    # composite
 
     msd_dat = analyzer.get_analysis_data('msd_1')
 
-    times = msd_dat[:,0]
-    msd_vals = msd_dat[:,1]
+    times = msd_dat[:, 0]
+    msd_vals = msd_dat[:, 1]
     t0 = times[0]
-    t10 = t0+10000.0
-    t100 = t0+100000.0
-    #diffusion coeff, whole range
+    t10 = t0 + 10000.0
+    t100 = t0 + 100000.0
+    # diffusion coeff, whole range
     # Simple application of Einstein relation
     D_e = dc.diffusion_coefficient_Einstein(times, msd_vals)
     # Use linear fit
@@ -78,13 +141,16 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
     print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
     print("  Anomalous diffusion fit:")
     print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
-    #diffusion coeff, first 10 ns
+    # diffusion coeff, first 10 ns
     # Simple application of Einstein relation
-    D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t0, t10])
+    D_e = dc.diffusion_coefficient_Einstein(times, msd_vals,
+                                            time_range=[t0, t10])
     # Use linear fit
-    D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t0, t10])
+    D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals,
+                                              time_range=[t0, t10])
     # Use anomalous diffusion fit
-    D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t0, t10])
+    D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals,
+                                                 time_range=[t0, t10])
     print("Composite for all lipids and both leaflets; 0-10 ns")
     print("Values from estimators:")
     print("  Basic Einstein relation:")
@@ -93,14 +159,17 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
     print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
     print("  Anomalous diffusion fit:")
     print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
-    #diffusion coeff,  10-100 ns
-    if max(times)>t10:
+    # diffusion coeff,  10-100 ns
+    if max(times) > t10:
         # Simple application of Einstein relation
-        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t10, t100])
+        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals,
+                                                time_range=[t10, t100])
         # Use linear fit
-        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t10, t100])
+        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals,
+                                                  time_range=[t10, t100])
         # Use anomalous diffusion fit
-        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t10, t100])
+        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals,
+                                                     time_range=[t10, t100])
         print("Composite for all lipids and both leaflets; 10-100 ns")
         print("Values from estimators:")
         print("  Basic Einstein relation:")
@@ -136,11 +205,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
         print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
         # diffusion coeff, first 10 ns
         # Simple application of Einstein relation
-        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t0, t10])
+        D_e = dc.diffusion_coefficient_Einstein(times, msd_vals,
+                                                time_range=[t0, t10])
         # Use linear fit
-        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t0, t10])
+        D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals,
+                                                  time_range=[t0, t10])
         # Use anomalous diffusion fit
-        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t0, t10])
+        D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals,
+                                                     time_range=[t0, t10])
         print("Composite for "+lipid_type+" and both leaflets; 0-10 ns")
         print("Values from estimators:")
         print("  Basic Einstein relation:")
@@ -152,22 +224,28 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
         if max(times)>t10:
             # diffusion coeff,  10-100 ns
             # Simple application of Einstein relation
-            D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t10, t100])
+            D_e = dc.diffusion_coefficient_Einstein(times, msd_vals,
+                                                    time_range=[t10, t100])
             # Use linear fit
-            D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t10, t100])
+            D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals,
+                                                      time_range=[t10, t100])
             # Use anomalous diffusion fit
-            D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t10, t100])
+            D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals,
+                                                         time_range=[t10, t100])
             print("Composite for "+lipid_type+" and both leaflets; 10-100 ns")
             print("Values from estimators:")
             print("  Basic Einstein relation:")
             print("    Diffusion coefficient: {}".format(D_e))
             print("  Linear fit:")
-            print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+            print("    Diffusion coefficient: {} Std Error: {}"
+                  .format(D_l[0], D_l[1]))
             print("  Anomalous diffusion fit:")
-            print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
-        #now do individual leaflets
+            print("    Diffusion coefficient: {} Alpha value: {}"
+                  .format(D_a[0], D_a[1]))
+        # now do individual leaflets
         for leaflet in ['upper', 'lower']:
-            msd_dat = analyzer.get_analysis_data("msd_" + lipid_type+"_"+leaflet)
+            msd_dat = analyzer.get_analysis_data("msd_" +
+                                                 lipid_type+"_"+leaflet)
 
             times = msd_dat[:, 0]
             msd_vals = msd_dat[:, 1]
@@ -225,39 +303,76 @@ def msd_diffusion(structure_file, trajectory_file, selection_string, resnames=No
     return
 
 
-def area_per_lipid(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None, n_xbins=100, n_ybins=100):
+def area_per_lipid(structure_file, trajectory_file, selection_string,
+                   frame_start=0, frame_end=-1, frame_interval=1,
+                   dump_path=None, n_xbins=100, n_ybins=100):
+    """Protocol to compute area per lipid.
+
+    This function uses the BilayerAnalyzer to estimate the area per lipid using
+    two estimators: the lateral area method (composite) and lipid grid approach.
+    Reports of data are printed to standard out, while pickled data
+    is dumped to disk and plots are generated and also dumped
+    to disk.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+        n_xbins (Optional[int]): Specify the number of bins in the 'x' direction
+            to use in the lipid grid. Defaults to 100.
+        n_ybins (Optional[int]): Specify the number of bins in the 'y' direction
+            to use in the lipid grid. Defaults to 100.
+
+    Returns:
+        void
+
+    Notes:
+        The lipid grid will have dimensions of n_xbins by n_ybins.
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
-    #remove the default msd analysis
+    # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
-    #add the apl analyses
+    # add the apl analyses
     analyzer.add_analysis("apl_box apl_box")
     analyzer.add_analysis("apl_grid apl_grid")
 
     analyzer.print_analysis_protocol()
 
-    #add the plots
+    # add the plots
     analyzer.add_plot("apl apl_box apl_box None")
     analyzer.add_plot("apl apl_p apl_box Box apl_grid None")
     analyzer.add_plot("apl apl_grid apl_grid None")
 
-    #adjust the number of bins for gridding
+    # adjust the number of bins for gridding
     analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
     analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
 
     analyzer.print_plot_protocol()
 
-    #run analysis
+    # run analysis
     analyzer.run_analysis()
 
-    #output data and plots
+    # output data and plots
     analyzer.dump_data(path=dump_path)
     analyzer.save_all_plots()
-    #print final ensemble averages to stdout
+    # print final ensemble averages to stdout
     apl_box = analyzer.get_analysis_data('apl_box')
 
     print("Final running average Area per lipid estimates (squared Angstrom): ")
@@ -291,8 +406,56 @@ def area_per_lipid(structure_file, trajectory_file, selection_string, frame_star
         print("    {}: {:0.4f} +- {:0.4f}".format(item, block_average, std_err))
     return
 
-def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path="./", name_dict=None, n_xbins=100, n_ybins=100, plot_grid_map=True):
+
+def bilayer_thickness(structure_file, trajectory_file, selection_string,
+                      frame_start=0, frame_end=-1, frame_interval=1,
+                      dump_path="./", name_dict=None, n_xbins=100, n_ybins=100,
+                      plot_grid_map=True):
+    """Protocol to compute the bilayer thickness.
+
+    This function uses the BilayerAnalyzer to estimate the the thickness of the
+    bilayer via the lipid grid approach. Reports of data are printed to standard
+    out, while pickled data is dumped to disk and plots are generated and also
+    dumped to disk.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+        name_dict (Optional[dict]): A dictionary that defines atoms to use
+            for each lipid type when computing the center of mass, which is then
+            mapped to the lipid grid. The dictionary should have structure
+            {'lipid_resname_1':['atom_a', 'atom_b'], 'lipid_resname_2':['atom_c']}.
+            Defaults to None, which means the center of mass of the whole lipid
+            is used.
+        n_xbins (Optional[int]): Specify the number of bins in the 'x' direction
+            to use in the lipid grid. Defaults to 100.
+        n_ybins (Optional[int]): Specify the number of bins in the 'y' direction
+            to use in the lipid grid. Defaults to 100.
+        plot_grid_map (Optional[bool]): Specify whether the 2d grid heat map of
+            of the thickness should be generated and output for each analyzed
+            frame. Defaults to True.
+
+    Returns:
+        void
+
+    Notes:
+        The lipid grid will have dimensions of n_xbins by n_ybins.
+
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
@@ -304,17 +467,17 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
     analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     # add the analysis
     analyzer.add_analysis("bilayer_thickness bt")
-    #adjust the number of bins for gridding
+    # adjust the number of bins for gridding
     analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
     analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
 
     analyzer.print_analysis_protocol()
-    #add the plot
+    # add the plot
     analyzer.add_plot("bilayer_thickness bt_p bt None")
 
     analyzer.print_plot_protocol()
 
-    #run analysis
+    # run analysis
     for dummy_frame in analyzer:
         if plot_grid_map:
             fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
@@ -331,19 +494,50 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string, frame_s
         # pgf.plot_grid_as_scatter(xyzc, filename=dump_path + 'thickness_grid_' + fs + '.pdf', colorbar=True, vmin=20.0,
         #                           vmax=50.0)
 
-    #output data and plots
+    # output data and plots
     analyzer.dump_data(path=dump_path)
     analyzer.save_all_plots()
-    #output final ensemble average to stdout
+    # output final ensemble average to stdout
     bt = analyzer.get_analysis_data('bt')
     print("Bilayer thickness from gridding procedure (Angstrom): {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3]))
 
     return
 
 
-def compressibility(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None, temperature=298.15):
+def compressibility(structure_file, trajectory_file, selection_string,
+                    frame_start=0, frame_end=-1, frame_interval=1,
+                    dump_path=None, temperature=298.15):
+    """Protocol to compute the compressibilities.
 
+    This function uses the BilayerAnalyzer to estimate the area and volume
+    compressibilities of the system. Reports of data are printed to standard
+    out, while pickled data is dumped to disk and plots are generated and also
+    dumped to disk.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+        temperature (Optional[float]): Set the temperature (in Kelvin) used
+            in the simulation. Defaults to 298.15.
+
+    Returns:
+        void
+
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
@@ -371,57 +565,100 @@ def compressibility(structure_file, trajectory_file, selection_string, frame_sta
 
     return
 
-def dispvector_correlation(structure_file, trajectory_file, selection_string, frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None):
+
+def dispvector_correlation(structure_file, trajectory_file, selection_string,
+                           frame_start=0, frame_end=-1, frame_interval=1,
+                           dump_path=None):
+    """Protocol to compute lipid displacement vector maps and correlations.
+
+    This function uses the BilayerAnalyzer to compute the lipid displacement
+    vectors and generate the vector map plots. This is combined with computing
+    the correlations between vectors (i.e. cos(theta)). Reports of data are
+    printed to standard out, while pickled data is dumped to disk and plots are
+    generated and also dumped to disk.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
     analyzer = BilayerAnalyzer(structure=structure_file,
                                trajectory=trajectory_file,
                                selection=selection_string)
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
-    #remove the default msd analysis
+    # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
-    #add the apl analyses
-    #compute the displacment vectors for maps
-    analyzer.add_analysis("disp_vec disp_vec_upper scale True wrapped True leaflet upper interval "+str(frame_interval))
-    analyzer.add_analysis("disp_vec disp_vec_lower scale True wrapped True leaflet lower interval "+str(frame_interval))
-    #compute the full correlation matrix between displacement vectors (i.e. cos(theta))
-    analyzer.add_analysis("disp_vec_corr disp_vec_corr interval "+str(frame_interval))
-    #comput the correlations between a displacement vector and that lipids closest neighbor in the lateral dimensions
-    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper interval "+str(frame_interval))
-    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower leaflet lower interval "+str(frame_interval))
+    # add the apl analyses
+    # compute the displacment vectors for maps
+    analyzer.add_analysis("disp_vec disp_vec_upper scale \
+                          True wrapped True leaflet upper interval "
+                          + str(frame_interval))
+    analyzer.add_analysis("disp_vec disp_vec_lower scale True wrapped \
+                          True leaflet lower interval " + str(frame_interval))
+    # compute the full correlation matrix between displacement vectors
+    # (i.e. cos(theta))
+    analyzer.add_analysis("disp_vec_corr disp_vec_corr interval " +
+                          str(frame_interval))
+    # compute the correlations between a displacement vector and that lipids
+    # closest neighbor in the lateral dimensions
+    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper \
+                          leaflet upper interval " + str(frame_interval))
+    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower \
+                          leaflet lower interval " + str(frame_interval))
     analyzer.print_analysis_protocol()
 
-    #run analysis
+    # run analysis
     analyzer.run_analysis()
 
-    #output data and plots
+    # output data and plots
     analyzer.dump_data(path=dump_path)
 
 
-    #generate the plots/maps for displacement vectors
+    # generate the plots/maps for displacement vectors
     disp_vecs = analyzer.get_analysis_data('disp_vec_upper')
-    counter=0
-    number = str(len("{}".format(len(disp_vecs)) )+1)
+    counter = 0
+    number = str(len("{}".format(len(disp_vecs))) + 1)
     form = "{:0"+number+"d}"
     for disp_vec in disp_vecs:
         count = form.format(counter)
         filename = "step_vector_map_upper_"+count+".pdf"
         filename_b = "step_vector_map_upper_"+count+".png"
-        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True, wrapped=True)
-        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True, wrapped=True)
-        counter+=1
-
+        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True,
+                              wrapped=True)
+        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True,
+                              wrapped=True)
+        counter += 1
     disp_vecs = analyzer.get_analysis_data('disp_vec_lower')
-    counter=0
-    number = str(len("{}".format(len(disp_vecs)) )+1)
-    form = "{:0"+number+"d}"
+    counter = 0
+    number = str(len("{}".format(len(disp_vecs))) + 1)
+    form = "{:0" + number + "d}"
     for disp_vec in disp_vecs:
         count = form.format(counter)
-        filename = "step_vector_map_lower_"+count+".pdf"
-        filename_b = "step_vector_map_lower_"+count+".png"
-        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True, wrapped=True)
-        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True, wrapped=True)
-        counter+=1
+        filename = "step_vector_map_lower_" + count + ".pdf"
+        filename_b = "step_vector_map_lower_" + count + ".png"
+        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True,
+                              wrapped=True)
+        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True,
+                              wrapped=True)
+        counter += 1
 
     disp_vec_corrs = analyzer.get_analysis_data('disp_vec_corr')
     counter = 0
@@ -434,14 +671,15 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string, fr
         filename_b = "step_vector_correlation_map_" + count + ".png"
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
-        counter+=1
+        counter += 1
     return
 
-def PN_orientational_angle(structure_file, trajectory_file, selection_string, lipid_resnames, PN_names='default', frame_start=0, frame_end=-1,
-                  frame_interval=1, dump_path=None):
+def PN_orientational_angle(structure_file, trajectory_file, selection_string,
+                           lipid_resnames, PN_names='default', frame_start=0,
+                           frame_end=-1, frame_interval=1, dump_path=None):
     analyzer = BilayerAnalyzer(structure=structure_file,
-                             trajectory=trajectory_file,
-                             selection=selection_string)
+                               trajectory=trajectory_file,
+                               selection=selection_string)
 
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
     #remove the default msd analysis
