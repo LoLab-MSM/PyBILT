@@ -9,17 +9,17 @@ import numpy as np
 
 # Running Statistics
 class RunningStats(object):
+    """A RunningStats object.
 
+    The RunningStats object keeps running statistics for a single 
+    value/quantity. 
 
+    Attributes:
+        n (int): The number of points that have pushed to the running 
+        average. 
+    """
     def __init__(self):
         """Initialize the RunningStats object.
-        
-        The RunningStats object keeps running statistics for a single 
-        value/quantity. 
-        
-        Attributes:
-            n (int): The number of points that have pushed to the running 
-            average. 
         """
         self.n=0
         self._Mnold = self._Mnnew = self._Snold = self._Snnew = np.zeros(1)[0]
@@ -106,6 +106,12 @@ def gen_running_average(onednparray):
     return output
 
 class BlockAverager(object):
+    """An object that keeps track of points for block averaging.
+    
+    Attributes:
+        n_blocks (int): The current number of active blocks.
+    
+    """
 
     def __init__(self, points_per_block=1000, min_points_in_block=500, store_data=False):
         """Init a the BlockAverager
@@ -179,6 +185,9 @@ class BlockAverager(object):
         return
 
     def _get_running(self):
+        """Get the block average quantities from interanl RunningStats 
+        objects.
+        """
         means = []
         for block in self._blocks:
             #print "block.n ",block.n, " min_p ",self._min_points_in_block
@@ -197,6 +206,9 @@ class BlockAverager(object):
         return block_average, std_err
 
     def _get_np(self):
+        """Get the block average quantities from internally stored numpy 
+        arrays.
+        """
         means = []
         for block in self._blocks:
             if len(block) >= self._min_points_in_block:
