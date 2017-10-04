@@ -1,6 +1,6 @@
 """Estimate self diffusion coefficients from MSD(t) data.
 
-This module provides a set of functions to estimate self diffusion coefficeints
+This module provides a set of functions to estimate self diffusion coefficients
 from mean squared displacement (MSD) time trajectories.
 
 """
