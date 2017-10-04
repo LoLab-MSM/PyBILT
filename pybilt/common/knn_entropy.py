@@ -271,5 +271,5 @@ def conditional_mutual_information(var_tuple, cond_tuple, k=2):
     MIc = Hxzsum - Hj - Hz
     # print "MIc: ",MIc
     if MIc < 0.0: MIc = 0.0
-  
+
     return MIc
