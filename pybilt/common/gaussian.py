@@ -10,6 +10,13 @@ import numpy as np
 
 
 class Gaussian(object):
+    """A Gaussian function object.
+    
+    Attributes:
+        mean (float): The mean of the Gaussian. 
+        std (float): The standard deviation of the Gaussian. 
+    
+    """
     def __init__(self, mean,std):
         """Initialize a Gaussian function object.
         
@@ -21,7 +28,7 @@ class Gaussian(object):
         normalc = stdinv*(1.0/np.sqrt(np.pi))
         self.sigma = std
         self.mean = mean
-        self.normconst = normalc
+        self._normconst = normalc
         return
 
 
@@ -37,7 +44,7 @@ class Gaussian(object):
         """
         stdinv = 1.0/self.sigma
         stdinvsq = stdinv**2
-        normalc = self.normconst
+        normalc = self._normconst
         expon = -(x_in - self.mean)**2 * (0.5*stdinvsq)
         y = normalc * np.exp(expon)
         return y
@@ -54,6 +61,21 @@ class Gaussian(object):
 
 
 class GaussianRange(object):
+    """Define a Gaussian function over a range.
+     
+     This object is used to define a Gaussian function over a defined 
+     finite range and store its values as evaluated at points evenly spaced 
+     over the range. The points can then for example  be used for integrating 
+     the Gaussian function over the range using numerical quadrature.  
+    
+    Attributes:
+        mean (float): The mean of the Gaussian. 
+        std (float): The standard deviation of the Gaussian.
+        upper (float): The upper boundary of the range.
+        lower (float): The lower boundary of the range.
+        npoints (int): The number of points to evaluate in the range.
+         
+    """
     def __init__(self,in_range,mean,std,npoints=200):
         """Initialize the GaussianRange object.
         
@@ -85,10 +107,10 @@ class GaussianRange(object):
         self.y = y_p
         self.sigma = std
         self.mean = mean
-        self.normconst = normalc
+        self._normconst = normalc
         self.upper = in_range[1]
         self.lower = in_range[0]
-        self.dx = x_p[1]-x_p[0]
+        self._dx = x_p[1]-x_p[0]
         self.npoints = npoints
         return
 
@@ -114,7 +136,7 @@ class GaussianRange(object):
         """
         stdinv = 1.0/self.sigma
         stdinvsq = stdinv**2
-        normalc = self.normconst
+        normalc = self._normconst
         expon = -(x_in - self.mean)**2 * (0.5*stdinvsq)
         y = normalc * np.exp(expon)
         return y
@@ -143,12 +165,12 @@ class GaussianRange(object):
         if lower<self.lower:
             lower = self.lower
 
-        i_l = int(np.floor((lower-self.lower)/self.dx))
-        i_u = int(np.floor((upper-self.lower)/self.dx))
+        i_l = int(np.floor((lower-self.lower)/self._dx))
+        i_u = int(np.floor((upper-self.lower)/self._dx))
         #print "i_l ",i_l," i_u ",i_u
         total = 0.0
         for i in xrange(i_l,i_u):
-            total+= self.y[i]*self.dx
+            total+= self.y[i]*self._dx
         return total
 
     def sum_range(self, lower, upper):
@@ -175,8 +197,8 @@ class GaussianRange(object):
         if lower<self.lower:
             lower = self.lower
 
-        i_l = int(np.floor((lower-self.lower)/self.dx))
-        i_u = int(np.floor((upper-self.lower)/self.dx))
+        i_l = int(np.floor((lower-self.lower)/self._dx))
+        i_u = int(np.floor((upper-self.lower)/self._dx))
         total = 0.0
         for i in xrange(i_l,i_u):
             total+= self.y[i]
@@ -186,7 +208,7 @@ class GaussianRange(object):
         """Normalizes (by area) the Gaussian function values over the range."""
         total = 0.0
         for i in xrange(0,self.npoints):
-            total+=self.y[i]*self.dx
+            total+=self.y[i]*self._dx
         for i in xrange(0,self.npoints):
             self.y[i]/=total
         return
