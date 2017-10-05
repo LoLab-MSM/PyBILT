@@ -1,44 +1,81 @@
+"""Running stats module.
+
+This module defines the RunningStats and BlockAverager classes, as well as the
+gen_running_average function.
+
+"""
+
 import numpy as np
-#Running Statistics
+
+# Running Statistics
 class RunningStats(object):
+    """A RunningStats object.
 
+    The RunningStats object keeps running statistics for a single 
+    value/quantity. 
 
+    Attributes:
+        n (int): The number of points that have pushed to the running 
+        average. 
+    """
     def __init__(self):
+        """Initialize the RunningStats object.
+        """
         self.n=0
-        self.Mnold = self.Mnnew = self.Snold = self.Snnew = np.zeros(1)[0]
+        self._Mnold = self._Mnnew = self._Snold = self._Snnew = np.zeros(1)[0]
+
 
     def push(self, val):
+        """Push a new value to the running average.
+        
+        Args:
+            val (float): The value to be added to the running average. 
+
+        Returns:
+
+        """
         self.n += 1
         if self.n == 1:
-            self.Mnold = np.array([val])[0]
-            self.Snold = np.zeros(1)[0]
+            self._Mnold = np.array([val])[0]
+            self._Snold = np.zeros(1)[0]
         else:
             n = np.array([float(self.n)])[0]
-            self.Mnnew = self.Mnold + (val - self.Mnold)/(n);
-            self.Snnew = self.Snold + (val - self.Mnold)*(val-self.Mnnew);
-            self.Mnold = self.Mnnew;
-            self.Snold = self.Snnew;
+            self._Mnnew = self._Mnold + (val - self._Mnold)/(n);
+            self._Snnew = self._Snold + (val - self._Mnold)*(val-self._Mnnew);
+            self._Mnold = self._Mnnew;
+            self._Snold = self._Snnew;
+
 
     def mean(self):
+        """Return the current mean."""
         if self.n == 1:
-            return self.Mnold
+            return self._Mnold
         elif self.n > 1:
-            return self.Mnnew
+            return self._Mnnew
         else:
             return 0.0
+
+
     def variance(self):
+        """Returun the current variance."""
         if self.n > 1:
             one = np.array([1.0])[0]
             n = np.array([float(self.n)])[0]
-            vary = self.Snnew/(n-one)
+            vary = self._Snnew/(n-one)
             return vary
         else:
             return 0.0
+
+
     def deviation(self):
-        #dev = math.sqrt(self.Variance())
+        """Return the current standard deviation."""
+        # dev = math.sqrt(self.Variance())
         dev = np.sqrt(self.variance())
         return dev
+
+
     def reset(self):
+        """Reset the running average."""
         self.n = 0
 
 
@@ -69,6 +106,12 @@ def gen_running_average(onednparray):
     return output
 
 class BlockAverager(object):
+    """An object that keeps track of points for block averaging.
+    
+    Attributes:
+        n_blocks (int): The current number of active blocks.
+    
+    """
 
     def __init__(self, points_per_block=1000, min_points_in_block=500, store_data=False):
         """Init a the BlockAverager
@@ -142,6 +185,9 @@ class BlockAverager(object):
         return
 
     def _get_running(self):
+        """Get the block average quantities from interanl RunningStats 
+        objects.
+        """
         means = []
         for block in self._blocks:
             #print "block.n ",block.n, " min_p ",self._min_points_in_block
@@ -160,6 +206,9 @@ class BlockAverager(object):
         return block_average, std_err
 
     def _get_np(self):
+        """Get the block average quantities from internally stored numpy 
+        arrays.
+        """
         means = []
         for block in self._blocks:
             if len(block) >= self._min_points_in_block:
