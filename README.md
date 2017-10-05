@@ -4,7 +4,7 @@
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
 [![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
-[![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-38.9%25-orange.svg)](.docstring-coverage_report.txt)
+[![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](.docstring-coverage_report.txt)
 ------
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
@@ -99,7 +99,7 @@ individual analyses and the representations they use.
    * lipid_grid -- The lipid grid module can be used construct "lipid grid" grid
                   representations of lipid bilayers, which can be used to
                   accurately estimate quantities such as area per lipid.
-                  
+
   * com_trajectory -- This module can be used to construct a center of mass
                       trajectory (COMTraj) out of an MDAnalysis trajectory,
                       which is useful for computing quantities like mean squared
