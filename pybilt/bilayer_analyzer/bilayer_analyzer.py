@@ -1,7 +1,8 @@
 """The bilayer_analyzer module.
 
-This module defines the BilayerAnalyzer class that can be used to build protocols for analyzing and generating plots
-for the analysis of a lipid bilayer trajectory.
+This module defines the BilayerAnalyzer class that can be used to build
+protocols for analyzing and generating plots for the analysis of a lipid
+bilayer trajectory.
 
 Example:
     >> import pybilt.bilayer_analyzer as ba
