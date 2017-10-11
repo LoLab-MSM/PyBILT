@@ -61,35 +61,47 @@ class LipidVec(object):
         """
         self.resname = mda_residue.resname
         self.resid = mda_residue.resid
-        self.ref_atoms = ref_atoms[self.resname]
-        #start
-        start_atoms = self.ref_atoms['start']
-        if isinstance(start_atoms, (list, tuple)):
+        if ref_atoms is not None:
+            self.ref_atoms = ref_atoms[self.resname]
+            #start
+            start_atoms = self.ref_atoms['start']
+            if isinstance(start_atoms, (list, tuple)):
 
-            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+start_atoms[0])])
-            n_names = len(start_atoms)
-            for i in range(1, n_names):
-                atom_group+=eval("mda_residue.atoms."+start_atoms[i])
-            self.start = atom_group.center_of_mass()
-            self.start_mass = atom_group.total_mass()
+                atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+start_atoms[0])])
+                n_names = len(start_atoms)
+                for i in range(1, n_names):
+                    atom_group+=eval("mda_residue.atoms."+start_atoms[i])
+                self.start = atom_group.center_of_mass()
+                self.start_mass = atom_group.total_mass()
+            else:
+                atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+start_atoms)])
+                self.start = atom_group.center_of_mass()
+                self.start_mass = atom_group.total_mass()
+
+            end_atoms = self.ref_atoms['end']
+            if isinstance(end_atoms, (list, tuple)):
+
+                atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+end_atoms[0])])
+                n_names = len(end_atoms)
+                for i in range(1, n_names):
+                    atom_group+=eval("mda_residue.atoms."+end_atoms[i])
+                self.end = atom_group.center_of_mass()
+                self.end_mass = atom_group.total_mass()
+            else:
+                atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+end_atoms)])
+                self.end = atom_group.center_of_mass()
+                self.end_mass = atom_group.total_mass()
         else:
-            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+start_atoms)])
-            self.start = atom_group.center_of_mass()
-            self.start_mass = atom_group.total_mass()
-
-        end_atoms = self.ref_atoms['end']
-        if isinstance(end_atoms, (list, tuple)):
-
-            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+end_atoms[0])])
-            n_names = len(end_atoms)
-            for i in range(1, n_names):
-                atom_group+=eval("mda_residue.atoms."+end_atoms[i])
-            self.end = atom_group.center_of_mass()
-            self.end_mass = atom_group.total_mass()
-        else:
-            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+end_atoms)])
-            self.end = atom_group.center_of_mass()
-            self.end_mass = atom_group.total_mass()
+            atom_group = mda_residue.atoms
+            min_atom_index = np.argmin(atom_group.positions[:, 2])
+            max_atom_index = np.argmax(atom_group.positions[:, 2])
+            self.ref_atoms = {'start':atom_group[min_atom_index].name,
+                              'end': atom_group[max_atom_index].name}
+            self.end = atom_group[max_atom_index].position
+            self.end_mass = atom_group[max_atom_index].mass
+            self.start = atom_group[min_atom_index].position
+            self.start_mass = atom_group[max_atom_index].mass
+            # print(self.ref_atoms)
         self.vector = self.end - self.start
         self.mass = mda_residue.atoms.total_mass()
         return
