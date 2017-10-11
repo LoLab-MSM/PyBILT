@@ -46,6 +46,8 @@ default_analysis_commands = ['msd msd_1']
 
 
 def word_list_to_string(word_list, delimeter=" "):
+    """Convert a list of words to a sentence.
+    """
     string = ""
     for word in word_list:
         string+=word+delimeter
@@ -54,6 +56,8 @@ def word_list_to_string(word_list, delimeter=" "):
 
 
 def print_valid_analyses(show_settings=True):
+    """Print to std out the valid analyses available to the BilayerAnalyzer.
+    """
     analyses = ap.Analyses([])
     for key in ap.valid_analysis:
         a_id = key+"_t"
@@ -70,6 +74,9 @@ def print_valid_analyses(show_settings=True):
     return
 
 def print_analysis_settings(analysis_key):
+    """Print to std out the adjustable settings of analyses available to the
+    BilayerAnalyzer.
+    """
     analyses = ap.Analyses([])
     if analysis_key in ap.valid_analysis:
         a_id = analysis_key+"_t"
@@ -87,11 +94,17 @@ def print_analysis_settings(analysis_key):
     return
 
 def print_available_plots():
+    """Print to std out the valid plotting protocols available to the
+    BilayerAnalyzer.
+    """
     print(pp.valid_plots)
     return
 
 
 def _run_analysis_alias(protocol_analyzer):
+    """Wrapper function for BilayerAnalyzer.run_analysis function for passing
+    to multiprocessing threads.
+    """
     protocol = protocol_analyzer[0]
     protocol.run_analysis(protocol_analyzer[1])
     return protocol
@@ -99,77 +112,147 @@ def _run_analysis_alias(protocol_analyzer):
 # the main analyzer class
 
 class BilayerAnalyzer(object):
-    """An analyzer class to facilitate building analyses of the bilayers
+    """An object used to implement analyses of the (quasi-)planar bilayers.
+
+    This object is used build and implement analysis protocols for quasi-planar
+    lipid bilayer systems. This object currently uses MDAnalysis as the backend
+    for trajectory manipulation.
 
     Attributes:
-        valid_commands (list of str): A list of acceptable commands that can parsed from an input script.
-        required_commands (list of str): A list of the commands that are required when parsing an input script.
-        required_command_error_strings (dict): A dictionary of error messages to print when required commands are
-            missing in an input script.
-        input_script_name (str): The name of the input script if one was supplied.
-        commands (dict): A dictionary of lists keyed to the setup commands.
-        analysis_protocol (obj:Analyses): An instance of Analyses used to setup and store the defined
-            analysis operations to perform during analysis.
-        plot_protocol (obj:PlotProtocol): An instance of PlotProtocol used to setup and store the defined plotting
-            operations to perform after the analysis is done.
-        mda_data (obj:MDAData): An object used to store all the MDAnalysis object data for the input structure and
-            trajectory.
-        norm (int): An integer representing the index of 3 element xyz coordinate arrays for the bilayer normal
-            dimension.
-            Default: 2
-        lateral (list): A two element list of integers representing the indices of 3 element xyz coordinate arrays for
-            the bilayer lateral dimensions.
-            Default: [0, 1]
-        normal_dimension (str): A string representing the bilayer's normal dimension (i.e. 'x', 'y', or 'z').
-            Default: 'z'
-        lateral_dimension (str): A string representing the bilayer's lateral dimensions (i.e. 'xy', 'yz', 'xz', etc.).
-            Default: 'xy'
-        current_mda_frame (obj:MDAnalysis-->Timestep): This variable is used during the analysis loop to store a copy
-            of current frame in the MDAnalysis trajectory.
-        frame_range (list): A three element list containing the range of frames and the skipping interval for the
-            analysis (i.e. which frames to include in the loop over the trajectory).
-            Structure: [first_frame, last_frame, interval]
-            Default: [0, -1, 1]
-        frame_index (int): An integer used to store the index of the current frame in the trajectory during the analysis
-            loop.
-        com_frame (obj:COMFrame): This variable is used to store an instance of the COMFrame object for the current
-            frame during the analysis loop.
-        dump_com_frame (bool): A boolean that is used to determine if the COMFrame objects should be dumped ater each
-            iteraction of the analysis loop. The objects are dumped as pickle files.
-            Default: False
-        dump_com_frame_path (str): A string file path for where COMFrame objects are dumped.
-            Default: './'
-        leaflets: (dict): A dictionary of the Leaflet objects extracted from the bilayer at each frame of the analysis.
-            The keys are 'upper' and 'lower' corresponding to the upper and lower leaflets of the bilayer.
-        dump_leaflet (bool): Determines whether the leaflets are dumped (as pickles) after each frame in the analysis
-            loop.
-            Default: False
-        dump_leaflet_path (str): A string file path for where the leaflet object dictionaries are dumped.
-            Default: './'
-        lipid_grid (obj:LipidGrids): An instance of the LipidGrids object for the current frame of the trajectory
-            (analysis) loop.
-        lg_nxbins (int): An integer defining the number of bins to use in the 'x' dimension of the LipidGrid
-            objects.
-            Default: 10
-        lg_nybins (int): An integer defining the number of bins to use in the 'y' dimension of the LipidGrid
-            objects.
-            Default: 10
-        dump_lipid_grid (bool): Determines wheter the LipidGrids objects built during interations of the analysis loop
-            are dumped as pickle files.
-            Default: False
-        dump_lipid_grid_path (str): A string containing the path where dumped LipidGrids should be dumped.
-            Default: './'
-        first_com_frame (obj:COMFrame): Stores an instance of the COMFrame object from the first frame of the analysis
-            loop.
+        settings (dict): A dictionary of adjustable settings for the analyzer.
+            The dictionary is keyed by setting names and the setting values are
+            stored at that setting key. The following is a list with
+            descriptions of the settings keys:
+                settings key (value type): Description and Default value.
+                ________________________________________________________
+                frame_range (list): A three element list containing the range
+                    of frames and the skipping interval for the analysis (i.e.
+                    which frames to include in the loop over the trajectory).
+                    Structure: [first_frame, last_frame, interval]
+                    Default: [0, -1, 1]
+                print_interval (int): Set the frame loop interval/frequency for
+                    outputting some log data to the screen/std out. Default: 5
+                norm (int): An integer representing the index of 3 element xyz
+                    coordinate arrays for the bilayer normal dimension.
+                    Default: 2, or the z-dimension/axis
+                lateral (list): A two element list of integers representing the
+                    indices of 3 element xyz coordinate arrays for the bilayer
+                    lateral dimensions. Default: [0, 1], or the xy plane.
+                normal_dimension (str): A string representing the bilayer's
+                    normal dimension (i.e. 'x', 'y', or 'z'). This setting
+                    corresponds to the 'norm' setting by the transformation
+                    ('x', 'y', 'z') => (0, 1, 2).  Default: 'z'
+                lateral_dimension (str): A string representing the bilayer's
+                    lateral dimensions (i.e. 'xy', 'yz', 'xz', etc.). This
+                    corresponds to the 'lateral' setting by the transformation
+                    ('x', 'y', 'z') => (0, 1, 2). Default: 'xy'
+                frame_index (int): An integer used to store the index of the
+                    current frame in the trajectory during the analysis loop.
+        reps (dict): A dictionary of used to store the different bilayer
+            representations used by the different analyses.
+            The dictionary is keyed by representation names and the
+            representation objects (if used) are stored at that key after
+            construction. The following is a list with descriptions of the
+            rep keys:
+                rep key (representation type): Description.
+                ________________________________________________________
+                current_mda_frame (MDAnalysis-->Timestep): This key is used to
+                    store a copy of the current frame from the MDAnalysis
+                    trajectory and constitutes the "all atom" representation of
+                    the bilayer.
+                com_frame (pybilt.bilayer_analyzer.com_frame.COMFrame): This
+                    key is used to store an instance of the COMFrame object for
+                    the current frame during the analysis loop and represents
+                    the reduced dimension "centers-of-mass" represetation of
+                    the bilayer. i.e. each lipid (or selection from each lipid)
+                    is  reduced to a single particle located at its center of
+                    mass.
+                leaflets: (dict of pybilt.bilayer_analyzer.leaflet.Leaflet):
+                    This key stores a copy of a dictionary containing the
+                    Leaflet objects used to store the data about which lipids
+                    are in each of the bilayer leaflets. It has the keys
+                    'upper' and 'lower', which correspond to the upper and
+                    lower leaflets of the bilayer respectively.
+                lipid_grid (pybilt.lipid_grid.lipid_grid.LipidGrids): This key
+                    stores a copy of the LipidGrids object for the current
+                    frame of the trajectory in the (analysis) loop and
+                    represents the  "lipid grid" (or GridMAT-MD style) version
+                    of the bilayer. i.e., the lipids of each leaflet are mapped
+                    /assigned to a 2-dimensional grid (or matrix). There are
+                    two grids, one for each leaflet of the bilayer.
+                vector_frame (pybilt.bilayer_analyzer.vector_frame.VectorFrame):
+                    This key is used to store an instance of the VectorFrame object for
+                    the current frame during the analysis loop and represents
+                    the "lipid vectors" represetation of the bilayer; i.e. each
+                    lipid in the bilayer is represented by a vector.
+                first_com_frame (pybilt.bilayer_analyzer.com_frame.COMFrame):
+                    This key is used to store an instance of the COMFrame
+                    object for the first frame during the analysis loop and
+                    represents the reduced dimension "centers-of-mass"
+                    represetation of the bilayer. i.e. each lipid (or selection
+                    from each lipid) is  reduced to a single particle located
+                    at its center of mass.
+        rep_settings (dict): A dictionary of adjustable settings for
+            representatiion used by the analyzer (as stored in the reps
+            dictionary). The dictionary is keyed by rep names and the setting
+            values are stored in a dictionary at that rep name key. The
+            following is a list with descriptions of the rep_settings keys and
+            the subsequent  setting keys:
+                rep_settings key:setting key (value type): Description and
+                    Default value. Corresponds to
+                     --> rep_settings['rep_settings key']['setting keys']
+                ________________________________________________________
+            com_frame:dump (bool): A boolean that is used to determine if the
+                COMFrame objects should be dumped to disc as a pickle file
+                after each iteration of the analysis loop. Default: False
+            com_frame:dump_path (str): A string containing the file path for
+                where COMFrame objects are to be dumped. Default: './'
+            com_frame:name_dict (dict): A dictionary keyed by residue names of
+                specific lipid types and containing a list of atom names to be
+                used when computing the centers-of-mass of lipids of that type.
+                Default: None
+            leaflets:dump (bool): Determines whether the leaflets are dumped
+                to disc (as pickles) after each frame in the analysis loop.
+                Default: False
+            leaflets:dump_path (str): A string file path for where the
+                leaflet
+                object dictionaries are dumped. Default: './'
+            leaflets:update_interval (int): Determines how ofter to update the
+                leaflet assignments. Default: 1, or every frame.
+            lipid_grid:dump (bool): Determines wheter the LipidGrids objects
+                built during interations of the analysis loop are dumped to
+                disc as pickle files. Default: False
+            lipid_grid:dump_path (str): A string containing the path where
+                dumped LipidGrids should be written. Default: './'
+            lipid_grid:nxbins (int): An integer defining the number of bins to
+                use in the 'x' dimension of the LipidGrid objects. Default: 10
+            lipid_grid:nybins (int): An integer defining the number of bins to
+                use in the 'y' dimension of the LipidGrid objects. Default: 10
+            vector_frame:dump (bool): Determines wheter the VectorFrame objects
+                built during interations of the analysis loop are dumped to
+                disc as pickle files. Default: False
+            vector_frame:dump_path (str): A string containing the path where
+                dumped VectorFrame objects should be written. Default: './'
+            vector_frame:ref_atoms (dict): A dictionary of the atom names of
+                atoms to be used to compute the vector each lipid type. The
+                dictionary should be keyed by the resname of the lipid types.
+                For each lipid type there should be dictionary with the keys
+                'start' and 'end' with lists of the atom names to use when
+                determining the start and end of the vector respectively.
+                Default: None. Example:
+                rep_settings['ref_atoms'] = {'DOPE':{'start':['P'], 'end':['N']}}
     """
-    # for the input script parser
-    valid_commands = ["structure", "trajectory", "analysis", "selection", "frames",
+    # A list of acceptable commands that can parsed from an input script.
+    _valid_commands = ["structure", "trajectory", "analysis", "selection", "frames",
                       "plot", "lipid_grid"]
-    required_commands = ['structure', 'trajectory', 'selection']
-    required_command_error_strings = {'structure': "the structure file needs to specified with command: \"structure path/psf_file_name\""}
-    required_command_error_strings[
+    # A list of the commands that are required when parsing an input script.
+    _required_commands = ['structure', 'trajectory', 'selection']
+    # A dictionary of error messages to print when required commands are
+    # missing in an input script.
+    _required_command_error_strings = {'structure': "the structure file needs to specified with command: \"structure path/psf_file_name\""}
+    _required_command_error_strings[
         'trajectory'] = "the trajectory file needs to specified with command: \"trajectory path/trajectory_file_name\""
-    required_command_error_strings[
+    _required_command_error_strings[
         'selection'] = "an MDAnalysis syntax selection needs to specified with command: \"selction \'selection string\'\""
 
     def __init__(self, structure=None, trajectory=None, selection=None,
@@ -272,11 +355,11 @@ class BilayerAnalyzer(object):
         elif input_dict is not None and isinstance(input_dict, dict):
             self._commands = dict()
             id_keys = input_dict.keys()
-            for key in self.required_commands:
+            for key in self._required_commands:
                 if key not in id_keys:
                     raise RuntimeError("key \'{}\' needs to be included in the input dictionary.".format(key))
             for key in id_keys:
-                if key in self.valid_commands:
+                if key in self._valid_commands:
                     self._commands[key] = input_dict[key]
             # parse 'frames' input key--
             # for setting the frame range of the analysis
@@ -319,10 +402,10 @@ class BilayerAnalyzer(object):
         # set up the plot protocol
         print ("setting up plot protocol")
         if "plot" in self._commands.keys():
-            self.plot_protocol = pp.PlotProtocol(self._commands['plot'],
+            self._plot_protocol = pp.PlotProtocol(self._commands['plot'],
                                                  self.analysis_protocol)
         else:
-            self.plot_protocol = pp.PlotProtocol(None, self.analysis_protocol)
+            self._plot_protocol = pp.PlotProtocol(None, self.analysis_protocol)
         for i in self._commands:
             print(i, self._commands[i])
         # build selection string for the MDAData object
@@ -335,7 +418,7 @@ class BilayerAnalyzer(object):
         # build the MDAData object
         print ('building the MDAnalysis objects...')
 
-        self.mda_data = md.MDAData(self._commands['structure'],
+        self._mda_data = md.MDAData(self._commands['structure'],
                                    self._commands['trajectory'],
                                    sel_string)
 
@@ -349,7 +432,7 @@ class BilayerAnalyzer(object):
         self._last_frame = self.settings['frame_range'][1]
         self._oldcoords = None
         if self._last_frame < 0:
-            self._last_frame += len(self.mda_data.mda_trajectory)
+            self._last_frame += len(self._mda_data.mda_trajectory)
 
         return
 
@@ -364,12 +447,11 @@ class BilayerAnalyzer(object):
 
         Returns:
             (dict): A dictionary containing lists of commands for each type of
-             command key (e.g. analysis, plot
-                etc.).
+                command key (e.g. analysis, plot, etc.).
         Raises:
             RuntimeError: A runtime error is given if there is an invalid
-            command key in the input script. A runtime error is also raised if
-            the required commands are not provided in the input script.
+                command key in the input script. A runtime error is also raised
+                if the required commands are not provided in the input script.
         """
         commands = {}
         # args = {}
@@ -389,7 +471,7 @@ class BilayerAnalyzer(object):
                         second_term = eval(second_term)
                     commands[key] = second_term
                 else:
-                    if key in self.valid_commands:
+                    if key in self._valid_commands:
                         if key in commands.keys():
                             input_string = word_list_to_string(words[1:])
                             print (input_string)
@@ -404,9 +486,9 @@ class BilayerAnalyzer(object):
                               " command".format(key))
                         error_str = "invalid input command '{}'".format(key)
                         raise RuntimeError(error_str)
-        for required in self.required_commands:
+        for required in self._required_commands:
             if required not in commands.keys():
-                error_string = self.required_command_error_strings[required]
+                error_string = self._required_command_error_strings[required]
                 raise RuntimeError(error_string)
 
         return commands
@@ -419,8 +501,8 @@ class BilayerAnalyzer(object):
     def add_analysis(self, analysis_in):
         """Add a analysis to the analysis protocol.
         Args:
-            analysis_in (str, list/tuple, or dict): The inpute defining the analysis key, analysis
-             id, and settings for the new analysis.
+            analysis_in (str, list/tuple, or dict): The inpute defining the
+                analysis key, analysis id, and settings for the new analysis.
 
         """
         self.analysis_protocol.add_analysis(analysis_in)
@@ -430,16 +512,16 @@ class BilayerAnalyzer(object):
         """Remove a specified analysis from the comptue protocol.
         Args:
             analysis_id (str): The string analysis id of the analysis to be
-             removed from the protocol.
+                removed from the protocol.
 
         """
-        self.analysis_protocol.remove_analysis(analysis_id)
+        self._analysis_protocol.remove_analysis(analysis_id)
         return
 
     def remove_all_analyses(self):
         """Remove all analyses from the analysis protocol.
         """
-        self.analysis_protocol.remove_all()
+        self._analysis_protocol.remove_all()
         return
 
     def get_analysis_ids(self):
@@ -449,7 +531,7 @@ class BilayerAnalyzer(object):
             (list): A list string analysis ids.
 
         """
-        return self.analysis_protocol.analysis_ids
+        return self._analysis_protocol.analysis_ids
 
     def get_analysis_data(self, analysis_id):
         """Return the analysis output for the specified analysis.
@@ -457,22 +539,22 @@ class BilayerAnalyzer(object):
             analysis_id (str): A string analysis id.
 
         Returns:
-            Variable: The analysis output of the specified analysis.
-            The type/structure will depend on the analysis.
+            Variable: The analysis output of the specified analysis. The
+                type/structure will depend on the analysis.
 
         """
-        return self.analysis_protocol.command_protocol[analysis_id].get_data()
+        return self._analysis_protocol.command_protocol[analysis_id].get_data()
 
     def dump_data(self, path=None):
         """Dump all the anlysis outputs from the analysiss as pickle files."""
-        self.analysis_protocol.dump_data(path=path)
+        self._analysis_protocol.dump_data(path=path)
         return
 
         ## plot data/access
 
     def print_plot_protocol(self):
         """Print the protocol for the plots that have initialized."""
-        self.plot_protocol.print_protocol()
+        self._plot_protocol.print_protocol()
         return
 
     def add_plot(self, plot_string):
@@ -481,7 +563,7 @@ class BilayerAnalyzer(object):
             plot_string (str): A string with the plot key, id, and arguments.
 
         """
-        self.plot_protocol.add_plot(plot_string, self.analysis_protocol)
+        self._plot_protocol.add_plot(plot_string, self._analysis_protocol)
         return
 
     def remove_plot(self, plot_id):
@@ -490,21 +572,21 @@ class BilayerAnalyzer(object):
             plot_id (str): Plot id of the plot to be removed.
 
         """
-        self.plot_protocol.remove_plot(plot_id)
+        self._plot_protocol.remove_plot(plot_id)
         return
 
     def print_plot_ids(self):
         """Print the ids of initialized plots in the plot protocol."""
-        print(self.plot_protocol.plot_ids)
+        print(self._plot_protocol.plot_ids)
 
     def get_plot_ids(self):
         """Return the ids of the plots in the plot protocol.
 
         Returns:
             (list): A list of string plot ids that have been initialized in
-             the plot protocol.
+                the plot protocol.
         """
-        return self.plot_protocol.plot_ids
+        return self._plot_protocol.plot_ids
 
     def show_plot(self, plot_id):
         """Show the specified plot via matplotlibs .show() function.
@@ -512,8 +594,8 @@ class BilayerAnalyzer(object):
             plot_id (str): The string plot id to generate and show the plot for.
 
         """
-        self.plot_protocol.command_protocol[plot_id].show_plot(
-            self.analysis_protocol)
+        self._plot_protocol.command_protocol[plot_id].show_plot(
+            self._analysis_protocol)
         return
 
     def generate_plot(self, plot_id):
@@ -522,14 +604,14 @@ class BilayerAnalyzer(object):
             plot_id (str): The string plot id for the plot generate.
 
         """
-        self.plot_protocol.command_protocol[plot_id].generate_plot(
-            self.analysis_protocol)
+        self._plot_protocol.command_protocol[plot_id].generate_plot(
+            self._analysis_protocol)
         return
 
     def save_all_plots(self):
         """Generates the image files (.eps) for all plots in the plot protocol.
         """
-        self.plot_protocol.save_plots(self.analysis_protocol)
+        self._plot_protocol.save_plots(self._analysis_protocol)
         return
 
     # mda_trajectory data/access
@@ -542,7 +624,7 @@ class BilayerAnalyzer(object):
         """
         print ("updating mda trajectory to:", new_trajectory)
         self._commands['trajectory'] = [new_trajectory]
-        self.mda_data.update_trajectory(new_trajectory)
+        self._mda_data.update_trajectory(new_trajectory)
         return
 
     # buildable objects functions
@@ -550,11 +632,10 @@ class BilayerAnalyzer(object):
         """Turn on (or off) the dumping of COMFrame objects built during analysis.
         Args:
             on (bool, optional): Defines whether the COMFrame objects should be
-             dumped (as pickle files) after each frame in the analysis loop.
-                Default: True
+                dumped (as pickle files) after each frame in the analysis loop.
+                Defaults to True
             path (str, optional): Sets the path where the COMFrame objects are
-             dumped.
-                Default: "./"
+                dumped. Defaults to "./"
 
         """
         self.rep_settings['com_frame']['dump'] = on
@@ -567,10 +648,9 @@ class BilayerAnalyzer(object):
         Args:
             on (bool, optional): Defines whether the COMFrame objects should be
              dumped (as pickle files) after each frame in the analysis loop.
-                Default: True
+                Defaults to True
             path (str, optional): Sets the path where the COMFrame objects are
-             dumped.
-                Default: "./"
+                dumped. Defaults to "./"
 
         """
         self.rep_settings['leaflets']['dump'] = on
@@ -582,11 +662,10 @@ class BilayerAnalyzer(object):
         """Turn on (or off) the dumping of LipidGrid objects built during analysis.
         Args:
             on (bool, optional): Defines whether the COMFrame objects should be
-             dumped (as pickle files) after each frame in the analysis loop.
-                Default: True
+                dumped (as pickle files) after each frame in the analysis loop.
+                Defaults to True.
             path (str, optional): Sets the path where the COMFrame objects are
-            dumped.
-                Default: "./"
+                dumped. Defaults to "./"
 
         """
         self.rep_settings['lipid_grid']['dump'] = on
@@ -606,12 +685,12 @@ class BilayerAnalyzer(object):
         #first check for float type fractions
         if isinstance(first, (float, np.float, np.double)):
             if first < 1.0 and first > 0.0:
-                first = int(first* self.mda_data.nframes)
+                first = int(first* self._mda_data.nframes)
             else:
                 first = int(first)
         if isinstance(last, (float, np.float, np.double)):
             if last < 1.0 and last > 0.0:
-                last = int(last* self.mda_data.nframes)
+                last = int(last* self._mda_data.nframes)
             else:
                 last = int(last)
 
@@ -621,7 +700,7 @@ class BilayerAnalyzer(object):
             self.settings['frame_range'][1] = last
             self._last_frame = last
             if self._last_frame < 0:
-                self._last_frame+=len(self.mda_data.mda_trajectory)
+                self._last_frame+=len(self._mda_data.mda_trajectory)
         if interval != self.settings['frame_range'][2]:
             self.settings['frame_range'][2] = interval
         return
@@ -650,7 +729,7 @@ class BilayerAnalyzer(object):
         self._first_leaflet = True
         self._leaflet_counter = 0
         #analyses
-        self.analysis_protocol.reset()
+        self._analysis_protocol.reset()
         return
 
     # analysis
@@ -686,16 +765,16 @@ class BilayerAnalyzer(object):
             parallel = True
 
         # now we need to unwrap the coordinates
-        natoms = self.mda_data.natoms
+        natoms = self._mda_data.natoms
         oldcoord = np.zeros((natoms, 3))
         currcoord = np.zeros((natoms, 3))
         wrapcoord = np.zeros((natoms, 3))
         #first_frame_coord = np.zeros((natoms, 3))
-        index = self.mda_data.bilayer_sel.indices
+        index = self._mda_data.bilayer_sel.indices
         firstframe = True
         first_com = True
         self.settings['frame_index'] = self.settings['frame_range'][0]
-        n_mda_frames = len(self.mda_data.mda_trajectory)
+        n_mda_frames = len(self._mda_data.mda_trajectory)
         if self.settings['frame_range'][1] < 0:
             self.settings['frame_range'][1] += n_mda_frames + 1
         #build lists of which analysis protocols can be implemented
@@ -703,8 +782,8 @@ class BilayerAnalyzer(object):
         # and used without the MDAnalysis objects in mda_data
         run_serial = []
         run_parallel = []
-        for a_id in self.analysis_protocol.command_protocol.keys():
-            if self.analysis_protocol.command_protocol[a_id].pickleable():
+        for a_id in self._analysis_protocol.command_protocol.keys():
+            if self._analysis_protocol.command_protocol[a_id].pickleable():
                 run_parallel.append(a_id)
             else:
                 run_serial.append(a_id)
@@ -717,7 +796,7 @@ class BilayerAnalyzer(object):
         #    ap._run_analysis_alias(input)
 
         in_func = _run_analysis_alias
-        for frame in self.mda_data.mda_trajectory[
+        for frame in self._mda_data.mda_trajectory[
                      self.settings['frame_range'][0]:self.settings['frame_range'][1]:self.settings['frame_range'][
                          2]]:
             self.reps['current_mda_frame'] = frame
@@ -744,7 +823,7 @@ class BilayerAnalyzer(object):
             # print (wrapcoord)
             # if self.analysis_protocol.use_objects['com_frame']:
             # now build the COMFrame
-            self.reps['com_frame'] = cf.COMFrame(frame, self.mda_data.bilayer_sel,
+            self.reps['com_frame'] = cf.COMFrame(frame, self._mda_data.bilayer_sel,
                                          wrapcoord, name_dict=self.rep_settings['com_frame']['name_dict'])
             if first_com:
                 self.reps['first_com_frame'] = self.reps['com_frame']
@@ -763,7 +842,7 @@ class BilayerAnalyzer(object):
                 with open(ofname, 'wb') as ofile:
                     pickle.dump(self.reps['leaflets'], ofile)
 
-            if self.analysis_protocol.use_objects['lipid_grid']:
+            if self._analysis_protocol.use_objects['lipid_grid']:
                 self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
                                                 self.settings['lateral'],
                                                 nxbins=self.rep_settings['lipid_grid']['n_xbins'],
@@ -779,25 +858,25 @@ class BilayerAnalyzer(object):
             if self._frame_loop_count % self.settings['print_interval'] == 0:
                 print("Frame", frame.frame)
             r_analyses = []
-            for analysis_id in self.analysis_protocol.analysis_ids:
+            for analysis_id in self._analysis_protocol.analysis_ids:
                 if self._frame_loop_count % self.settings['print_interval'] == 0:
                     print ("analysis " + analysis_id)
 
             for a_id in run_parallel:
-                r_analyses.append([self.analysis_protocol.command_protocol[a_id], self])
+                r_analyses.append([self._analysis_protocol.command_protocol[a_id], self])
             results = pool.map(in_func, r_analyses)
 
             #print(results)
             #extract the results
             for item in results:
                 analysis_id = item.analysis_id
-                self.analysis_protocol.command_protocol[analysis_id] = item
+                self._analysis_protocol.command_protocol[analysis_id] = item
             del results
             for a_id in run_serial:
-                self.analysis_protocol.command_protocol[a_id].run_analysis(
+                self._analysis_protocol.command_protocol[a_id].run_analysis(
                     self.settings,
                     self.reps,
-                    self.mda_data)
+                    self._mda_data)
 
             if self._frame_loop_count % self.settings['print_interval'] == 0:
                 print(" ")
@@ -902,12 +981,12 @@ class BilayerAnalyzer(object):
             parallel = True
 
         # now we need to unwrap the coordinates
-        natoms = self.mda_data.natoms
+        natoms = self._mda_data.natoms
         oldcoord = np.zeros((natoms, 3))
         currcoord = np.zeros((natoms, 3))
         wrapcoord = np.zeros((natoms, 3))
         #first_frame_coord = np.zeros((natoms, 3))
-        index = self.mda_data.bilayer_sel.indices
+        index = self._mda_data.bilayer_sel.indices
         firstframe = self._first_frame
         first_com = self._first_com
         #print("first com: ",first_com)
@@ -919,7 +998,7 @@ class BilayerAnalyzer(object):
         #with self.mda_data.mda_trajectory[self._current_frame] as frame:
         #print(self._current_frame)
         #frame = self.mda_data.mda_trajectory[self._current_frame]
-        for frame in self.mda_data.mda_trajectory[self._current_frame:self._current_frame+1]:
+        for frame in self._mda_data.mda_trajectory[self._current_frame:self._current_frame+1]:
             self.reps['current_mda_frame'] = frame
             currcoord = frame.positions[index]
             if firstframe:
@@ -943,7 +1022,7 @@ class BilayerAnalyzer(object):
             # print (wrapcoord)
             #if self.analysis_protocol.use_objects['com_frame']:
             # now build the COMFrame
-            self.reps['com_frame'] = cf.COMFrame(frame, self.mda_data.bilayer_sel,
+            self.reps['com_frame'] = cf.COMFrame(frame, self._mda_data.bilayer_sel,
                                          wrapcoord,
                                          name_dict =
                                     self.rep_settings['com_frame']['name_dict'])
@@ -969,7 +1048,7 @@ class BilayerAnalyzer(object):
                 with open(ofname, 'wb') as ofile:
                     pickle.dump(self.reps['leaflets'], ofile)
 
-            if self.analysis_protocol.use_objects['lipid_grid']:
+            if self._analysis_protocol.use_objects['lipid_grid']:
                 self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
                                                 self.settings['lateral'],
                                                 nxbins=self.rep_settings['lipid_grid']['n_xbins'],
@@ -980,20 +1059,20 @@ class BilayerAnalyzer(object):
                     with open(ofname, 'wb') as ofile:
                         pickle.dump(self.reps['lipid_grid'], ofile)
                         # lipid_grid = None
-            if self.analysis_protocol.use_objects['vector_frame']:
+            if self._analysis_protocol.use_objects['vector_frame']:
                 self.reps['vector_frame'] = vf.VectorFrame(frame,
-                                self.mda_data.bilayer_sel,
+                                self._mda_data.bilayer_sel,
                                 self.rep_settings['vector_frame']['ref_atoms'])
                 self._update_vector_frame_leaflet_positions()
             # now do analyses
             if self._frame_loop_count % self.settings['print_interval'] == 0:
                 print("Frame: {}".format(frame.frame))
             i = 0
-            for analysis_id in self.analysis_protocol.analysis_ids:
+            for analysis_id in self._analysis_protocol.analysis_ids:
                 if self._frame_loop_count % self.settings['print_interval'] == 0:
                     print ("  analysis: {}".format(analysis_id))
-                self.analysis_protocol.command_protocol[analysis_id].run_analysis(
-                    self.settings, self.reps, self.mda_data)
+                self._analysis_protocol.command_protocol[analysis_id].run_analysis(
+                    self.settings, self.reps, self._mda_data)
                 # comp_out = analysis.run_analysis(self)
                 # print (comp_out)
                 #   analysis_out[i].append(comp_out)
