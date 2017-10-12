@@ -16,8 +16,6 @@ dependencies:
 - !!python/unicode
   'libnetcdf=4.4.1.1=4'
 - !!python/unicode
-  'mdanalysis=0.16.0=np111_0'
-- !!python/unicode
   'mmtf-python=1.0.5=py27_0'
 - !!python/unicode
   'msgpack-python=0.4.8=py27_0'
@@ -431,16 +429,20 @@ dependencies:
   'zeromq=4.1.5=0'
 - !!python/unicode
   'zlib=1.2.8=3'
+- !!python/unicode
+  'mdanalysis=0.16.0=np111_0'
 - pip:
   - backports-abc==0.5
   - backports.shutil-get-terminal-size==1.0.0
   - backports.ssl-match-hostname==3.4.0.2
+  - commonmark==0.5.4
   - et-xmlfile==1.0.1
   - ipython-genutils==0.1.0
   - jupyter-client==4.4.0
   - jupyter-console==5.0.0
   - jupyter-core==4.2.1
   - prompt-toolkit==1.0.9
+  - recommonmark==0.4.0
+  - sphinx-rtd-theme==0.2.4
   - tables==3.3.0
-
 
