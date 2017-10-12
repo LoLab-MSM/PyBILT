@@ -11,12 +11,12 @@ import numpy as np
 class RunningStats(object):
     """A RunningStats object.
 
-    The RunningStats object keeps running statistics for a single 
-    value/quantity. 
+    The RunningStats object keeps running statistics for a single
+    value/quantity.
 
     Attributes:
-        n (int): The number of points that have pushed to the running 
-        average. 
+        n (int): The number of points that have pushed to the running
+        average.
     """
     def __init__(self):
         """Initialize the RunningStats object.
@@ -27,9 +27,9 @@ class RunningStats(object):
 
     def push(self, val):
         """Push a new value to the running average.
-        
+
         Args:
-            val (float): The value to be added to the running average. 
+            val (float): The value to be added to the running average.
 
         Returns:
 
@@ -107,10 +107,10 @@ def gen_running_average(onednparray):
 
 class BlockAverager(object):
     """An object that keeps track of points for block averaging.
-    
+
     Attributes:
         n_blocks (int): The current number of active blocks.
-    
+
     """
 
     def __init__(self, points_per_block=1000, min_points_in_block=500, store_data=False):
@@ -185,7 +185,7 @@ class BlockAverager(object):
         return
 
     def _get_running(self):
-        """Get the block average quantities from interanl RunningStats 
+        """Get the block average quantities from interanl RunningStats
         objects.
         """
         means = []
@@ -199,14 +199,14 @@ class BlockAverager(object):
             std_err = means.std()/np.sqrt(len(means))
         elif len(means) == 1:
             block_average = means[0]
-            std_err = None
+            std_err = 0.0
         else:
-            block_average = None
-            std_err = None
+            block_average = 0.0
+            std_err = 0.0
         return block_average, std_err
 
     def _get_np(self):
-        """Get the block average quantities from internally stored numpy 
+        """Get the block average quantities from internally stored numpy
         arrays.
         """
         means = []
@@ -219,10 +219,10 @@ class BlockAverager(object):
             std_err = means.std()/np.sqrt(len(means))
         elif len(means) == 1:
             block_average = means[0]
-            std_err = None
+            std_err = 0.0
         else:
-            block_average = None
-            std_err = None
+            block_average = 0.0
+            std_err = 0.0
 
         return block_average, std_err
 

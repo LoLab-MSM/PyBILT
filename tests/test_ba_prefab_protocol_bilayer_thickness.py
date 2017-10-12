@@ -2,7 +2,7 @@ from pybilt.bilayer_analyzer.prefab_analysis_protocols import bilayer_thickness
 
 
 def test_analysis_module_bilayer_thickness():
-    sel_string = "not resname CLA and not resname TIP3 and not resname POT"
+    sel_string = "resname POPC DOPE TLCL2"
     name_dict = {'DOPE':['P'],'POPC':['P'],'TLCL2':['P1','P3']}
     bilayer_thickness(structure_file='../pybilt/sample_bilayer/sample_bilayer.psf',
                   trajectory_file='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',

@@ -5,7 +5,7 @@ import numpy as np
 def test_msd():
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
                                   trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
-                                  selection="not resname CLA and not resname TIP3 and not resname POT")
+                                  selection="resname POPC DOPE TLCL2")
 
 
     analyzer.print_analysis_protocol()
@@ -16,7 +16,7 @@ def test_msd():
     print(msd_dat_a)
 
     u = mda.Universe('../pybilt/sample_bilayer/sample_bilayer.psf', '../pybilt/sample_bilayer/sample_bilayer_10frames.dcd')
-    bilayer_sel = u.select_atoms("not resname CLA and not resname TIP3 and not resname POT")
+    bilayer_sel = u.select_atoms("resname POPC DOPE TLCL2")
     ct = comtraj.COMTraj(u.trajectory,bilayer_sel)
     msd_dat_b = ct.calc_msd()
     print("MSD from COMTraj:")
@@ -27,7 +27,7 @@ def test_msd():
     #redo bilayer_anlayzer calc, but use the iterator looper
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
                                   trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
-                                  selection="not resname CLA and not resname TIP3 and not resname POT")
+                                  selection="resname POPC DOPE TLCL2")
 
 
     analyzer.print_analysis_protocol()

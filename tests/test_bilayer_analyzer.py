@@ -1,4 +1,4 @@
-from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
+from pybilt.bilayer_analyzer import BilayerAnalyzer
 from pybilt.bilayer_analyzer.analysis_protocols import valid_analysis
 
 #define tests
@@ -7,7 +7,8 @@ from pybilt.bilayer_analyzer.analysis_protocols import valid_analysis
 def test_input_options():
     print("testing various input options...")
     #initialize analyzer with keyword options--and default analysis
-    sel_string = "not resname CLA and not resname TIP3 and not resname POT"
+    print("Initialize using keyword options:")
+    sel_string = "segid MEMB"
     ba = BilayerAnalyzer(
         structure='../pybilt/sample_bilayer/sample_bilayer.psf',
         trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
@@ -28,6 +29,7 @@ def test_input_options():
     # run the analyses
     ba.run_analysis()
     #initialize analyzer using input script
+    print("Initialize with an input script:")
     ba = BilayerAnalyzer(input_file='sample_1.in')
     #run analysis
     ba.run_analysis()
@@ -36,10 +38,11 @@ def test_input_options():
     # define the input dictionary
     input_dict = {'structure' : '../pybilt/sample_bilayer/sample_bilayer.psf',
                  'trajectory' : '../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
-                  'selection' : 'resname POPC or resname DOPE or resname TLCL2'
+                  'selection' : 'segid MEMB'
                  }
 
     #now initialize the analyzer
+    print("Initializing using input dictionary:")
     ba = BilayerAnalyzer(input_dict=input_dict)
 
     ba.add_analysis('msd msd_b resname DOPE leaflet upper')
@@ -50,7 +53,7 @@ def test_input_options():
 #analsyses with default options
 def test_analysis_defaults():
     print("testing the default settings of all analysis protocols...")
-    sel_string = "not resname CLA and not resname TIP3 and not resname POT"
+    sel_string = "segid MEMB"
     ba = BilayerAnalyzer(
         structure='../pybilt/sample_bilayer/sample_bilayer.psf',
         trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
@@ -59,6 +62,7 @@ def test_analysis_defaults():
     for key in valid_analysis:
         analysis_in = [key, key+"_t", dict()]
         ba.add_analysis(analysis_in)
+    ba.settings['print_interval'] = 1
     ba.print_analysis_protocol()
     ba.run_analysis()
     print("outputs:")
@@ -71,7 +75,7 @@ def test_analysis_defaults():
 def test_analysis_iterator():
     print("testing the analysis iterator...")
     # initialize analyzer with keyword options--and default analysis
-    sel_string = "not resname CLA and not resname TIP3 and not resname POT"
+    sel_string = "segid MEMB"
     ba = BilayerAnalyzer(
         structure='../pybilt/sample_bilayer/sample_bilayer.psf',
         trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
@@ -86,6 +90,11 @@ def test_analysis_iterator():
 
 
 if __name__ == '__main__':
+    print("Testing the various input options:")
     test_input_options()
+    print("")
+    print("Testing the analysis defaults:")
     test_analysis_defaults()
+    print("")
+    print("Testing the analysis iterator:")
     test_analysis_iterator()

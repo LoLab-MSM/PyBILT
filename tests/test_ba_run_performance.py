@@ -13,7 +13,7 @@ import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 from __main__ import run_serial
 analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
                               trajectory='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
-                              selection="not resname CLA and not resname TIP3 and not resname POT")
+                              selection="resname POPC DOPE TLCL2")
 
 analyzer.add_analysis('nnf nnf_a resname_1 DOPE resname_2 POPC leaflet upper n_neighbors 6')
 analyzer.add_analysis('nnf nnf_b resname_1 POPC resname_2 POPC leaflet upper n_neighbors 10')
