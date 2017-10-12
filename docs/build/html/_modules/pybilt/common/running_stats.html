@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.common.running_stats &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.common.running_stats</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.common.running_stats</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Running stats module.</span>
+
+<span class="sd">This module defines the RunningStats and BlockAverager classes, as well as the</span>
+<span class="sd">gen_running_average function.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Running Statistics</span>
+<div class="viewcode-block" id="RunningStats"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.RunningStats">[docs]</a><span class="k">class</span> <span class="nc">RunningStats</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A RunningStats object.</span>
+
+<span class="sd">    The RunningStats object keeps running statistics for a single</span>
+<span class="sd">    value/quantity.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        n (int): The number of points that have pushed to the running</span>
+<span class="sd">        average.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the RunningStats object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">=</span><span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Mnold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mnnew</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Snold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Snnew</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="RunningStats.push"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.RunningStats.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Push a new value to the running average.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            val (float): The value to be added to the running average.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Mnold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">val</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Snold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Mnnew</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mnold</span> <span class="o">+</span> <span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mnold</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Snnew</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Snold</span> <span class="o">+</span> <span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mnold</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">val</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_Mnnew</span><span class="p">);</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Mnold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mnnew</span><span class="p">;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Snold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Snnew</span><span class="p">;</span></div>
+
+
+<div class="viewcode-block" id="RunningStats.mean"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.RunningStats.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the current mean.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mnold</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mnnew</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="RunningStats.variance"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.RunningStats.variance">[docs]</a>    <span class="k">def</span> <span class="nf">variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returun the current variance.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">one</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)])[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">vary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Snnew</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">one</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">vary</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="RunningStats.deviation"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.RunningStats.deviation">[docs]</a>    <span class="k">def</span> <span class="nf">deviation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the current standard deviation.&quot;&quot;&quot;</span>
+        <span class="c1"># dev = math.sqrt(self.Variance())</span>
+        <span class="n">dev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variance</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">dev</span></div>
+
+
+<div class="viewcode-block" id="RunningStats.reset"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.RunningStats.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset the running average.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="mi">0</span></div></div>
+
+
+<span class="c1"># assumes that a 1d numpy array of floats is pass as input, but</span>
+<span class="c1"># does not check this</span>
+<div class="viewcode-block" id="gen_running_average"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.gen_running_average">[docs]</a><span class="k">def</span> <span class="nf">gen_running_average</span><span class="p">(</span><span class="n">onednparray</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Generates a running average</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    onednparray (numpy.array): A 1d numpy array of measurements (e.g. over time)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    numpy.array: 2d array of dim len(onednparray)x2</span>
+<span class="sd">        2dnparray[i][0] = running average at i</span>
+<span class="sd">        2dnparray[i][1] = running standard deviation at i</span>
+<span class="sd">        for i in range(0,len(onednparray))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">averager</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
+    <span class="n">nele</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">onednparray</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nele</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">nele</span><span class="p">):</span>
+        <span class="n">averager</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">onednparray</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">run_avg</span> <span class="o">=</span> <span class="n">averager</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">run_dev</span> <span class="o">=</span> <span class="n">averager</span><span class="o">.</span><span class="n">deviation</span><span class="p">()</span>
+        <span class="c1"># print run_avg, run_dev, averager.mean(), onednparray[i]</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">run_avg</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">run_dev</span>
+    <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="BlockAverager"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager">[docs]</a><span class="k">class</span> <span class="nc">BlockAverager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An object that keeps track of points for block averaging.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        n_blocks (int): The current number of active blocks.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points_per_block</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_points_in_block</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">store_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Init a the BlockAverager</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            points_per_block (int, Optional): The number of points to assign to a block before initiating a new block.</span>
+<span class="sd">                Default: 1000</span>
+<span class="sd">            min_points_in_block (int, Optional): The minimum number of points that a block (typically the last block)</span>
+<span class="sd">                can have and still be included in computing the final block average and standard error estimates. This</span>
+<span class="sd">                value should be &lt;= points_per_block. Default: 500</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span> <span class="o">=</span> <span class="n">store_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">RunningStats</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">store_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="p">[[]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span> <span class="o">=</span> <span class="n">points_per_block</span>
+        <span class="k">if</span> <span class="n">min_points_in_block</span> <span class="o">&gt;</span> <span class="n">points_per_block</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span> <span class="o">=</span> <span class="n">points_per_block</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span> <span class="o">=</span> <span class="n">min_points_in_block</span>
+        <span class="c1">#print &quot;points_per_block &quot;,self._points_per_block, &quot; min_p &quot;,self._min_points_in_block</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_add_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append a new block.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RunningStats</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_check_add_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check whether to add a new block and do so if the condition is met.&quot;&quot;&quot;</span>
+        <span class="n">block_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="n">block_i</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_block</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="n">block_i</span><span class="p">]</span><span class="o">.</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_block</span><span class="p">()</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="BlockAverager.push_single"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.push_single">[docs]</a>    <span class="k">def</span> <span class="nf">push_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Push a single data point (datum) into the block averager.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            datum (float): The value to add to the block averaging.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">block_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span><span class="o">-</span><span class="mi">1</span>
+        <span class="c1">#print &quot;pushing datum &quot;,datum</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="n">block_i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="n">block_i</span><span class="p">]</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_add_block</span><span class="p">()</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="BlockAverager.push_container"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.push_container">[docs]</a>    <span class="k">def</span> <span class="nf">push_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Push a container (array or array like) of data points to the block averaging.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (array like): The container (list, tuple, np.array, etc.) of data points to add to the block averaging.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="c1">#print(datum)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">push_single</span><span class="p">(</span><span class="n">datum</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the block average quantities from interanl RunningStats</span>
+<span class="sd">        objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="c1">#print &quot;block.n &quot;,block.n, &quot; min_p &quot;,self._min_points_in_block</span>
+            <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">block_average</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">std_err</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">block_average</span> <span class="o">=</span> <span class="n">means</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">std_err</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">block_average</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">std_err</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="n">block_average</span><span class="p">,</span> <span class="n">std_err</span>
+
+    <span class="k">def</span> <span class="nf">_get_np</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the block average quantities from internally stored numpy</span>
+<span class="sd">        arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">block</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">block_average</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">std_err</span> <span class="o">=</span> <span class="n">means</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">block_average</span> <span class="o">=</span> <span class="n">means</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">std_err</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">block_average</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">std_err</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">return</span> <span class="n">block_average</span><span class="p">,</span> <span class="n">std_err</span>
+
+<div class="viewcode-block" id="BlockAverager.get"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the block average and standard error.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Returns a length two tuple with the block average and standard error estimates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(self._blocks)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_np</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_running</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BlockAverager.number_of_blocks"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.number_of_blocks">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the current number of blocks.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int : The number of blocks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span></div>
+
+<div class="viewcode-block" id="BlockAverager.points_per_block"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.points_per_block">[docs]</a>    <span class="k">def</span> <span class="nf">points_per_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return information about the points per block.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A three element tuple containing the setting for points per block, the setting for minimum points</span>
+<span class="sd">                per block, and the number of points in the last block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">n</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

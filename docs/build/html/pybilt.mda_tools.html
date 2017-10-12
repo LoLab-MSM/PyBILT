@@ -1,0 +1,581 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.mda_tools package &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
+        <link rel="up" title="pybilt package" href="pybilt.html"/>
+        <link rel="next" title="pybilt.plot_generation package" href="pybilt.plot_generation.html"/>
+        <link rel="prev" title="pybilt.lipid_grid package" href="pybilt.lipid_grid.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pybilt.bilayer_analyzer.html">pybilt.bilayer_analyzer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.com_trajectory.html">pybilt.com_trajectory package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.common.html">pybilt.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.diffusion.html">pybilt.diffusion package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.lipid_grid.html">pybilt.lipid_grid package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pybilt.mda_tools package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.plot_generation.html">pybilt.plot_generation package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pybilt.html#module-pybilt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">pybilt</a> &raquo;</li>
+        
+          <li><a href="pybilt.html">pybilt package</a> &raquo;</li>
+        
+      <li>pybilt.mda_tools package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pybilt.mda_tools.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pybilt-mda-tools-package">
+<h1>pybilt.mda_tools package<a class="headerlink" href="#pybilt-mda-tools-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pybilt.mda_tools.mda_area_compressibility_modulus">
+<span id="pybilt-mda-tools-mda-area-compressibility-modulus-module"></span><h2>pybilt.mda_tools.mda_area_compressibility_modulus module<a class="headerlink" href="#module-pybilt.mda_tools.mda_area_compressibility_modulus" title="Permalink to this headline">¶</a></h2>
+<p>Implementation of area compressibilty modulus
+The are compressibilty modulus is an elastic property that can be computed from the total area (in the lateral
+dimension) and its fluctuations. The quantity is given by</p>
+<blockquote>
+<div>K_A = kT&lt;A&gt;[ &lt;(A - &lt;A&gt;)^2&gt;]^-1,</div></blockquote>
+<p>where A is the area per lipid, k is Boltzmann&#8217;s constant
+and T is the temperature (in Kelvin).
+See references:
+Coarse Grained Model for Semiquantitative Lipid Simulations
+Siewert J. Marrink, Alex H. de Vries, and Alan E. Mark
+J. Phys. Chem. B, 2004, 108 (2), pp 750-760
+DOI: 10.1021/jp036508g</p>
+<p>Molecular Dynamics Simulations of Cardiolipin Bilayers
+Martin Dahlberg and Arnold Maliniak
+J. Phys. Chem. B, 2008, 112 (37), pp 11655-11663
+DOI: 10.1021/jp803414g</p>
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_area_compressibility_modulus.area_compressibility_modulus">
+<code class="descclassname">pybilt.mda_tools.mda_area_compressibility_modulus.</code><code class="descname">area_compressibility_modulus</code><span class="sig-paren">(</span><em>mda_trajectory</em>, <em>temperature</em>, <em>normal='z'</em>, <em>first=0</em>, <em>last=-1</em>, <em>interval=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_area_compressibility_modulus.html#area_compressibility_modulus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_area_compressibility_modulus.area_compressibility_modulus" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.mda_tools.mda_density_map">
+<span id="pybilt-mda-tools-mda-density-map-module"></span><h2>pybilt.mda_tools.mda_density_map module<a class="headerlink" href="#module-pybilt.mda_tools.mda_density_map" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_map.position_density_map_2d">
+<code class="descclassname">pybilt.mda_tools.mda_density_map.</code><code class="descname">position_density_map_2d</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selections</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em>, <em>nbins=100</em>, <em>reference=(0.0</em>, <em>0.0)</em>, <em>refsel=None</em>, <em>normalize=False</em>, <em>scale_to_max=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_map.html#position_density_map_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_map.position_density_map_2d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_map.position_density_map_2d_leaflet_simple">
+<code class="descclassname">pybilt.mda_tools.mda_density_map.</code><code class="descname">position_density_map_2d_leaflet_simple</code><span class="sig-paren">(</span><em>universe</em>, <em>bilayer_selection</em>, <em>resnames</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em>, <em>nbins=100</em>, <em>reference=(0.0</em>, <em>0.0)</em>, <em>refsel=None</em>, <em>normalize=False</em>, <em>scale_to_max=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_map.html#position_density_map_2d_leaflet_simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_map.position_density_map_2d_leaflet_simple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_map.position_density_map_2d_multi_align">
+<code class="descclassname">pybilt.mda_tools.mda_density_map.</code><code class="descname">position_density_map_2d_multi_align</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selections</em>, <em>align_struct_universe</em>, <em>align_sel_string</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em>, <em>nbins=100</em>, <em>reference=(0.0</em>, <em>0.0)</em>, <em>refsel=None</em>, <em>normalize=False</em>, <em>scale_to_max=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_map.html#position_density_map_2d_multi_align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_map.position_density_map_2d_multi_align" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.mda_tools.mda_density_profile">
+<span id="pybilt-mda-tools-mda-density-profile-module"></span><h2>pybilt.mda_tools.mda_density_profile module<a class="headerlink" href="#module-pybilt.mda_tools.mda_density_profile" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="pybilt.mda_tools.mda_density_profile.SizeError">
+<em class="property">exception </em><code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">SizeError</code><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#SizeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.SizeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_profile.electron_density_profile">
+<code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">electron_density_profile</code><span class="sig-paren">(</span><em>trajectory</em>, <em>mda_selection</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em>, <em>nbins=100</em>, <em>reference=0.0</em>, <em>refsel=None</em>, <em>valence=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#electron_density_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.electron_density_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_profile.electron_density_profile_gaussians">
+<code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">electron_density_profile_gaussians</code><span class="sig-paren">(</span><em>trajectory</em>, <em>mda_selection</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em>, <em>nbins=100</em>, <em>reference=0.0</em>, <em>refsel=None</em>, <em>valence=True</em>, <em>size_to_sigma=2.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#electron_density_profile_gaussians"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.electron_density_profile_gaussians" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_profile.get_intersections">
+<code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">get_intersections</code><span class="sig-paren">(</span><em>x</em>, <em>y1</em>, <em>y2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#get_intersections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.get_intersections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_profile.mass_density_profile">
+<code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">mass_density_profile</code><span class="sig-paren">(</span><em>trajectory</em>, <em>mda_selection</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em>, <em>nbins=100</em>, <em>reference=0.0</em>, <em>refsel=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#mass_density_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.mass_density_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_profile.mass_density_profile_multi_align">
+<code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">mass_density_profile_multi_align</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selections</em>, <em>align_struct_universe</em>, <em>align_sel_string</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em>, <em>nbins=100</em>, <em>reference=0.0</em>, <em>refsel=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#mass_density_profile_multi_align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.mass_density_profile_multi_align" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.mda_tools.mda_deuterium_order_parameter">
+<span id="pybilt-mda-tools-mda-deuterium-order-parameter-module"></span><h2>pybilt.mda_tools.mda_deuterium_order_parameter module<a class="headerlink" href="#module-pybilt.mda_tools.mda_deuterium_order_parameter" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.angle_between_vectors">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">angle_between_vectors</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#angle_between_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.angle_between_vectors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Moore">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">average_deuterium_order_Moore</code><span class="sig-paren">(</span><em>trajectory</em>, <em>membrane_sel</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#average_deuterium_order_Moore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Moore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Vermeer">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">average_deuterium_order_Vermeer</code><span class="sig-paren">(</span><em>trajectory</em>, <em>membrane_sel</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#average_deuterium_order_Vermeer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Vermeer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.build_acyl_index_lists">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">build_acyl_index_lists</code><span class="sig-paren">(</span><em>membrane_lipid_sel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#build_acyl_index_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.build_acyl_index_lists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.cos_angle_between_vectors">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">cos_angle_between_vectors</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#cos_angle_between_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.cos_angle_between_vectors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.deuterium_order_Moore">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">deuterium_order_Moore</code><span class="sig-paren">(</span><em>mda_universe</em>, <em>lipid_segids</em>, <em>lipid_map</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#deuterium_order_Moore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.deuterium_order_Moore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.vector_to_unit">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">vector_to_unit</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#vector_to_unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.vector_to_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.mda_tools.mda_distance">
+<span id="pybilt-mda-tools-mda-distance-module"></span><h2>pybilt.mda_tools.mda_distance module<a class="headerlink" href="#module-pybilt.mda_tools.mda_distance" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_distance.com_com_distances">
+<code class="descclassname">pybilt.mda_tools.mda_distance.</code><code class="descname">com_com_distances</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selection_pairs</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_distance.html#com_com_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_distance.com_com_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass to Center of mass distance.
+This function computes the distance between the centers of mass between pairs of MDAnalysis atoms selections
+across the the MD trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+atom selection objects to compute the distance between.</li>
+<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+Default: 1 (or every frame)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>Returns two outputs. The first is an Numpy array with the timeseries simulation times</dt>
+<dd><p class="first last">corresponding to the frames in the analysis. The second is list of Numpy arrays with the distances; the
+order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array), (list)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_distance.com_com_distances_axis">
+<code class="descclassname">pybilt.mda_tools.mda_distance.</code><code class="descname">com_com_distances_axis</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selection_pairs</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_distance.html#com_com_distances_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_distance.com_com_distances_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass to Center of mass distance in one dimension (along an axis).
+This function computes the distance between the centers of mass between pairs of MDAnalysis atoms selections
+across the the MD trajectory, but only uses the 1d coordinate of the specified axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+atom selection objects to compute the distance between.</li>
+<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+Default: 1 (or every frame)</li>
+<li><strong>axis</strong> (<em>str</em>) &#8211; Optional, the 1d axis to compute the distance in. Default: &#8216;z&#8217; (or the z axis)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>Returns two outputs. The first is an Numpy array with the timeseries simulation times</dt>
+<dd><p class="first last">corresponding to the frames in the analysis. The second is list of Numpy arrays with the distances; the
+order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array), (list)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_distance.com_com_distances_axis_align">
+<code class="descclassname">pybilt.mda_tools.mda_distance.</code><code class="descname">com_com_distances_axis_align</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selection_pairs</em>, <em>align_struct_universe</em>, <em>align_sel_string</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_distance.html#com_com_distances_axis_align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_distance.com_com_distances_axis_align" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass to Center of mass distance in one dimension (along an axis) after structure alignment.
+This function computes the distance between the centers of mass between pairs of MDAnalysis atoms selections
+across the the MD trajectory, but only uses the 1d coordinate of the specified axis, and aligns the structure
+to some selection of atoms of a reference structure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+atom selection objects to compute the distance between.</li>
+<li><strong>align_struct_universe</strong> (<em>MDAnalsysi.Universe</em>) &#8211; The MDAnalsysis universe object of the reference structure to
+align the system to.</li>
+<li><strong>align_sel_string</strong> (<em>str</em>) &#8211; A MDAnalysis selection string to use for the structure alignment.</li>
+<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+Default: 1 (or every frame)</li>
+<li><strong>axis</strong> (<em>str</em>) &#8211; Optional, the 1d axis to compute the distance in. Default: &#8216;z&#8217; (or the z axis)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>Returns two outputs. The first is an Numpy array with the timeseries simulation times</dt>
+<dd><p class="first last">corresponding to the frames in the analysis. The second is list of Numpy arrays with the distances; the
+order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array), (list)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_distance.com_com_distances_plane">
+<code class="descclassname">pybilt.mda_tools.mda_distance.</code><code class="descname">com_com_distances_plane</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selection_pairs</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>plane='xy'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_distance.html#com_com_distances_plane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_distance.com_com_distances_plane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass to Center of mass distance in two dimensions (a plane).
+This function computes the distance between the centers of mass between pairs of MDAnalysis atoms selections
+across the the MD trajectory, but only uses the 2d coordinates of the specified axis plane.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+atom selection objects to compute the distance between.</li>
+<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+Default: 1 (or every frame)</li>
+<li><strong>plane</strong> (<em>str</em>) &#8211; Optional, the 2d axis plane to compute the distance in. Default: &#8216;xy&#8217; (or the xy plane)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>Returns two outputs. The first is an Numpy array with the timeseries simulation times</dt>
+<dd><p class="first last">corresponding to the frames in the analysis. The second is list of Numpy arrays with the distances; the
+order in the list corresponds to the atom selection pairs in the mda_selection_pairs input.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array), (list)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.mda_tools.mda_msd">
+<span id="pybilt-mda-tools-mda-msd-module"></span><h2>pybilt.mda_tools.mda_msd module<a class="headerlink" href="#module-pybilt.mda_tools.mda_msd" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_msd.mda_msd">
+<code class="descclassname">pybilt.mda_tools.mda_msd.</code><code class="descname">mda_msd</code><span class="sig-paren">(</span><em>trajectory</em>, <em>atom_sel_list</em>, <em>lateral=False</em>, <em>plane='xy'</em>, <em>unwrap=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_msd.html#mda_msd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_msd.mda_msd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.mda_tools.mda_unwrap">
+<span id="pybilt-mda-tools-mda-unwrap-module"></span><h2>pybilt.mda_tools.mda_unwrap module<a class="headerlink" href="#module-pybilt.mda_tools.mda_unwrap" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_unwrap.mda_unwrap">
+<code class="descclassname">pybilt.mda_tools.mda_unwrap.</code><code class="descname">mda_unwrap</code><span class="sig-paren">(</span><em>universe</em>, <em>out_file_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_unwrap.html#mda_unwrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_unwrap.mda_unwrap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_unwrap.mda_unwrap_parallel">
+<code class="descclassname">pybilt.mda_tools.mda_unwrap.</code><code class="descname">mda_unwrap_parallel</code><span class="sig-paren">(</span><em>universe</em>, <em>out_file_name</em>, <em>nprocs=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_unwrap.html#mda_unwrap_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_unwrap.mda_unwrap_parallel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_unwrap.wrap_coordinates">
+<code class="descclassname">pybilt.mda_tools.mda_unwrap.</code><code class="descname">wrap_coordinates</code><span class="sig-paren">(</span><em>abc</em>, <em>coord</em>, <em>refcoord</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_unwrap.html#wrap_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_unwrap.wrap_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_unwrap.wrap_coordinates_parallel">
+<code class="descclassname">pybilt.mda_tools.mda_unwrap.</code><code class="descname">wrap_coordinates_parallel</code><span class="sig-paren">(</span><em>abc</em>, <em>coord</em>, <em>refcoord</em>, <em>nprocs=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_unwrap.html#wrap_coordinates_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_unwrap.wrap_coordinates_parallel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.mda_tools">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pybilt.mda_tools" title="Permalink to this headline">¶</a></h2>
+<p>The mda_tools module contains functions that operate on MDAnalysis objects
+to perform standalone analyses, as well as other operations.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pybilt.plot_generation.html" class="btn btn-neutral float-right" title="pybilt.plot_generation package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pybilt.lipid_grid.html" class="btn btn-neutral" title="pybilt.lipid_grid package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

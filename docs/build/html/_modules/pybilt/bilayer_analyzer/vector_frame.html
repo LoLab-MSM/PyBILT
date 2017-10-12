@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.bilayer_analyzer.vector_frame &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.bilayer_analyzer.vector_frame</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.bilayer_analyzer.vector_frame</h1><div class="highlight"><pre>
+<span></span><span class="c1">#imports</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="k">import</span> <span class="n">axes3d</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1">#range/xrange fix</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="range"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.range">[docs]</a>    <span class="k">def</span> <span class="nf">range</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">xrange</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LipidVec"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.LipidVec">[docs]</a><span class="k">class</span> <span class="nc">LipidVec</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A lipid vector object.</span>
+
+<span class="sd">    This object stores the coordinates corresponding to a vector representation</span>
+<span class="sd">    of a lipid (e.g. the PN vector); the object uses the wrapped coordinates.</span>
+<span class="sd">    This object also stores information about the type of lipid as well as the</span>
+<span class="sd">    total mass of the lipid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;LipidVec initialization</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            resname (str): The lipid resname.</span>
+<span class="sd">            start (np.array): The length three vector holding the wrapped xyz</span>
+<span class="sd">                coordinates of the vector starting point.</span>
+<span class="sd">            end (np.array): The length three vector holding the wrapped xyz</span>
+<span class="sd">                coordinates of the vector end point.</span>
+<span class="sd">            vector (np.array): The length three vector (i.e end-start).</span>
+<span class="sd">            mass (float): The total mass of the atoms used to define LipidVec.</span>
+<span class="sd">            leaflet (str): The leaflet that the lipid is in can be stored here.</span>
+<span class="sd">            resid (int): The integer resid of the lipid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># lipid type/resname or other name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resname</span><span class="o">=</span><span class="s2">&quot;UNK&quot;</span>
+        <span class="c1"># wrapped coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_mass</span><span class="o">=</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_mass</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaflet</span> <span class="o">=</span> <span class="s2">&quot;UNK&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resid</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span>
+    <span class="c1"># The name of this function could be changed to be more desriptive, e.g.</span>
+    <span class="c1"># extract_com_mda_residue</span>
+<div class="viewcode-block" id="LipidVec.extract"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.LipidVec.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_residue</span><span class="p">,</span> <span class="n">ref_atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the center of mass coordinates from an MDAnalysis residue</span>
+
+<span class="sd">        This function calls the MDAnalysis member function center_of_mass() of the residue</span>
+<span class="sd">        to compute the center of mass of the atoms constituting the residue.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mda_residue (MDAnalysis.residue): An MDAnalysis residue object from</span>
+<span class="sd">                which to extract (build) a vector representation.</span>
+<span class="sd">            ref_atoms (dict): A dictionary storing the references atoms to be</span>
+<span class="sd">                used in building the vector representation. The outer keys of</span>
+<span class="sd">                ref_atoms should be the resnames of the lipids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resname</span> <span class="o">=</span> <span class="n">mda_residue</span><span class="o">.</span><span class="n">resname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resid</span> <span class="o">=</span> <span class="n">mda_residue</span><span class="o">.</span><span class="n">resid</span>
+        <span class="k">if</span> <span class="n">ref_atoms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">resname</span><span class="p">]</span>
+            <span class="c1">#start</span>
+            <span class="n">start_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start_atoms</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+
+                <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">start_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+                <span class="n">n_names</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">start_atoms</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_names</span><span class="p">):</span>
+                    <span class="n">atom_group</span><span class="o">+=</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">start_atoms</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start_mass</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">start_atoms</span><span class="p">)])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start_mass</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
+
+            <span class="n">end_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end_atoms</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+
+                <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">end_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+                <span class="n">n_names</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">end_atoms</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_names</span><span class="p">):</span>
+                    <span class="n">atom_group</span><span class="o">+=</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">end_atoms</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_mass</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">end_atoms</span><span class="p">)])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_mass</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda_residue</span><span class="o">.</span><span class="n">atoms</span>
+            <span class="n">min_atom_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">atom_group</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+            <span class="n">max_atom_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">atom_group</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span><span class="n">atom_group</span><span class="p">[</span><span class="n">min_atom_index</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                              <span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="n">atom_group</span><span class="p">[</span><span class="n">max_atom_index</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">atom_group</span><span class="p">[</span><span class="n">max_atom_index</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end_mass</span> <span class="o">=</span> <span class="n">atom_group</span><span class="p">[</span><span class="n">max_atom_index</span><span class="p">]</span><span class="o">.</span><span class="n">mass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">atom_group</span><span class="p">[</span><span class="n">min_atom_index</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_mass</span> <span class="o">=</span> <span class="n">atom_group</span><span class="p">[</span><span class="n">max_atom_index</span><span class="p">]</span><span class="o">.</span><span class="n">mass</span>
+            <span class="c1"># print(self.ref_atoms)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">mda_residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
+        <span class="k">return</span></div></div>
+
+<span class="c1"># a Vector frame object</span>
+<div class="viewcode-block" id="VectorFrame"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame">[docs]</a><span class="k">class</span> <span class="nc">VectorFrame</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A molecular dynamics style Frame object for LipidVec objects.</span>
+
+<span class="sd">    Atrributes:</span>
+<span class="sd">        lipidvec (list of obj:LipidVec): A list of the LipidVec objects assigned to the COMFrame.</span>
+<span class="sd">        box (np.array): A 3 element vector containing the (rectangular) xyz box edge lengths.</span>
+<span class="sd">        time (float): The simulation time that this Frame represents.</span>
+<span class="sd">        number (int): The frame number of this Frame.</span>
+<span class="sd">        mdnumber (int): The corresponding frame number in the original MD trajectory</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># does not check that nlipids is an int</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_frame</span><span class="p">,</span> <span class="n">mda_bilayer_selection</span><span class="p">,</span> <span class="n">ref_atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Frame initialization.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mda_frame (MDAnalysis.Timestep): The MDAnalysis frame for the coordinates to use in computing the</span>
+<span class="sd">                lipid centers of mass.</span>
+<span class="sd">            mda_bilayer_selection (MDAnalysis.AtomSelection): The MDAnalsysis atom selection object for the</span>
+<span class="sd">                containing the atoms in the bilayer.</span>
+<span class="sd">            unwrap_coords (numpy.Array): A numpy array containing the the unwrapped coordinates of the bilayer selection</span>
+<span class="sd">                atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># list to store the nlipids LipidVec objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">ref_atoms</span>
+        <span class="c1"># box dimensions -- assumes the box originates a 0,0,0</span>
+        <span class="c1"># It might be worth adding functionality to specifiy the box origin (or center)</span>
+        <span class="c1"># This also assumes a rectangular box</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">mda_frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># simulation time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">mda_frame</span><span class="o">.</span><span class="n">time</span>
+        <span class="c1"># frame number in the MD trajectory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mdnumber</span> <span class="o">=</span> <span class="n">mda_frame</span><span class="o">.</span><span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdnumber</span>
+        <span class="n">nlipids</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span>
+        <span class="c1"># initialize all the LipidVec objects</span>
+        <span class="k">for</span> <span class="n">dummy_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlipids</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LipidVec</span><span class="p">())</span>
+        <span class="c1">#atom indices in mda selection/frame</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">indices</span>
+        <span class="c1"># loop over the residues (lipids) and get the centers of mass</span>
+        <span class="c1">## do the wrapped coordinates</span>
+
+        <span class="n">r</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+            <span class="c1">#print(res,&quot; &quot;,res.center_of_mass())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">ref_atoms</span><span class="p">)</span>
+            <span class="c1">#self.lipidvec[r].mass = res.total_mass()</span>
+            <span class="n">r</span><span class="o">+=</span><span class="mi">1</span>
+
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;VecFrame for frame </span><span class="si">%s</span><span class="s1"> with </span><span class="si">%s</span><span class="s1"> lipids&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">))</span>
+
+<div class="viewcode-block" id="VectorFrame.set_box"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.set_box">[docs]</a>    <span class="k">def</span> <span class="nf">set_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box_lengths</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the rectangular xyz box edge lengths.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            box_lengths (numpy.array): A 1d, 3 element numpy.array containing the x,y,z box sizes (or edge lengths)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">box_lengths</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="VectorFrame.set_time"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.set_time">[docs]</a>    <span class="k">def</span> <span class="nf">set_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the simulation time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            time (float): The simulation time to assign to this Frame.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="k">return</span></div>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the number of LipidVec objects assigned to this Frame</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Number of LipidVec objects currently assigned to this Frame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VectorFrame.vectors"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.vectors">[docs]</a>    <span class="k">def</span> <span class="nf">vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">:</span>
+            <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VectorFrame.masses"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.masses">[docs]</a>    <span class="k">def</span> <span class="nf">masses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VectorFrame.resids"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.resids">[docs]</a>    <span class="k">def</span> <span class="nf">resids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">output</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VectorFrame.resnames"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.resnames">[docs]</a>    <span class="k">def</span> <span class="nf">resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid</span><span class="o">.</span><span class="n">resname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="VectorFrame.leaflets"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.leaflets">[docs]</a>    <span class="k">def</span> <span class="nf">leaflets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">:</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid</span><span class="o">.</span><span class="n">leaflet</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="VectorFrame.unique_resnames"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.unique_resnames">[docs]</a>    <span class="k">def</span> <span class="nf">unique_resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid</span><span class="o">.</span><span class="n">resname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+    <span class="c1"># def write_xyz(self, xyz_name, wrapped=True):</span>
+    <span class="c1">#     # Open up the file to write to</span>
+    <span class="c1">#     xyz_out = open(xyz_name, &quot;w&quot;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     comment = &quot;COMFrame &quot;+str(self.number)+&quot; MD Frame &quot;+str(self.mdnumber)</span>
+    <span class="c1">#     xyz_out.write(str(len(self.lipidvec)))</span>
+    <span class="c1">#     xyz_out.write(&quot;\n&quot;)</span>
+    <span class="c1">#     xyz_out.write(comment)</span>
+    <span class="c1">#     xyz_out.write(&quot;\n&quot;)</span>
+    <span class="c1">#</span>
+    <span class="c1">#</span>
+    <span class="c1">#     i=0</span>
+    <span class="c1">#     for dummy_lip in self.lipidvec:</span>
+    <span class="c1">#         #get the coordinates</span>
+    <span class="c1">#         x = self.lipidvec[i].com[0]</span>
+    <span class="c1">#         y = self.lipidvec[i].com[1]</span>
+    <span class="c1">#         z = self.lipidvec[i].com_unwrap[2]</span>
+    <span class="c1">#         if not wrapped:</span>
+    <span class="c1">#             x = self.lipidvec[i].com_unwrap[0]</span>
+    <span class="c1">#             y = self.lipidvec[i].com_unwrap[1]</span>
+    <span class="c1">#             #z = self.lipidvec[i].com_unwrap[2]</span>
+    <span class="c1">#</span>
+    <span class="c1">#         #get the lipid resname</span>
+    <span class="c1">#         oname = self.lipidvec[i].type</span>
+    <span class="c1">#</span>
+    <span class="c1">#         #write to file</span>
+    <span class="c1">#         line = str(oname)+&quot; &quot;+str(x)+&quot; &quot;+str(y)+&quot; &quot;+str(z)</span>
+    <span class="c1">#         xyz_out.write(line)</span>
+    <span class="c1">#         xyz_out.write(&quot;\n&quot;)</span>
+    <span class="c1">#         i+=1</span>
+    <span class="c1">#</span>
+    <span class="c1">#     xyz_out.close()</span>
+    <span class="c1">#     return</span>
+
+<div class="viewcode-block" id="VectorFrame.to_quiver"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.vector_frame.VectorFrame.to_quiver">[docs]</a>    <span class="k">def</span> <span class="nf">to_quiver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

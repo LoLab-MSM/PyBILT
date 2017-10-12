@@ -1,0 +1,411 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.diffusion.diffusion_coefficients &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.diffusion.diffusion_coefficients</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.diffusion.diffusion_coefficients</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Estimate self diffusion coefficients from MSD(t) data.</span>
+
+<span class="sd">This module provides a set of functions to estimate self diffusion coefficients</span>
+<span class="sd">from mean squared displacement (MSD) time trajectories.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">curve_fit</span>
+
+
+<div class="viewcode-block" id="diffusion_coefficient_Einstein"><a class="viewcode-back" href="../../../pybilt.diffusion.html#pybilt.diffusion.diffusion_coefficients.diffusion_coefficient_Einstein">[docs]</a><span class="k">def</span> <span class="nf">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Estimate diffusion coefficient from MSD(t) via Einstein relation.</span>
+
+<span class="sd">    A function to estimate the diffusion constant from a mean squared</span>
+<span class="sd">    displacement time series. This function uses the long time mean squared</span>
+<span class="sd">    displacement approximation (Einstein relation):</span>
+<span class="sd">        MSD = lim_(t-&gt;inf) &lt;||r_i(t) - r_i(0)||**2&gt;_(nsels) = 2*dim*D*t</span>
+<span class="sd">    where D is the diffusion coefficient.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        times (numpy.array): Array of the simulation times of each MSD point.</span>
+<span class="sd">        msd_vals (numpy.array): Array of the MSD values.</span>
+<span class="sd">        dim (Optional[int]): Set the dimension of the data and fit function: 1</span>
+<span class="sd">            for 1-dimensional , 2 for 2-dimensional, or 3 for 3-dimensional.</span>
+<span class="sd">            Defaults to 2.</span>
+<span class="sd">        time_range (Optional[list]): Specify a time range via a list with</span>
+<span class="sd">            format [time_start, time_end]; the range should be given in the</span>
+<span class="sd">            same units as the time data in the Arg times. Defaults to None,</span>
+<span class="sd">            which uses the whole time range in Args times.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The value of the diffusion coefficient.</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical</span>
+<span class="sd">            Properties of a Hydrated Lipid Bilayer from a Multinanosecond</span>
+<span class="sd">            Molecular Dynamics Simulation, Biophysical Journal, Volume 81,</span>
+<span class="sd">            Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495,</span>
+<span class="sd">            http://dx.doi.org/10.1016/S0006-3495(01)75894-8.</span>
+<span class="sd">            (http://www.sciencedirect.com/science/article/pii/S0006349501758948)</span>
+<span class="sd">        2. Section 8.7,</span>
+<span class="sd">            http://manual.gromacs.org/documentation/5.1.4/manual-5.1.4.pdf</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">times</span>
+    <span class="n">msd</span> <span class="o">=</span> <span class="n">msd_vals</span>
+    <span class="k">if</span> <span class="n">time_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">msd</span> <span class="o">=</span> <span class="n">_time_block</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">nvals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">msd</span><span class="p">)</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">msd</span><span class="p">[</span><span class="n">nvals</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">dim</span><span class="o">*</span><span class="n">dt</span><span class="p">[</span><span class="n">nvals</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">D</span></div>
+
+
+<div class="viewcode-block" id="diffusion_coefficient_linear_fit"><a class="viewcode-back" href="../../../pybilt.diffusion.html#pybilt.diffusion.diffusion_coefficients.diffusion_coefficient_linear_fit">[docs]</a><span class="k">def</span> <span class="nf">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Estimate the diffusion coefficent via linear least squares fit of MSD(t) data.</span>
+
+<span class="sd">    Assumes the MSD data has the linear form,</span>
+<span class="sd">        MSD(t) = 2*dim*D*t ,</span>
+<span class="sd">    and uses a linear least squares fit to estimate the diffusion coefficent</span>
+<span class="sd">    D.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        times (numpy.array): Array of the simulation times of each MSD point.</span>
+<span class="sd">        msd_vals (numpy.array): Array of the MSD values.</span>
+<span class="sd">        dim (Optional[int]): Set the dimension of the data and fit function: 1</span>
+<span class="sd">            for 1-dimensional , 2 for 2-dimensional, or 3 for 3-dimensional.</span>
+<span class="sd">            Defaults to 2.</span>
+<span class="sd">        time_range (Optional[list]): Specify a time range via a list with</span>
+<span class="sd">            format [time_start, time_end]; the range should be given in the</span>
+<span class="sd">            same units as the time data in the Arg times. Defaults to None,</span>
+<span class="sd">            which uses the whole time range in Args times.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: Returns a tuple with format (D, Error_D), where D is the</span>
+<span class="sd">        estimated diffusion coefficent and Error_D is the estimated error for</span>
+<span class="sd">        D.</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        1. Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical</span>
+<span class="sd">            Properties of a Hydrated Lipid Bilayer from a Multinanosecond</span>
+<span class="sd">            Molecular Dynamics Simulation, Biophysical Journal, Volume 81,</span>
+<span class="sd">            Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495;</span>
+<span class="sd">            http://dx.doi.org/10.1016/S0006-3495(01)75894-8</span>
+<span class="sd">            (http://www.sciencedirect.com/science/article/pii/S0006349501758948)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">times</span>
+    <span class="n">msd</span> <span class="o">=</span> <span class="n">msd_vals</span>
+    <span class="k">if</span> <span class="n">time_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">msd</span> <span class="o">=</span> <span class="n">_time_block</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">dummy_intercept</span><span class="p">,</span> <span class="n">dummy_r_value</span><span class="p">,</span> <span class="n">dummy_p_value</span><span class="p">,</span> \
+        <span class="n">std_err</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">msd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">slope</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">dim</span><span class="p">),</span> <span class="n">std_err</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">dim</span><span class="p">))</span></div>
+
+
+<span class="c1"># Anomalous diffusion</span>
+
+<span class="k">def</span> <span class="nf">_msd_anom_1d</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">D_alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;1d anomalous diffusion function.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">D_alpha</span><span class="o">*</span><span class="n">time</span><span class="o">**</span><span class="n">alpha</span>
+
+
+<span class="k">def</span> <span class="nf">_msd_anom_2d</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">D_alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;2d anomalous diffusion function.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">4.0</span><span class="o">*</span><span class="n">D_alpha</span><span class="o">*</span><span class="n">time</span><span class="o">**</span><span class="n">alpha</span>
+
+
+<span class="k">def</span> <span class="nf">_msd_anom_3d</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">D_alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;3d anomalous diffusion function.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">6.0</span><span class="o">*</span><span class="n">D_alpha</span><span class="o">*</span><span class="n">time</span><span class="o">**</span><span class="n">alpha</span>
+
+
+<div class="viewcode-block" id="diffusion_coefficient_anomalous_fit"><a class="viewcode-back" href="../../../pybilt.diffusion.html#pybilt.diffusion.diffusion_coefficients.diffusion_coefficient_anomalous_fit">[docs]</a><span class="k">def</span> <span class="nf">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                        <span class="n">time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fit MSD time series data to an anomalous diffusion model.</span>
+
+<span class="sd">    The anomalous diffusion function has the form:</span>
+<span class="sd">        MSD(t) = 2 * dim * D_alpha * t**alpha</span>
+<span class="sd">    For alpha values 0 &lt; alpha &lt; 1 corresponds to subdiffusion, while</span>
+<span class="sd">    1 &lt; alpha &lt; 2 corresponds to superdiffusion.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        times (numpy.array): Array of the simulation times of each MSD point.</span>
+<span class="sd">        msd_vals (numpy.array): Array of the MSD values.</span>
+<span class="sd">        dim (Optional[int]): Set the dimension of the data and fit function: 1</span>
+<span class="sd">            for 1-dimensional , 2 for 2-dimensional, or 3 for 3-dimensional.</span>
+<span class="sd">            Defaults to 2.</span>
+<span class="sd">        time_range (Optional[list]): Specify a time range via a list with</span>
+<span class="sd">            format [time_start, time_end]; the range should be given in the</span>
+<span class="sd">            same units as the time data in the Arg times. Defaults to None,</span>
+<span class="sd">            which uses the whole time range in Args times.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: The return is a tuple with values (D_alpha, alpha) where D_alpha is the</span>
+<span class="sd">        anomalous diffusion coefficent and alpha is the anomalous diffusion</span>
+<span class="sd">        power.</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        1. Gerald R. Kneller, Krzysztof Baczynski, and Marta</span>
+<span class="sd">            Pasenkiewicz-Gierula, Consistent picture of lateral subdiffusion in</span>
+<span class="sd">            lipid bilayers: Molecular dynamics simulation and exact results,</span>
+<span class="sd">            The Journal of Chemical Physics 135, 141105 (2011);</span>
+<span class="sd">            doi: http://dx.doi.org/10.1063/1.3651800</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">times</span>
+    <span class="n">msd</span> <span class="o">=</span> <span class="n">msd_vals</span>
+
+    <span class="n">func</span> <span class="o">=</span> <span class="n">_msd_anom_2d</span>
+    <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">_msd_anom_3d</span>
+    <span class="k">elif</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">_msd_anom_1d</span>
+    <span class="k">if</span> <span class="n">time_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">msd</span> <span class="o">=</span> <span class="n">_time_block</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">popt</span><span class="p">,</span> <span class="n">dummy_pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">msd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">popt</span></div>
+
+
+<span class="c1"># helper function</span>
+<span class="k">def</span> <span class="nf">_time_block</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">t_lower</span><span class="p">,</span> <span class="n">t_upper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a new sub block of data for the specified time range.&quot;&quot;&quot;</span>
+    <span class="n">npoints</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npoints</span><span class="p">):</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="o">&gt;=</span> <span class="n">t_lower</span> <span class="ow">and</span> <span class="n">time</span> <span class="o">&lt;=</span> <span class="n">t_upper</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+            <span class="n">val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

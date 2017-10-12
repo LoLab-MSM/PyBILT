@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.mda_tools.mda_msd &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.mda_tools.mda_msd</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.mda_tools.mda_msd</h1><div class="highlight"><pre>
+<span></span><span class="c1">#we are going to use the MDAnalysis to read in topo and traj</span>
+<span class="c1">#numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#import my running stats class</span>
+<span class="kn">from</span> <span class="nn">pybilt.common.running_stats</span> <span class="k">import</span> <span class="n">RunningStats</span>
+<span class="c1"># import the coordinate wrapping function--for unwrapping</span>
+<span class="kn">from</span> <span class="nn">pybilt.mda_tools.mda_unwrap</span> <span class="k">import</span> <span class="n">wrap_coordinates</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd"> function to compute the mean square displacement (MSD) and diffusion constant</span>
+<span class="sd"> of a list of MDAnalysis atom selections (atom_sel_list). The list of atom selections</span>
+<span class="sd"> are averaged at each timestep.</span>
+<span class="sd"> Returns 2d numpy array with len(atom_sel_list)X6 elements:</span>
+<span class="sd"> [:,0]=dt [:,1]=msd [:,2]=msd_dev [:,3]=diff_con_instantaneous</span>
+<span class="sd"> [:,4]=diff_con_running_average [:,5]=diff_con_running_dev</span>
+
+<span class="sd"> Long time mean squared displacement:</span>
+<span class="sd">    MSD = lim_(t-&gt;inf) &lt;||r_i(t) - r_i(0)||**2&gt;_(nsels) = 2*dim*D*t</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="mda_msd"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_msd.mda_msd">[docs]</a><span class="k">def</span> <span class="nf">mda_msd</span> <span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">atom_sel_list</span><span class="p">,</span> <span class="n">lateral</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">dim</span><span class="o">=</span><span class="mi">3</span>
+    <span class="n">plane_index</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">if</span>	<span class="n">lateral</span><span class="p">:</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">2</span>
+        <span class="n">ii</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">jj</span><span class="o">=</span><span class="mi">1</span>
+        <span class="k">if</span>	<span class="n">plane</span><span class="o">==</span><span class="s2">&quot;yz&quot;</span> <span class="ow">or</span> <span class="n">plane</span><span class="o">==</span><span class="s2">&quot;zy&quot;</span><span class="p">:</span>
+            <span class="n">ii</span><span class="o">=</span><span class="mi">1</span>
+            <span class="n">jj</span><span class="o">=</span><span class="mi">2</span>
+        <span class="k">if</span>	<span class="n">plane</span><span class="o">==</span><span class="s2">&quot;xz&quot;</span> <span class="ow">or</span> <span class="n">plane</span><span class="o">==</span><span class="s2">&quot;zx&quot;</span><span class="p">:</span>
+            <span class="n">ii</span><span class="o">=</span><span class="mi">0</span>
+            <span class="n">jj</span><span class="o">=</span><span class="mi">2</span>
+        <span class="n">plane_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span>
+    <span class="n">naxes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">plane_index</span><span class="p">)</span>
+    <span class="c1">#get the number of frames from the trajectory</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="c1">#get the number of atomselections</span>
+    <span class="n">nsels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_sel_list</span><span class="p">)</span>
+    <span class="c1">#initialize a numpy array to hold the center of mass vectors</span>
+    <span class="n">comlist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nsels</span><span class="p">,</span> <span class="n">nframes</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="c1">#print &quot;l comlist &quot;,len(comlist)</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span>
+    <span class="c1">#index counter for the frame number</span>
+    <span class="n">comit</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1">#combine all the selections into one (for wrapping)</span>
+    <span class="n">msel</span> <span class="o">=</span> <span class="n">atom_sel_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nsels</span><span class="p">):</span>
+         <span class="n">msel</span><span class="o">+=</span><span class="n">atom_sel_list</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+
+    <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">msel</span><span class="p">)</span>
+    <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span><span class="n">naxes</span><span class="p">))</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">msel</span><span class="o">.</span><span class="n">indices</span>
+    <span class="n">firstframe</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># loop over the trajectory</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+        <span class="k">if</span>	<span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot; &quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;frame &quot;</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+    <span class="c1">#unwrap coordinates -- currently unwraps all the coordinates</span>
+        <span class="k">if</span>	<span class="n">unwrap</span><span class="p">:</span>
+            <span class="k">if</span>	<span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;unwrapping frame &quot;</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+            <span class="n">currcoord</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">firstframe</span><span class="p">:</span>
+                <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">currcoord</span>
+                <span class="n">firstframe</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">abc</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">wrap_coordinates</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">currcoord</span><span class="p">,</span> <span class="n">oldcoord</span><span class="p">)</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrapcoord</span><span class="p">[:]</span>
+
+        <span class="c1">#loop over the selections</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">nsels</span><span class="p">):</span>
+            <span class="k">if</span>	<span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s2">&quot;frame &quot;</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span><span class="s2">&quot; getting com of selection &quot;</span><span class="p">,</span><span class="n">atom_sel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1">#compute the center of mass of the current selection and current frame</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="n">atom_sel_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+            <span class="c1">#print &quot;com &quot;,com</span>
+            <span class="c1">#add to the numpy array</span>
+            <span class="n">comlist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">comit</span><span class="p">]</span><span class="o">=</span><span class="n">com</span>
+            <span class="c1">#print comlist</span>
+        <span class="n">times</span><span class="p">[</span><span class="n">comit</span><span class="p">]</span><span class="o">=</span><span class="n">time</span>
+        <span class="n">comit</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="c1">#initialize a numpy array to hold the msd for each selection</span>
+    <span class="n">msd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="c1">#initialize a running stats object to do the averaging</span>
+    <span class="n">drs_stat</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
+    <span class="c1">#initialize a running stats object for the diffusion constant (frame/time average)</span>
+    <span class="n">diff_stat</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
+    <span class="c1">#loop over the frames starting at index 1</span>
+    <span class="c1">#print comlist</span>
+    <span class="c1">#print len(comlist)</span>
+    <span class="n">coml0</span> <span class="o">=</span> <span class="n">comlist</span><span class="p">[:,</span><span class="mi">0</span><span class="p">,</span><span class="n">plane_index</span><span class="p">]</span>
+    <span class="c1">#print coml0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nframes</span><span class="p">):</span>
+        <span class="c1"># get the current com frame list</span>
+        <span class="n">comlcurr</span> <span class="o">=</span> <span class="n">comlist</span><span class="p">[:,</span><span class="n">i</span><span class="p">,</span><span class="n">plane_index</span><span class="p">]</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">comlcurr</span> <span class="o">-</span> <span class="n">coml0</span>
+        <span class="n">drs</span> <span class="o">=</span> <span class="n">dr</span><span class="o">*</span><span class="n">dr</span>
+        <span class="c1">#loop over the selections for this frame</span>
+        <span class="k">for</span>	<span class="n">j</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">nsels</span><span class="p">):</span>
+            <span class="n">drs_curr</span> <span class="o">=</span> <span class="n">drs</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span>
+            <span class="n">drs_mag</span> <span class="o">=</span> <span class="n">drs_curr</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">drs_stat</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">drs_mag</span><span class="p">)</span>
+        <span class="c1">#get the msd for the current selection</span>
+        <span class="n">msdcurr</span> <span class="o">=</span> <span class="n">drs_stat</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">devcurr</span> <span class="o">=</span> <span class="n">drs_stat</span><span class="o">.</span><span class="n">deviation</span><span class="p">()</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">DiffCon</span> <span class="o">=</span> <span class="n">msdcurr</span><span class="o">/</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">dim</span><span class="o">*</span><span class="n">dt</span><span class="p">)</span>
+        <span class="n">diff_stat</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">DiffCon</span><span class="p">)</span>
+        <span class="c1">#print &quot;msdcurr &quot;,msdcurr</span>
+        <span class="c1">#push to the msd array</span>
+        <span class="n">msd</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">dt</span>
+        <span class="n">msd</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">msdcurr</span>
+        <span class="n">msd</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">devcurr</span>
+        <span class="n">msd</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="n">DiffCon</span>
+        <span class="n">msd</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span><span class="o">=</span><span class="n">diff_stat</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">msd</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span><span class="o">=</span><span class="n">diff_stat</span><span class="o">.</span><span class="n">deviation</span><span class="p">()</span>
+        <span class="k">if</span>	<span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;selection number &quot;</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="s2">&quot; has msd &quot;</span><span class="p">,</span><span class="n">msdcurr</span><span class="p">,</span><span class="s2">&quot; with deviation &quot;</span><span class="p">,</span><span class="n">devcurr</span>
+        <span class="c1">#reset the running stats object--prepare for next selection</span>
+        <span class="n">drs_stat</span><span class="o">.</span><span class="n">Reset</span><span class="p">()</span>
+    <span class="c1">#return msd array</span>
+    <span class="k">return</span> <span class="n">msd</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

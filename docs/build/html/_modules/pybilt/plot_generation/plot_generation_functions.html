@@ -1,0 +1,1172 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.plot_generation.plot_generation_functions &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.plot_generation.plot_generation_functions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.plot_generation.plot_generation_functions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">A set of functions to generate plots/figures from the lipid bilayer analysis outputs.</span>
+<span class="sd">These functions use matplotlib (http://matplotlib.org/index.html) along with Seaborn (</span>
+<span class="sd">https://stanford.edu/~mwaskom/software/seaborn/index.html).</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="c1">#check for display and swith mpl backend to Agg is there is none</span>
+<span class="c1"># solution based on answer by Jindra Helcl on</span>
+<span class="c1"># https://stackoverflow.com/questions/8257385/automatic-detection-of-display-availability-with-matplotlib</span>
+<span class="n">_havedisplay</span> <span class="o">=</span> <span class="s2">&quot;DISPLAY&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">_havedisplay</span><span class="p">:</span>
+    <span class="n">exitval</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s1">&#39;python -c &quot;import matplotlib.pyplot as plt; plt.figure()&quot;&#39;</span><span class="p">)</span>
+    <span class="n">_havedisplay</span> <span class="o">=</span> <span class="p">(</span><span class="n">exitval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">_havedisplay</span><span class="p">:</span>
+    <span class="n">mpl</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="c1">#import matplotlib.cm as cm</span>
+<span class="c1">#import matplotlib.colors as colors</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1">#range/xrange fix</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="range"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.range">[docs]</a>    <span class="k">def</span> <span class="nf">range</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">xrange</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<span class="c1"># the default savefig params can be different from the display params</span>
+<span class="c1"># e.g., you may want a higher resolution, or to make the figure</span>
+<span class="c1"># background white</span>
+<span class="n">sfig_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;savefig.dpi&#39;</span> <span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+    <span class="s1">&#39;savefig.format&#39;</span> <span class="p">:</span> <span class="s1">&#39;pdf&#39;</span>
+    <span class="p">}</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sfig_params</span><span class="p">)</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">8.75</span><span class="p">,</span> <span class="mf">7.25</span><span class="p">],</span> <span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">,</span> <span class="s1">&#39;axes.labelsize&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="s1">&#39;legend.fontsize&#39;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+    <span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+    <span class="s1">&#39;ytick.labelsize&#39;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+    <span class="s1">&#39;lines.linewidth&#39;</span><span class="p">:</span> <span class="mf">6.0</span><span class="p">,</span>
+    <span class="s1">&#39;lines.markersize&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="c1">#sns.set_style(&quot;whitegrid&quot;)</span>
+<span class="c1">#sns.set_style(&quot;white&quot;)</span>
+<span class="c1">#sns.set(context=&quot;paper&quot;, font=&quot;monospace&quot;)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;ticks&quot;</span><span class="p">)</span>
+
+<span class="n">_color_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">,</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span><span class="s1">&#39;purple&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;yellow&#39;</span><span class="p">,</span> <span class="s1">&#39;gray&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot">[docs]</a><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">dat_list</span><span class="p">,</span><span class="n">yerr_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;plot.eps&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+         <span class="n">marker</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic plotting function for (multiple) xy datasets.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]</span>
+<span class="sd">        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]</span>
+<span class="sd">        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.</span>
+<span class="sd">        filename (str, Optional): The string containing the path and filename for the exported plot file.</span>
+<span class="sd">        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True</span>
+<span class="sd">        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).</span>
+<span class="sd">            Default: False</span>
+<span class="sd">        xlabel (str, Optional): Specify a x-axis label.</span>
+<span class="sd">        ylabel (str, Optional): Specify a y-axis label</span>
+<span class="sd">        marker (str, Optional): Specify a matplotlib marker type for data points.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">dat</span> <span class="ow">in</span> <span class="n">dat_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">yerr_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                   <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">yerr_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">yerr_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">yerr_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dat</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">yerr</span><span class="o">=</span><span class="n">yerr_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">xlabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ylabel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_step_vectors"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_step_vectors">[docs]</a><span class="k">def</span> <span class="nf">plot_step_vectors</span><span class="p">(</span><span class="n">vectors_resnames</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;step_vectors.pdf&#39;</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scaled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wrapped</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot with the lipid displacement vectors (or step vectors)</span>
+<span class="sd">    Takes a single frame of the output from:</span>
+<span class="sd">        MemSys.StepVector</span>
+<span class="sd">    Corresponding colors (if multiple lipid types are included) can be</span>
+<span class="sd">    generated using:</span>
+<span class="sd">        MemSys.StepVectorColors</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">color_list</span> <span class="o">=</span> <span class="n">_color_list</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">vectors_resnames</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">vectors_resnames</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">vx</span> <span class="o">=</span> <span class="n">vectors_resnames</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">vy</span> <span class="o">=</span> <span class="n">vectors_resnames</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">resnames</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">vectors_resnames</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">color_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">resnames</span><span class="p">:</span>
+        <span class="n">color_dict</span><span class="p">[</span><span class="n">res</span><span class="p">]</span> <span class="o">=</span> <span class="n">color_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">color_list</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">vectors_resnames</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color_dict</span><span class="p">[</span><span class="n">residue</span><span class="p">])</span>
+    <span class="c1">#print(x)</span>
+   <span class="c1"># Q = plt.quiver(x,y,vx,vy,color=colors)</span>
+    <span class="c1">#vector = np.array([vx[0], vy[1]])</span>
+    <span class="c1">#print(&quot;vector 0 length is: {}&quot;.format(np.sqrt(np.dot(vector,vector))))</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span> <span class="n">scale_units</span><span class="o">=</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">label_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">color_dict</span><span class="p">:</span>
+        <span class="n">label_string</span><span class="o">+=</span><span class="n">resname</span><span class="o">+</span><span class="s2">&quot;:&quot;</span><span class="o">+</span><span class="n">color_dict</span><span class="p">[</span><span class="n">resname</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; &quot;</span>
+    <span class="n">dummy_qk</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">quiverkey</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mf">0.975</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label_string</span><span class="p">,</span> <span class="n">labelpos</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span>
+                   <span class="n">coordinates</span><span class="o">=</span><span class="s1">&#39;figure&#39;</span><span class="p">)</span>
+    <span class="c1">#else:</span>
+    <span class="c1">#    plt.quiver(x,y,vx,vy)</span>
+    <span class="c1">#plt.title(&#39;Lateral Displacement Vectors&#39;)</span>
+    <span class="k">if</span> <span class="n">scaled</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;x (scaled coordinates)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;y (scaled coordinates)&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;x ($\AA$)&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;y ($\AA$)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scaled</span> <span class="ow">and</span> <span class="n">wrapped</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_step_vectors_comtraj"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_step_vectors_comtraj">[docs]</a><span class="k">def</span> <span class="nf">plot_step_vectors_comtraj</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;step_vectors.pdf&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot with the lipid displacement vectors (or step vectors)</span>
+<span class="sd">    Takes a single frame of the output from:</span>
+<span class="sd">        MemSys.StepVector</span>
+<span class="sd">    Corresponding colors (if multiple lipid types are included) can be</span>
+<span class="sd">    generated using:</span>
+<span class="sd">        MemSys.StepVectorColors</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">vectors</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">vectors</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">vx</span> <span class="o">=</span> <span class="n">vectors</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">vy</span> <span class="o">=</span> <span class="n">vectors</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">dummy_step_vec_plot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">vx</span><span class="p">,</span><span class="n">vy</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">vx</span><span class="p">,</span><span class="n">vy</span><span class="p">)</span>
+    <span class="c1">#plt.title(&#39;Lateral Displacement Vectors&#39;)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_msd"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_msd">[docs]</a><span class="k">def</span> <span class="nf">plot_msd</span><span class="p">(</span><span class="n">msd_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;msd.pdf&#39;</span><span class="p">,</span><span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot with Mean Squared Displacement curves</span>
+<span class="sd">    Takes outputs from:</span>
+<span class="sd">        MemSys.CalcMSD</span>
+<span class="sd">        MemSys.CalcMSD_parallel</span>
+<span class="sd">    The outputs are passed to function in a list input: apl_dat_list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<span class="c1">#    params = {</span>
+<span class="c1">#    &#39;axes.labelsize&#39;: 20,</span>
+<span class="c1">#    &#39;text.fontsize&#39;: 20,</span>
+<span class="c1">#    &#39;legend.fontsize&#39;: 20,</span>
+<span class="c1">#    &#39;xtick.labelsize&#39;: 16,</span>
+<span class="c1">#    &#39;ytick.labelsize&#39;: 16,</span>
+<span class="c1">#    &#39;text.usetex&#39;: False,</span>
+<span class="c1">#    &#39;figure.figsize&#39;: [8.0, 6.0]</span>
+<span class="c1">#    }</span>
+<span class="c1">#    params = {&#39;figure.figsize&#39;: [10.0, 8.0]}</span>
+<span class="c1">#    mpl.rcParams.update(params)</span>
+<span class="c1">#</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">msd_dat</span> <span class="ow">in</span> <span class="n">msd_dat_list</span><span class="p">:</span>
+        <span class="n">msd_d</span> <span class="o">=</span> <span class="n">msd_dat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">msd_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">msd</span> <span class="o">=</span> <span class="n">msd_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">msd</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">msd</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">4.0</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Distance in the lateral plane ($\AA^2$)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="plot_area_per_lipid"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_area_per_lipid">[docs]</a><span class="k">def</span> <span class="nf">plot_area_per_lipid</span><span class="p">(</span><span class="n">apl_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;apl.pdf&#39;</span><span class="p">,</span><span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot with area per lipid (apl) curves</span>
+<span class="sd">    Takes outputs from:</span>
+<span class="sd">        MemSys.CalcAreaPerLipid_Box</span>
+<span class="sd">        MemSys.CalcAreaPerLipid_ClosestNeighborCircle</span>
+<span class="sd">    The outputs are passed to function in a list input: apl_dat_list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1">#print &quot;filename: &quot;, filename</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">apl_dat</span> <span class="ow">in</span> <span class="n">apl_dat_list</span><span class="p">:</span>
+        <span class="n">apl_d</span> <span class="o">=</span> <span class="n">apl_dat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">apl_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="c1">#print &quot;switching time units from ps to ns&quot;</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">apl</span> <span class="o">=</span> <span class="n">apl_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">apl_dev</span> <span class="o">=</span> <span class="n">apl_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#print &quot;plotting&quot;,name_list[i],&quot; with errorbars&quot;</span>
+            <span class="c1">#print t</span>
+            <span class="c1">#print apl</span>
+            <span class="c1">#plt.errorbar(t, apl, yerr=apl_dev, label=name_list[i])</span>
+            <span class="k">if</span> <span class="n">n_points</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">apl</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">apl_dev</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">apl</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">apl</span><span class="o">-</span><span class="n">apl_dev</span><span class="p">,</span> <span class="n">apl</span><span class="o">+</span><span class="n">apl_dev</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">interpolate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n_points</span> <span class="o">&lt;=</span> <span class="mi">30</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">apl</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">apl_dev</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">apl</span><span class="p">)</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">apl</span> <span class="o">-</span> <span class="n">apl_dev</span><span class="p">,</span> <span class="n">apl</span> <span class="o">+</span> <span class="n">apl_dev</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">interpolate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Area per lipid ($\AA^2$)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="plot_dc_cluster_dat_number"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number">[docs]</a><span class="k">def</span> <span class="nf">plot_dc_cluster_dat_number</span><span class="p">(</span><span class="n">clust_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;clust_number.pdf&#39;</span><span class="p">,</span><span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span>
+                               <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a plot of the average number of clusters (vs. time)</span>
+<span class="sd">    This function generates a plot of the average number of clusters vs. time for data output with key &#39;nclusters&#39;</span>
+<span class="sd">     from the &#39;dc_cluster&#39; analysis in the BilayerAnalyzer, which corresponds to the</span>
+<span class="sd">    bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        clust_dat_list (list): This is a list of all data to plot and should be a list of tuples/lists where</span>
+<span class="sd">            each element tuple has the data arrays for each time series curve to include in the plot: e.g.</span>
+<span class="sd">            [ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]</span>
+<span class="sd">        name_list (list, optional): This is a list of string names to assign each curve included in the plot. It</span>
+<span class="sd">            should have len(name_list) == len(clust_dat_list) = True.</span>
+<span class="sd">                Default: None</span>
+<span class="sd">        filename (str, optional): This a string containing the filename for the output plot if save is set to True.</span>
+<span class="sd">                Default: &#39;clust_number.pdf&#39;</span>
+<span class="sd">        time_in (str, optional): This is a string specifying the time units of values in the input arrays. Acceptible values</span>
+<span class="sd">            are &#39;ps&#39; for picosecond and &#39;ns&#39; nanosecond.</span>
+<span class="sd">                Default: &#39;ps&#39;</span>
+<span class="sd">        time_out (str, optional): This is a string specifying the time units to use in the output plot. Acceptible values</span>
+<span class="sd">            are &#39;ps&#39; for picosecond and &#39;ns&#39; nanosecond. If this is different than the value for time_in then the time</span>
+<span class="sd">            values will be scaled accordingly.</span>
+<span class="sd">                Default: &#39;ns&#39;</span>
+<span class="sd">        save (bool, optional): This is boolean switch to set whether or not to save the generated plot to disc.</span>
+<span class="sd">            plt.savefig is called.</span>
+<span class="sd">                Default: True</span>
+<span class="sd">        show (bool, optional): This is boolean switch to set whether or not the generated plot is displayed in interactive</span>
+<span class="sd">            mode using plt.show.</span>
+<span class="sd">                Default: False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">cl_dat</span> <span class="ow">in</span> <span class="n">clust_dat_list</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="c1">#print &quot;switching time units from ps to ns&quot;</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#print &quot;plotting&quot;,name_list[i],&quot; with errorbars&quot;</span>
+            <span class="c1">#print t</span>
+            <span class="c1">#print apl</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">stds</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">stds</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Average Number of Clusters&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="plot_dc_cluster_dat_size"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size">[docs]</a><span class="k">def</span> <span class="nf">plot_dc_cluster_dat_size</span><span class="p">(</span><span class="n">clust_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;clust_number.pdf&#39;</span><span class="p">,</span><span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span>
+                               <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a plot of the average cluster size (vs. time)</span>
+<span class="sd">    This function generates a plot of the average cluster size vs. time for data output with key &#39;avg_size&#39; from the</span>
+<span class="sd">    &#39;dc_cluster&#39; analysis in the BilayerAnalyzer, which corresponds to the</span>
+<span class="sd">    bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        clust_dat_list (list): This is a list of all data to plot and should be a list of tuples/lists where</span>
+<span class="sd">            each element tuple has the data arrays for each time series curve to include in the plot: e.g.</span>
+<span class="sd">            [ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]</span>
+<span class="sd">        name_list (list, optional): This is a list of string names to assign each curve included in the plot. It</span>
+<span class="sd">            should have len(name_list) == len(clust_dat_list) = True.</span>
+<span class="sd">                Default: None</span>
+<span class="sd">        filename (str, optional): This a string containing the filename for the output plot if save is set to True.</span>
+<span class="sd">                Default: &#39;clust_number.pdf&#39;</span>
+<span class="sd">        time_in (str, optional): This is a string specifying the time units of values in the input arrays. Acceptible values</span>
+<span class="sd">            are &#39;ps&#39; for picosecond and &#39;ns&#39; nanosecond.</span>
+<span class="sd">                Default: &#39;ps&#39;</span>
+<span class="sd">        time_out (str, optional): This is a string specifying the time units to use in the output plot. Acceptible values</span>
+<span class="sd">            are &#39;ps&#39; for picosecond and &#39;ns&#39; nanosecond. If this is different than the value for time_in then the time</span>
+<span class="sd">            values will be scaled accordingly.</span>
+<span class="sd">                Default: &#39;ns&#39;</span>
+<span class="sd">        save (bool, optional): This is boolean switch to set whether or not to save the generated plot to disc.</span>
+<span class="sd">            plt.savefig is called.</span>
+<span class="sd">                Default: True</span>
+<span class="sd">        show (bool, optional): This is boolean switch to set whether or not the generated plot is displayed in interactive</span>
+<span class="sd">            mode using plt.show.</span>
+<span class="sd">                Default: False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">cl_dat</span> <span class="ow">in</span> <span class="n">clust_dat_list</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="c1">#print &quot;switching time units from ps to ns&quot;</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#print &quot;plotting&quot;,name_list[i],&quot; with errorbars&quot;</span>
+            <span class="c1">#print t</span>
+            <span class="c1">#print apl</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">stds</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">stds</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Average Size of Cluster&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_dc_cluster_dat_number_comtraj"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number_comtraj">[docs]</a><span class="k">def</span> <span class="nf">plot_dc_cluster_dat_number_comtraj</span><span class="p">(</span><span class="n">clust_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;clust_number.pdf&#39;</span><span class="p">,</span><span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single of the average number of clusters (vs. time)</span>
+<span class="sd">    using output data from:</span>
+<span class="sd">        MemSys.CheckClustering</span>
+<span class="sd">    The outputs are passed to function in a list input: clust_dat_list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">cl_dat</span> <span class="ow">in</span> <span class="n">clust_dat_list</span><span class="p">:</span>
+        <span class="n">cl_loc</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">cl_loc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="c1">#print &quot;switching time units from ps to ns&quot;</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">cl</span> <span class="o">=</span> <span class="n">cl_loc</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">cl_dev</span> <span class="o">=</span> <span class="n">cl_loc</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#print &quot;plotting&quot;,name_list[i],&quot; with errorbars&quot;</span>
+            <span class="c1">#print t</span>
+            <span class="c1">#print apl</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">cl_dev</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">cl_dev</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Average Number of Clusters&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_dc_cluster_dat_size_comtraj"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size_comtraj">[docs]</a><span class="k">def</span> <span class="nf">plot_dc_cluster_dat_size_comtraj</span><span class="p">(</span><span class="n">clust_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;clust_size.pdf&#39;</span><span class="p">,</span><span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot of the average cluster size (vs time)</span>
+<span class="sd">    using output data from:</span>
+<span class="sd">        MemSys.CheckClustering</span>
+<span class="sd">    The outputs are passed to function in a list input: clust_dat_list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">cl_dat</span> <span class="ow">in</span> <span class="n">clust_dat_list</span><span class="p">:</span>
+        <span class="n">cl_loc</span> <span class="o">=</span> <span class="n">cl_dat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">cl_loc</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="c1">#print &quot;switching time units from ps to ns&quot;</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">cl</span> <span class="o">=</span> <span class="n">cl_loc</span><span class="p">[:,</span><span class="mi">7</span><span class="p">]</span>
+        <span class="n">cl_dev</span> <span class="o">=</span> <span class="n">cl_loc</span><span class="p">[:,</span><span class="mi">8</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#print &quot;plotting&quot;,name_list[i],&quot; with errorbars&quot;</span>
+            <span class="c1">#print t</span>
+            <span class="c1">#print apl</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">cl_dev</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">cl_dev</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Average Size of Cluster (lipids per cluster)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="plot_dc_cluster_maps_comtraj"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_maps_comtraj">[docs]</a><span class="k">def</span> <span class="nf">plot_dc_cluster_maps_comtraj</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;cluster_map.pdf&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot of the lipid cluster map</span>
+<span class="sd">    Takes a single frame of the output from:</span>
+<span class="sd">        MemSys.ExportClustersForPlotting</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">clusters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">clusters</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">clusters</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+    <span class="c1">#plt.title(&#39;Lateral Displacement Vectors&#39;)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_density_profile"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_density_profile">[docs]</a><span class="k">def</span> <span class="nf">plot_density_profile</span><span class="p">(</span><span class="n">dp_out_list</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;density_profile.pdf&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">label_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Density&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Plot density profiles</span>
+<span class="sd">    This function can be used to plot the results of density profiles functions</span>
+<span class="sd">    in the mda_density_profile module.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dp_out_list (list of tuples): A list of the tuple outputs of the profile calculation functions</span>
+<span class="sd">        save (bool, optional): Default is True. Saves the plot output as an image file if True.</span>
+<span class="sd">        filename (str, optional): The name out the image file that will be created if save=True.</span>
+<span class="sd">        show (bool, optional): Default is False. Display the plot (plt.show) if True.</span>
+<span class="sd">        label_list (list of str : None, optional): Default is None. Allows a list of strings used to</span>
+<span class="sd">            label the plot lines.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">dp_out_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">label_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">label_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">label_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Position Along the Normal&#39;</span><span class="p">)</span>
+    <span class="c1">#plt.xlabel(ylabel)</span>
+    <span class="c1">#plt.ylabel(&#39;Position Along the Normal&#39;)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="plot_grid_as_scatter"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_grid_as_scatter">[docs]</a><span class="k">def</span> <span class="nf">plot_grid_as_scatter</span><span class="p">(</span><span class="n">in_xyzc</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;lipid_grid.pdf&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">cma</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cma</span> <span class="o">=</span> <span class="n">cmap</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">in_xyzc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">in_xyzc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">in_xyzc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">in_xyzc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">in_xyzc</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="plot_corr_mat"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_corr_mat">[docs]</a><span class="k">def</span> <span class="nf">plot_corr_mat</span><span class="p">(</span><span class="n">in_corrmat</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;correlation_matrix.pdf&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+    <span class="n">cma</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;inferno&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">in_corrmat</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_corr_mat_as_scatter"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_corr_mat_as_scatter">[docs]</a><span class="k">def</span> <span class="nf">plot_corr_mat_as_scatter</span><span class="p">(</span><span class="n">in_corrmat</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;correlation_matrix.pdf&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span> <span class="p">):</span>
+    <span class="n">ax_l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_corrmat</span><span class="p">)</span>
+
+    <span class="n">x_axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ax_l</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="n">y_axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ax_l</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ax_l</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ax_l</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ax_l</span><span class="p">):</span>
+            <span class="n">x_axes</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">y_axes</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+            <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">in_corrmat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">cma</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_axes</span><span class="p">,</span> <span class="n">y_axes</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_average_deuterium_op"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_average_deuterium_op">[docs]</a><span class="k">def</span> <span class="nf">plot_average_deuterium_op</span><span class="p">(</span><span class="n">dop_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;dop.pdf&#39;</span><span class="p">,</span><span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot of the average deuterium order parameter vs. time</span>
+
+<span class="sd">    The outputs are passed to function in a list input: dop_dat_list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1">#print &quot;filename: &quot;, filename</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">dop_dat</span> <span class="ow">in</span> <span class="n">dop_dat_list</span><span class="p">:</span>
+        <span class="n">dop_d</span> <span class="o">=</span> <span class="n">dop_dat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">dop_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="c1">#print &quot;switching time units from ps to ns&quot;</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">dop</span> <span class="o">=</span> <span class="n">dop_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">dop_dev</span> <span class="o">=</span> <span class="n">dop_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#print &quot;plotting&quot;,name_list[i],&quot; with errorbars&quot;</span>
+            <span class="c1">#print t</span>
+            <span class="c1">#print dop</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dop</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">dop_dev</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dop</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">dop_dev</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Average Deuterium Order Parameter&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_bilayer_thickness"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_bilayer_thickness">[docs]</a><span class="k">def</span> <span class="nf">plot_bilayer_thickness</span><span class="p">(</span><span class="n">bt_dat_list</span><span class="p">,</span><span class="n">name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;bilayer_thickness.pdf&#39;</span><span class="p">,</span>
+                        <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span><span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">xlim</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Generates a single plot with bilayer thickness curves</span>
+<span class="sd">    Takes outputs from:</span>
+
+<span class="sd">    The outputs are passed to function in a list input: bt_dat_list</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">bt_dat</span> <span class="ow">in</span> <span class="n">bt_dat_list</span><span class="p">:</span>
+        <span class="n">bt_d</span> <span class="o">=</span> <span class="n">bt_dat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">bt_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">/=</span><span class="mf">1000.0</span>
+        <span class="k">elif</span> <span class="n">time_in</span> <span class="o">==</span> <span class="s1">&#39;ns&#39;</span> <span class="ow">and</span> <span class="n">time_out</span> <span class="o">==</span> <span class="s1">&#39;ps&#39;</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">*=</span><span class="mf">1000.0</span>
+        <span class="n">bt</span> <span class="o">=</span> <span class="n">bt_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">bt_d</span><span class="p">[::</span><span class="n">interval</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">bt</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">error</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">bt</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#plt.title(&quot;Mean Sqared Displacement vs. Time&quot;)</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s2">&quot;Time (&quot;</span><span class="o">+</span><span class="n">time_out</span><span class="o">+</span><span class="s2">&quot;)&quot;</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Bilayer thickness ($\AA$)&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">xlim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">xlim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ylim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_displacement_lipid_type_cross_correlation"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_displacement_lipid_type_cross_correlation">[docs]</a><span class="k">def</span> <span class="nf">plot_displacement_lipid_type_cross_correlation</span><span class="p">(</span><span class="n">analyzer_data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;normal_displacement_lipid_type_cross_correlation.pdf&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+    <span class="n">color_list</span> <span class="o">=</span> <span class="n">_color_list</span>
+    <span class="c1">#build the data objects</span>
+    <span class="n">leaflets</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">analyzer_data</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">lipid_types</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">yvals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">yerr</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">leaflet</span> <span class="ow">in</span> <span class="n">leaflets</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">lipid_resname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">analyzer_data</span><span class="p">[</span><span class="n">leaflet</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">leaflet</span> <span class="o">==</span> <span class="s1">&#39;upper&#39;</span><span class="p">:</span>
+                <span class="n">count</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">analyzer_data</span><span class="p">[</span><span class="n">leaflet</span><span class="p">][</span><span class="n">lipid_resname</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">deviation</span> <span class="o">=</span> <span class="n">analyzer_data</span><span class="p">[</span><span class="n">leaflet</span><span class="p">][</span><span class="n">lipid_resname</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">lipid_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid_resname</span><span class="p">)</span>
+            <span class="n">yvals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean</span><span class="p">)</span>
+            <span class="n">yerr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deviation</span><span class="p">)</span>
+    <span class="n">unique_lipid_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">lipid_types</span><span class="p">)</span>
+    <span class="n">color_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">i</span> <span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">l_type</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_lipid_types</span><span class="p">):</span>
+        <span class="n">color_dict</span><span class="p">[</span><span class="n">l_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">color_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_lipid_types</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">l_type</span> <span class="ow">in</span> <span class="n">lipid_types</span><span class="p">:</span>
+        <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color_dict</span><span class="p">[</span><span class="n">l_type</span><span class="p">])</span>
+
+    <span class="n">xval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">yvals</span><span class="p">))</span>
+    <span class="n">val_by_lipid</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xval</span><span class="p">)):</span>
+        <span class="n">lipid</span> <span class="o">=</span> <span class="n">lipid_types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">xv</span> <span class="o">=</span> <span class="n">xval</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">yv</span> <span class="o">=</span> <span class="n">yvals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">ye</span> <span class="o">=</span> <span class="n">yerr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="n">val_by_lipid</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span>
+            <span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yv</span><span class="p">)</span>
+            <span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ye</span><span class="p">)</span>
+            <span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+            <span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[[</span><span class="n">xv</span><span class="p">],</span> <span class="p">[</span><span class="n">yv</span><span class="p">],</span> <span class="p">[</span><span class="n">ye</span><span class="p">],</span> <span class="p">[</span><span class="n">color</span><span class="p">],</span> <span class="p">[</span><span class="n">lipid</span><span class="p">]]</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="mf">0.35</span>
+    <span class="k">for</span> <span class="n">lipid_resname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">unique_lipid_types</span><span class="p">):</span>
+        <span class="c1">#print(val_by_lipid[lipid_resname][0])</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid_resname</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid_resname</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">width</span><span class="p">,</span>
+                <span class="n">yerr</span><span class="o">=</span><span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid_resname</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid_resname</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="n">lipid_resname</span><span class="p">,</span>
+                <span class="n">error_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">ecolor</span><span class="o">=</span><span class="n">val_by_lipid</span><span class="p">[</span><span class="n">lipid_resname</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">capsize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">capthick</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+
+
+    <span class="n">line_xval</span> <span class="o">=</span> <span class="p">[</span><span class="n">xval</span><span class="p">[</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="o">+</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span> <span class="n">xval</span><span class="p">[</span><span class="n">count</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="o">+</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)]</span>
+    <span class="n">line_yval</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span><span class="o">-</span><span class="nb">max</span><span class="p">(</span><span class="n">yerr</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span><span class="o">+</span><span class="mf">1.25</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="n">yerr</span><span class="p">)]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">line_xval</span><span class="p">,</span> <span class="n">line_yval</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">xval</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="s1">&#39;k--&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xval</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.25</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span><span class="o">+</span><span class="mf">1.25</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="n">yerr</span><span class="p">),</span> <span class="s1">&#39;upper leaflet&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">xval</span><span class="p">[</span><span class="n">count</span><span class="p">],</span> <span class="nb">max</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.25</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">yerr</span><span class="p">),</span> <span class="s1">&#39;lower leaflet&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Lipid type&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Cross correlation&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelbottom</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_position_density_map_2d_scatter"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_position_density_map_2d_scatter">[docs]</a><span class="k">def</span> <span class="nf">plot_position_density_map_2d_scatter</span><span class="p">(</span><span class="n">x_centers</span><span class="p">,</span> <span class="n">y_centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span>
+                                            <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                            <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;position_density_2d.pdf&#39;</span><span class="p">,</span>
+                                            <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                            <span class="n">vmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                            <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                            <span class="n">scaled_to_max</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+    <span class="n">cma</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;jet&#39;</span><span class="p">)</span>
+    <span class="n">x_pos</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y_pos</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">color_vals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_centers</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)):</span>
+            <span class="n">x_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_centers</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">y_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_centers</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">color_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">x_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)</span>
+    <span class="n">y_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_pos</span><span class="p">)</span>
+    <span class="n">color_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">color_vals</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color_vals</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color_vals</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color_vals</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color_vals</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;face&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x ($\AA$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y ($\AA$)&#39;</span><span class="p">)</span>
+
+    <span class="c1">#print in_xyzc[3]</span>
+    <span class="c1">#plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker=&#39;s&#39;,s=50, cmap=cma)</span>
+    <span class="c1">#cax, kw = mpl.colorbar.make_axes(plt.gca())</span>
+    <span class="c1">#norm = mpl.colors.Normalize(vmin = min(in_xyzc[3]), vmax = max(in_xyzc[3]), clip = False)</span>
+
+    <span class="c1">#c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)</span>
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count (normalized)&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">scaled_to_max</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count (scaled to maximum)&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_position_density_map_2d"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_position_density_map_2d">[docs]</a><span class="k">def</span> <span class="nf">plot_position_density_map_2d</span><span class="p">(</span><span class="n">x_centers</span><span class="p">,</span> <span class="n">y_centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;position_density_2d.pdf&#39;</span><span class="p">,</span>
+                                 <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                 <span class="n">scaled_to_max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
+    <span class="c1">#cma = plt.cm.get_cmap(&#39;YlGnBu_r&#39;)</span>
+    <span class="n">cma</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;jet&#39;</span><span class="p">)</span>
+    <span class="n">nbins</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_centers</span><span class="p">)</span>
+    <span class="c1">#need to rearrange the array order for imshow to match the same x and y values as is assumed with input counts</span>
+    <span class="n">counts_swapped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nbins</span><span class="p">,</span><span class="n">nbins</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">counts</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbins</span><span class="p">):</span>
+        <span class="n">ii</span> <span class="o">=</span> <span class="n">nbins</span><span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbins</span><span class="p">):</span>
+            <span class="n">counts_swapped</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">ii</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">counts_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)],</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">counts_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">counts_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)],</span>
+                   <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">counts_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)])</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x ($\AA$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y ($\AA$)&#39;</span><span class="p">)</span>
+
+    <span class="c1">#print in_xyzc[3]</span>
+    <span class="c1">#plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker=&#39;s&#39;,s=50, cmap=cma)</span>
+    <span class="c1">#cax, kw = mpl.colorbar.make_axes(plt.gca())</span>
+    <span class="c1">#norm = mpl.colors.Normalize(vmin = min(in_xyzc[3]), vmax = max(in_xyzc[3]), clip = False)</span>
+
+    <span class="c1">#c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)</span>
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">normalized</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count (normalized)&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">scaled_to_max</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count (scaled to maximum)&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Count&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="plot_lipid_grid_thickness_map_2d"><a class="viewcode-back" href="../../../pybilt.plot_generation.html#pybilt.plot_generation.plot_generation_functions.plot_lipid_grid_thickness_map_2d">[docs]</a><span class="k">def</span> <span class="nf">plot_lipid_grid_thickness_map_2d</span><span class="p">(</span><span class="n">x_centers</span><span class="p">,</span> <span class="n">y_centers</span><span class="p">,</span> <span class="n">thickness_grid</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;bilayer_thickness_map_2d.pdf&#39;</span><span class="p">,</span>
+                                 <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
+    <span class="c1">#cma = plt.cm.get_cmap(&#39;YlGnBu_r&#39;)</span>
+    <span class="n">cma</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">thickness_grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ny</span> <span class="o">=</span> <span class="n">thickness_grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">#need to rearrange the array order for imshow to match the same x and y values as is assumed with input thickness_grid</span>
+    <span class="n">thickness_swapped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span><span class="n">nx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">thickness_grid</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nx</span><span class="p">:</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="n">ny</span><span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">nx</span><span class="p">:</span>
+                    <span class="n">thickness_swapped</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">thickness_grid</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">ii</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ny</span><span class="p">:</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">ny</span><span class="p">:</span>
+                    <span class="n">thickness_swapped</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">thickness_grid</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">ii</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">thickness_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)],</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">thickness_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">thickness_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)],</span>
+                   <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">thickness_swapped</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cma</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                   <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">y_centers</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">y_centers</span><span class="p">)])</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;x ($\AA$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;y ($\AA$)&#39;</span><span class="p">)</span>
+
+    <span class="c1">#print in_xyzc[3]</span>
+    <span class="c1">#plt.scatter(in_xyzc[0], in_xyzc[1], c=in_xyzc[3], marker=&#39;s&#39;,s=50, cmap=cma)</span>
+    <span class="c1">#cax, kw = mpl.colorbar.make_axes(plt.gca())</span>
+    <span class="c1">#norm = mpl.colors.Normalize(vmin = min(in_xyzc[3]), vmax = max(in_xyzc[3]), clip = False)</span>
+
+    <span class="c1">#c = mpl.colorbar.ColorbarBase(cax, cmap=cma, norm=norm)</span>
+    <span class="k">if</span> <span class="n">colorbar</span><span class="p">:</span>
+        <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+        <span class="n">cbar</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Thickness ($\AA$)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

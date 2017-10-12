@@ -1,0 +1,564 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.plot_generation package &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
+        <link rel="up" title="pybilt package" href="pybilt.html"/>
+        <link rel="prev" title="pybilt.mda_tools package" href="pybilt.mda_tools.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pybilt.bilayer_analyzer.html">pybilt.bilayer_analyzer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.com_trajectory.html">pybilt.com_trajectory package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.common.html">pybilt.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.diffusion.html">pybilt.diffusion package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.lipid_grid.html">pybilt.lipid_grid package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.mda_tools.html">pybilt.mda_tools package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pybilt.plot_generation package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pybilt.html#module-pybilt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">pybilt</a> &raquo;</li>
+        
+          <li><a href="pybilt.html">pybilt package</a> &raquo;</li>
+        
+      <li>pybilt.plot_generation package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pybilt.plot_generation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pybilt-plot-generation-package">
+<h1>pybilt.plot_generation package<a class="headerlink" href="#pybilt-plot-generation-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pybilt.plot_generation.plot_generation_functions">
+<span id="pybilt-plot-generation-plot-generation-functions-module"></span><h2>pybilt.plot_generation.plot_generation_functions module<a class="headerlink" href="#module-pybilt.plot_generation.plot_generation_functions" title="Permalink to this headline">¶</a></h2>
+<p>A set of functions to generate plots/figures from the lipid bilayer analysis outputs.
+These functions use matplotlib (<a class="reference external" href="http://matplotlib.org/index.html">http://matplotlib.org/index.html</a>) along with Seaborn (
+<a class="reference external" href="https://stanford.edu/~mwaskom/software/seaborn/index.html">https://stanford.edu/~mwaskom/software/seaborn/index.html</a>).</p>
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>dat_list</em>, <em>yerr_list=None</em>, <em>name_list=None</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>marker=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic plotting function for (multiple) xy datasets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dat_list</strong> (<em>list or list like</em>) &#8211; List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]</li>
+<li><strong>yerr_list</strong> (<em>list or list like</em>) &#8211; List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) &#8211; List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) &#8211; The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) &#8211; Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) &#8211; Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+Default: False</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) &#8211; Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) &#8211; Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) &#8211; Specify a matplotlib marker type for data points.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_area_per_lipid">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_area_per_lipid</code><span class="sig-paren">(</span><em>apl_dat_list</em>, <em>name_list=None</em>, <em>filename='apl.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>save=True</em>, <em>show=False</em>, <em>interval=1</em>, <em>ylim=None</em>, <em>xlim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_area_per_lipid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_area_per_lipid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot with area per lipid (apl) curves
+Takes outputs from:</p>
+<blockquote>
+<div>MemSys.CalcAreaPerLipid_Box
+MemSys.CalcAreaPerLipid_ClosestNeighborCircle</div></blockquote>
+<p>The outputs are passed to function in a list input: apl_dat_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_average_deuterium_op">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_average_deuterium_op</code><span class="sig-paren">(</span><em>dop_dat_list</em>, <em>name_list=None</em>, <em>filename='dop.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>show=False</em>, <em>interval=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_average_deuterium_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_average_deuterium_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot of the average deuterium order parameter vs. time</p>
+<p>The outputs are passed to function in a list input: dop_dat_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_bilayer_thickness">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_bilayer_thickness</code><span class="sig-paren">(</span><em>bt_dat_list</em>, <em>name_list=None</em>, <em>filename='bilayer_thickness.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>show=False</em>, <em>interval=1</em>, <em>save=True</em>, <em>xlim=None</em>, <em>ylim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_bilayer_thickness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_bilayer_thickness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot with bilayer thickness curves
+Takes outputs from:</p>
+<p>The outputs are passed to function in a list input: bt_dat_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_corr_mat">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_corr_mat</code><span class="sig-paren">(</span><em>in_corrmat</em>, <em>save=True</em>, <em>filename='correlation_matrix.pdf'</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_corr_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_corr_mat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_corr_mat_as_scatter">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_corr_mat_as_scatter</code><span class="sig-paren">(</span><em>in_corrmat</em>, <em>save=True</em>, <em>filename='correlation_matrix.pdf'</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_corr_mat_as_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_corr_mat_as_scatter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_dc_cluster_dat_number</code><span class="sig-paren">(</span><em>clust_dat_list</em>, <em>name_list=None</em>, <em>filename='clust_number.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>save=True</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_dc_cluster_dat_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a plot of the average number of clusters (vs. time)
+This function generates a plot of the average number of clusters vs. time for data output with key &#8216;nclusters&#8217;</p>
+<blockquote>
+<div>from the &#8216;dc_cluster&#8217; analysis in the BilayerAnalyzer, which corresponds to the</div></blockquote>
+<p>bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.
+:Parameters: * <strong>clust_dat_list</strong> (<em>list</em>) &#8211; This is a list of all data to plot and should be a list of tuples/lists where</p>
+<blockquote>
+<div><blockquote>
+<div>each element tuple has the data arrays for each time series curve to include in the plot: e.g.
+[ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]</div></blockquote>
+<ul>
+<li><p class="first"><strong>name_list</strong> (<em>list, optional</em>) &#8211; This is a list of string names to assign each curve included in the plot. It
+should have len(name_list) == len(clust_dat_list) = True.</p>
+<blockquote>
+<div><p>Default: None</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>filename</strong> (<em>str, optional</em>) &#8211; This a string containing the filename for the output plot if save is set to True.
+Default: &#8216;clust_number.pdf&#8217;</p>
+</li>
+<li><p class="first"><strong>time_in</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units of values in the input arrays. Acceptible values
+are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond.</p>
+<blockquote>
+<div><p>Default: &#8216;ps&#8217;</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>time_out</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units to use in the output plot. Acceptible values
+are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond. If this is different than the value for time_in then the time
+values will be scaled accordingly.</p>
+<blockquote>
+<div><p>Default: &#8216;ns&#8217;</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>save</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not to save the generated plot to disc.
+plt.savefig is called.</p>
+<blockquote>
+<div><p>Default: True</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>show</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not the generated plot is displayed in interactive
+mode using plt.show.</p>
+<blockquote>
+<div><p>Default: False</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number_comtraj">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_dc_cluster_dat_number_comtraj</code><span class="sig-paren">(</span><em>clust_dat_list</em>, <em>name_list=None</em>, <em>filename='clust_number.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_dc_cluster_dat_number_comtraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number_comtraj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single of the average number of clusters (vs. time)
+using output data from:</p>
+<blockquote>
+<div>MemSys.CheckClustering</div></blockquote>
+<p>The outputs are passed to function in a list input: clust_dat_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_dc_cluster_dat_size</code><span class="sig-paren">(</span><em>clust_dat_list</em>, <em>name_list=None</em>, <em>filename='clust_number.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>save=True</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_dc_cluster_dat_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a plot of the average cluster size (vs. time)
+This function generates a plot of the average cluster size vs. time for data output with key &#8216;avg_size&#8217; from the
+&#8216;dc_cluster&#8217; analysis in the BilayerAnalyzer, which corresponds to the
+bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.
+:Parameters: * <strong>clust_dat_list</strong> (<em>list</em>) &#8211; This is a list of all data to plot and should be a list of tuples/lists where</p>
+<blockquote>
+<div><blockquote>
+<div>each element tuple has the data arrays for each time series curve to include in the plot: e.g.
+[ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]</div></blockquote>
+<ul>
+<li><p class="first"><strong>name_list</strong> (<em>list, optional</em>) &#8211; This is a list of string names to assign each curve included in the plot. It
+should have len(name_list) == len(clust_dat_list) = True.</p>
+<blockquote>
+<div><p>Default: None</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>filename</strong> (<em>str, optional</em>) &#8211; This a string containing the filename for the output plot if save is set to True.
+Default: &#8216;clust_number.pdf&#8217;</p>
+</li>
+<li><p class="first"><strong>time_in</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units of values in the input arrays. Acceptible values
+are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond.</p>
+<blockquote>
+<div><p>Default: &#8216;ps&#8217;</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>time_out</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units to use in the output plot. Acceptible values
+are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond. If this is different than the value for time_in then the time
+values will be scaled accordingly.</p>
+<blockquote>
+<div><p>Default: &#8216;ns&#8217;</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>save</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not to save the generated plot to disc.
+plt.savefig is called.</p>
+<blockquote>
+<div><p>Default: True</p>
+</div></blockquote>
+</li>
+<li><p class="first"><strong>show</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not the generated plot is displayed in interactive
+mode using plt.show.</p>
+<blockquote>
+<div><p>Default: False</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size_comtraj">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_dc_cluster_dat_size_comtraj</code><span class="sig-paren">(</span><em>clust_dat_list</em>, <em>name_list=None</em>, <em>filename='clust_size.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_dc_cluster_dat_size_comtraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size_comtraj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot of the average cluster size (vs time)
+using output data from:</p>
+<blockquote>
+<div>MemSys.CheckClustering</div></blockquote>
+<p>The outputs are passed to function in a list input: clust_dat_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_maps_comtraj">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_dc_cluster_maps_comtraj</code><span class="sig-paren">(</span><em>clusters</em>, <em>filename='cluster_map.pdf'</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_dc_cluster_maps_comtraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_maps_comtraj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot of the lipid cluster map
+Takes a single frame of the output from:</p>
+<blockquote>
+<div>MemSys.ExportClustersForPlotting</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_density_profile">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_density_profile</code><span class="sig-paren">(</span><em>dp_out_list</em>, <em>save=True</em>, <em>filename='density_profile.pdf'</em>, <em>show=False</em>, <em>label_list=None</em>, <em>ylabel='Density'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_density_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_density_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot density profiles
+This function can be used to plot the results of density profiles functions
+in the mda_density_profile module.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dp_out_list</strong> (<em>list of tuples</em>) &#8211; A list of the tuple outputs of the profile calculation functions</li>
+<li><strong>save</strong> (<em>bool, optional</em>) &#8211; Default is True. Saves the plot output as an image file if True.</li>
+<li><strong>filename</strong> (<em>str, optional</em>) &#8211; The name out the image file that will be created if save=True.</li>
+<li><strong>show</strong> (<em>bool, optional</em>) &#8211; Default is False. Display the plot (plt.show) if True.</li>
+<li><strong>label_list (list of str</strong> &#8211; None, optional): Default is None. Allows a list of strings used to
+label the plot lines.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_displacement_lipid_type_cross_correlation">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_displacement_lipid_type_cross_correlation</code><span class="sig-paren">(</span><em>analyzer_data</em>, <em>filename='normal_displacement_lipid_type_cross_correlation.pdf'</em>, <em>show=False</em>, <em>save=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_displacement_lipid_type_cross_correlation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_displacement_lipid_type_cross_correlation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_grid_as_scatter">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_grid_as_scatter</code><span class="sig-paren">(</span><em>in_xyzc</em>, <em>save=True</em>, <em>filename='lipid_grid.pdf'</em>, <em>show=False</em>, <em>colorbar=False</em>, <em>cmap=None</em>, <em>vmin=None</em>, <em>vmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_grid_as_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_grid_as_scatter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_lipid_grid_thickness_map_2d">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_lipid_grid_thickness_map_2d</code><span class="sig-paren">(</span><em>x_centers</em>, <em>y_centers</em>, <em>thickness_grid</em>, <em>save=True</em>, <em>filename='bilayer_thickness_map_2d.pdf'</em>, <em>show=False</em>, <em>colorbar=True</em>, <em>vmin=0.0</em>, <em>vmax=None</em>, <em>interpolation='none'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_lipid_grid_thickness_map_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_lipid_grid_thickness_map_2d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_msd">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_msd</code><span class="sig-paren">(</span><em>msd_dat_list</em>, <em>name_list=None</em>, <em>filename='msd.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>show=False</em>, <em>interval=1</em>, <em>save=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_msd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_msd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot with Mean Squared Displacement curves
+Takes outputs from:</p>
+<blockquote>
+<div>MemSys.CalcMSD
+MemSys.CalcMSD_parallel</div></blockquote>
+<p>The outputs are passed to function in a list input: apl_dat_list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_position_density_map_2d">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_position_density_map_2d</code><span class="sig-paren">(</span><em>x_centers</em>, <em>y_centers</em>, <em>counts</em>, <em>save=True</em>, <em>filename='position_density_2d.pdf'</em>, <em>show=False</em>, <em>colorbar=True</em>, <em>vmin=0.0</em>, <em>vmax=None</em>, <em>normalized=False</em>, <em>scaled_to_max=False</em>, <em>interpolation='none'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_position_density_map_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_position_density_map_2d" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_position_density_map_2d_scatter">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_position_density_map_2d_scatter</code><span class="sig-paren">(</span><em>x_centers</em>, <em>y_centers</em>, <em>counts</em>, <em>save=True</em>, <em>filename='position_density_2d.pdf'</em>, <em>show=False</em>, <em>colorbar=True</em>, <em>vmin=0.0</em>, <em>vmax=None</em>, <em>normalized=False</em>, <em>scaled_to_max=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_position_density_map_2d_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_position_density_map_2d_scatter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_step_vectors">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_step_vectors</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>filename='step_vectors.pdf'</em>, <em>save=True</em>, <em>show=False</em>, <em>scaled=False</em>, <em>wrapped=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_step_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_step_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot with the lipid displacement vectors (or step vectors)
+Takes a single frame of the output from:</p>
+<blockquote>
+<div>MemSys.StepVector</div></blockquote>
+<p>Corresponding colors (if multiple lipid types are included) can be
+generated using:</p>
+<blockquote>
+<div>MemSys.StepVectorColors</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_step_vectors_comtraj">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_step_vectors_comtraj</code><span class="sig-paren">(</span><em>vectors</em>, <em>colors=None</em>, <em>filename='step_vectors.pdf'</em>, <em>show=False</em>, <em>save=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_step_vectors_comtraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_step_vectors_comtraj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a single plot with the lipid displacement vectors (or step vectors)
+Takes a single frame of the output from:</p>
+<blockquote>
+<div>MemSys.StepVector</div></blockquote>
+<p>Corresponding colors (if multiple lipid types are included) can be
+generated using:</p>
+<blockquote>
+<div>MemSys.StepVectorColors</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.range">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">range</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.plot_generation">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pybilt.plot_generation" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="pybilt.mda_tools.html" class="btn btn-neutral" title="pybilt.mda_tools package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

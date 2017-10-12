@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.bilayer_analyzer.leaflet &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.bilayer_analyzer.leaflet</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.bilayer_analyzer.leaflet</h1><div class="highlight"><pre>
+<span></span>
+
+
+<span class="c1"># leaflet object</span>
+<div class="viewcode-block" id="Leaflet"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet">[docs]</a><span class="k">class</span> <span class="nc">Leaflet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a bilayer Leaflet representation.</span>
+<span class="sd">    This class object is used to group lipids together according to their bilayer leaflet. It is primarily meant to</span>
+<span class="sd">    store the indices of LipidCOMs as they are in a Frame.lipidcom list. This class also</span>
+<span class="sd">    creates sub-groups within the Leaflet based on the LipidCOM.type using LipidGroup objects. Instances of Leaflet</span>
+<span class="sd">    are created by the MemSys class.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes an instance of a Leaflet object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the bilayer leaflet being initialized (&#39;upper&#39; and &#39;lower&#39; are used by the MemSys class).</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            name (str): The name of the Leaflet (e.g. &#39;upper&#39; or &#39;lower&#39;).</span>
+<span class="sd">            members (list of int): A list containing the integer indices associated with the LipidCOM objects within</span>
+<span class="sd">                a Frame that are assigned to the Leaflet instance.</span>
+<span class="sd">            groups (list of obj:LipidGroup): A list of the LipidGroup objects (uniquely named) that are created by the Leaflet instance</span>
+<span class="sd">                as new members are added.</span>
+<span class="sd">            group_dict (dict): A dictionary keyed according to the names of the LipidGroup objects created, which stores the</span>
+<span class="sd">                corresponding index of that LipidGroup in self.groups.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#the name of the leaflet - e.g. &#39;upper&#39; or &#39;lower&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="c1">#initialize a list to store the indices of lipids assigned to this leaflet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">members</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1">#initialize a list to hold the LipidGroup objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1">#initialize a dictionary to store the self.groups index of LipidGroup objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> leaflet of a Membrane System with </span><span class="si">%s</span><span class="s1"> members and </span><span class="si">%s</span><span class="s1"> lipid groups&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> leaflet of a Membrane System with </span><span class="si">%s</span><span class="s1"> members and </span><span class="si">%s</span><span class="s1"> lipid groups&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Have len(Leaflet) return the number of lipids that have been added to the Leaflet instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Number of lipids in the Leaflet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">)</span>
+
+    <span class="c1">#consider changing var name of input &#39;resname&#39; to something that doesn&#39;t conflict with LipidCOM.type</span>
+<div class="viewcode-block" id="Leaflet.add_member"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.add_member">[docs]</a>    <span class="k">def</span> <span class="nf">add_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">com_index</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add new lipids to the Leaflet.</span>
+
+<span class="sd">        This function is meant to be used to add new lipids according to their Frame.lipidcom index</span>
+<span class="sd">        to the Leaflet and to a LipidGroup according resname/type/name.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            com_index (int): The COMFrame.lipidcom index of the lipid being added to the Leaflet.</span>
+<span class="sd">            resname (str): The resname (or LipidCOM.type) of the lipid being added.</span>
+<span class="sd">            resid (int): The topological resid of the lipid being added to the leaflet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">com_index</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LipidGroup</span><span class="p">(</span><span class="n">resname</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_member</span><span class="p">(</span><span class="n">com_index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">resname</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">com_index</span><span class="p">,</span> <span class="n">resname</span><span class="p">])</span>
+            <span class="n">addgroup</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">group_ind</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">rn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">resname</span> <span class="o">==</span> <span class="n">rn</span><span class="o">.</span><span class="n">lg_name</span><span class="p">:</span>
+                    <span class="n">addgroup</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+                <span class="n">group_ind</span><span class="o">+=</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="n">addgroup</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LipidGroup</span><span class="p">(</span><span class="n">resname</span><span class="p">))</span>
+                <span class="n">ng</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">ng</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_member</span><span class="p">(</span><span class="n">com_index</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">resname</span><span class="p">:</span> <span class="n">ng</span><span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">group_ind</span><span class="p">]</span><span class="o">.</span><span class="n">add_member</span><span class="p">(</span><span class="n">com_index</span><span class="p">)</span>
+
+            <span class="c1">#self.members=sorted(self.members,key=lambda self.members:self.members[1])</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Leaflet.get_group_indices"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.get_group_indices">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the indices of lipids in the Leaflet belonging to a specific LipidGroup.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        group_name (string): The name of the LipidGroup pull LipidCOM indices from.</span>
+<span class="sd">            Passing the string &#39;all&#39; will return indices of all the lipids assigned to</span>
+<span class="sd">            the Leaflet instance. If the group_name is not recognised (i.e. is not in the group_dict)</span>
+<span class="sd">            The function defaults to &#39;all&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of int: A list containing the integer indices of lipids in the Leaflet that</span>
+<span class="sd">                belong to the specified LipidGroup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">group_name</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="p">:</span>
+                <span class="n">gindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+                <span class="n">indices</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">gindex</span><span class="p">]</span><span class="o">.</span><span class="n">lg_members</span>
+        <span class="k">elif</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="p">:</span>
+            <span class="n">gindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">gindex</span><span class="p">]</span><span class="o">.</span><span class="n">lg_members</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#unkwown group name- print warning and use the default &quot;all&quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;!! Warning - request for unknown Lipid Group </span><span class="se">\&#39;</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">group_name</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2"> from the &quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="s2">&quot; leaflet&quot;</span>
+            <span class="nb">print</span> <span class="s2">&quot;!! using the default </span><span class="se">\&quot;</span><span class="s2">all</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="p">:</span>
+                <span class="n">gindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+                <span class="n">indices</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">gindex</span><span class="p">]</span><span class="o">.</span><span class="n">lg_members</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Leaflet.get_member_indices"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.get_member_indices">[docs]</a>    <span class="k">def</span> <span class="nf">get_member_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the indices of all lipids (LipidCOM) in the Leaflet.</span>
+<span class="sd">        This member function Returns: the list of indices for the lipids grouped in the Leaflet instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of int: A list of integer indices of the lipids associated with the Leaflet instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Leaflet.get_member_resids"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.get_member_resids">[docs]</a>    <span class="k">def</span> <span class="nf">get_member_resids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the &#39;resid&#39;s of all lipids in the Leaflet.</span>
+<span class="sd">        This member function Returns: the list of resid for the lipids grouped in the Leaflet instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of int: A list of integer &#39;resid&#39;s of the lipids associated with the Leaflet instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">element</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Leaflet.get_member_resnames"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.get_member_resnames">[docs]</a>    <span class="k">def</span> <span class="nf">get_member_resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the &#39;resname&#39;s of all lipids in the Leaflet.</span>
+<span class="sd">        This member function Returns: the list of resnames for the lipids grouped in the Leaflet instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of int: A list of &#39;resname&#39;s of the lipids associated with the Leaflet instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">element</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Leaflet.get_member_resname_from_resid"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.get_member_resname_from_resid">[docs]</a>    <span class="k">def</span> <span class="nf">get_member_resname_from_resid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resid</span><span class="p">):</span>
+        <span class="n">resids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_member_resids</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">resid</span> <span class="ow">in</span> <span class="n">resids</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">resids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">resid</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_member_resnames</span><span class="p">()[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;resid is not in this leaflet&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Leaflet.has_group"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.has_group">[docs]</a>    <span class="k">def</span> <span class="nf">has_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if there is a LipidGroup with the specified name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group_name (str): The name to checked against the names of existing LipidGroup objects.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if there is a LipidGroup with name group_name, and False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Leaflet.num_groups"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.num_groups">[docs]</a>    <span class="k">def</span> <span class="nf">num_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the number of LipidGroups in the Leaflet.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        int: The number of unique LipidGroups.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Leaflet.get_group_names"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.Leaflet.get_group_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the names of all the LipidGroup objects in the Leaflet</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        list of str: A list of the names of current LipidGroup objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">lg_name</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="LipidGroup"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.LipidGroup">[docs]</a><span class="k">class</span> <span class="nc">LipidGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Object to group lipid indices by type/resname/name.</span>
+<span class="sd">        Instances of this object are created by the Leaflet class.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initializes LipidGroup object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name/type/resname of the lipids being grouped in this object.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            lg_members (list of int): A list to hold the indices of lipids added to this</span>
+<span class="sd">                this LipidGroup.</span>
+<span class="sd">            lg_name (str): The name/type/resname of the lipids being grouped in this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#initialize a list to hold the member indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lg_members</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># the name of this lipid group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lg_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="LipidGroup.add_member"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.LipidGroup.add_member">[docs]</a>    <span class="k">def</span> <span class="nf">add_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_mem</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add lipid index to to the LipidGroup.</span>
+
+<span class="sd">         Args:</span>
+<span class="sd">            new_mem (int): The index of the lipid being added to this LipidGroup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lg_members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_mem</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="LipidGroup.name"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.leaflet.LipidGroup.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the name associated with this LipidGroup.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The name of the lipid group (i.e. lg_name)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg_name</span></div></div>
+
+<span class="c1">#@classmethod</span>
+<span class="c1">#def leaflet_from_mda_frame</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

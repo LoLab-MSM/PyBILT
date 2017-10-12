@@ -1,0 +1,1049 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.common package &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
+        <link rel="up" title="pybilt package" href="pybilt.html"/>
+        <link rel="next" title="pybilt.diffusion package" href="pybilt.diffusion.html"/>
+        <link rel="prev" title="pybilt.com_trajectory package" href="pybilt.com_trajectory.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pybilt.bilayer_analyzer.html">pybilt.bilayer_analyzer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.com_trajectory.html">pybilt.com_trajectory package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pybilt.common package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.diffusion.html">pybilt.diffusion package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.lipid_grid.html">pybilt.lipid_grid package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.mda_tools.html">pybilt.mda_tools package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pybilt.plot_generation.html">pybilt.plot_generation package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pybilt.html#module-pybilt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">pybilt</a> &raquo;</li>
+        
+          <li><a href="pybilt.html">pybilt package</a> &raquo;</li>
+        
+      <li>pybilt.common package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/pybilt.common.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pybilt-common-package">
+<h1>pybilt.common package<a class="headerlink" href="#pybilt-common-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pybilt.common.distance_cutoff_clustering">
+<span id="pybilt-common-distance-cutoff-clustering-module"></span><h2>pybilt.common.distance_cutoff_clustering module<a class="headerlink" href="#module-pybilt.common.distance_cutoff_clustering" title="Permalink to this headline">¶</a></h2>
+<p>Function to compute hiearchical distance cutoff clusters.</p>
+<dl class="function">
+<dt id="pybilt.common.distance_cutoff_clustering.distance_cutoff_clustering">
+<code class="descclassname">pybilt.common.distance_cutoff_clustering.</code><code class="descname">distance_cutoff_clustering</code><span class="sig-paren">(</span><em>vectors</em>, <em>cutoff</em>, <em>dist_func</em>, <em>min_size=1</em>, <em>*df_args</em>, <em>**df_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/distance_cutoff_clustering.html#distance_cutoff_clustering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.distance_cutoff_clustering.distance_cutoff_clustering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hiearchical distance cutoff clustering.</p>
+<p>This function takes a set of vector points and clusters them using a
+hiearchical distance based clustering algorithm. Points are clustered
+together whenevever a point is within the cutoff distance of any point
+within in a cluster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vectors</strong> (<em>np.array, list like</em>) &#8211; The array of vector points.</li>
+<li><strong>cutoff</strong> (<em>float</em>) &#8211; The cutoff distance.</li>
+<li><strong>dist_func</strong> (<em>function</em>) &#8211; The function to use when computing the distance
+between points.</li>
+<li><strong>min_size</strong> (<em>Optional[int]</em>) &#8211; The minimum size of a cluster. Defaults to 1.</li>
+<li><strong>*df_args</strong> &#8211; Any additional arguments to be passed to the distance
+function (dist_func).</li>
+<li><strong>**df_kwargs</strong> &#8211; Any additional keyword arguments to be passed to the
+distance function (dist_func).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>Returns a list of clustered points where each set of clustered i</dt>
+<dd><p class="first last">points is a list of the indices of the points in that cluster.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.distance_cutoff_clustering.distance_euclidean">
+<code class="descclassname">pybilt.common.distance_cutoff_clustering.</code><code class="descname">distance_euclidean</code><span class="sig-paren">(</span><em>v_a</em>, <em>v_b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/distance_cutoff_clustering.html#distance_euclidean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.distance_cutoff_clustering.distance_euclidean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Euclidean distance between two vectors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>v_a</strong> (<em>numpy.array, array like</em>) &#8211; The first input vector.</li>
+<li><strong>v_b</strong> (<em>numpy.array, array like</em>) &#8211; The second input vector.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Euclidean distance between the two vectors.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The two vectors should have the same size and dimension.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.distance_cutoff_clustering.distance_euclidean_pbc">
+<code class="descclassname">pybilt.common.distance_cutoff_clustering.</code><code class="descname">distance_euclidean_pbc</code><span class="sig-paren">(</span><em>v_a</em>, <em>v_b</em>, <em>box_lengths</em>, <em>center='zero'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/distance_cutoff_clustering.html#distance_euclidean_pbc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.distance_cutoff_clustering.distance_euclidean_pbc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Euclidean distance between two vectors under periodic boundaries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>v_a</strong> (<em>numpy.array, array like</em>) &#8211; The first input vector.</li>
+<li><strong>v_b</strong> (<em>numpy.array, array like</em>) &#8211; The second input vector.</li>
+<li><strong>box_lengths</strong> (<em>numpy.array, array like</em>) &#8211; The periodic boundary box
+lengths for each dimension.</li>
+<li><strong>center</strong> (<em>Optional[str, array like]</em>) &#8211; Set the coordinate center of the
+periodic box dimensions. Defaults to &#8216;zero&#8217;, which sets the
+center to numpy.zeros(len(box_lengths)). Also accepts the string
+value &#8216;box_half&#8217;, which sets the center to 0.5*box_lengths.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Euclidean distance between the two vectors.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<dl class="docutils">
+<dt>The two vectors should have the same size and dimension, while</dt>
+<dd>box_lengths should have the length of the vector dimension.</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.common.gaussian">
+<span id="pybilt-common-gaussian-module"></span><h2>pybilt.common.gaussian module<a class="headerlink" href="#module-pybilt.common.gaussian" title="Permalink to this headline">¶</a></h2>
+<p>Define Gaussian function objects.</p>
+<p>This module defines the Gaussian class and the GaussianRange class.</p>
+<dl class="class">
+<dt id="pybilt.common.gaussian.Gaussian">
+<em class="property">class </em><code class="descclassname">pybilt.common.gaussian.</code><code class="descname">Gaussian</code><span class="sig-paren">(</span><em>mean</em>, <em>std</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#Gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.Gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A Gaussian function object.</p>
+<dl class="attribute">
+<dt id="pybilt.common.gaussian.Gaussian.mean">
+<code class="descname">mean</code><a class="headerlink" href="#pybilt.common.gaussian.Gaussian.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; The mean of the Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.common.gaussian.Gaussian.std">
+<code class="descname">std</code><a class="headerlink" href="#pybilt.common.gaussian.Gaussian.std" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; The standard deviation of the Gaussian.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.Gaussian.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>x_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#Gaussian.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.Gaussian.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Gaussian function evaluated at the input x value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x_in</strong> (<em>float</em>) &#8211; The x value to evaluate the function at.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The function evaluation for the Gaussian.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.Gaussian.reset_mean">
+<code class="descname">reset_mean</code><span class="sig-paren">(</span><em>new_mean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#Gaussian.reset_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.Gaussian.reset_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the mean of the Gaussian function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_mean</strong> (<em>float</em>) &#8211; The new mean of the Gaussian function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybilt.common.gaussian.GaussianRange">
+<em class="property">class </em><code class="descclassname">pybilt.common.gaussian.</code><code class="descname">GaussianRange</code><span class="sig-paren">(</span><em>in_range</em>, <em>mean</em>, <em>std</em>, <em>npoints=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#GaussianRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Define a Gaussian function over a range.</p>
+<blockquote>
+<div>This object is used to define a Gaussian function over a defined
+finite range and store its values as evaluated at points evenly spaced
+over the range. The points can then for example  be used for integrating
+the Gaussian function over the range using numerical quadrature.</div></blockquote>
+<dl class="attribute">
+<dt id="pybilt.common.gaussian.GaussianRange.mean">
+<code class="descname">mean</code><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; The mean of the Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.common.gaussian.GaussianRange.std">
+<code class="descname">std</code><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.std" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; The standard deviation of the Gaussian.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.common.gaussian.GaussianRange.upper">
+<code class="descname">upper</code><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.upper" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; The upper boundary of the range.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.common.gaussian.GaussianRange.lower">
+<code class="descname">lower</code><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.lower" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em> &#8211; The lower boundary of the range.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.common.gaussian.GaussianRange.npoints">
+<code class="descname">npoints</code><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.npoints" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; The number of points to evaluate in the range.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.GaussianRange.eval">
+<code class="descname">eval</code><span class="sig-paren">(</span><em>x_in</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#GaussianRange.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Gaussian function evaluated at the input x value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x_in</strong> (<em>float</em>) &#8211; The x value to evaluate the function at.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The function evaluation for the Gaussian.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.GaussianRange.get_values">
+<code class="descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#GaussianRange.get_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the x and y values for the Gaussian range function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The x and y values for the function, returned as (
+x_values, y_values).</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.GaussianRange.integrate_range">
+<code class="descname">integrate_range</code><span class="sig-paren">(</span><em>lower</em>, <em>upper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#GaussianRange.integrate_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.integrate_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the numerical integration of the Gaussian range.</p>
+<p>This function does a simple quadrature for the Gaussian function as
+evaluated on the range (or subset of the range) specified at
+initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lower</strong> (<em>float</em>) &#8211; The lower boundary for the integration.</li>
+<li><strong>upper</strong> (<em>float</em>) &#8211; The upper boundary for the integration.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>The numerical value of the Gaussian range integrated from</dt>
+<dd><p class="first last">lower to upper.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function does not thoroughly check the bounds, so if upper
+is less than lower the function will break.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.GaussianRange.normalize">
+<code class="descname">normalize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#GaussianRange.normalize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.normalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalizes (by area) the Gaussian function values over the range.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.GaussianRange.reset_mean">
+<code class="descname">reset_mean</code><span class="sig-paren">(</span><em>new_mean</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#GaussianRange.reset_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.reset_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the mean of the Gaussian function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_mean</strong> (<em>float</em>) &#8211; The new mean of the Gaussian function.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function does not re-evaluate the Gaussian range and
+therefore only affects the output of the eval function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.gaussian.GaussianRange.sum_range">
+<code class="descname">sum_range</code><span class="sig-paren">(</span><em>lower</em>, <em>upper</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/gaussian.html#GaussianRange.sum_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.gaussian.GaussianRange.sum_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the over the Gaussian range.</p>
+<p>This function sums the Gaussian function at the points that were
+evaluated on the range (or subset of the range) specified at
+initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lower</strong> (<em>float</em>) &#8211; The lower boundary for the sum.</li>
+<li><strong>upper</strong> (<em>float</em>) &#8211; The upper boundary for the sum.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>The numerical value of the Gaussian range as summed from</dt>
+<dd><p class="first last">lower to upper.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This function does not thoroughly check the bounds, so if upper
+is less than lower the function will break.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.common.knn_entropy">
+<span id="pybilt-common-knn-entropy-module"></span><h2>pybilt.common.knn_entropy module<a class="headerlink" href="#module-pybilt.common.knn_entropy" title="Permalink to this headline">¶</a></h2>
+<p>Functions to evaluate information theoretic measures using knn approaches.</p>
+<p>This module defines a set of functions to compute information theoretic
+measures (i.e. Shannon Entropy, Mutual Information, etc.) using the
+k-nearest neighbors (knn) approach.</p>
+<dl class="function">
+<dt id="pybilt.common.knn_entropy.conditional_mutual_information">
+<code class="descclassname">pybilt.common.knn_entropy.</code><code class="descname">conditional_mutual_information</code><span class="sig-paren">(</span><em>var_tuple</em>, <em>cond_tuple</em>, <em>k=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/knn_entropy.html#conditional_mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.knn_entropy.conditional_mutual_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an estimate of the conditional mutual information.</p>
+<p>This function computes an estimate of the mutual information
+between a set of random variables or random vectors conditioned on other
+random variables or vectors using knn estimators for the entropy
+calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><p class="first"><strong>var_tuple</strong> (<em>tuple</em>) &#8211; A tuple of random variables or random
+vectors (i.e. numpy.array) to estimate the mutual information
+between.; e.g. var_tuple = (X, Y) where X form
+X = {x_1, x_2, x_3,...,x_N} and Y has form
+Y = {x_1, x_2, x_3,...,x_N}, or where X has form
+X = {(x_X1, y_X1), (x_X2, y_X2),...,(x_XN, y_XN)} and Y has form
+Y = {(x_Y1, y_Y1), (x_Y2, y_Y2),...,(x_YN, y_YN)}.</p>
+</li>
+<li><p class="first"><strong>cond_tuple</strong> (<em>tuple</em>) &#8211;</p>
+<dl class="docutils">
+<dt>A tuple of random variables or random</dt>
+<dd><p class="first last">vectors (i.e. numpy.array) that the mutual information is to be
+conditioned on; e.g. var_tuple = (X) where X has  the form
+X = {x_1, x_2, x_3,...,x_N}.</p>
+</dd>
+<dt>k (Optional[int]): The number of nearest neighbors to store for each</dt>
+<dd><p class="first last">point. Defaults to 2.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mutual information estimate.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The information entropies used to estimate the mutual information
+are computed using the shannon_entropy function. All input random
+variable/vector arrays must have the same shape.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.knn_entropy.k_nearest_neighbors">
+<code class="descclassname">pybilt.common.knn_entropy.</code><code class="descname">k_nearest_neighbors</code><span class="sig-paren">(</span><em>X</em>, <em>k=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/knn_entropy.html#k_nearest_neighbors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.knn_entropy.k_nearest_neighbors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the k-nearest neighbors between points in a random variable/vector.</p>
+<p>Determines the k nearest neighbors for each point in teh random
+variable/vector using Euclidean style distances.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>X</strong> (<em>np.array</em>) &#8211; A random variable of form X = {x_1, x_2, x_3,...,x_N} or
+a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+y_n)}.</li>
+<li><strong>k</strong> (<em>Optional[int]</em>) &#8211; The number of nearest neighbors to store for each
+point. Defaults to 1.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>A dictionary keyed by the indices of X and containing a list</dt>
+<dd><p class="first last">of the k nearest neighbor for each point along with the distance
+value between the point and the nearest neighbor.</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.knn_entropy.kth_nearest_neighbor_distances">
+<code class="descclassname">pybilt.common.knn_entropy.</code><code class="descname">kth_nearest_neighbor_distances</code><span class="sig-paren">(</span><em>X</em>, <em>k=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/knn_entropy.html#kth_nearest_neighbor_distances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.knn_entropy.kth_nearest_neighbor_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the distance for the kth nearest neighbor of each point.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first">
+<li><dl class="first docutils">
+<dt><strong>X</strong> (<em>np.array</em>) &#8211; A random variable of form X = {x_1, x_2, x_3,...,x_N} or</dt>
+<dd><blockquote class="first">
+<div><p>a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+y_n)}.</p>
+</div></blockquote>
+<ul class="last simple">
+<li><strong>k</strong> (<em>Optional[int]</em>) &#8211; The number of nearest neighbors to check for each
+point. Defaults to 1.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="last docutils">
+<dt>Returns:</dt>
+<dd><p class="first last">list: A list in same order as X with the distance value to the kth
+nearest neighbor of each point in X.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.knn_entropy.mutual_information">
+<code class="descclassname">pybilt.common.knn_entropy.</code><code class="descname">mutual_information</code><span class="sig-paren">(</span><em>var_tuple</em>, <em>k=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/knn_entropy.html#mutual_information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.knn_entropy.mutual_information" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an estimate of the mutual information.</p>
+<p>This function computes an estimate of the mutual information between a
+set of random variables or random vectors using knn estimators for the
+entropy calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>var_tuple</strong> (<em>tuple</em>) &#8211;</p>
+<dl class="docutils">
+<dt>A tuple of random variables or random</dt>
+<dd><p class="first last">vectors (i.e. numpy.array); e.g. var_tuple = (X, Y) where X form
+X = {x_1, x_2, x_3,...,x_N} and Y has form
+Y = {x_1, x_2, x_3,...,x_N}, or where X has form
+X = {(x_X1, y_X1), (x_X2, y_X2),...,(x_XN, y_XN)} and Y has form
+Y = {(x_Y1, y_Y1), (x_Y2, y_Y2),...,(x_YN, y_YN)}.</p>
+</dd>
+<dt>k (Optional[int]): The number of nearest neighbors to store for each</dt>
+<dd><p class="first last">point. Defaults to 2.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The mutual information estimate.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The information entropies used to estimate the mutual information
+are computed using the shannon_entropy function. All input random
+variable/vector arrays must have the same shape.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.knn_entropy.shannon_entropy">
+<code class="descclassname">pybilt.common.knn_entropy.</code><code class="descname">shannon_entropy</code><span class="sig-paren">(</span><em>X</em>, <em>k=1</em>, <em>kth_dists=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/knn_entropy.html#shannon_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.knn_entropy.shannon_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Shannon Entropy of the random variable/vector.</p>
+<p>This function computes the Shannon information entropy of the
+random variable/vector as estimated using the Kozachenko-Leonenko (KL)
+knn estimator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>np.array</em>) &#8211; A random variable of form X = {x_1, x_2, x_3,...,x_N} or
+a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+y_n)}.</li>
+<li><strong>k</strong> (<em>Optional[int]</em>) &#8211; The number of nearest neighbors to store for each
+point. Defaults to 1.</li>
+<li><strong>kth_dists</strong> (<em>Optional[list]</em>) &#8211; A list in the same order as points in X
+that has the pre-computed distances between the points in X and
+their kth nearest neighbors at. Defaults to None.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>Damiano Lombardi and Sanjay Pant, A non-parametric k-nearest</dt>
+<dd><dl class="first last docutils">
+<dt>neighbour entropy estimator, arXiv preprint,</dt>
+<dd>[cs.IT] 2015, arXiv:1506.06501v1.
+https://arxiv.org/pdf/1506.06501v1.pdf</dd>
+</dl>
+</dd>
+</dl>
+</li>
+<li><a class="reference external" href="https://www.cs.tut.fi/~timhome/tim/tim/core/differential_entropy_kl_details.htm">https://www.cs.tut.fi/~timhome/tim/tim/core/differential_entropy_kl_details.htm</a></li>
+<li><dl class="first docutils">
+<dt>Kozachenko, L. F. &amp; Leonenko, N. N. 1987 Sample estimate of entropy</dt>
+<dd>of a random vector. Probl. Inf. Transm. 23, 95-101.</dd>
+</dl>
+</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The estimate of the Shannon Information entropy of X.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.knn_entropy.shannon_entropy_pc">
+<code class="descclassname">pybilt.common.knn_entropy.</code><code class="descname">shannon_entropy_pc</code><span class="sig-paren">(</span><em>X</em>, <em>k=1</em>, <em>kth_dists=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/knn_entropy.html#shannon_entropy_pc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.knn_entropy.shannon_entropy_pc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Shannon Entropy of the random variable/vector.</p>
+<p>This function computes the Shannon information entropy of the
+random variable/vector as estimated using the Perez-Cruz knn estimator
+described in Reference 1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>X</strong> (<em>np.array</em>) &#8211; A random variable of form X = {x_1, x_2, x_3,...,x_N} or
+a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+y_n)}.</li>
+<li><strong>k</strong> (<em>Optional[int]</em>) &#8211; The number of nearest neighbors to store for each
+point. Defaults to 1.</li>
+<li><strong>kth_dists</strong> (<em>Optional[list]</em>) &#8211; A list in the same order as points in X
+that has the pre-computed distances between the points in X and
+their kth nearest neighbors at. Defaults to None.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>Perez-Cruz, (2008). Estimation of Information Theoretic Measures</dt>
+<dd>for Continuous Random Variables. Advances in Neural Information
+Processing Systems 21 (NIPS). Vancouver (Canada), December.
+<a class="reference external" href="https://papers.nips.cc/paper/3417-estimation-of-information-theoretic-measures-for-continuous-random-variables.pdf">https://papers.nips.cc/paper/3417-estimation-of-information-theoretic-measures-for-continuous-random-variables.pdf</a></dd>
+</dl>
+</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The estimate of the Shannon Information entropy of X.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.common.running_stats">
+<span id="pybilt-common-running-stats-module"></span><h2>pybilt.common.running_stats module<a class="headerlink" href="#module-pybilt.common.running_stats" title="Permalink to this headline">¶</a></h2>
+<p>Running stats module.</p>
+<p>This module defines the RunningStats and BlockAverager classes, as well as the
+gen_running_average function.</p>
+<dl class="class">
+<dt id="pybilt.common.running_stats.BlockAverager">
+<em class="property">class </em><code class="descclassname">pybilt.common.running_stats.</code><code class="descname">BlockAverager</code><span class="sig-paren">(</span><em>points_per_block=1000</em>, <em>min_points_in_block=500</em>, <em>store_data=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#BlockAverager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.BlockAverager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>An object that keeps track of points for block averaging.</p>
+<dl class="attribute">
+<dt id="pybilt.common.running_stats.BlockAverager.n_blocks">
+<code class="descname">n_blocks</code><a class="headerlink" href="#pybilt.common.running_stats.BlockAverager.n_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; The current number of active blocks.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.BlockAverager.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#BlockAverager.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.BlockAverager.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the block average and standard error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns a length two tuple with the block average and standard error estimates.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.BlockAverager.number_of_blocks">
+<code class="descname">number_of_blocks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#BlockAverager.number_of_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.BlockAverager.number_of_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current number of blocks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The number of blocks.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.BlockAverager.points_per_block">
+<code class="descname">points_per_block</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#BlockAverager.points_per_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.BlockAverager.points_per_block" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return information about the points per block.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>A three element tuple containing the setting for points per block, the setting for minimum points</dt>
+<dd>per block, and the number of points in the last block.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.BlockAverager.push_container">
+<code class="descname">push_container</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#BlockAverager.push_container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.BlockAverager.push_container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push a container (array or array like) of data points to the block averaging.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>array like</em>) &#8211; The container (list, tuple, np.array, etc.) of data points to add to the block averaging.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.BlockAverager.push_single">
+<code class="descname">push_single</code><span class="sig-paren">(</span><em>datum</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#BlockAverager.push_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.BlockAverager.push_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push a single data point (datum) into the block averager.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>datum</strong> (<em>float</em>) &#8211; The value to add to the block averaging.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pybilt.common.running_stats.RunningStats">
+<em class="property">class </em><code class="descclassname">pybilt.common.running_stats.</code><code class="descname">RunningStats</code><a class="reference internal" href="_modules/pybilt/common/running_stats.html#RunningStats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.RunningStats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A RunningStats object.</p>
+<p>The RunningStats object keeps running statistics for a single
+value/quantity.</p>
+<dl class="attribute">
+<dt id="pybilt.common.running_stats.RunningStats.n">
+<code class="descname">n</code><a class="headerlink" href="#pybilt.common.running_stats.RunningStats.n" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em> &#8211; The number of points that have pushed to the running</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">average.</code></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.RunningStats.deviation">
+<code class="descname">deviation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#RunningStats.deviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.RunningStats.deviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current standard deviation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.RunningStats.mean">
+<code class="descname">mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#RunningStats.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.RunningStats.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the current mean.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.RunningStats.push">
+<code class="descname">push</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#RunningStats.push"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.RunningStats.push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push a new value to the running average.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<em>float</em>) &#8211; The value to be added to the running average.</td>
+</tr>
+</tbody>
+</table>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.RunningStats.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#RunningStats.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.RunningStats.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the running average.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybilt.common.running_stats.RunningStats.variance">
+<code class="descname">variance</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#RunningStats.variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.RunningStats.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returun the current variance.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.common.running_stats.gen_running_average">
+<code class="descclassname">pybilt.common.running_stats.</code><code class="descname">gen_running_average</code><span class="sig-paren">(</span><em>onednparray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/common/running_stats.html#gen_running_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.common.running_stats.gen_running_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a running average</p>
+<p>Args:
+onednparray (numpy.array): A 1d numpy array of measurements (e.g. over time)</p>
+<p>Returns:
+numpy.array: 2d array of dim len(onednparray)x2</p>
+<blockquote>
+<div>2dnparray[i][0] = running average at i
+2dnparray[i][1] = running standard deviation at i
+for i in range(0,len(onednparray))</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pybilt.common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pybilt.common" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pybilt.diffusion.html" class="btn btn-neutral float-right" title="pybilt.diffusion package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pybilt.com_trajectory.html" class="btn btn-neutral" title="pybilt.com_trajectory package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
