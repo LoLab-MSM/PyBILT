@@ -155,4 +155,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 * [GitHub](https://github.com/) - Development Platform and repository storage
 * [Sphinx](http://www.sphinx-doc.org/en/stable/index.html) - Python documentation generator
 * [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark
+* [Read the Docs](https://readthedocs.org/) - Documentation hosting
 * [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  A simple audit tool for examining python source files for missing docstrings.
