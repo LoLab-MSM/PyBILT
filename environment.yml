@@ -1,7 +1,7 @@
 name: pybilt
 channels:
 - !!python/unicode
-  'mdanalysis'
+  'mdanalysis/label/broken'
 - !!python/unicode
   'conda-forge'
 - !!python/unicode
@@ -445,4 +445,3 @@ dependencies:
   - recommonmark==0.4.0
   - sphinx-rtd-theme==0.2.4
   - tables==3.3.0
-
