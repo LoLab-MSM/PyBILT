@@ -8,7 +8,7 @@
 ------
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
-##### Updates: Now with some [documentation](./docs/build/html/index.html)!
+##### Updates: Now with some [documentation](./docs)!
 
 The analyses include:
    * Mean Squared Displacement (MSD)
