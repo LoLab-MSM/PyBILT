@@ -1,14 +1,16 @@
-![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
+![alt text](../../_images/PyBILT_logo.png "PyBILT Logo")
 ## *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
+
 ------
+
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
 [![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
-[![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](.docstring-coverage_report.txt)
-------
-#### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
+[![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](https://github.com/blakeaw/PyBILT/blob/master/.docstring-coverage_report.txt)
 
-##### Updates: Now with some [documentation](./docs)!
+------
+
+PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
 The analyses include:
    * Mean Squared Displacement (MSD)
@@ -22,11 +24,14 @@ The analyses include:
    * and more!
 
 ------
-![alt text](./_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
-------
-### Install
 
-#### Warning: PyBILT is still under heavy development and may rapidly change.
+![alt text](../../_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
+
+------
+
+## Install
+
+**Warning:** PyBILT is still under heavy development and may rapidly change.
 
 Download PyBILT from the github repo (https://github.com/blakeaw/PyBILT.git)
 and then add the path to the PyBILT directory to your PYTHONPATH. From a
@@ -52,7 +57,7 @@ has yet to be tested outside of an Anaconda environment.
 
 ------
 
-#### Setup using Anaconda's conda tool
+### Setup using Anaconda's conda tool
 The file environment.yml has been provided to allow for easy setup of a new
 environment with all the appropriate dependencies using the conda tool. Run
 ```
@@ -67,7 +72,7 @@ before running PyBILT modules.
 
 ------
 
-#### Quick overview of PyBILT
+## Quick overview of PyBILT
 **PyBILT** is composed of 2 primary analysis packages:
   * bilayer_analyzer -- The bilayer_analyzer is an analysis package that
                         is designed to analyze (quasi) planar lipid bilayer
@@ -112,15 +117,14 @@ individual analyses and the representations they use.
                        that can be computed from functions in the other modules.
                        e.g. mean squared displacement and area per lipid.
 
-## Documentation
+## Additional Documentation/Tutorials
 
-Although still under construction, the detailed documentation for PyBILT has
-begun! See the current version [here](docs/build/html/index.html). In addition
-to the docs, there are currently a few Jupyter IPython
-[notebooks](jupyter_notebooks) that provide some examples and show some basic
-usage. More of these are in the pipeline. Although they are also not fully
-extensive, the [tests](tests) can serve as a useful place to examine some basic
-usage and functionality.
+In addition to the documentation, there are currently a few Jupyter IPython
+[notebooks](https://github.com/blakeaw/PyBILT/tree/master/jupyter_notebooks)
+that provide some examples and show some basic usage. More of these are also in
+the pipeline. Although they are also not fully extensive, the
+[tests](https://github.com/blakeaw/PyBILT/tree/master/tests) can serve as a
+useful place to examine some basic usage and functionality.
 
 ## Core Developers
 
@@ -132,16 +136,26 @@ usage and functionality.
 
 ## Contact
 
-If you have any comments, suggestions, or feature requests for PyBILT please feel free to open a [GitHub Issue](https://github.com/blakeaw/PyBILT/issues) with those comments, suggestions, or feature requests. Or you can contact Blake directly via e-mail at either blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com. You may also contact Blake with any questions about PyBILT use or implementation.
+If you have any comments, suggestions, or feature requests for PyBILT please
+feel free to open a [GitHub Issue](https://github.com/blakeaw/PyBILT/issues)
+with those comments, suggestions, or feature requests. Or you can contact Blake
+directly via e-mail at either blake.a.wilson@vanderbilt.edu or
+blakeaw1102@gmail.com. You may also contact Blake with any questions about
+PyBILT use or implementation.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the
+[LICENSE](https://github.com/blakeaw/PyBILT/blob/master/LICENSE) file for
+details
 
 ## Acknowledgments
 
-* A special thanks to James Pino (https://github.com/JamesPino) for his inciteful comments and suggestions that have helped improve the quality of this code, and thanks to him for pointing out some very useful coding tools.   
-* Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing this project and for providing me with the space and means to pursue it.  
+* A special thanks to James Pino (https://github.com/JamesPino) for his inciteful
+comments and suggestions that have helped improve the quality of this code, and
+thanks to him for pointing out some very useful coding tools.   
+* Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing
+this project and for providing me with the space and means to pursue it.  
 
 ## Built With
 
@@ -153,5 +167,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 * [Git](https://git-scm.com/) - Version control
 * [GitHub](https://github.com/) - Development Platform and repository storage
 * [Sphinx](http://www.sphinx-doc.org/en/stable/index.html) - Python documentation generator
-* [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark
+* [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark.
 * [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  A simple audit tool for examining python source files for missing docstrings.

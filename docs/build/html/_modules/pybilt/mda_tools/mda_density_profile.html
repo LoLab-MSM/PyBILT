@@ -1,0 +1,730 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.mda_tools.mda_density_profile &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.mda_tools.mda_density_profile</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.mda_tools.mda_density_profile</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pybilt.common.gaussian</span> <span class="k">as</span> <span class="nn">gauss</span>
+
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
+
+<span class="c1">#dictionary of elements and their valence electron counts - used for electron profile density</span>
+<span class="n">valence_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+<span class="c1">#dictionary of elements and their atomic numbers - used for electron profile density</span>
+<span class="n">Z_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">}</span>
+<span class="c1">#dictionary of elements and their LJ sizes -- CHARMM 36 forcefield</span>
+<span class="n">LJ_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span><span class="mf">1.25</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">:</span><span class="mf">2.00</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">:</span><span class="mf">1.85</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">:</span><span class="mf">1.70</span><span class="p">,</span><span class="s1">&#39;P&#39;</span><span class="p">:</span><span class="mf">2.15</span><span class="p">}</span>
+
+<span class="c1">#Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer</span>
+<span class="c1">#                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,</span>
+<span class="c1">#                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.</span>
+<span class="c1">#                (http://www.sciencedirect.com/science/article/pii/S0006349501758948)</span>
+<div class="viewcode-block" id="electron_density_profile"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_density_profile.electron_density_profile">[docs]</a><span class="k">def</span> <span class="nf">electron_density_profile</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span><span class="n">mda_selection</span><span class="p">,</span> <span class="n">fstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fend</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">fstep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">reference</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">refsel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">valence</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">lat_ind</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dir_ind</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">ec_dict</span> <span class="o">=</span> <span class="n">valence_dict</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valence</span><span class="p">:</span>
+        <span class="n">ec_dict</span> <span class="o">=</span> <span class="n">Z_dict</span>
+    <span class="k">if</span>    <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">lat_ind</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">lat_ind</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">mda_selection</span><span class="o">.</span><span class="n">indices</span>
+    <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mda_selection</span><span class="p">)</span>
+    <span class="c1">#build the charge array</span>
+    <span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mda_selection</span><span class="p">:</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">electrons</span> <span class="o">=</span> <span class="n">ec_dict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+        <span class="n">partial</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">electrons</span><span class="o">-</span><span class="n">partial</span>
+        <span class="n">charges</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">=</span><span class="n">total</span>
+        <span class="n">a</span><span class="o">+=</span><span class="mi">1</span>
+
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="c1">#adjust the end point for slicing</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fstart</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="n">fstart</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fstart</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">fstart</span><span class="o">+=</span><span class="n">nframes</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="n">nframes</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="c1">#get the maximum box dimension along axis</span>
+    <span class="n">bzm</span><span class="o">=</span><span class="mf">0.0</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sel_z</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="n">bzc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">bzc</span><span class="o">&gt;</span><span class="n">bzm</span><span class="p">:</span>
+            <span class="n">bzm</span><span class="o">=</span><span class="n">bzc</span>
+        <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ref_com</span> <span class="o">=</span> <span class="n">refsel</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+            <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="n">ref_com</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+            <span class="n">sel_z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">ref_sel_z</span><span class="p">)</span>
+        <span class="n">nframes</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">shiftzmax</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">shiftzmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#reference=sel_z_avg/nframes</span>
+        <span class="n">shiftzmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+        <span class="n">shiftzmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="c1">#build the profile axis</span>
+    <span class="n">minz</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">+</span><span class="n">shiftzmin</span>
+    <span class="n">maxz</span> <span class="o">=</span> <span class="n">bzm</span><span class="o">+</span><span class="n">shiftzmax</span>
+    <span class="c1">#print &quot;minz &quot;,minz,&quot; maxz &quot;,maxz</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">minz</span><span class="p">,</span><span class="n">maxz</span><span class="p">,(</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">incr</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">incr_h</span> <span class="o">=</span> <span class="n">incr</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="n">nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nedges</span><span class="p">):</span>
+        <span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">incr_h</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="c1">#print sel_z</span>
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+
+        <span class="n">bx</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">by</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">binvolume</span> <span class="o">=</span> <span class="n">incr</span><span class="o">*</span><span class="n">bx</span><span class="o">*</span><span class="n">by</span>
+        <span class="n">counts_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+        <span class="n">sel_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">zpos</span> <span class="o">=</span> <span class="n">sel_pos</span><span class="p">[:,</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="n">sel_z_curr</span> <span class="o">=</span> <span class="n">sel_z</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+        <span class="n">zpos</span><span class="o">+=</span> <span class="n">sel_z_curr</span>
+        <span class="n">push_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">zpos</span><span class="o">-</span><span class="n">minz</span><span class="p">)</span><span class="o">/</span><span class="n">incr</span>
+        <span class="n">j</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">push_index</span><span class="p">:</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ii</span> <span class="o">&gt;=</span> <span class="n">nbins</span><span class="p">:</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">nbins</span><span class="o">-</span><span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">counts_f</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">+=</span><span class="n">charges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">counts_f</span><span class="o">/=</span><span class="n">binvolume</span>
+        <span class="n">counts</span><span class="o">+=</span><span class="n">counts_f</span>
+        <span class="n">f</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">counts</span><span class="o">/=</span><span class="n">nframes</span>
+    <span class="n">centers</span><span class="o">-=</span><span class="n">reference</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span></div>
+
+<span class="c1">#assigns the charge of each atom as a gaussian along the profile direction</span>
+<span class="c1">#Preston B. Moore, Carlos F. Lopez, Michael L. Klein, Dynamical Properties of a Hydrated Lipid Bilayer</span>
+<span class="c1">#                from a Multinanosecond Molecular Dynamics Simulation, Biophysical Journal, Volume 81, Issue 5, 2001,</span>
+<span class="c1">#                Pages 2484-2494, ISSN 0006-3495, http://dx.doi.org/10.1016/S0006-3495(01)75894-8.</span>
+<span class="c1">#                (http://www.sciencedirect.com/science/article/pii/S0006349501758948)</span>
+<div class="viewcode-block" id="electron_density_profile_gaussians"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_density_profile.electron_density_profile_gaussians">[docs]</a><span class="k">def</span> <span class="nf">electron_density_profile_gaussians</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span><span class="n">mda_selection</span><span class="p">,</span> <span class="n">fstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fend</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">fstep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">reference</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">refsel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">valence</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">size_to_sigma</span><span class="o">=</span><span class="mf">2.0</span><span class="p">):</span>
+    <span class="n">lat_ind</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dir_ind</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">ec_dict</span> <span class="o">=</span> <span class="n">valence_dict</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valence</span><span class="p">:</span>
+        <span class="n">ec_dict</span> <span class="o">=</span> <span class="n">Z_dict</span>
+    <span class="k">if</span>    <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">lat_ind</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">lat_ind</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">mda_selection</span><span class="o">.</span><span class="n">indices</span>
+    <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mda_selection</span><span class="p">)</span>
+    <span class="c1">#build the charge array</span>
+    <span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mda_selection</span><span class="p">:</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">electrons</span> <span class="o">=</span> <span class="n">ec_dict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+        <span class="n">partial</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">electrons</span><span class="o">-</span><span class="n">partial</span>
+        <span class="n">charges</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">=</span><span class="n">total</span>
+        <span class="n">sizes</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">LJ_dict</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+        <span class="n">a</span><span class="o">+=</span><span class="mi">1</span>
+
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="c1">#adjust the end point for slicing</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fstart</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="n">fstart</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fstart</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">fstart</span><span class="o">+=</span><span class="n">nframes</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="n">nframes</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="c1">#get the maximum box dimension along axis</span>
+    <span class="n">bzm</span><span class="o">=</span><span class="mf">0.0</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sel_z</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="n">bzc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">bzc</span><span class="o">&gt;</span><span class="n">bzm</span><span class="p">:</span>
+            <span class="n">bzm</span><span class="o">=</span><span class="n">bzc</span>
+        <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ref_com</span> <span class="o">=</span> <span class="n">refsel</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+            <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="n">ref_com</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+            <span class="n">sel_z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">ref_sel_z</span><span class="p">)</span>
+        <span class="n">nframes</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">shiftzmax</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">shiftzmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#reference=sel_z_avg/nframes</span>
+        <span class="n">shiftzmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+        <span class="n">shiftzmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="c1">#build the profile axis</span>
+    <span class="n">minz</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">+</span><span class="n">shiftzmin</span>
+    <span class="n">maxz</span> <span class="o">=</span> <span class="n">bzm</span><span class="o">+</span><span class="n">shiftzmax</span>
+    <span class="c1">#print &quot;minz &quot;,minz,&quot; maxz &quot;,maxz</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">minz</span><span class="p">,</span><span class="n">maxz</span><span class="p">,(</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">incr</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">incr_h</span> <span class="o">=</span> <span class="n">incr</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="n">nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nedges</span><span class="p">):</span>
+        <span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">incr_h</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="c1">#print sel_z</span>
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="nb">print</span> <span class="s2">&quot;doing frame &quot;</span><span class="p">,</span><span class="n">f</span>
+        <span class="n">bx</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">by</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">binvolume</span> <span class="o">=</span> <span class="n">incr</span><span class="o">*</span><span class="n">bx</span><span class="o">*</span><span class="n">by</span>
+        <span class="n">counts_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+        <span class="n">sel_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">zpos</span> <span class="o">=</span> <span class="n">sel_pos</span><span class="p">[:,</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="n">sel_z_curr</span> <span class="o">=</span> <span class="n">sel_z</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+        <span class="n">zpos</span><span class="o">+=</span> <span class="n">sel_z_curr</span>
+        <span class="c1">#loop over atoms - build gaussian and get the charge it contributes to each profile bin</span>
+        <span class="n">j</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zpos</span><span class="p">:</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">/</span><span class="n">size_to_sigma</span>
+            <span class="n">gc</span> <span class="o">=</span> <span class="n">gauss</span><span class="o">.</span><span class="n">GaussianRange</span><span class="p">((</span><span class="n">minz</span><span class="p">,</span><span class="n">maxz</span><span class="p">),</span><span class="n">z</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">npoints</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">nbins</span><span class="p">))</span>
+            <span class="c1">#now loop over the edges of the profile axis</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">zl</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">zu</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="n">counts_f</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span> <span class="p">(</span><span class="n">charges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">gc</span><span class="o">.</span><span class="n">integrate_range</span><span class="p">(</span><span class="n">zl</span><span class="p">,</span><span class="n">zu</span><span class="p">))</span>
+            <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+
+
+        <span class="n">counts_f</span><span class="o">/=</span><span class="n">binvolume</span>
+        <span class="n">counts</span><span class="o">+=</span><span class="n">counts_f</span>
+        <span class="n">f</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">counts</span><span class="o">/=</span><span class="n">nframes</span>
+    <span class="n">centers</span><span class="o">-=</span><span class="n">reference</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mass_density_profile"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_density_profile.mass_density_profile">[docs]</a><span class="k">def</span> <span class="nf">mass_density_profile</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span><span class="n">mda_selection</span><span class="p">,</span> <span class="n">fstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fend</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">fstep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">reference</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">refsel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">lat_ind</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dir_ind</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">if</span>    <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">lat_ind</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">lat_ind</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">mda_selection</span><span class="o">.</span><span class="n">indices</span>
+    <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mda_selection</span><span class="p">)</span>
+    <span class="c1">#build the mass array</span>
+    <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+    <span class="n">a</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mda_selection</span><span class="p">:</span>
+        <span class="n">masses</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">mass</span>
+        <span class="n">a</span><span class="o">+=</span><span class="mi">1</span>
+
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="c1">#adjust the end point for slicing</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fstart</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="n">fstart</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fstart</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">fstart</span><span class="o">+=</span><span class="n">nframes</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="n">nframes</span><span class="o">+</span><span class="mi">1</span>
+
+    <span class="c1">#get the maximum box dimension along axis</span>
+    <span class="n">bzm</span><span class="o">=</span><span class="mf">0.0</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sel_z</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="n">bzc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">bzc</span><span class="o">&gt;</span><span class="n">bzm</span><span class="p">:</span>
+            <span class="n">bzm</span><span class="o">=</span><span class="n">bzc</span>
+        <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ref_com</span> <span class="o">=</span> <span class="n">refsel</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+            <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="n">ref_com</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+            <span class="n">sel_z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">ref_sel_z</span><span class="p">)</span>
+        <span class="n">nframes</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">shiftzmax</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">shiftzmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#reference=sel_z_avg/nframes</span>
+        <span class="n">shiftzmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+        <span class="n">shiftzmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="c1">#build the profile axis</span>
+    <span class="n">minz</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">+</span><span class="n">shiftzmin</span>
+    <span class="n">maxz</span> <span class="o">=</span> <span class="n">bzm</span><span class="o">+</span><span class="n">shiftzmax</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">minz</span><span class="p">,</span><span class="n">maxz</span><span class="p">,(</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">incr</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">incr_h</span> <span class="o">=</span> <span class="n">incr</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="n">nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nedges</span><span class="p">):</span>
+        <span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">incr_h</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+
+        <span class="n">bx</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">by</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">binvolume</span> <span class="o">=</span> <span class="n">incr</span><span class="o">*</span><span class="n">bx</span><span class="o">*</span><span class="n">by</span>
+        <span class="n">counts_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+        <span class="n">sel_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">zpos</span> <span class="o">=</span> <span class="n">sel_pos</span><span class="p">[:,</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="n">sel_z_curr</span> <span class="o">=</span> <span class="n">sel_z</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+        <span class="n">zpos</span><span class="o">+=</span> <span class="n">sel_z_curr</span>
+        <span class="n">push_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">zpos</span><span class="o">-</span><span class="n">minz</span><span class="p">)</span><span class="o">/</span><span class="n">incr</span>
+        <span class="n">j</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">push_index</span><span class="p">:</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ii</span> <span class="o">&gt;=</span> <span class="n">nbins</span><span class="p">:</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">nbins</span><span class="o">-</span><span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">counts_f</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">+=</span><span class="n">masses</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">counts_f</span><span class="o">/=</span><span class="n">binvolume</span>
+        <span class="n">counts</span><span class="o">+=</span><span class="n">counts_f</span>
+        <span class="n">f</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="n">counts</span><span class="o">/=</span><span class="n">nframes</span>
+    <span class="n">centers</span><span class="o">-=</span><span class="n">reference</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SizeError"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_density_profile.SizeError">[docs]</a><span class="k">class</span> <span class="nc">SizeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;Sizes of input arrays are not the same!&quot;</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_intersections"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_density_profile.get_intersections">[docs]</a><span class="k">def</span> <span class="nf">get_intersections</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+
+    <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">ny1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span>
+    <span class="n">ny2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nx</span> <span class="o">!=</span> <span class="n">ny1</span> <span class="ow">or</span> <span class="n">nx</span> <span class="o">!=</span> <span class="n">ny2</span> <span class="ow">or</span> <span class="n">ny1</span> <span class="o">!=</span> <span class="n">ny2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">SizeError</span><span class="p">()</span>
+    <span class="n">yh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span>
+    <span class="n">yl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&lt;</span><span class="n">y2</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">yl</span> <span class="o">=</span> <span class="n">y1</span>
+        <span class="n">yh</span> <span class="o">=</span> <span class="n">y2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">yl</span> <span class="o">=</span> <span class="n">y2</span>
+        <span class="n">yh</span> <span class="o">=</span> <span class="n">y1</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nx</span><span class="p">):</span>
+        <span class="n">ylc</span> <span class="o">=</span> <span class="n">yl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">ylp</span> <span class="o">=</span> <span class="n">yl</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">yhp</span> <span class="o">=</span> <span class="n">yh</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">yhc</span> <span class="o">=</span> <span class="n">yh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ylc</span> <span class="o">&gt;</span> <span class="n">yhc</span> <span class="ow">and</span> <span class="n">ylp</span> <span class="o">&lt;</span> <span class="n">yhp</span><span class="p">:</span>
+            <span class="c1">#get the intersection</span>
+            <span class="n">xc</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="mf">0.50</span>
+            <span class="n">yc</span> <span class="o">=</span> <span class="p">(</span><span class="n">ylc</span><span class="o">+</span><span class="n">yhp</span><span class="o">+</span><span class="n">yl</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">yh</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="mf">0.250</span>
+            <span class="c1">#now flip the low and high arrays</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">yl</span>
+            <span class="n">yl</span> <span class="o">=</span> <span class="n">yh</span>
+            <span class="n">yh</span> <span class="o">=</span> <span class="n">temp</span>
+
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">xc</span><span class="p">,</span><span class="n">yc</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+<div class="viewcode-block" id="mass_density_profile_multi_align"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_density_profile.mass_density_profile_multi_align">[docs]</a><span class="k">def</span> <span class="nf">mass_density_profile_multi_align</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">mda_selections</span><span class="p">,</span> <span class="n">align_struct_universe</span><span class="p">,</span> <span class="n">align_sel_string</span><span class="p">,</span> <span class="n">fstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fend</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">fstep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">refsel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">lat_ind</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">dir_ind</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">lat_ind</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">axis</span> <span class="ow">is</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="n">dir_ind</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">lat_ind</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="c1">#indices = mda_selection.indices</span>
+
+    <span class="c1"># build the mass array</span>
+    <span class="n">masses</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mda_selections</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mda_selections</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="n">masses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mda_selections</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+            <span class="n">masses</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">mass</span>
+            <span class="n">a</span>  <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="c1"># adjust the end point for slicing</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">fend</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fstart</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">fend</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="n">fstart</span><span class="p">:</span>
+        <span class="n">fend</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fstart</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fstart</span> <span class="o">+=</span> <span class="n">nframes</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fend</span> <span class="o">+=</span> <span class="n">nframes</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="c1"># get the maximum box dimension along axis</span>
+    <span class="n">bzm</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sel_z</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">system_sel</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="c1">#get the unaligned system com and axis coordinate</span>
+        <span class="n">system_com</span> <span class="o">=</span> <span class="n">system_sel</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+        <span class="n">system_z</span> <span class="o">=</span> <span class="n">system_com</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="c1">#now do the alignment and get new com and axis coordinates</span>
+        <span class="n">align</span><span class="o">.</span><span class="n">alignto</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">align_struct_universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">align_sel_string</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">system_com_a</span> <span class="o">=</span> <span class="n">system_sel</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+        <span class="n">system_z_a</span> <span class="o">=</span> <span class="n">system_com_a</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="n">dz_a</span> <span class="o">=</span> <span class="n">system_z_a</span> <span class="o">-</span> <span class="n">system_z</span>
+        <span class="n">bzc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">bzc</span> <span class="o">&gt;</span> <span class="n">bzm</span><span class="p">:</span>
+            <span class="n">bzm</span> <span class="o">=</span> <span class="n">bzc</span>
+        <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ref_com</span> <span class="o">=</span> <span class="n">refsel</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+            <span class="n">ref_sel_z</span> <span class="o">=</span> <span class="n">ref_com</span><span class="p">[</span><span class="n">dir_ind</span><span class="p">]</span>
+            <span class="n">sel_z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">ref_sel_z</span><span class="p">)</span>
+        <span class="n">nframes</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">shiftzmax</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">shiftzmin</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># reference=sel_z_avg/nframes</span>
+        <span class="n">shiftzmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+        <span class="n">shiftzmin</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="c1"># build the profile axis</span>
+    <span class="n">minz</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">+</span> <span class="n">dz_a</span> <span class="o">+</span> <span class="n">shiftzmin</span> <span class="o">-</span> <span class="mf">0.15</span><span class="o">*</span><span class="p">(</span><span class="n">bzm</span><span class="p">)</span>
+    <span class="n">maxz</span> <span class="o">=</span> <span class="n">bzm</span> <span class="o">+</span> <span class="n">dz_a</span> <span class="o">+</span> <span class="n">shiftzmax</span> <span class="o">+</span> <span class="mf">0.15</span><span class="o">*</span><span class="p">(</span><span class="n">bzm</span><span class="p">)</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">minz</span><span class="p">,</span> <span class="n">maxz</span><span class="p">,</span> <span class="p">(</span><span class="n">nbins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">incr</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">incr_h</span> <span class="o">=</span> <span class="n">incr</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="n">nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nedges</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">incr_h</span>
+
+    <span class="k">if</span> <span class="n">refsel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sel_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sel_z</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">out_counts</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mda_selections</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">out_counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+
+        <span class="n">bx</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">by</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="c1"># now do the alignment</span>
+        <span class="n">align</span><span class="o">.</span><span class="n">alignto</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">align_struct_universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">align_sel_string</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">binvolume</span> <span class="o">=</span> <span class="n">incr</span> <span class="o">*</span> <span class="n">bx</span> <span class="o">*</span> <span class="n">by</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mda_selections</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">mda_selections</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span>
+            <span class="n">counts_f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
+            <span class="n">sel_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+            <span class="n">zpos</span> <span class="o">=</span> <span class="n">sel_pos</span><span class="p">[:,</span> <span class="n">dir_ind</span><span class="p">]</span>
+            <span class="n">sel_z_curr</span> <span class="o">=</span> <span class="n">sel_z</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+            <span class="n">zpos</span> <span class="o">+=</span> <span class="n">sel_z_curr</span>
+            <span class="n">push_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">zpos</span> <span class="o">-</span> <span class="n">minz</span><span class="p">)</span> <span class="o">/</span> <span class="n">incr</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">push_index</span><span class="p">:</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ii</span> <span class="o">&gt;=</span> <span class="n">nbins</span><span class="p">:</span>
+                    <span class="n">ii</span> <span class="o">=</span> <span class="n">nbins</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">counts_f</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">counts_f</span> <span class="o">/=</span> <span class="n">binvolume</span>
+            <span class="n">out_counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">counts_f</span>
+        <span class="n">f</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mda_selections</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+        <span class="n">out_counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">/=</span> <span class="n">nframes</span>
+    <span class="n">centers</span> <span class="o">-=</span> <span class="n">reference</span>
+
+    <span class="k">return</span> <span class="n">centers</span><span class="p">,</span> <span class="n">out_counts</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

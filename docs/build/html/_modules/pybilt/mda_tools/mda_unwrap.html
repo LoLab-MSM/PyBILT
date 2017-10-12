@@ -1,0 +1,509 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.mda_tools.mda_unwrap &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.mda_tools.mda_unwrap</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.mda_tools.mda_unwrap</h1><div class="highlight"><pre>
+<span></span><span class="c1">#numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#MDAnalysis</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="c1">#multiprocessing module</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+
+<div class="viewcode-block" id="wrap_coordinates"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_unwrap.wrap_coordinates">[docs]</a><span class="k">def</span> <span class="nf">wrap_coordinates</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">refcoord</span><span class="p">):</span>
+	<span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+	<span class="c1"># box vectors (assuming rectangular)</span>
+	<span class="n">A</span> <span class="o">=</span> <span class="n">abc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">B</span> <span class="o">=</span> <span class="n">abc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">C</span> <span class="o">=</span> <span class="n">abc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+	<span class="n">Ah</span> <span class="o">=</span> <span class="n">A</span><span class="o">/</span><span class="mf">2.0</span>
+	<span class="n">Bh</span> <span class="o">=</span> <span class="n">B</span><span class="o">/</span><span class="mf">2.0</span>
+	<span class="n">Ch</span> <span class="o">=</span> <span class="n">C</span><span class="o">/</span><span class="mf">2.0</span>
+
+	<span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+	<span class="c1">#list to hold shifts</span>
+	<span class="n">sAs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+	<span class="n">sBs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+	<span class="n">sCs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+
+	<span class="c1">#compute the difference in the z coordinate</span>
+	<span class="n">dzs</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">refcoord</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+	<span class="c1">#compute the required shift</span>
+	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="n">dz</span> <span class="ow">in</span> <span class="n">dzs</span><span class="p">:</span>
+		<span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">if</span>	<span class="n">dz</span> <span class="o">&gt;</span> <span class="n">Ch</span><span class="p">:</span>
+			<span class="n">shift</span><span class="o">-=</span><span class="mi">1</span>
+			<span class="k">while</span> <span class="p">(</span><span class="n">dz</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="n">C</span><span class="p">)</span><span class="o">&gt;</span><span class="n">Ch</span><span class="p">:</span>
+				<span class="n">shift</span><span class="o">-=</span><span class="mi">1</span>
+		<span class="k">elif</span> <span class="n">dz</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">Ch</span><span class="p">:</span>
+			<span class="n">shift</span><span class="o">+=</span><span class="mi">1</span>
+			<span class="k">while</span> <span class="p">(</span><span class="n">dz</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="n">C</span><span class="p">)</span><span class="o">&lt;-</span><span class="n">Ch</span><span class="p">:</span>
+				<span class="n">shift</span><span class="o">+=</span><span class="mi">1</span>
+		<span class="n">sCs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">shift</span>
+		<span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+	<span class="c1">#apply shift</span>
+	<span class="n">wrapcoord</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">sCs</span><span class="o">*</span><span class="n">C</span><span class="p">)</span>
+	<span class="c1">#compute the difference in the y coordinate</span>
+	<span class="n">dys</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">refcoord</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+	<span class="c1">#compute the required shift</span>
+	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="n">dy</span> <span class="ow">in</span> <span class="n">dys</span><span class="p">:</span>
+		<span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">if</span>	<span class="n">dy</span> <span class="o">&gt;</span> <span class="n">Bh</span><span class="p">:</span>
+			<span class="n">shift</span><span class="o">-=</span><span class="mi">1</span>
+			<span class="k">while</span> <span class="p">(</span><span class="n">dy</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="n">B</span><span class="p">)</span><span class="o">&gt;</span><span class="n">Bh</span><span class="p">:</span>
+				<span class="n">shift</span><span class="o">-=</span><span class="mi">1</span>
+		<span class="k">elif</span> <span class="n">dy</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">Bh</span><span class="p">:</span>
+			<span class="n">shift</span><span class="o">+=</span><span class="mi">1</span>
+			<span class="k">while</span> <span class="p">(</span><span class="n">dy</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="n">B</span><span class="p">)</span><span class="o">&lt;-</span><span class="n">Bh</span><span class="p">:</span>
+				<span class="n">shift</span><span class="o">+=</span><span class="mi">1</span>
+		<span class="n">sBs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">shift</span>
+		<span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+	<span class="c1">#apply shift</span>
+	<span class="n">wrapcoord</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">sBs</span><span class="o">*</span><span class="n">B</span><span class="p">)</span>
+	<span class="c1">#compute the difference in the x coordinate</span>
+	<span class="n">dxs</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">refcoord</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1">#compute the required shift</span>
+	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="n">dx</span> <span class="ow">in</span> <span class="n">dxs</span><span class="p">:</span>
+		<span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">if</span>	<span class="n">dx</span> <span class="o">&gt;</span> <span class="n">Ah</span><span class="p">:</span>
+			<span class="n">shift</span><span class="o">-=</span><span class="mi">1</span>
+			<span class="k">while</span> <span class="p">(</span><span class="n">dx</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="n">A</span><span class="p">)</span><span class="o">&gt;</span><span class="n">Ah</span><span class="p">:</span>
+				<span class="n">shift</span><span class="o">-=</span><span class="mi">1</span>
+		<span class="k">elif</span> <span class="n">dx</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">Ah</span><span class="p">:</span>
+			<span class="n">shift</span><span class="o">+=</span><span class="mi">1</span>
+			<span class="k">while</span> <span class="p">(</span><span class="n">dx</span><span class="o">+</span><span class="n">shift</span><span class="o">*</span><span class="n">A</span><span class="p">)</span><span class="o">&lt;-</span><span class="n">Ah</span><span class="p">:</span>
+				<span class="n">shift</span><span class="o">+=</span><span class="mi">1</span>
+		<span class="n">sAs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">shift</span>
+		<span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+	<span class="c1">#apply shift</span>
+	<span class="n">wrapcoord</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">sAs</span><span class="o">*</span><span class="n">A</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">wrapcoord</span></div>
+
+
+<div class="viewcode-block" id="wrap_coordinates_parallel"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_unwrap.wrap_coordinates_parallel">[docs]</a><span class="k">def</span> <span class="nf">wrap_coordinates_parallel</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">refcoord</span><span class="p">,</span><span class="n">nprocs</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+	<span class="n">index_ranges</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">total_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span>
+	<span class="n">atoms_per_proc_base</span> <span class="o">=</span> <span class="n">total_atoms</span><span class="o">/</span><span class="n">nprocs</span>
+	<span class="n">left_over</span> <span class="o">=</span> <span class="n">total_atoms</span> <span class="o">%</span> <span class="p">(</span><span class="n">atoms_per_proc_base</span> <span class="o">*</span> <span class="n">nprocs</span><span class="p">)</span>
+	<span class="c1">#print &quot;total atoms &quot;,total_atoms</span>
+	<span class="c1">#print &quot;atoms per proc &quot;,atoms_per_proc_base</span>
+	<span class="c1">#print &quot;left over &quot;,left_over</span>
+	<span class="c1">#assign base ranges</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">nprocs</span><span class="p">):</span>
+		<span class="n">fs</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="n">atoms_per_proc_base</span>
+		<span class="n">fe</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">+</span> <span class="n">atoms_per_proc_base</span> <span class="o">-</span> <span class="mi">1</span>
+		<span class="n">index_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">fs</span><span class="p">,</span><span class="n">fe</span><span class="p">])</span>
+	<span class="c1">#print &quot;index_ranges (pre-adjust):&quot;</span>
+	<span class="c1">#print index_ranges</span>
+	<span class="c1">#now adjust for leftovers - divide them &quot;equally&quot; over the processes</span>
+	<span class="n">lo</span> <span class="o">=</span> <span class="n">left_over</span>
+	<span class="k">while</span> <span class="n">lo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">nprocs</span><span class="p">):</span>
+			<span class="n">index_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">nprocs</span><span class="p">):</span>
+				<span class="n">index_ranges</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+				<span class="n">index_ranges</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span><span class="mi">1</span>
+			<span class="n">lo</span><span class="o">-=</span><span class="mi">1</span>
+			<span class="k">if</span> <span class="n">lo</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">break</span>
+
+	<span class="c1">#print &quot;nprocs &quot;,nprocs</span>
+	<span class="c1">#print &quot;index_ranges (post adjust): &quot;</span>
+	<span class="c1">#print index_ranges</span>
+	<span class="c1">#now build the sub coordinate list</span>
+	<span class="c1">#coords</span>
+	<span class="n">c</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="c1">#reference</span>
+	<span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">nprocs</span><span class="p">):</span>
+		<span class="n">sfs</span> <span class="o">=</span> <span class="n">index_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">sfe</span> <span class="o">=</span> <span class="n">index_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span>
+		<span class="n">c</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="n">sfs</span><span class="p">:</span><span class="n">sfe</span><span class="p">])</span>
+		<span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refcoord</span><span class="p">[</span><span class="n">sfs</span><span class="p">:</span><span class="n">sfe</span><span class="p">])</span>
+
+	<span class="n">wrap_func</span> <span class="o">=</span> <span class="n">wrap_coordinates</span>
+	<span class="c1">#create process pool</span>
+	<span class="n">pool</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">nprocs</span><span class="p">)</span>
+	<span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">wrap_func</span><span class="p">,</span><span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nprocs</span><span class="p">)]</span>
+<span class="c1">#	print &quot;results:&quot;</span>
+<span class="c1">#	print results</span>
+	<span class="n">results_ordered</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+<span class="c1">#	print &quot;results ordered: &quot;</span>
+<span class="c1">#	print results_ordered</span>
+<span class="c1">#		#collect results  into single array for return</span>
+	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_atoms</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="c1">#	print &quot;len(results_ordered) &quot;,len(results_ordered)</span>
+	<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">results_ordered</span><span class="p">:</span>
+		<span class="n">fs</span> <span class="o">=</span> <span class="n">index_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">fe</span> <span class="o">=</span> <span class="n">index_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+		<span class="c1">#print fs, fe</span>
+		<span class="c1">#print msd[fs:(fe+1)].shape</span>
+		<span class="c1">#print p[:].shape</span>
+		<span class="n">wrapcoord</span><span class="p">[</span><span class="n">fs</span><span class="p">:(</span><span class="n">fe</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[:]</span>
+		<span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+	<span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+	<span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+	<span class="k">return</span> <span class="n">wrapcoord</span></div>
+
+
+
+<div class="viewcode-block" id="mda_unwrap"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_unwrap.mda_unwrap">[docs]</a><span class="k">def</span> <span class="nf">mda_unwrap</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">out_file_name</span><span class="p">):</span>
+	<span class="n">frames</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>
+	<span class="nb">print</span> <span class="s2">&quot;unwrapping coordinates - ouput is &quot;</span><span class="p">,</span><span class="n">out_file_name</span>
+	<span class="c1"># Setup writer to write aligned dcd file</span>
+	<span class="n">writer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">DCD</span><span class="o">.</span><span class="n">DCDWriter</span><span class="p">(</span>
+		<span class="n">out_file_name</span><span class="p">,</span> <span class="n">frames</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+		<span class="mi">0</span><span class="p">,</span>
+		<span class="mi">1</span><span class="p">,</span>
+		<span class="n">frames</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+		<span class="n">remarks</span><span class="o">=</span><span class="s1">&#39;Unwrapped trajectory&#39;</span><span class="p">)</span>
+	<span class="n">natoms</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">n_atoms</span>
+	<span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+	<span class="n">firstframe</span> <span class="o">=</span> <span class="kc">True</span>
+	<span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">:</span>
+		<span class="n">currcoord</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span>
+		<span class="k">if</span> <span class="n">firstframe</span><span class="p">:</span>
+			<span class="n">oldcoord</span> <span class="o">=</span> <span class="n">currcoord</span>
+			<span class="n">firstframe</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">abc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+			<span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">wrap_coordinates</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">currcoord</span><span class="p">,</span> <span class="n">oldcoord</span><span class="p">)</span>
+			<span class="n">frame</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">wrapcoord</span><span class="p">[:]</span>
+			<span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="mda_unwrap_parallel"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_unwrap.mda_unwrap_parallel">[docs]</a><span class="k">def</span> <span class="nf">mda_unwrap_parallel</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">out_file_name</span><span class="p">,</span><span class="n">nprocs</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+	<span class="n">frames</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>
+	<span class="nb">print</span> <span class="s2">&quot;unwrapping coordinates - ouput is &quot;</span><span class="p">,</span><span class="n">out_file_name</span>
+	<span class="c1"># Setup writer to write aligned dcd file</span>
+	<span class="n">writer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">DCD</span><span class="o">.</span><span class="n">DCDWriter</span><span class="p">(</span>
+		<span class="n">out_file_name</span><span class="p">,</span> <span class="n">frames</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+		<span class="mi">0</span><span class="p">,</span>
+		<span class="mi">1</span><span class="p">,</span>
+		<span class="n">frames</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+		<span class="n">remarks</span><span class="o">=</span><span class="s1">&#39;Unwrapped trajectory&#39;</span><span class="p">)</span>
+	<span class="n">natoms</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">n_atoms</span>
+	<span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+	<span class="n">firstframe</span> <span class="o">=</span> <span class="kc">True</span>
+	<span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">:</span>
+		<span class="n">currcoord</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[:]</span>
+		<span class="k">if</span> <span class="n">firstframe</span><span class="p">:</span>
+			<span class="n">oldcoord</span> <span class="o">=</span> <span class="n">currcoord</span>
+			<span class="n">firstframe</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">abc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+			<span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">wrap_coordinates_parallel</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">currcoord</span><span class="p">,</span> <span class="n">oldcoord</span><span class="p">,</span><span class="n">nprocs</span><span class="o">=</span><span class="n">nprocs</span><span class="p">)</span>
+			<span class="n">frame</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">wrapcoord</span><span class="p">[:]</span>
+			<span class="n">writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
+
+
+<span class="c1">#def wrap_coordinates(abc, coord, refcoord):</span>
+<span class="c1">#	wrapcoord = coord.copy()</span>
+<span class="c1">#	# box vectors (assuming rectangular)</span>
+<span class="c1">#	A = abc[0]</span>
+<span class="c1">#	B = abc[1]</span>
+<span class="c1">#	C = abc[2]</span>
+<span class="c1">#	Ah = A/2.0</span>
+<span class="c1">#	Bh = B/2.0</span>
+<span class="c1">#	Ch = C/2.0</span>
+<span class="c1">#	iA = 1.0/A</span>
+<span class="c1">#	iB = 1.0/B</span>
+<span class="c1">#	iC = 1.0/C</span>
+<span class="c1">#</span>
+<span class="c1">#	natoms = 1</span>
+<span class="c1">#	#list to hold shifts</span>
+<span class="c1">#	sAs = np.zeros(natoms)</span>
+<span class="c1">#	sBs = np.zeros(natoms)</span>
+<span class="c1">#	sCs = np.zeros(natoms)</span>
+
+<span class="c1">#	#compute the difference in the z coordinate</span>
+<span class="c1">#	dz = coord[2] - refcoord[2]</span>
+<span class="c1">#	#compute the required shift</span>
+<span class="c1">#	i = 0</span>
+<span class="c1">#	shift = 0</span>
+<span class="c1">#	if	dz &gt; Ch:</span>
+<span class="c1">#		shift-=1</span>
+<span class="c1">#		while (dz+shift*C)&gt;Ch:</span>
+<span class="c1">#			shift-=1</span>
+<span class="c1">#	elif dz &lt; -Ch:</span>
+<span class="c1">#		shift+=1</span>
+<span class="c1">#		while (dz+shift*C)&lt;-Ch:</span>
+<span class="c1">#			shift+=1</span>
+<span class="c1">#	sCs[i]=shift</span>
+<span class="c1">#	#apply shift</span>
+<span class="c1">#	wrapcoord[2] += (sCs*C)</span>
+<span class="c1">#	#compute the difference in the y coordinate</span>
+<span class="c1">#	dy = coord[1] - refcoord[1]</span>
+<span class="c1">#	#compute the required shift</span>
+<span class="c1">#	i = 0</span>
+
+<span class="c1">#	shift = 0</span>
+<span class="c1">#	if	dy &gt; Bh:</span>
+<span class="c1">#		shift-=1</span>
+<span class="c1">#		while (dy+shift*B)&gt;Bh:</span>
+<span class="c1">#			shift-=1</span>
+<span class="c1">#	elif dy &lt; -Bh:</span>
+<span class="c1">#		shift+=1</span>
+<span class="c1">#		while (dy+shift*B)&lt;-Bh:</span>
+<span class="c1">#			shift+=1</span>
+<span class="c1">#	sBs[i]=shift</span>
+<span class="c1">#	i+=1</span>
+<span class="c1">#	#apply shift</span>
+<span class="c1">#	wrapcoord[1] += (sBs*B)</span>
+<span class="c1">#	#compute the difference in the x coordinate</span>
+<span class="c1">#	dx = coord[0] - refcoord[0]</span>
+<span class="c1">#	#compute the required shift</span>
+<span class="c1">#	i = 0</span>
+<span class="c1">#	shift = 0</span>
+<span class="c1">#	if	dx &gt; Ah:</span>
+<span class="c1">#		shift-=1</span>
+<span class="c1">#		while (dx+shift*A)&gt;Ah:</span>
+<span class="c1">#			shift-=1</span>
+<span class="c1">#	elif dx &lt; -Ah:</span>
+<span class="c1">#		shift+=1</span>
+<span class="c1">#		while (dz+shift*A)&lt;-Ah:</span>
+<span class="c1">#			shift+=1</span>
+<span class="c1">#	sAs[i]=shift</span>
+<span class="c1">#</span>
+<span class="c1">#	#apply shift</span>
+<span class="c1">#	wrapcoord[0] += (sAs*A)</span>
+<span class="c1">#	return wrapcoord</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

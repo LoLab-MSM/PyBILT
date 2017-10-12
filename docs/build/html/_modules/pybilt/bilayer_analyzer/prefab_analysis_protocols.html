@@ -1,0 +1,1429 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.bilayer_analyzer.prefab_analysis_protocols &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.bilayer_analyzer.prefab_analysis_protocols</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.bilayer_analyzer.prefab_analysis_protocols</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Prefab analysis protocols for lipid bilayers.</span>
+
+<span class="sd">This module defines a set of functions that perform bilayer analysis using</span>
+<span class="sd">pre-designed (prefab) protocols that automatically setup and run the analyses,</span>
+<span class="sd">extract and output data, and generate plots. Most of these protocols make use of</span>
+<span class="sd">the BilayerAnalyzer class, but some use tools from the mda_tools package. These</span>
+<span class="sd">analyses are meant for quasi-planar lipid bilayer systems.</span>
+
+<span class="sd">Example:</span>
+<span class="sd">    &gt;&gt; from pybilt.bilayer_analyzer import prefab_analysis_protocols as ba_pap</span>
+<span class="sd">    &gt;&gt; ba_pap.msd_diffusion(structure_file=&#39;my_structure&#39;,</span>
+<span class="sd">    ... trajectory_file=&#39;my_trajectory&#39;, selection_string=&#39;resname DOPE POPC&#39;,</span>
+<span class="sd">    ... dump_path=&#39;./my_output_directory/&#39;)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+
+<span class="kn">from</span> <span class="nn">pybilt.bilayer_analyzer.bilayer_analyzer</span> <span class="k">import</span> <span class="n">BilayerAnalyzer</span>
+<span class="kn">from</span> <span class="nn">pybilt.diffusion</span> <span class="k">import</span> <span class="n">diffusion_coefficients</span> <span class="k">as</span> <span class="n">dc</span>
+<span class="kn">import</span> <span class="nn">pybilt.plot_generation.plot_generation_functions</span> <span class="k">as</span> <span class="nn">pgf</span>
+<span class="kn">from</span> <span class="nn">pybilt.plot_generation.plot_generation_functions</span> <span class="k">import</span> <span class="n">_color_list</span>
+<span class="kn">from</span> <span class="nn">pybilt.common.running_stats</span> <span class="k">import</span> <span class="n">BlockAverager</span>
+<span class="kn">from</span> <span class="nn">pybilt.mda_tools.mda_density_map</span> <span class="k">import</span> <span class="n">position_density_map_2d_leaflet_simple</span>
+
+
+<div class="viewcode-block" id="msd_diffusion"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.msd_diffusion">[docs]</a><span class="k">def</span> <span class="nf">msd_diffusion</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span> <span class="n">selection_string</span><span class="p">,</span>
+                  <span class="n">resnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                  <span class="n">dump_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute MSD curves and estimate diffusion coefficents.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the analysis &#39;msd&#39; to compute</span>
+<span class="sd">    the time series curves for the mean squared displacements of lipids in the</span>
+<span class="sd">    selection and then uses tools from the diffusion package to estimate the</span>
+<span class="sd">    diffusion coefficents via three different estimators; i.e., the Einstein</span>
+<span class="sd">    relation, linear (least squares) line fit, and a non-linear anomalous</span>
+<span class="sd">    diffusion model fit. The protocol uses two different time ranges for the</span>
+<span class="sd">    diffusion coefficent estimations: 0 (or first frame) to 10000.0 (assumed to</span>
+<span class="sd">    be 10000 ps or 10 ns) and 10000.0 to 100000.0 (assumed to 10000 ps or 10 ns</span>
+<span class="sd">    to 100000 ps or 100 ns). Reports of data are printed to standard out, while</span>
+<span class="sd">    pickled data is dumped to disk and MSD time series plots are generated and</span>
+<span class="sd">    also dumped to disk. The output files have the prefix &#39;msd&#39;.</span>
+
+<span class="sd">     Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        resnames (Optional[str, list]): Specify the resnames of the lipid types</span>
+<span class="sd">            that are to be included in this analysis. Defaults to None, which</span>
+<span class="sd">            includes all lipid types.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        This function summarizes the diffusion coefficent estimates by</span>
+<span class="sd">        printing to the std out, which could be redirected into a file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># for each lipid resname in the input resnames add an msd analysis for</span>
+    <span class="c1"># both, upper, and lower leaflets</span>
+    <span class="k">if</span> <span class="n">resnames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">lipid_type</span> <span class="ow">in</span> <span class="n">resnames</span><span class="p">:</span>
+        <span class="n">a_name</span> <span class="o">=</span> <span class="s2">&quot;msd_&quot;</span><span class="o">+</span><span class="n">lipid_type</span>
+        <span class="n">add_string</span> <span class="o">=</span> <span class="s2">&quot;msd &quot;</span><span class="o">+</span><span class="n">a_name</span><span class="o">+</span><span class="s2">&quot; resname &quot;</span><span class="o">+</span><span class="n">lipid_type</span>
+        <span class="n">add_string_upper</span> <span class="o">=</span> <span class="s2">&quot;msd &quot;</span> <span class="o">+</span> <span class="n">a_name</span> <span class="o">+</span> <span class="s2">&quot;_upper resname &quot;</span> <span class="o">+</span> \
+                           <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot; leaflet upper&quot;</span>
+        <span class="n">add_string_lower</span> <span class="o">=</span> <span class="s2">&quot;msd &quot;</span> <span class="o">+</span> <span class="n">a_name</span> <span class="o">+</span> <span class="s2">&quot;_lower resname &quot;</span> <span class="o">+</span> \
+                           <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot; leaflet lower&quot;</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="n">add_string</span><span class="p">)</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="n">add_string_upper</span><span class="p">)</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="n">add_string_lower</span><span class="p">)</span>
+
+    <span class="c1"># now add plot protocols</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_plot</span><span class="p">(</span><span class="s1">&#39;msd msd_a msd_1 All&#39;</span><span class="p">)</span>
+    <span class="c1"># plot with each of the lipid types on same plot (leaflet=both)</span>
+    <span class="n">l_msd_string</span> <span class="o">=</span> <span class="s2">&quot;msd msd_l&quot;</span>
+    <span class="k">for</span> <span class="n">lipid_type</span> <span class="ow">in</span> <span class="n">resnames</span><span class="p">:</span>
+        <span class="n">l_msd_string</span> <span class="o">+=</span> <span class="s2">&quot; msd_&quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="n">lipid_type</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_plot</span><span class="p">(</span><span class="n">l_msd_string</span><span class="p">)</span>
+
+    <span class="c1"># plots for each lipid with upper, lower, both on same plot</span>
+    <span class="k">for</span> <span class="n">lipid_type</span> <span class="ow">in</span> <span class="n">resnames</span><span class="p">:</span>
+        <span class="n">add_string</span> <span class="o">=</span> <span class="s2">&quot;msd &quot;</span> <span class="o">+</span> <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot;_cul msd_&quot;</span> <span class="o">+</span> <span class="n">lipid_type</span> <span class="o">+</span> \
+                     <span class="s2">&quot; Composite msd_&quot;</span> <span class="o">+</span> <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot;_upper Upper msd_&quot;</span> <span class="o">+</span> \
+                     <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot;_lower Lower&quot;</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_plot</span><span class="p">(</span><span class="n">add_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_plot_protocol</span><span class="p">()</span>
+
+    <span class="c1"># run the analyzer</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+
+    <span class="c1"># dump the output</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+
+    <span class="c1"># make MSD vs time plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">save_all_plots</span><span class="p">()</span>
+
+    <span class="c1"># compute diffusion coefficients</span>
+    <span class="c1"># composite</span>
+
+    <span class="n">msd_dat</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+
+    <span class="n">times</span> <span class="o">=</span> <span class="n">msd_dat</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">msd_vals</span> <span class="o">=</span> <span class="n">msd_dat</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">t10</span> <span class="o">=</span> <span class="n">t0</span> <span class="o">+</span> <span class="mf">10000.0</span>
+    <span class="n">t100</span> <span class="o">=</span> <span class="n">t0</span> <span class="o">+</span> <span class="mf">100000.0</span>
+    <span class="c1"># diffusion coeff, whole range</span>
+    <span class="c1"># Simple application of Einstein relation</span>
+    <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+    <span class="c1"># Use linear fit</span>
+    <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+    <span class="c1"># Use anomalous diffusion fit</span>
+    <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for all lipids and both leaflets; whole time range&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="c1"># diffusion coeff, first 10 ns</span>
+    <span class="c1"># Simple application of Einstein relation</span>
+    <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                            <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+    <span class="c1"># Use linear fit</span>
+    <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                              <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+    <span class="c1"># Use anomalous diffusion fit</span>
+    <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                 <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for all lipids and both leaflets; 0-10 ns&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="c1"># diffusion coeff,  10-100 ns</span>
+    <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">t10</span><span class="p">:</span>
+        <span class="c1"># Simple application of Einstein relation</span>
+        <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+        <span class="c1"># Use linear fit</span>
+        <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                  <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+        <span class="c1"># Use anomalous diffusion fit</span>
+        <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                     <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for all lipids and both leaflets; 10-100 ns&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1">#now each individual lipid type</span>
+    <span class="k">for</span> <span class="n">lipid_type</span> <span class="ow">in</span> <span class="n">resnames</span><span class="p">:</span>
+        <span class="n">msd_dat</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s2">&quot;msd_&quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="p">)</span>
+
+        <span class="n">times</span> <span class="o">=</span> <span class="n">msd_dat</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">msd_vals</span> <span class="o">=</span> <span class="n">msd_dat</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">t10</span> <span class="o">=</span> <span class="n">t0</span> <span class="o">+</span> <span class="mf">10000.0</span>
+        <span class="n">t100</span> <span class="o">=</span> <span class="n">t0</span> <span class="o">+</span> <span class="mf">100000.0</span>
+        <span class="c1"># diffusion coeff, whole range</span>
+        <span class="c1"># Simple application of Einstein relation</span>
+        <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+        <span class="c1"># Use linear fit</span>
+        <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+        <span class="c1"># Use anomalous diffusion fit</span>
+        <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for &quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot; and both leaflets; whole time range&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># diffusion coeff, first 10 ns</span>
+        <span class="c1"># Simple application of Einstein relation</span>
+        <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+        <span class="c1"># Use linear fit</span>
+        <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                  <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+        <span class="c1"># Use anomalous diffusion fit</span>
+        <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                     <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for &quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot; and both leaflets; 0-10 ns&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">&gt;</span><span class="n">t10</span><span class="p">:</span>
+            <span class="c1"># diffusion coeff,  10-100 ns</span>
+            <span class="c1"># Simple application of Einstein relation</span>
+            <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                    <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+            <span class="c1"># Use linear fit</span>
+            <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                      <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+            <span class="c1"># Use anomalous diffusion fit</span>
+            <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span>
+                                                         <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for &quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot; and both leaflets; 10-100 ns&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># now do individual leaflets</span>
+        <span class="k">for</span> <span class="n">leaflet</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;upper&#39;</span><span class="p">,</span> <span class="s1">&#39;lower&#39;</span><span class="p">]:</span>
+            <span class="n">msd_dat</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s2">&quot;msd_&quot;</span> <span class="o">+</span>
+                                                 <span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">leaflet</span><span class="p">)</span>
+
+            <span class="n">times</span> <span class="o">=</span> <span class="n">msd_dat</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">msd_vals</span> <span class="o">=</span> <span class="n">msd_dat</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">t10</span> <span class="o">=</span> <span class="n">t0</span> <span class="o">+</span> <span class="mf">10000.0</span>
+            <span class="n">t100</span> <span class="o">=</span> <span class="n">t0</span> <span class="o">+</span> <span class="mf">100000.0</span>
+            <span class="c1"># diffusion coeff, whole range</span>
+            <span class="c1"># Simple application of Einstein relation</span>
+            <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+            <span class="c1"># Use linear fit</span>
+            <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+            <span class="c1"># Use anomalous diffusion fit</span>
+            <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for &quot;</span> <span class="o">+</span> <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span><span class="o">+</span><span class="n">leaflet</span><span class="o">+</span><span class="s2">&quot; leaflet; whole time range&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="c1"># diffusion coeff, first 10 ns</span>
+            <span class="c1"># Simple application of Einstein relation</span>
+            <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+            <span class="c1"># Use linear fit</span>
+            <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+            <span class="c1"># Use anomalous diffusion fit</span>
+            <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t0</span><span class="p">,</span> <span class="n">t10</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for &quot;</span> <span class="o">+</span> <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span><span class="o">+</span><span class="n">leaflet</span><span class="o">+</span><span class="s2">&quot; leaflet; 0-10 ns&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">t10</span><span class="p">:</span>
+                <span class="c1"># diffusion coeff,  10-100 ns</span>
+                <span class="c1"># Simple application of Einstein relation</span>
+                <span class="n">D_e</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_Einstein</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+                <span class="c1"># Use linear fit</span>
+                <span class="n">D_l</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_linear_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+                <span class="c1"># Use anomalous diffusion fit</span>
+                <span class="n">D_a</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">diffusion_coefficient_anomalous_fit</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">msd_vals</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">t10</span><span class="p">,</span> <span class="n">t100</span><span class="p">])</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Composite for &quot;</span> <span class="o">+</span> <span class="n">lipid_type</span> <span class="o">+</span> <span class="s2">&quot; and &quot;</span><span class="o">+</span><span class="n">leaflet</span><span class="o">+</span><span class="s2">&quot; leaflet; 10-100 ns&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Values from estimators:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Basic Einstein relation:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_e</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Linear fit:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Std Error: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Anomalous diffusion fit:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Diffusion coefficient: </span><span class="si">{}</span><span class="s2"> Alpha value: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">D_a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">D_a</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="area_per_lipid"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.area_per_lipid">[docs]</a><span class="k">def</span> <span class="nf">area_per_lipid</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span> <span class="n">selection_string</span><span class="p">,</span>
+                   <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                   <span class="n">dump_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_xbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_ybins</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute area per lipid.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the analyses &#39;apl_box&#39; and</span>
+<span class="sd">    &#39;apl_grid&#39; to estimate the area per lipid using two estimators: the lateral</span>
+<span class="sd">    area method (composite) and lipid grid approach. Reports of data are</span>
+<span class="sd">    printed to standard out, while pickled data is dumped to disk and plots</span>
+<span class="sd">    are generated and also dumped to disk. The generated files have the prefix</span>
+<span class="sd">    &#39;apl&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+<span class="sd">        n_xbins (Optional[int]): Specify the number of bins in the &#39;x&#39; direction</span>
+<span class="sd">            to use in the lipid grid. Defaults to 100.</span>
+<span class="sd">        n_ybins (Optional[int]): Specify the number of bins in the &#39;y&#39; direction</span>
+<span class="sd">            to use in the lipid grid. Defaults to 100.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The lipid grid will have dimensions of n_xbins by n_ybins.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+    <span class="c1"># add the apl analyses</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;apl_box apl_box&quot;</span><span class="p">)</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;apl_grid apl_grid&quot;</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+
+    <span class="c1"># add the plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_plot</span><span class="p">(</span><span class="s2">&quot;apl apl_box apl_box None&quot;</span><span class="p">)</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_plot</span><span class="p">(</span><span class="s2">&quot;apl apl_p apl_box Box apl_grid None&quot;</span><span class="p">)</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_plot</span><span class="p">(</span><span class="s2">&quot;apl apl_grid apl_grid None&quot;</span><span class="p">)</span>
+
+    <span class="c1"># adjust the number of bins for gridding</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_xbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_xbins</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_ybins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_ybins</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_plot_protocol</span><span class="p">()</span>
+
+    <span class="c1"># run analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+
+    <span class="c1"># output data and plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">save_all_plots</span><span class="p">()</span>
+    <span class="c1"># print final ensemble averages to stdout</span>
+    <span class="n">apl_box</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;apl_box&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final running average Area per lipid estimates (squared Angstrom): &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  via the box dimensions: </span><span class="si">{:0.4f}</span><span class="s2"> +- </span><span class="si">{:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">apl_box</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">apl_box</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  via the gridding procedure: &quot;</span><span class="p">)</span>
+    <span class="n">apl_grid</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;apl_grid&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">apl_grid</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2">: </span><span class="si">{:0.4f}</span><span class="s2"> +- </span><span class="si">{:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">apl_grid</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">apl_grid</span><span class="p">[</span><span class="n">item</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span>
+    <span class="n">ppb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">apl_box</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span>
+    <span class="k">if</span> <span class="n">ppb</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
+        <span class="n">ppb</span><span class="o">=</span><span class="mi">1000</span>
+    <span class="n">n_b</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="k">while</span> <span class="n">ppb</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">ppb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">apl_box</span><span class="p">)</span><span class="o">/</span><span class="n">n_b</span>
+        <span class="n">n_b</span><span class="o">-=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">n_b</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ppb</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">apl_box</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Will do block average with </span><span class="si">{}</span><span class="s2"> points per block&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ppb</span><span class="p">))</span>
+    <span class="n">block_averager</span> <span class="o">=</span> <span class="n">BlockAverager</span><span class="p">(</span><span class="n">points_per_block</span><span class="o">=</span><span class="n">ppb</span><span class="p">)</span>
+    <span class="n">block_averager</span><span class="o">.</span><span class="n">push_container</span><span class="p">(</span><span class="n">apl_box</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">block_average</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">block_averager</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Block Averaged (</span><span class="si">{}</span><span class="s2"> points with </span><span class="si">{}</span><span class="s2"> blocks) Area per lipid estimates (squared Angstrom): &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">apl_box</span><span class="p">),</span><span class="n">block_averager</span><span class="o">.</span><span class="n">number_of_blocks</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  via the box dimensions: </span><span class="si">{:0.4f}</span><span class="s2"> +- </span><span class="si">{:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block_average</span><span class="p">,</span> <span class="n">std_err</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  via the gridding procedure: &quot;</span><span class="p">)</span>
+    <span class="n">apl_grid</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;apl_grid&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">apl_grid</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">block_averager</span> <span class="o">=</span> <span class="n">BlockAverager</span><span class="p">(</span><span class="n">points_per_block</span><span class="o">=</span><span class="n">ppb</span><span class="p">)</span>
+        <span class="n">block_averager</span><span class="o">.</span><span class="n">push_container</span><span class="p">(</span><span class="n">apl_grid</span><span class="p">[</span><span class="n">item</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">block_average</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">block_averager</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2">: </span><span class="si">{:0.4f}</span><span class="s2"> +- </span><span class="si">{:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">block_average</span><span class="p">,</span> <span class="n">std_err</span><span class="p">))</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="bilayer_thickness"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.bilayer_thickness">[docs]</a><span class="k">def</span> <span class="nf">bilayer_thickness</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span> <span class="n">selection_string</span><span class="p">,</span>
+                      <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">dump_path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_xbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_ybins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                      <span class="n">plot_grid_map</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute the bilayer thickness.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the analysis</span>
+<span class="sd">    &#39;bilayer_thickness&#39; to estimate the the thickness of the bilayer via the</span>
+<span class="sd">    lipid grid approach. Reports of data are printed to standard out, while</span>
+<span class="sd">    pickled data (numpy array) is dumped to disk and plots are generated and</span>
+<span class="sd">    also dumped to disk. The generated files have the prefix &#39;bt&#39; and the grid</span>
+<span class="sd">    maps have the prefix &#39;thickness_grid&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+<span class="sd">        name_dict (Optional[dict]): A dictionary that defines atoms to use</span>
+<span class="sd">            for each lipid type when computing the center of mass, which is then</span>
+<span class="sd">            mapped to the lipid grid. The dictionary should have structure</span>
+<span class="sd">            {&#39;lipid_resname_1&#39;:[&#39;atom_a&#39;, &#39;atom_b&#39;], &#39;lipid_resname_2&#39;:[&#39;atom_c&#39;]}.</span>
+<span class="sd">            Defaults to None, which means the center of mass of the whole lipid</span>
+<span class="sd">            is used.</span>
+<span class="sd">        n_xbins (Optional[int]): Specify the number of bins in the &#39;x&#39; direction</span>
+<span class="sd">            to use in the lipid grid. Defaults to 100.</span>
+<span class="sd">        n_ybins (Optional[int]): Specify the number of bins in the &#39;y&#39; direction</span>
+<span class="sd">            to use in the lipid grid. Defaults to 100.</span>
+<span class="sd">        plot_grid_map (Optional[bool]): Specify whether the 2d grid heat map of</span>
+<span class="sd">            of the thickness should be generated and output for each analyzed</span>
+<span class="sd">            frame. Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The lipid grid will have dimensions of n_xbins by n_ybins.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+    <span class="c1"># use a subselection of atoms instead of full lipid center of mass, if given</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;name_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name_dict</span>
+    <span class="c1"># add the analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;bilayer_thickness bt&quot;</span><span class="p">)</span>
+    <span class="c1"># adjust the number of bins for gridding</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_xbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_xbins</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_ybins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_ybins</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+    <span class="c1"># add the plot</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_plot</span><span class="p">(</span><span class="s2">&quot;bilayer_thickness bt_p bt None&quot;</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_plot_protocol</span><span class="p">()</span>
+
+    <span class="c1"># run analysis</span>
+    <span class="k">for</span> <span class="n">dummy_frame</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">plot_grid_map</span><span class="p">:</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="s2">&quot;frame_</span><span class="si">{:010d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+            <span class="n">thickgrid</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">thickness_grid</span><span class="p">()</span>
+            <span class="n">xyzc</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_xyzc</span><span class="p">(</span><span class="n">leaflet</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">color_grid</span><span class="o">=</span><span class="n">thickgrid</span><span class="p">)[</span><span class="s1">&#39;lower&#39;</span><span class="p">]</span>
+
+            <span class="c1"># with sns.color_palette(&quot;PuBuGn_d&quot;):</span>
+            <span class="n">pgf</span><span class="o">.</span><span class="n">plot_lipid_grid_thickness_map_2d</span><span class="p">(</span><span class="n">xyzc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyzc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">thickgrid</span><span class="p">,</span>
+                                                 <span class="n">filename</span><span class="o">=</span><span class="n">dump_path</span><span class="o">+</span><span class="s1">&#39;thickness_grid_&#39;</span><span class="o">+</span><span class="n">fs</span><span class="o">+</span><span class="s1">&#39;.png&#39;</span><span class="p">,</span>
+                                                 <span class="n">vmin</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+            <span class="n">pgf</span><span class="o">.</span><span class="n">plot_lipid_grid_thickness_map_2d</span><span class="p">(</span><span class="n">xyzc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyzc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">thickgrid</span><span class="p">,</span>
+                                                 <span class="n">filename</span><span class="o">=</span><span class="n">dump_path</span><span class="o">+</span><span class="s1">&#39;thickness_grid_&#39;</span><span class="o">+</span><span class="n">fs</span><span class="o">+</span><span class="s1">&#39;.pdf&#39;</span><span class="p">,</span>
+                                                 <span class="n">vmin</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+        <span class="c1"># pgf.plot_grid_as_scatter(xyzc, filename=dump_path + &#39;thickness_grid_&#39; + fs + &#39;.pdf&#39;, colorbar=True, vmin=20.0,</span>
+        <span class="c1">#                           vmax=50.0)</span>
+
+    <span class="c1"># output data and plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">save_all_plots</span><span class="p">()</span>
+    <span class="c1"># output final ensemble average to stdout</span>
+    <span class="n">bt</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;bt&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bilayer thickness from gridding procedure (Angstrom): </span><span class="si">{:0.4f}</span><span class="s2"> +- </span><span class="si">{:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">bt</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span>
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="compressibility"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.compressibility">[docs]</a><span class="k">def</span> <span class="nf">compressibility</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span> <span class="n">selection_string</span><span class="p">,</span>
+                    <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">dump_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">298.15</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute the compressibilities.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the analyses &#39;acm&#39;, &#39;vcm&#39;, and</span>
+<span class="sd">    &#39;ac&#39; to estimate the area compressibility modulus, volume</span>
+<span class="sd">    compressibility modulus, and area compressibility of the system. Reports of</span>
+<span class="sd">    data are printed to standard out, while pickled data is dumped to disk. The</span>
+<span class="sd">    generated files have the prefixes &#39;acm&#39;, &#39;vcm&#39;, and &#39;ac&#39; for area</span>
+<span class="sd">    compressibility modulus, volume compressibility modulus, and area</span>
+<span class="sd">    compressibility respectively.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+<span class="sd">        temperature (Optional[float]): Set the temperature (in Kelvin) used</span>
+<span class="sd">            in the simulation. Defaults to 298.15.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+
+    <span class="c1"># add the analyses</span>
+    <span class="c1"># area compressibility modulus</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;acm acm temperature &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">temperature</span><span class="p">))</span>
+    <span class="c1"># volume compressibility modulus</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;vcm vcm temperature &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">temperature</span><span class="p">))</span>
+    <span class="c1"># area compressibility -- (not modulus)</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;ac ac temperature &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">temperature</span><span class="p">))</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+    <span class="n">acm</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;acm&#39;</span><span class="p">)</span>
+    <span class="n">vcm</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;vcm&#39;</span><span class="p">)</span>
+    <span class="n">ac</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;ac&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Area compressibility modulus: </span><span class="si">{}</span><span class="s2"> mN/m&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">acm</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Area compressibility: </span><span class="si">{}</span><span class="s2"> m/mN&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ac</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Volume compressibility modulus: </span><span class="si">{}</span><span class="s2"> J/Angstrom^3&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vcm</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="dispvector_correlation"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.dispvector_correlation">[docs]</a><span class="k">def</span> <span class="nf">dispvector_correlation</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span> <span class="n">selection_string</span><span class="p">,</span>
+                           <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">dump_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute lipid displacement vector maps and correlations.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the analyses &#39;disp_vec&#39;,</span>
+<span class="sd">    &#39;disp_vec_corr&#39;, and &#39;disp_vec_nncorr&#39; to compute the lipid displacement</span>
+<span class="sd">    vectors and their correlations (i.e. cos(theta)). The displacement vectors</span>
+<span class="sd">    are used to  generate the vector map plots. Reports of data are printed to</span>
+<span class="sd">    standard out, while pickled data is dumped to disk and plots are generated</span>
+<span class="sd">    and also dumped to disk. The generated pickle data files have the prefix</span>
+<span class="sd">    &#39;disp_vec&#39; and the vector map plots have prefix &#39;step_vector_map&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+    <span class="c1"># add the apl analyses</span>
+    <span class="c1"># compute the displacment vectors for maps</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;disp_vec disp_vec_upper scale True wrapped True leaflet upper interval &quot;</span>
+                          <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">frame_interval</span><span class="p">))</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;disp_vec disp_vec_lower scale True wrapped True leaflet lower interval &quot;</span>
+                          <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">frame_interval</span><span class="p">))</span>
+    <span class="c1"># compute the full correlation matrix between displacement vectors</span>
+    <span class="c1"># (i.e. cos(theta))</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;disp_vec_corr disp_vec_corr interval &quot;</span> <span class="o">+</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="n">frame_interval</span><span class="p">))</span>
+    <span class="c1"># compute the correlations between a displacement vector and that lipids</span>
+    <span class="c1"># closest neighbor in the lateral dimensions</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;disp_vec_nncorr disp_vec_nncorr_upper leaflet upper interval &quot;</span>
+                          <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">frame_interval</span><span class="p">))</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;disp_vec_nncorr disp_vec_nncorr_lower leaflet lower interval &quot;</span>
+                          <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">frame_interval</span><span class="p">))</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+
+    <span class="c1"># run analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+
+    <span class="c1"># output data and plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+
+
+    <span class="c1"># generate the plots/maps for displacement vectors</span>
+    <span class="n">disp_vecs</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;disp_vec_upper&#39;</span><span class="p">)</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">disp_vecs</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="s2">&quot;{:0&quot;</span><span class="o">+</span><span class="n">number</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span>
+    <span class="k">for</span> <span class="n">disp_vec</span> <span class="ow">in</span> <span class="n">disp_vecs</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;step_vector_map_upper_&quot;</span><span class="o">+</span><span class="n">count</span><span class="o">+</span><span class="s2">&quot;.pdf&quot;</span>
+        <span class="n">filename_b</span> <span class="o">=</span> <span class="s2">&quot;step_vector_map_upper_&quot;</span><span class="o">+</span><span class="n">count</span><span class="o">+</span><span class="s2">&quot;.png&quot;</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_step_vectors</span><span class="p">(</span><span class="n">disp_vec</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">scaled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">wrapped</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_step_vectors</span><span class="p">(</span><span class="n">disp_vec</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename_b</span><span class="p">,</span> <span class="n">scaled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">wrapped</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">disp_vecs</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;disp_vec_lower&#39;</span><span class="p">)</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">disp_vecs</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="s2">&quot;{:0&quot;</span> <span class="o">+</span> <span class="n">number</span> <span class="o">+</span> <span class="s2">&quot;d}&quot;</span>
+    <span class="k">for</span> <span class="n">disp_vec</span> <span class="ow">in</span> <span class="n">disp_vecs</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;step_vector_map_lower_&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
+        <span class="n">filename_b</span> <span class="o">=</span> <span class="s2">&quot;step_vector_map_lower_&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_step_vectors</span><span class="p">(</span><span class="n">disp_vec</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">scaled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">wrapped</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_step_vectors</span><span class="p">(</span><span class="n">disp_vec</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename_b</span><span class="p">,</span> <span class="n">scaled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">wrapped</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">disp_vec_corrs</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;disp_vec_corr&#39;</span><span class="p">)</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">number</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">disp_vecs</span><span class="p">)))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">form</span> <span class="o">=</span> <span class="s2">&quot;{:0&quot;</span> <span class="o">+</span> <span class="n">number</span> <span class="o">+</span> <span class="s2">&quot;d}&quot;</span>
+    <span class="k">for</span> <span class="n">disp_vec_corr</span> <span class="ow">in</span> <span class="n">disp_vec_corrs</span><span class="p">:</span>
+        <span class="n">corr_mat</span> <span class="o">=</span> <span class="n">disp_vec_corr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;step_vector_correlation_map_&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
+        <span class="n">filename_b</span> <span class="o">=</span> <span class="s2">&quot;step_vector_correlation_map_&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_corr_mat_as_scatter</span><span class="p">(</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_corr_mat_as_scatter</span><span class="p">(</span><span class="n">corr_mat</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename_b</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PN_orientational_angle"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.PN_orientational_angle">[docs]</a><span class="k">def</span> <span class="nf">PN_orientational_angle</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span> <span class="n">selection_string</span><span class="p">,</span>
+                           <span class="n">lipid_resnames</span><span class="p">,</span> <span class="n">PN_names</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                           <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dump_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute PN orientational angles.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the analysis &#39;loa&#39; to compute</span>
+<span class="sd">    the PN orientational angles of the specified lipids (by resname). Reports</span>
+<span class="sd">    of data are printed to standard out, while pickled data (numpy array) is</span>
+<span class="sd">    dumped to disk. The pickle data files have prefix &#39;loa&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        lipid_resnames (list): A list of lipid types as specified by their</span>
+<span class="sd">            resnames.</span>
+<span class="sd">        PN_names (Optional(dict)): A dictionary specifying the atom names for</span>
+<span class="sd">            the phosphorous and nitrogen atoms to use for the PN vector. This</span>
+<span class="sd">            should have the format {&#39;lipid_resname_1&#39;:(&#39;phosphorous_name&#39;,</span>
+<span class="sd">            nitrogen_name)}. Defaults to &#39;default&#39;, which uses (&#39;P&#39;, &#39;N&#39;) for</span>
+<span class="sd">            all lipid types.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+    <span class="c1"># add the loa analyses</span>
+    <span class="k">if</span> <span class="n">PN_names</span> <span class="ow">is</span> <span class="s1">&#39;default&#39;</span><span class="p">:</span>
+        <span class="n">PN_names</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">lipid_resnames</span><span class="p">:</span>
+            <span class="n">PN_names</span><span class="p">[</span><span class="n">resname</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">lipid_resnames</span><span class="p">:</span>
+        <span class="n">Pn</span> <span class="o">=</span> <span class="n">PN_names</span><span class="p">[</span><span class="n">resname</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Nn</span> <span class="o">=</span> <span class="n">PN_names</span><span class="p">[</span><span class="n">resname</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;loa loa_&quot;</span> <span class="o">+</span> <span class="n">resname</span> <span class="o">+</span>
+                              <span class="s2">&quot;_upper leaflet upper resname &quot;</span> <span class="o">+</span>
+                              <span class="n">resname</span><span class="o">+</span><span class="s2">&quot; ref_atom_1 &quot;</span> <span class="o">+</span> <span class="n">Pn</span> <span class="o">+</span> <span class="s2">&quot; ref_atom_2 &quot;</span> <span class="o">+</span>
+                              <span class="n">Nn</span><span class="p">)</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;loa loa_&quot;</span> <span class="o">+</span> <span class="n">resname</span> <span class="o">+</span>
+                              <span class="s2">&quot;_lower leaflet lower resname &quot;</span> <span class="o">+</span>
+                              <span class="n">resname</span> <span class="o">+</span> <span class="s2">&quot; ref_atom_1 &quot;</span> <span class="o">+</span> <span class="n">Pn</span> <span class="o">+</span> <span class="s2">&quot; ref_atom_2 &quot;</span> <span class="o">+</span>
+                              <span class="n">Nn</span><span class="p">)</span>
+    <span class="c1"># compute the correlations between a displacement vector and that lipids</span>
+    <span class="c1"># closest neighbor in the lateral dimensions</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+
+    <span class="c1"># run analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+
+    <span class="c1"># output data and plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">lipid_resnames</span><span class="p">:</span>
+        <span class="n">loa_upper</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s2">&quot;loa_&quot;</span> <span class="o">+</span> <span class="n">resname</span> <span class="o">+</span> <span class="s2">&quot;_upper&quot;</span><span class="p">)</span>
+        <span class="n">loa_lower</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s2">&quot;loa_&quot;</span> <span class="o">+</span> <span class="n">resname</span> <span class="o">+</span> <span class="s2">&quot;_lower&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lipid resname </span><span class="si">{}</span><span class="s2"> has average PN orientation anlge of </span><span class="si">{}</span><span class="s2"> in the upper leaflet&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">loa_upper</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">complement</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="n">loa_upper</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    complement angle: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">complement</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lipid resname </span><span class="si">{}</span><span class="s2"> has average PN orientation anlge of </span><span class="si">{}</span><span class="s2"> in the lower leaflet&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">loa_lower</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])))</span>
+        <span class="n">complement</span> <span class="o">=</span> <span class="mf">90.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">loa_lower</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    complement angle: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">complement</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="nearest_neighbor_fraction"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.nearest_neighbor_fraction">[docs]</a><span class="k">def</span> <span class="nf">nearest_neighbor_fraction</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span>
+                              <span class="n">selection_string</span><span class="p">,</span> <span class="n">lipid_resnames</span><span class="p">,</span> <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                              <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dump_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute the nearest neigbor fraction.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with analysis &#39;nnf&#39; to estimate the</span>
+<span class="sd">    nearest neighbor fractions (also known as fractional interactions) of the</span>
+<span class="sd">    specified lipids (by resname). Reports of data are printed to standard out,</span>
+<span class="sd">    while pickled data is dumped to disk and plots are generated and also</span>
+<span class="sd">    dumped to disk. The generated files have the prefix &#39;nnf&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        lipid_resnames (list): A list of lipid types as specified by their</span>
+<span class="sd">            resnames.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+    <span class="n">nres</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lipid_resnames</span><span class="p">)</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nres</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nres</span><span class="p">):</span>
+            <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">lipid_resnames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lipid_resnames</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
+    <span class="c1"># add the loa analyses</span>
+    <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+        <span class="n">l1</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">l2</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;nnf nnf_&quot;</span> <span class="o">+</span> <span class="n">l1</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">l2</span> <span class="o">+</span> <span class="s2">&quot; resname_1 &quot;</span> <span class="o">+</span>
+                              <span class="n">l1</span> <span class="o">+</span> <span class="s2">&quot; resname_2 &quot;</span> <span class="o">+</span> <span class="n">l2</span><span class="p">)</span>
+    <span class="c1"># compute the correlations between a displacement vector and that lipids</span>
+    <span class="c1"># closest neighbor in the lateral dimensions</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+    <span class="c1"># run analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+
+    <span class="c1"># output data and plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+        <span class="n">l1</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">l2</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">t_nnf</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s2">&quot;nnf_&quot;</span><span class="o">+</span><span class="n">l1</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">l2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nearest neighbor fraction for lipid pair </span><span class="si">{}</span><span class="s2"> and </span><span class="si">{}</span><span class="s2"> : </span><span class="si">{:0.4f}</span><span class="s2"> +- </span><span class="si">{:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">t_nnf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">t_nnf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span>
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="normal_displacement_lipid_type_correlation"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.normal_displacement_lipid_type_correlation">[docs]</a><span class="k">def</span> <span class="nf">normal_displacement_lipid_type_correlation</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span>
+                                               <span class="n">selection_string</span><span class="p">,</span> <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                               <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                               <span class="n">dump_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                               <span class="n">com_sub_selection_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol for correlation between the normal dimension displacement and lipid type.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the analysis &#39;ndcorr&#39; to do a</span>
+<span class="sd">    local grid analysis to estimate the correlation between between lipid types</span>
+<span class="sd">    and their deflection along the bilayer normal; this analysis includes all</span>
+<span class="sd">    lipid types. Reports of data are printed to standard out, while pickled</span>
+<span class="sd">    data is dumped to disk and plots are generated and also dumped to disk. The</span>
+<span class="sd">    generated pickle files have the prefix &#39;norm_disp_correlation&#39; while the</span>
+<span class="sd">    plots have the prefix &#39;ndcorr&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                             <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                             <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">com_sub_selection_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;name_dict&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                                            <span class="n">com_sub_selection_dict</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="s2">&quot;ndcorr norm_disp_correlation&quot;</span><span class="p">)</span>
+    <span class="c1"># compute the correlations between a displacement vector and that lipids</span>
+    <span class="c1"># closest neighbor in the lateral dimensions</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--------&quot;</span><span class="p">)</span>
+
+    <span class="c1"># run analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+
+    <span class="c1"># output data and plots</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+
+    <span class="n">ndcorr</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s1">&#39;norm_disp_correlation&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Normal dimension displacement-lipid type cross correlation results:&quot;</span>
+          <span class="p">)</span>
+    <span class="k">for</span> <span class="n">leaflet</span> <span class="ow">in</span> <span class="n">ndcorr</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  </span><span class="si">{}</span><span class="s2"> leaflet:&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">leaflet</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">lipid_resname</span> <span class="ow">in</span> <span class="n">ndcorr</span><span class="p">[</span><span class="n">leaflet</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">ndcorr</span><span class="p">[</span><span class="n">leaflet</span><span class="p">][</span><span class="n">lipid_resname</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">deviation</span> <span class="o">=</span> <span class="n">ndcorr</span><span class="p">[</span><span class="n">leaflet</span><span class="p">][</span><span class="n">lipid_resname</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    Lipid resname </span><span class="si">{}</span><span class="s2">: </span><span class="si">{:0.4f}</span><span class="s2"> +- </span><span class="si">{:0.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lipid_resname</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">deviation</span><span class="p">))</span>
+
+    <span class="n">pgf</span><span class="o">.</span><span class="n">plot_displacement_lipid_type_cross_correlation</span><span class="p">(</span><span class="n">ndcorr</span><span class="p">,</span>
+                                                       <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;ndcorr.png&quot;</span><span class="p">)</span>
+    <span class="n">pgf</span><span class="o">.</span><span class="n">plot_displacement_lipid_type_cross_correlation</span><span class="p">(</span><span class="n">ndcorr</span><span class="p">,</span>
+                                                       <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;ndcorr.pdf&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="lipid_grid_maps"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.lipid_grid_maps">[docs]</a><span class="k">def</span> <span class="nf">lipid_grid_maps</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span> <span class="n">selection_string</span><span class="p">,</span>
+                    <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">dump_path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_xbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_ybins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                    <span class="n">type_colors</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to generate lipid grid map plots.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer with the &#39;lipid_grid&#39; reprentation</span>
+<span class="sd">    to estimate the the thickness of the bilayer via the lipid grid approach.</span>
+<span class="sd">    Grid map lots are generated and dumped to disk. The generated files have</span>
+<span class="sd">    the prefix &#39;lipid_grid&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+<span class="sd">        name_dict (Optional[dict]): A dictionary that defines atoms to use</span>
+<span class="sd">            for each lipid type when computing the center of mass, which is</span>
+<span class="sd">            then mapped to the lipid grid. The dictionary should have structure</span>
+<span class="sd">            {&#39;lipid_resname_1&#39;:[&#39;atom_a&#39;, &#39;atom_b&#39;],</span>
+<span class="sd">            &#39;lipid_resname_2&#39;:[&#39;atom_c&#39;]}. Defaults to None, which means the</span>
+<span class="sd">            center of mass of the whole lipid is used.</span>
+<span class="sd">        n_xbins (Optional[int]): Specify the number of bins in the &#39;x&#39;</span>
+<span class="sd">            direction to use in the lipid grid. Defaults to 100.</span>
+<span class="sd">        n_ybins (Optional[int]): Specify the number of bins in the &#39;y&#39;</span>
+<span class="sd">            direction to use in the lipid grid. Defaults to 100.</span>
+<span class="sd">        type_colors (Optional[dict]): Specify the colors to use for for each</span>
+<span class="sd">            lipid type when generating the 2d grid map plot. The dictionary</span>
+<span class="sd">            should be keyed by the lipid types&#39; resnames. Defaults to &#39;auto&#39;,</span>
+<span class="sd">            which automatically assigns colors for each lipid type.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The lipid grid will have dimensions of n_xbins by n_ybins.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+    <span class="c1"># use a subselection of atoms instead of full lipid</span>
+    <span class="c1"># center of mass, if given</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;name_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name_dict</span>
+    <span class="c1"># analyzer.settings[&#39;print_interval&#39;]=1</span>
+    <span class="c1"># add the analysis</span>
+    <span class="k">if</span> <span class="n">type_colors</span> <span class="ow">is</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">type_colors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">dummy_frame</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="p">:</span>
+            <span class="n">unique_resnames</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique_resnames</span><span class="p">())</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">unique_resnames</span><span class="p">:</span>
+                <span class="n">type_colors</span><span class="p">[</span><span class="n">resname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_color_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">_color_list</span><span class="p">):</span>
+                    <span class="n">i</span><span class="o">=</span><span class="mi">0</span>
+            <span class="k">break</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">use_objects</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1"># adjust the number of bins for gridding</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_xbins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_xbins</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_ybins&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_ybins</span>
+    <span class="c1">#run analysis</span>
+    <span class="k">for</span> <span class="n">dummy_frame</span> <span class="ow">in</span> <span class="n">analyzer</span><span class="p">:</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="s2">&quot;frame_</span><span class="si">{:010d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+        <span class="n">xyzc</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_xyzc</span><span class="p">(</span><span class="n">leaflet</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">color_type_dict</span><span class="o">=</span><span class="n">type_colors</span><span class="p">)[</span><span class="s1">&#39;lower&#39;</span><span class="p">]</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_grid_as_scatter</span><span class="p">(</span><span class="n">xyzc</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">dump_path</span> <span class="o">+</span> <span class="s1">&#39;lipid_grid_lower_&#39;</span> <span class="o">+</span> <span class="n">fs</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_grid_as_scatter</span><span class="p">(</span><span class="n">xyzc</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">dump_path</span> <span class="o">+</span> <span class="s1">&#39;lipid_grid_lower_&#39;</span> <span class="o">+</span> <span class="n">fs</span> <span class="o">+</span> <span class="s1">&#39;.pdf&#39;</span><span class="p">)</span>
+
+        <span class="n">xyzc</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_xyzc</span><span class="p">(</span><span class="n">leaflet</span><span class="o">=</span><span class="s1">&#39;upper&#39;</span><span class="p">,</span> <span class="n">color_type_dict</span><span class="o">=</span><span class="n">type_colors</span><span class="p">)[</span><span class="s1">&#39;upper&#39;</span><span class="p">]</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_grid_as_scatter</span><span class="p">(</span><span class="n">xyzc</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">dump_path</span> <span class="o">+</span> <span class="s1">&#39;lipid_grid_upper_&#39;</span> <span class="o">+</span> <span class="n">fs</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_grid_as_scatter</span><span class="p">(</span><span class="n">xyzc</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">dump_path</span> <span class="o">+</span> <span class="s1">&#39;lipid_grid_upper_&#39;</span> <span class="o">+</span> <span class="n">fs</span> <span class="o">+</span> <span class="s1">&#39;.pdf&#39;</span><span class="p">)</span>
+
+
+    <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">type_colors</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;lipid resname </span><span class="si">{}</span><span class="s2"> is color </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span><span class="n">type_colors</span><span class="p">[</span><span class="n">resname</span><span class="p">]))</span>
+    <span class="k">return</span></div>
+
+<div class="viewcode-block" id="distance_cutoff_clustering"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.distance_cutoff_clustering">[docs]</a><span class="k">def</span> <span class="nf">distance_cutoff_clustering</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection_string</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                               <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dump_path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute hiearchical distance cutoff clusters.</span>
+
+<span class="sd">    This function uses the BilayerAnalyzer to determine the hiearchical</span>
+<span class="sd">    distance cutoff clusters of lipids in the lateral dimensions; clustering is</span>
+<span class="sd">    performed between lipids of the same type using a distance cutoff of</span>
+<span class="sd">    12.0*distance_units (assumed to be Angstroms). The protocol extracts the</span>
+<span class="sd">    number of clusters and average cluster size for each lipid type in both the</span>
+<span class="sd">    &#39;upper&#39; and &#39;lower&#39; leaflets. Reports of data are printed to standard out,</span>
+<span class="sd">    while pickled data is dumped to disk and plots are generated and also</span>
+<span class="sd">    dumped to disk. The generated files have the prefix &#39;dc_cluster&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">analyzer</span> <span class="o">=</span> <span class="n">BilayerAnalyzer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">structure_file</span><span class="p">,</span>
+                               <span class="n">trajectory</span><span class="o">=</span><span class="n">trajectory_file</span><span class="p">,</span>
+                               <span class="n">selection</span><span class="o">=</span><span class="n">selection_string</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">set_frame_range</span><span class="p">(</span><span class="n">frame_start</span><span class="p">,</span> <span class="n">frame_end</span><span class="p">,</span> <span class="n">frame_interval</span><span class="p">)</span>
+    <span class="c1"># remove the default msd analysis</span>
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">remove_analysis</span><span class="p">(</span><span class="s1">&#39;msd_1&#39;</span><span class="p">)</span>
+    <span class="c1"># add the analyses</span>
+    <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">resnames</span><span class="p">:</span>
+        <span class="n">add_in</span> <span class="o">=</span> <span class="s2">&quot;dc_cluster dc_cluster_</span><span class="si">{}</span><span class="s2">_upper resname </span><span class="si">{}</span><span class="s2"> leaflet upper&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="n">add_in</span><span class="p">)</span>
+        <span class="n">add_in</span> <span class="o">=</span> <span class="s2">&quot;dc_cluster dc_cluster_</span><span class="si">{}</span><span class="s2">_lower resname </span><span class="si">{}</span><span class="s2"> leaflet lower&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">analyzer</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="n">add_in</span><span class="p">)</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">()</span>
+
+    <span class="n">analyzer</span><span class="o">.</span><span class="n">dump_data</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">dump_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;         &quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">resname</span> <span class="ow">in</span> <span class="n">resnames</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s2">&quot;dc_cluster_</span><span class="si">{}</span><span class="s2">_upper&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">))</span>
+        <span class="n">plotname_png</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_upper_</span><span class="si">{}</span><span class="s2">_nclusters.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">plotname_eps</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_upper_</span><span class="si">{}</span><span class="s2">_nclusters.pdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;nclusters&#39;</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;nclusters&#39;</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;nclusters&#39;</span><span class="p">][:,</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_png</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_eps</span><span class="p">)</span>
+        <span class="n">plotname_png</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_upper_</span><span class="si">{}</span><span class="s2">_avg_size.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">plotname_eps</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_upper_</span><span class="si">{}</span><span class="s2">_avg_size.pdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;avg_size&#39;</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;avg_size&#39;</span><span class="p">][:,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_png</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_eps</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;resname </span><span class="si">{}</span><span class="s2"> has distance cutoff cluster results in upper leaflet: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;clusters&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  mean </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> +- </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">get_analysis_data</span><span class="p">(</span><span class="s2">&quot;dc_cluster_</span><span class="si">{}</span><span class="s2">_lower&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">))</span>
+        <span class="n">plotname_png</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_lower_</span><span class="si">{}</span><span class="s2">_nclusters.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span><span class="n">resname</span><span class="p">)</span>
+        <span class="n">plotname_eps</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_lower_</span><span class="si">{}</span><span class="s2">_nclusters.pdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;nclusters&#39;</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;nclusters&#39;</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;nclusters&#39;</span><span class="p">][:,</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_png</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_eps</span><span class="p">)</span>
+        <span class="n">plotname_png</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_lower_</span><span class="si">{}</span><span class="s2">_avg_size.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">plotname_eps</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">dc_cluster_lower_</span><span class="si">{}</span><span class="s2">_avg_size.pdf&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="n">resname</span><span class="p">)</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;avg_size&#39;</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">stds</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;avg_size&#39;</span><span class="p">][:,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_png</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_dc_cluster_dat_number</span><span class="p">([(</span><span class="n">times</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">)],</span> <span class="n">filename</span><span class="o">=</span><span class="n">plotname_eps</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;resname </span><span class="si">{}</span><span class="s2"> has distance cutoff cluster results in lower leaflet: &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;clusters&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  mean </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> +- </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------------------------------&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="position_density_maps_2d"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.prefab_analysis_protocols.position_density_maps_2d">[docs]</a><span class="k">def</span> <span class="nf">position_density_maps_2d</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">,</span>
+                             <span class="n">bilayer_selection_string</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span>
+                             <span class="n">frame_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">frame_end</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">frame_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                             <span class="n">dump_path</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to compute the 2d positional densities and its plots.</span>
+
+<span class="sd">    This function uses the</span>
+<span class="sd">    mda_tools.mda_density_map.position_density_map_2d_leaflet_simple function</span>
+<span class="sd">    to compute the 2d positional densities of lipids in the lateral dimensions</span>
+<span class="sd">    and generates their plots. Separate plots are generated for each lipid</span>
+<span class="sd">    type, denoted by their resnames. The plots are generated and dumped to</span>
+<span class="sd">    disk. The output files have the prefix &#39;position_density_2d&#39;.</span>
+
+<span class="sd">     Args:</span>
+<span class="sd">        structure_file (str): The path and filename of the structure file.</span>
+<span class="sd">        trajectory_file (str, list): The path and filename of the trajectory</span>
+<span class="sd">            file. Also accepts a list of path/filenames.</span>
+<span class="sd">        selection_string (str): The MDAnalysis compatible string used to select</span>
+<span class="sd">            the bilayer components.</span>
+<span class="sd">        resnames (list): Specify the resnames of the lipid types</span>
+<span class="sd">            that are to be included in this analysis.</span>
+<span class="sd">        frame_start (Optional[int]): Specify the index of the first frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to 0,</span>
+<span class="sd">            which is the first frame of the trajectory.</span>
+<span class="sd">        frame_end (Optional[int]): Specify the index of the last frame</span>
+<span class="sd">            of the trajectory to include in the analysis. Defaults to -1,</span>
+<span class="sd">            which is the last frame of the trajectory.</span>
+<span class="sd">        frame_interval (Optional[int]): Specify the interval between frames of</span>
+<span class="sd">            the trajectory to include in the analysis, or the frame frequency.</span>
+<span class="sd">            Defaults to 1, which includes all frames [frame_start, frame_end].</span>
+<span class="sd">        dump_path (Optional[str]): Specify a file path for the output files.</span>
+<span class="sd">            Defaults to None, which outputs in the current directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        void</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">structure_file</span><span class="p">,</span> <span class="n">trajectory_file</span><span class="p">)</span>
+    <span class="n">bilayer_sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">bilayer_selection_string</span><span class="p">)</span>
+    <span class="n">x_centers</span><span class="p">,</span> <span class="n">y_centers</span><span class="p">,</span> <span class="n">counts</span> \
+        <span class="o">=</span> <span class="n">position_density_map_2d_leaflet_simple</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">bilayer_sel</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span>
+                                                 <span class="n">fstart</span><span class="o">=</span><span class="n">frame_start</span><span class="p">,</span>
+                                                 <span class="n">fend</span><span class="o">=</span><span class="n">frame_end</span><span class="p">,</span>
+                                                 <span class="n">fstep</span><span class="o">=</span><span class="n">frame_interval</span><span class="p">,</span>
+                                                 <span class="n">refsel</span><span class="o">=</span><span class="n">bilayer_sel</span><span class="p">,</span>
+                                                 <span class="n">scale_to_max</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">outname_eps</span> <span class="o">=</span> <span class="s1">&#39;position_density_2d_</span><span class="si">{}</span><span class="s1">_upper.pdf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">outname_png</span> <span class="o">=</span> <span class="s1">&#39;position_density_2d_</span><span class="si">{}</span><span class="s1">_upper.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_position_density_map_2d</span><span class="p">(</span><span class="n">x_centers</span><span class="p">,</span>
+                                         <span class="n">y_centers</span><span class="p">,</span>
+                                         <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;upper&#39;</span><span class="p">],</span>
+                                         <span class="n">filename</span><span class="o">=</span><span class="n">outname_eps</span><span class="p">,</span>
+                                         <span class="n">scaled_to_max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_position_density_map_2d</span><span class="p">(</span><span class="n">x_centers</span><span class="p">,</span>
+                                         <span class="n">y_centers</span><span class="p">,</span>
+                                         <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;upper&#39;</span><span class="p">],</span>
+                                         <span class="n">filename</span><span class="o">=</span><span class="n">outname_png</span><span class="p">,</span>
+                                         <span class="n">scaled_to_max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+        <span class="n">outname_eps</span> <span class="o">=</span> <span class="s1">&#39;position_density_2d_</span><span class="si">{}</span><span class="s1">_lower.pdf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">outname_png</span> <span class="o">=</span> <span class="s1">&#39;position_density_2d_</span><span class="si">{}</span><span class="s1">_lower.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_position_density_map_2d</span><span class="p">(</span><span class="n">x_centers</span><span class="p">,</span>
+                                         <span class="n">y_centers</span><span class="p">,</span>
+                                         <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;lower&#39;</span><span class="p">],</span>
+                                         <span class="n">filename</span><span class="o">=</span><span class="n">outname_eps</span><span class="p">,</span>
+                                         <span class="n">scaled_to_max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_position_density_map_2d</span><span class="p">(</span><span class="n">x_centers</span><span class="p">,</span>
+                                         <span class="n">y_centers</span><span class="p">,</span>
+                                         <span class="n">counts</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;lower&#39;</span><span class="p">],</span>
+                                         <span class="n">filename</span><span class="o">=</span><span class="n">outname_png</span><span class="p">,</span>
+                                         <span class="n">scaled_to_max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+    <span class="k">return</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

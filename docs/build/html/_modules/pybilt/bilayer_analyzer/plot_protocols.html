@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.bilayer_analyzer.plot_protocols &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.bilayer_analyzer.plot_protocols</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.bilayer_analyzer.plot_protocols</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pybilt.plot_generation.plot_generation_functions</span> <span class="k">as</span> <span class="nn">pgf</span>
+
+
+<span class="n">command_protocols</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">valid_plots</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">plot_func_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">plot_analysis_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="c1"># protocol for the  plots to run after the frame loop</span>
+<div class="viewcode-block" id="PlotProtocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotProtocol">[docs]</a><span class="k">class</span> <span class="nc">PlotProtocol</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_commands</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_commands</span> <span class="o">=</span> <span class="n">plot_commands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_protocol</span> <span class="o">=</span> <span class="n">analysis_protocol</span>
+        <span class="c1"># check analysis</span>
+        <span class="n">arguments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">plot_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">command_protocol</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">plot_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">plot_commands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">plot_commands</span><span class="p">:</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s2">&quot;wrong number of arguments for plot &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+                <span class="n">plot_key</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">plot_id</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">comp_args</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">if</span> <span class="n">plot_key</span> <span class="ow">in</span> <span class="n">valid_plots</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comp_args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">plot_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plot_ids</span><span class="p">:</span>
+                            <span class="n">arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp_args</span><span class="p">)</span>
+                            <span class="n">plot_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp_args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">plot_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot_key</span><span class="p">)</span>
+                            <span class="n">command_protocol</span><span class="p">[</span><span class="n">comp_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">command_protocols</span><span class="p">[</span>
+                                <span class="n">plot_key</span><span class="p">](</span><span class="n">comp_args</span><span class="p">,</span>
+                                          <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">analysis_keys</span><span class="p">,</span>
+                                          <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">analysis_ids</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;plot id &#39;</span><span class="si">{}</span><span class="s2">&#39; has already &quot;</span>
+                                               <span class="s2">&quot;been used&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plot_id</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;wrong number of arguments for plot&quot;</span>
+                                           <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;invalid plot type &#39;</span><span class="si">{}</span><span class="s2">&#39; : &quot;</span>
+                                       <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plot_key</span><span class="p">,</span> <span class="n">command</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_keys</span> <span class="o">=</span> <span class="n">plot_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span> <span class="o">=</span> <span class="n">plot_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_protocol</span> <span class="o">=</span> <span class="n">command_protocol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_commands</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">command_protocol</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="PlotProtocol.add_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotProtocol.add_plot">[docs]</a>    <span class="k">def</span> <span class="nf">add_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_string</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">plot_string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">plot_key</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">plot_id</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">comp_args</span> <span class="o">=</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="n">plot_key</span> <span class="ow">in</span> <span class="n">valid_plots</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comp_args</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">plot_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">:</span>
+                    <span class="c1"># comp_object = analysis_obj_name_dict[plot_key]</span>
+                    <span class="c1"># self.use_objects[comp_object] = True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp_args</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp_args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">plot_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot_key</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">comp_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">command_protocols</span><span class="p">[</span>
+                        <span class="n">plot_key</span><span class="p">](</span><span class="n">comp_args</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">analysis_keys</span><span class="p">,</span>
+                                  <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">analysis_ids</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;plot id &#39;</span><span class="si">{}</span><span class="s2">&#39; has already &quot;</span>
+                                       <span class="s2">&quot;been used&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plot_id</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;wrong number of arguments for plot&quot;</span>
+                                   <span class="s2">&quot; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;invalid plot type &#39;</span><span class="si">{}</span><span class="s2">&#39; : &quot;</span>
+                               <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plot_key</span><span class="p">,</span> <span class="n">command</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_commands</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PlotProtocol.remove_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotProtocol.remove_plot">[docs]</a>    <span class="k">def</span> <span class="nf">remove_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_id</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">plot_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">plot_id</span><span class="p">]</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">plot_id</span><span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_keys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_commands</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span><span class="s2">&quot;no plot with id &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plot_id</span><span class="p">))</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PlotProtocol.print_protocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotProtocol.print_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">print_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;with plots:&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">plot_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">plot_id</span><span class="p">]</span><span class="o">.</span><span class="n">print_protocol</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;None&#39;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PlotProtocol.save_plots"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotProtocol.save_plots">[docs]</a>    <span class="k">def</span> <span class="nf">save_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;dumping plot data to pickle files...&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">plot_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;plot id: &quot;</span> <span class="o">+</span> <span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot; ---&gt; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span>
+                <span class="n">plot_id</span><span class="p">]</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">plot_id</span><span class="p">]</span><span class="o">.</span><span class="n">generate_plot</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PlotFunctionProtocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotFunctionProtocol">[docs]</a><span class="k">class</span> <span class="nc">PlotFunctionProtocol</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+
+        <span class="c1"># required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_length</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># default function settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
+        <span class="c1"># parse input arguments if given</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># storage for output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">my_plot</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span>
+
+    <span class="c1"># required- function to parse the input arguments</span>
+<div class="viewcode-block" id="PlotFunctionProtocol.parse_args"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotFunctionProtocol.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="c1"># print args</span>
+        <span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nargs</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">arg_key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">dummy_arg_arg</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">arg_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;ignoring invalid argument key &quot;</span> <span class="o">+</span> <span class="n">arg_key</span> <span class="o">+</span> <span class="s2">&quot; for plot &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">)</span>
+        <span class="k">return</span></div>
+        <span class="c1"># required - a check protocol function which reports relevant settings</span>
+
+<div class="viewcode-block" id="PlotFunctionProtocol.print_protocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotFunctionProtocol.print_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">print_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Parent protocol class for analysis.&quot;</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PlotFunctionProtocol.generate_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotFunctionProtocol.generate_plot">[docs]</a>    <span class="k">def</span> <span class="nf">generate_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bilayer_analyzer</span><span class="p">):</span>
+        <span class="c1"># generate and save plot</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">bilayer_analyzer</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="PlotFunctionProtocol.show_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.PlotFunctionProtocol.show_plot">[docs]</a>    <span class="k">def</span> <span class="nf">show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="p">)</span>
+        <span class="c1"># generate and show/display plot</span>
+        <span class="k">return</span></div></div>
+
+
+<span class="c1"># define a new plot type &#39;msd&#39;</span>
+<span class="n">valid_plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;msd&#39;</span><span class="p">)</span>
+<span class="n">plot_analysis_dict</span><span class="p">[</span><span class="s1">&#39;msd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;msd&#39;</span>
+
+
+<div class="viewcode-block" id="MSDPlotProtocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.MSDPlotProtocol">[docs]</a><span class="k">class</span> <span class="nc">MSDPlotProtocol</span><span class="p">(</span><span class="n">PlotFunctionProtocol</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">analysis_keys</span><span class="p">,</span> <span class="n">analysis_ids</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Initialization for Plotting protocol for MSD analysis</span>
+<span class="sd">            args are the input arguments of format &quot;plot_id analysis_id_1 legend_key_1...&quot;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span> <span class="o">=</span> <span class="s1">&#39;msd&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># pick up valid arguments- analysis_id of the matching analysis types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">analysis_key</span> <span class="ow">in</span> <span class="n">analysis_keys</span><span class="p">:</span>
+            <span class="c1"># print (analysis_key)</span>
+            <span class="k">if</span> <span class="n">analysis_key</span> <span class="o">==</span> <span class="n">plot_analysis_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_ids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># default function settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># parse input arguments if given</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># storage for output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">my_plot</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span>
+
+    <span class="c1"># required- function to parse the input arguments</span>
+<div class="viewcode-block" id="MSDPlotProtocol.parse_args"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.MSDPlotProtocol.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="c1"># print args</span>
+        <span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nargs</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">arg_key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">arg_arg</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">arg_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg_key</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">arg_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_arg</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;ignoring invalid argument key &quot;</span> <span class="o">+</span> <span class="n">arg_key</span> <span class="o">+</span> <span class="s2">&quot; for plot &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+        <span class="c1"># required - a check protocol function which reports relevant settings</span>
+
+<div class="viewcode-block" id="MSDPlotProtocol.print_protocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.MSDPlotProtocol.print_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">print_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="p">(</span>
+        <span class="s2">&quot;Plot &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot; for MSD analysis:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">))</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="MSDPlotProtocol.generate_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.MSDPlotProtocol.generate_plot">[docs]</a>    <span class="k">def</span> <span class="nf">generate_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">())</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_msd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span>
+                     <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="MSDPlotProtocol.show_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.MSDPlotProtocol.show_plot">[docs]</a>    <span class="k">def</span> <span class="nf">show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">())</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_msd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span>
+                     <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+
+<span class="n">command_protocols</span><span class="p">[</span><span class="s1">&#39;msd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MSDPlotProtocol</span>
+
+<span class="c1"># define a new plot type &#39;msd&#39;</span>
+<span class="n">valid_plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;apl&#39;</span><span class="p">)</span>
+<span class="n">plot_analysis_dict</span><span class="p">[</span><span class="s1">&#39;apl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;apl_box&#39;</span><span class="p">,</span> <span class="s1">&#39;apl_grid&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="APLPlotProtocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.APLPlotProtocol">[docs]</a><span class="k">class</span> <span class="nc">APLPlotProtocol</span><span class="p">(</span><span class="n">PlotFunctionProtocol</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">analysis_keys</span><span class="p">,</span> <span class="n">analysis_ids</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Initialization for Plotting protocol for MSD analysis</span>
+<span class="sd">            args are the input arguments of format &quot;plot_id analysis_id_1 legend_key_1...&quot;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span> <span class="o">=</span> <span class="s1">&#39;apl&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># pick up valid arguments- analysis_id of the matching analysis types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">analysis_key</span> <span class="ow">in</span> <span class="n">analysis_keys</span><span class="p">:</span>
+            <span class="c1"># print (analysis_key)</span>
+            <span class="k">if</span> <span class="n">analysis_key</span> <span class="ow">in</span> <span class="n">plot_analysis_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_ids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># default function settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># parse input arguments if given</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># storage for output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">my_plot</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span>
+
+    <span class="c1"># required- function to parse the input arguments</span>
+<div class="viewcode-block" id="APLPlotProtocol.parse_args"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.APLPlotProtocol.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="c1"># print args</span>
+        <span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nargs</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">arg_key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">arg_arg</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">arg_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg_key</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">arg_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_arg</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;ignoring invalid argument key &quot;</span> <span class="o">+</span> <span class="n">arg_key</span> <span class="o">+</span> <span class="s2">&quot; for plot &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+        <span class="c1"># required - a check protocol function which reports relevant settings</span>
+
+<div class="viewcode-block" id="APLPlotProtocol.print_protocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.APLPlotProtocol.print_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">print_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="p">(</span>
+        <span class="s2">&quot;Plot &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot; for area per lipid (APL) analysis:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">))</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="APLPlotProtocol.generate_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.APLPlotProtocol.generate_plot">[docs]</a>    <span class="k">def</span> <span class="nf">generate_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">analysis_key</span> <span class="o">==</span> <span class="s1">&#39;apl_grid&#39;</span><span class="p">:</span>
+                <span class="n">get_data</span> <span class="o">=</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">get_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">())</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_area_per_lipid</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span> <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+                                <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="APLPlotProtocol.show_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.APLPlotProtocol.show_plot">[docs]</a>    <span class="k">def</span> <span class="nf">show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="n">get_data</span> <span class="o">=</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">analysis_key</span> <span class="o">==</span> <span class="s1">&#39;apl_grid&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">get_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_data</span><span class="p">)</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_area_per_lipid</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span> <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+                                <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+
+<span class="n">command_protocols</span><span class="p">[</span><span class="s1">&#39;apl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">APLPlotProtocol</span>
+
+
+<span class="c1"># define a new plot type &#39;disp_vec&#39;</span>
+<span class="c1">#  unfinished, so leave out of valid plots for now</span>
+<span class="c1"># valid_plots.append(&#39;disp_vec&#39;)</span>
+<span class="c1"># plot_analysis_dict[&#39;disp_vec&#39;] = [&#39;disp_vec&#39;]</span>
+
+<div class="viewcode-block" id="DispVecPlotProtocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.DispVecPlotProtocol">[docs]</a><span class="k">class</span> <span class="nc">DispVecPlotProtocol</span><span class="p">(</span><span class="n">PlotFunctionProtocol</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">analysis_keys</span><span class="p">,</span> <span class="n">analysis_ids</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Initialization for Plotting protocol for MSD analysis</span>
+<span class="sd">            args are the input arguments of format &quot;plot_id analysis_id_1 legend_key_1...&quot;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span> <span class="o">=</span> <span class="s1">&#39;disp_vec&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># pick up valid arguments- analysis_id of the matching analysis types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">analysis_key</span> <span class="ow">in</span> <span class="n">analysis_keys</span><span class="p">:</span>
+            <span class="c1"># print (analysis_key)</span>
+            <span class="k">if</span> <span class="n">analysis_key</span> <span class="ow">in</span> <span class="n">plot_analysis_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_ids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># default function settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># parse input arguments if given</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># storage for output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">my_plot</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span>
+
+    <span class="c1"># required- function to parse the input arguments</span>
+<div class="viewcode-block" id="DispVecPlotProtocol.parse_args"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.DispVecPlotProtocol.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="c1"># print args</span>
+        <span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nargs</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">arg_key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1"># arg_arg = args[i+1]</span>
+            <span class="k">if</span> <span class="n">arg_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg_key</span><span class="p">)</span>
+            <span class="c1"># self.names[arg_key] = arg_arg</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ignoring invalid argument key </span><span class="si">{}</span><span class="s2"> for &quot;</span>
+                                   <span class="s2">&quot;plot </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">))</span>
+        <span class="k">return</span></div>
+
+        <span class="c1"># required - a check protocol function which reports relevant settings</span>
+
+<div class="viewcode-block" id="DispVecPlotProtocol.print_protocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.DispVecPlotProtocol.print_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">print_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Plot </span><span class="si">{}</span><span class="s2"> for displacement vector &quot;</span>
+               <span class="s2">&quot;analysis: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">))</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="DispVecPlotProtocol.generate_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.DispVecPlotProtocol.generate_plot">[docs]</a>    <span class="k">def</span> <span class="nf">generate_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">analysis_key</span> <span class="o">==</span> <span class="s1">&#39;apl_grid&#39;</span><span class="p">:</span>
+                <span class="n">get_data</span> <span class="o">=</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">get_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">())</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_area_per_lipid</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span> <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+                                <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="DispVecPlotProtocol.show_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.DispVecPlotProtocol.show_plot">[docs]</a>    <span class="k">def</span> <span class="nf">show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="n">get_data</span> <span class="o">=</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span>
+                <span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">analysis_key</span> <span class="o">==</span> <span class="s1">&#39;apl_grid&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">get_data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_data</span><span class="p">)</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_area_per_lipid</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span> <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+                                <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+
+<span class="n">command_protocols</span><span class="p">[</span><span class="s1">&#39;disp_vec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DispVecPlotProtocol</span>
+
+<span class="c1"># define a new plot type &#39;bt&#39;</span>
+<span class="n">valid_plots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;bilayer_thickness&#39;</span><span class="p">)</span>
+<span class="n">plot_analysis_dict</span><span class="p">[</span><span class="s1">&#39;bilayer_thickness&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bilayer_thickness&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="BTPlotProtocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.BTPlotProtocol">[docs]</a><span class="k">class</span> <span class="nc">BTPlotProtocol</span><span class="p">(</span><span class="n">PlotFunctionProtocol</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">analysis_keys</span><span class="p">,</span> <span class="n">analysis_ids</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Initialization for Plotting protocol for MSD analysis</span>
+<span class="sd">            args are the input arguments of format &quot;plot_id analysis_id_1 legend_key_1...&quot;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span> <span class="o">=</span> <span class="s1">&#39;bilayer_thickness&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># pick up valid arguments- analysis_id of the matching analysis types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">analysis_key</span> <span class="ow">in</span> <span class="n">analysis_keys</span><span class="p">:</span>
+            <span class="c1"># print (analysis_key)</span>
+            <span class="k">if</span> <span class="n">analysis_key</span> <span class="ow">in</span> <span class="n">plot_analysis_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_ids</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># default function settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># parse input arguments if given</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">include</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="c1"># storage for output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">my_plot</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span>
+
+    <span class="c1"># required- function to parse the input arguments</span>
+<div class="viewcode-block" id="BTPlotProtocol.parse_args"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.BTPlotProtocol.parse_args">[docs]</a>    <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="c1"># print args</span>
+        <span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nargs</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">arg_key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">arg_arg</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">arg_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_args</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg_key</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">arg_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_arg</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;ignoring invalid argument key &quot;</span> <span class="o">+</span> <span class="n">arg_key</span> <span class="o">+</span> <span class="s2">&quot; for plot &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_key</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+        <span class="c1"># required - a check protocol function which reports relevant settings</span>
+
+<div class="viewcode-block" id="BTPlotProtocol.print_protocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.BTPlotProtocol.print_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">print_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Plot </span><span class="si">{}</span><span class="s2"> for bilayer thickness &quot;</span>
+               <span class="s2">&quot;analysis: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">))</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="BTPlotProtocol.generate_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.BTPlotProtocol.generate_plot">[docs]</a>    <span class="k">def</span> <span class="nf">generate_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">())</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+        <span class="c1"># don&#39;t need legend for single plots</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_bilayer_thickness</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                   <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span> <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+                                   <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="BTPlotProtocol.show_plot"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.plot_protocols.BTPlotProtocol.show_plot">[docs]</a>    <span class="k">def</span> <span class="nf">show_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_protocol</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">include</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">c_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">())</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="n">c_id</span><span class="p">])</span>
+        <span class="c1"># don&#39;t need legend for single plots</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pgf</span><span class="o">.</span><span class="n">plot_bilayer_thickness</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">name_list</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                   <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">save_file_name</span><span class="p">,</span> <span class="n">time_in</span><span class="o">=</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+                                   <span class="n">time_out</span><span class="o">=</span><span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span></div></div>
+
+
+<span class="n">command_protocols</span><span class="p">[</span><span class="s1">&#39;bilayer_thickness&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BTPlotProtocol</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.common.gaussian &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.common.gaussian</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.common.gaussian</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Define Gaussian function objects.</span>
+
+<span class="sd">This module defines the Gaussian class and the GaussianRange class.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+
+<div class="viewcode-block" id="Gaussian"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.Gaussian">[docs]</a><span class="k">class</span> <span class="nc">Gaussian</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Gaussian function object.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        mean (float): The mean of the Gaussian. </span>
+<span class="sd">        std (float): The standard deviation of the Gaussian. </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span><span class="n">std</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a Gaussian function object.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            mean (float): Set the mean of the Gaussian. </span>
+<span class="sd">            std (float): Set the standard deviation of the Gaussian. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stdinv</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">std</span>
+        <span class="n">normalc</span> <span class="o">=</span> <span class="n">stdinv</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">std</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normconst</span> <span class="o">=</span> <span class="n">normalc</span>
+        <span class="k">return</span>
+
+
+<div class="viewcode-block" id="Gaussian.eval"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.Gaussian.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x_in</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the Gaussian function evaluated at the input x value. </span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            x_in (float): The x value to evaluate the function at. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The function evaluation for the Gaussian.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stdinv</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span>
+        <span class="n">stdinvsq</span> <span class="o">=</span> <span class="n">stdinv</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">normalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normconst</span>
+        <span class="n">expon</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">x_in</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">stdinvsq</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">normalc</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">expon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="Gaussian.reset_mean"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.Gaussian.reset_mean">[docs]</a>    <span class="k">def</span> <span class="nf">reset_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_mean</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Change the mean of the Gaussian function.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            new_mean (float): The new mean of the Gaussian function. </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">new_mean</span>
+        <span class="k">return</span></div></div>
+
+
+<div class="viewcode-block" id="GaussianRange"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.GaussianRange">[docs]</a><span class="k">class</span> <span class="nc">GaussianRange</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Define a Gaussian function over a range.</span>
+<span class="sd">     </span>
+<span class="sd">     This object is used to define a Gaussian function over a defined </span>
+<span class="sd">     finite range and store its values as evaluated at points evenly spaced </span>
+<span class="sd">     over the range. The points can then for example  be used for integrating </span>
+<span class="sd">     the Gaussian function over the range using numerical quadrature.  </span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        mean (float): The mean of the Gaussian. </span>
+<span class="sd">        std (float): The standard deviation of the Gaussian.</span>
+<span class="sd">        upper (float): The upper boundary of the range.</span>
+<span class="sd">        lower (float): The lower boundary of the range.</span>
+<span class="sd">        npoints (int): The number of points to evaluate in the range.</span>
+<span class="sd">         </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">in_range</span><span class="p">,</span><span class="n">mean</span><span class="p">,</span><span class="n">std</span><span class="p">,</span><span class="n">npoints</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the GaussianRange object.</span>
+<span class="sd">        </span>
+<span class="sd">        The GaussianRange stores the values of Gaussian function with the </span>
+<span class="sd">        input mean and standard deviation evaluated at evenly spaced points </span>
+<span class="sd">        in the specified x-value range.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            in_range (tuple, list): Specify the endpoints for range, e.g.</span>
+<span class="sd">                (x_start, x_end). </span>
+<span class="sd">            mean (float): The mean of the Gaussian function. </span>
+<span class="sd">            std (float): The standard deviation of the Gaussian function. </span>
+<span class="sd">            npoints (Optional[int]): The number of x-value points to </span>
+<span class="sd">                evaluate the Gaussian function for in the specified range (i.e. </span>
+<span class="sd">                in_range).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">in_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">in_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">npoints</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">y_p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npoints</span><span class="p">)</span>
+        <span class="n">yc</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">stdinv</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">std</span>
+        <span class="n">stdinvsq</span> <span class="o">=</span> <span class="n">stdinv</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">normalc</span> <span class="o">=</span> <span class="n">stdinv</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_p</span><span class="p">:</span>
+            <span class="n">expon</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">stdinvsq</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">normalc</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">expon</span><span class="p">)</span>
+            <span class="n">y_p</span><span class="p">[</span><span class="n">yc</span><span class="p">]</span><span class="o">=</span><span class="n">y</span>
+            <span class="n">yc</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y_p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">std</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">mean</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_normconst</span> <span class="o">=</span> <span class="n">normalc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upper</span> <span class="o">=</span> <span class="n">in_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower</span> <span class="o">=</span> <span class="n">in_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dx</span> <span class="o">=</span> <span class="n">x_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">npoints</span> <span class="o">=</span> <span class="n">npoints</span>
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="GaussianRange.get_values"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.GaussianRange.get_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the x and y values for the Gaussian range function.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: The x and y values for the function, returned as (</span>
+<span class="sd">            x_values, y_values).</span>
+<span class="sd">            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GaussianRange.eval"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.GaussianRange.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x_in</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the Gaussian function evaluated at the input x value. </span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x_in (float): The x value to evaluate the function at. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The function evaluation for the Gaussian.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stdinv</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">sigma</span>
+        <span class="n">stdinvsq</span> <span class="o">=</span> <span class="n">stdinv</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">normalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normconst</span>
+        <span class="n">expon</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">x_in</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">stdinvsq</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">normalc</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">expon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="GaussianRange.integrate_range"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.GaussianRange.integrate_range">[docs]</a>    <span class="k">def</span> <span class="nf">integrate_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the numerical integration of the Gaussian range.</span>
+<span class="sd">        </span>
+<span class="sd">        This function does a simple quadrature for the Gaussian function as </span>
+<span class="sd">        evaluated on the range (or subset of the range) specified at </span>
+<span class="sd">        initialization.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            lower (float): The lower boundary for the integration. </span>
+<span class="sd">            upper (float): The upper boundary for the integration. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The numerical value of the Gaussian range integrated from </span>
+<span class="sd">                lower to upper.</span>
+<span class="sd">                </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function does not thoroughly check the bounds, so if upper </span>
+<span class="sd">            is less than lower the function will break.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">upper</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">upper</span><span class="p">:</span>
+            <span class="n">upper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">upper</span>
+        <span class="k">if</span> <span class="n">lower</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">:</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower</span>
+
+        <span class="n">i_l</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">lower</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_dx</span><span class="p">))</span>
+        <span class="n">i_u</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">upper</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_dx</span><span class="p">))</span>
+        <span class="c1">#print &quot;i_l &quot;,i_l,&quot; i_u &quot;,i_u</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">i_l</span><span class="p">,</span><span class="n">i_u</span><span class="p">):</span>
+            <span class="n">total</span><span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_dx</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+<div class="viewcode-block" id="GaussianRange.sum_range"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.GaussianRange.sum_range">[docs]</a>    <span class="k">def</span> <span class="nf">sum_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the over the Gaussian range.</span>
+
+<span class="sd">        This function sums the Gaussian function at the points that were </span>
+<span class="sd">        evaluated on the range (or subset of the range) specified at </span>
+<span class="sd">        initialization.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            lower (float): The lower boundary for the sum. </span>
+<span class="sd">            upper (float): The upper boundary for the sum. </span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: The numerical value of the Gaussian range as summed from </span>
+<span class="sd">                lower to upper.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            This function does not thoroughly check the bounds, so if upper </span>
+<span class="sd">            is less than lower the function will break.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">upper</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">upper</span><span class="p">:</span>
+            <span class="n">upper</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">upper</span>
+        <span class="k">if</span> <span class="n">lower</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">:</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower</span>
+
+        <span class="n">i_l</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">lower</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_dx</span><span class="p">))</span>
+        <span class="n">i_u</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">upper</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">lower</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_dx</span><span class="p">))</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">i_l</span><span class="p">,</span><span class="n">i_u</span><span class="p">):</span>
+            <span class="n">total</span><span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">total</span></div>
+
+<div class="viewcode-block" id="GaussianRange.normalize"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.GaussianRange.normalize">[docs]</a>    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Normalizes (by area) the Gaussian function values over the range.&quot;&quot;&quot;</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="p">):</span>
+            <span class="n">total</span><span class="o">+=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_dx</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/=</span><span class="n">total</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="GaussianRange.reset_mean"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.gaussian.GaussianRange.reset_mean">[docs]</a>    <span class="k">def</span> <span class="nf">reset_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">new_mean</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Change the mean of the Gaussian function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_mean (float): The new mean of the Gaussian function. </span>
+<span class="sd">            </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            This function does not re-evaluate the Gaussian range and </span>
+<span class="sd">            therefore only affects the output of the eval function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">new_mean</span>
+        <span class="k">return</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

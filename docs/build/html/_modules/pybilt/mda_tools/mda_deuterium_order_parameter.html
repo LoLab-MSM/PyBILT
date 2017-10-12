@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.mda_tools.mda_deuterium_order_parameter &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.mda_tools.mda_deuterium_order_parameter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.mda_tools.mda_deuterium_order_parameter</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#import the running stats class</span>
+<span class="kn">from</span> <span class="nn">pybilt.common.running_stats</span> <span class="k">import</span> <span class="n">RunningStats</span>
+
+<div class="viewcode-block" id="vector_to_unit"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_deuterium_order_parameter.vector_to_unit">[docs]</a><span class="k">def</span> <span class="nf">vector_to_unit</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="c1">#returns the unit vector version of v: v_u = v/|v|</span>
+    <span class="c1"># magnitude of v</span>
+    <span class="n">v_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">v</span> <span class="o">/</span> <span class="n">v_mag</span></div>
+
+<div class="viewcode-block" id="angle_between_vectors"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_deuterium_order_parameter.angle_between_vectors">[docs]</a><span class="k">def</span> <span class="nf">angle_between_vectors</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="c1"># computes the angle (radians) between vectors v1 and v2</span>
+    <span class="c1"># dot(v1, v2) = |v1||v2|cos(theta), so theta = acos[ dot(v1, v2)/(|v1||v2|) ]</span>
+    <span class="c1">#convert input vectors to unit vectors -- takes care of magintudes</span>
+    <span class="n">v1_u</span> <span class="o">=</span> <span class="n">vector_to_unit</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+    <span class="n">v2_u</span> <span class="o">=</span> <span class="n">vector_to_unit</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+    <span class="c1"># dot product</span>
+    <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1_u</span><span class="p">,</span><span class="n">v2_u</span><span class="p">)</span>
+    <span class="c1"># clip the dot product to ensure it is in bounds for arccos</span>
+    <span class="n">dot_clip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dot</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="c1"># get the angle</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">dot_clip</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">theta</span></div>
+
+<div class="viewcode-block" id="cos_angle_between_vectors"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_deuterium_order_parameter.cos_angle_between_vectors">[docs]</a><span class="k">def</span> <span class="nf">cos_angle_between_vectors</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="c1"># computes the cosine of the angle between vectors v1 and v2</span>
+    <span class="c1"># dot(v1, v2) = |v1||v2|cos(theta), so cos(theta) = dot(v1, v2)/(|v1||v2|)</span>
+    <span class="c1">#convert input vectors to unit vectors -- takes care of magintudes</span>
+    <span class="n">v1_u</span> <span class="o">=</span> <span class="n">vector_to_unit</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+    <span class="n">v2_u</span> <span class="o">=</span> <span class="n">vector_to_unit</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>
+    <span class="c1"># dot product</span>
+    <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1_u</span><span class="p">,</span><span class="n">v2_u</span><span class="p">)</span>
+    <span class="c1"># clip the dot product to ensure it is in bounds</span>
+    <span class="n">dot_clip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">dot</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dot_clip</span></div>
+
+
+<div class="viewcode-block" id="build_acyl_index_lists"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_deuterium_order_parameter.build_acyl_index_lists">[docs]</a><span class="k">def</span> <span class="nf">build_acyl_index_lists</span><span class="p">(</span><span class="n">membrane_lipid_sel</span><span class="p">):</span>
+    <span class="n">acyl_carbons</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">acyl_hydrogens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">membrane_lipid_sel</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+        <span class="c1">#check if carbon</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="s1">&#39;C&#39;</span> <span class="ow">or</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="n">nb</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonds</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nb</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">hbond</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">nch_flag</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">batom</span> <span class="ow">in</span> <span class="n">bond</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                        <span class="n">btn</span><span class="o">=</span><span class="n">batom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">btt</span><span class="o">=</span><span class="n">batom</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">nch_h</span> <span class="o">=</span> <span class="n">btn</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span> <span class="ow">or</span> <span class="n">btt</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span>
+                        <span class="n">nch_c</span> <span class="o">=</span> <span class="n">btn</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="ow">or</span> <span class="n">btt</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span>
+                        <span class="c1">#print &quot;btn &quot;,btn,&quot; btt &quot;,btt</span>
+                        <span class="c1">#print &quot;nch_h &quot;,nch_h,&quot; nch_c &quot;,nch_c</span>
+                        <span class="c1">#make sure the carbon is only bonded to hydrogens other carbon</span>
+                        <span class="k">if</span> <span class="n">nch_flag</span><span class="p">:</span>
+                            <span class="n">nch_flag</span> <span class="o">=</span> <span class="n">nch_h</span> <span class="ow">or</span> <span class="n">nch_c</span>
+                            <span class="c1">#print &quot;nch_flag &quot;,nch_flag</span>
+                        <span class="c1">#if the current bond is to hydrogen add it to list</span>
+                        <span class="k">if</span> <span class="n">nch_h</span><span class="p">:</span>
+                            <span class="n">hbond</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batom</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="c1">#passes if acyl carbon</span>
+                <span class="c1">#print &quot;nch_flag &quot;,nch_flag</span>
+                <span class="k">if</span> <span class="n">nch_flag</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hbond</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">acyl_carbons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                    <span class="n">acyl_hydrogens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hbond</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">acyl_carbons</span><span class="p">,</span><span class="n">acyl_hydrogens</span></div>
+
+<span class="c1">#helper functions</span>
+
+<span class="k">def</span> <span class="nf">_get_bilayer_norm_vector</span><span class="p">(</span><span class="n">norm_axis</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">norm_axis</span> <span class="ow">is</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">norm_axis</span> <span class="ow">is</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">norm_axis</span> <span class="ow">is</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">_adjust_frame_range_for_slicing</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="n">nframes</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fstart</span> <span class="o">==</span> <span class="p">(</span><span class="n">nframes</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">==</span> <span class="n">fstart</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">fstart</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">fstart</span><span class="o">+=</span><span class="n">nframes</span>
+    <span class="k">if</span> <span class="n">fend</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fend</span><span class="o">+=</span><span class="n">nframes</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span>
+
+<span class="c1">#average over all acyl groups of all the lipids based on description in Moore et al. 2001 Biophysical Journal 81(5) 2484-2494</span>
+<div class="viewcode-block" id="average_deuterium_order_Moore"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Moore">[docs]</a><span class="k">def</span> <span class="nf">average_deuterium_order_Moore</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span><span class="n">membrane_sel</span><span class="p">,</span> <span class="n">fstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fend</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">fstep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">norm_axis</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">):</span>
+
+
+    <span class="n">bilayer_norm</span> <span class="o">=</span> <span class="n">_get_bilayer_norm_vector</span><span class="p">(</span><span class="n">norm_axis</span><span class="p">)</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+
+    <span class="c1">#adjust the frame end points for slicing</span>
+    <span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span> <span class="o">=</span> <span class="n">_adjust_frame_range_for_slicing</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">))</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="p">(</span><span class="n">fend</span><span class="o">-</span><span class="n">fstart</span><span class="p">)</span><span class="o">/</span><span class="n">fstep</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;doing frame slice points </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2"> with step/interval </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="n">fstep</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total of </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nframes</span><span class="p">))</span>
+    <span class="c1">#build the index lists of acyl components</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;building index lists for acyl groups&quot;</span><span class="p">)</span>
+    <span class="n">acyl_carbons</span><span class="p">,</span><span class="n">acyl_hydrogens</span> <span class="o">=</span> <span class="n">build_acyl_index_lists</span><span class="p">(</span><span class="n">membrane_sel</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;there are </span><span class="si">{}</span><span class="s2"> acyl groups&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acyl_carbons</span><span class="p">)))</span>
+    <span class="c1">#configuration and time average for Scd = &lt; 0.5 ( 3 cos**2(beta) - 1) &gt;</span>
+    <span class="n">Scd</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
+    <span class="n">Scd_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acyl_carbons</span><span class="p">)):</span>
+
+            <span class="n">c_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">acyl_carbons</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">h1_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">acyl_hydrogens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">h2_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">acyl_hydrogens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">acyl_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">h1_pos</span> <span class="o">-</span> <span class="n">c_pos</span><span class="p">,</span> <span class="n">h2_pos</span> <span class="o">-</span> <span class="n">c_pos</span><span class="p">)</span>
+            <span class="n">Scd</span><span class="o">.</span><span class="n">push</span><span class="p">(</span> <span class="mf">0.50</span><span class="o">*</span><span class="p">(</span><span class="mf">3.0</span><span class="o">*</span> <span class="n">cos_angle_between_vectors</span><span class="p">(</span><span class="n">acyl_norm</span><span class="p">,</span> <span class="n">bilayer_norm</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">Scd_out</span><span class="p">[</span><span class="n">f</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">time</span>
+        <span class="n">Scd_out</span><span class="p">[</span><span class="n">f</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">Scd</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">Scd_out</span><span class="p">[</span><span class="n">f</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">Scd</span><span class="o">.</span><span class="n">deviation</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">Scd_out</span></div>
+
+<span class="c1">#based on description in Moore et al. 2001 Biophysical Journal 81(5) 2484-2494</span>
+<div class="viewcode-block" id="deuterium_order_Moore"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_deuterium_order_parameter.deuterium_order_Moore">[docs]</a><span class="k">def</span> <span class="nf">deuterium_order_Moore</span><span class="p">(</span><span class="n">mda_universe</span><span class="p">,</span> <span class="n">lipid_segids</span><span class="p">,</span> <span class="n">lipid_map</span><span class="p">,</span> <span class="n">fstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fend</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">fstep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">norm_axis</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">):</span>
+
+    <span class="n">trajectory</span> <span class="o">=</span> <span class="n">mda_universe</span><span class="o">.</span><span class="n">trajectory</span>
+    <span class="n">bilayer_norm</span> <span class="o">=</span> <span class="n">_get_bilayer_norm_vector</span><span class="p">(</span><span class="n">norm_axis</span><span class="p">)</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="c1">#setup the output container</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">lipid_type</span> <span class="ow">in</span> <span class="n">lipid_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">output</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="n">lipid_map</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">]:</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">][</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
+
+    <span class="c1"># adjust the frame end points for slicing</span>
+    <span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span> <span class="o">=</span> <span class="n">_adjust_frame_range_for_slicing</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="n">nframes</span><span class="p">)</span>
+
+    <span class="n">nframes</span> <span class="o">=</span> <span class="p">(</span><span class="n">fend</span> <span class="o">-</span> <span class="n">fstart</span><span class="p">)</span> <span class="o">/</span> <span class="n">fstep</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;doing frame slice points </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2"> with step/interval </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="n">fstep</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total of </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nframes</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">lipid_type</span> <span class="ow">in</span> <span class="n">lipid_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">segid</span> <span class="o">=</span> <span class="n">lipid_segids</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">lipid_map</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">carbon_name</span> <span class="o">=</span> <span class="n">lipid_map</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">][</span><span class="n">position</span><span class="p">][</span><span class="s1">&#39;carbon&#39;</span><span class="p">]</span>
+                <span class="n">hydrogen_names</span> <span class="o">=</span> <span class="n">lipid_map</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">][</span><span class="n">position</span><span class="p">][</span><span class="s1">&#39;hydrogens&#39;</span><span class="p">]</span>
+                <span class="n">Cs</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_universe.&quot;</span><span class="o">+</span><span class="n">segid</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="o">+</span><span class="n">carbon_name</span><span class="p">)</span>
+                <span class="n">H1s</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_universe.&quot;</span><span class="o">+</span><span class="n">segid</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="o">+</span><span class="n">hydrogen_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">H2s</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_universe.&quot;</span><span class="o">+</span><span class="n">segid</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="o">+</span><span class="n">lipid_type</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="o">+</span><span class="n">hydrogen_names</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">n_lipid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Cs</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_lipid</span><span class="p">):</span>
+                    <span class="n">v_ch1</span> <span class="o">=</span> <span class="n">H1s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="n">Cs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
+                    <span class="n">v_ch2</span> <span class="o">=</span> <span class="n">H2s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="n">Cs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
+                    <span class="n">acyl_norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v_ch1</span><span class="p">,</span> <span class="n">v_ch2</span><span class="p">)</span>
+                    <span class="n">scd</span> <span class="o">=</span> <span class="mf">0.50</span> <span class="o">*</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="n">cos_angle_between_vectors</span><span class="p">(</span><span class="n">acyl_norm</span><span class="p">,</span> <span class="n">bilayer_norm</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+                    <span class="n">output</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">][</span><span class="n">position</span><span class="p">]</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">scd</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">lipid_type</span> <span class="ow">in</span> <span class="n">lipid_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">lipid_map</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">][</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="n">lipid_type</span><span class="p">][</span><span class="n">position</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">output</span></div>
+
+<span class="c1">#average over all acyl groups of all the lipids based on description in Vermeer Eur Biophys J (2007) 36:919-931</span>
+<div class="viewcode-block" id="average_deuterium_order_Vermeer"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Vermeer">[docs]</a><span class="k">def</span> <span class="nf">average_deuterium_order_Vermeer</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span><span class="n">membrane_sel</span><span class="p">,</span> <span class="n">fstart</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fend</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">fstep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">norm_axis</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">):</span>
+
+    <span class="n">bilayer_norm</span> <span class="o">=</span> <span class="n">_get_bilayer_norm_vector</span><span class="p">(</span><span class="n">norm_axis</span><span class="p">)</span>
+    <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+
+    <span class="c1">#adjust the frame end points for slicing</span>
+    <span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span> <span class="o">=</span> <span class="n">_adjust_frame_range_for_slicing</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="n">nframes</span><span class="p">)</span>
+
+    <span class="n">nframes</span> <span class="o">=</span> <span class="p">(</span><span class="n">fend</span> <span class="o">-</span> <span class="n">fstart</span><span class="p">)</span><span class="o">/</span><span class="n">fstep</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;doing frame slice points </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2"> with step/interval </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="n">fstep</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total of </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nframes</span><span class="p">))</span>
+
+    <span class="c1">#build the index lists of acyl components</span>
+    <span class="nb">print</span> <span class="s2">&quot;building index lists for acyl groups&quot;</span>
+    <span class="n">acyl_carbons</span><span class="p">,</span><span class="n">acyl_hydrogens</span> <span class="o">=</span> <span class="n">build_acyl_index_lists</span><span class="p">(</span><span class="n">membrane_sel</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="s2">&quot;there are &quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">acyl_carbons</span><span class="p">),</span><span class="s2">&quot; acyl groups&quot;</span>
+    <span class="c1">#configuration and time average for Scd = &lt; 0.5 ( 3 cos**2(beta) - 1) &gt;</span>
+    <span class="n">Scd</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
+    <span class="n">Scd_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
+        <span class="n">curr_time</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">time</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">acyl_carbons</span><span class="p">)):</span>
+
+            <span class="n">c_i</span> <span class="o">=</span> <span class="n">acyl_carbons</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">h1_i</span> <span class="o">=</span> <span class="n">acyl_hydrogens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">h2_i</span> <span class="o">=</span> <span class="n">acyl_hydrogens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">c_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">c_i</span><span class="p">]</span>
+            <span class="n">h1_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">h1_i</span><span class="p">]</span>
+            <span class="n">h2_pos</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">h2_i</span><span class="p">]</span>
+            <span class="n">v_ch1</span> <span class="o">=</span> <span class="n">h1_pos</span> <span class="o">-</span> <span class="n">c_pos</span>
+            <span class="n">v_ch2</span> <span class="o">=</span> <span class="n">h2_pos</span> <span class="o">-</span> <span class="n">c_pos</span>
+            <span class="n">cos_beta_ch1</span> <span class="o">=</span> <span class="n">cos_angle_between_vectors</span><span class="p">(</span><span class="n">v_ch1</span><span class="p">,</span><span class="n">bilayer_norm</span><span class="p">)</span>
+            <span class="c1">#cos_beta_ch2 = cos_angle_between_vectors(v_ch2,bilayer_norm)</span>
+            <span class="n">scd_ch1</span> <span class="o">=</span> <span class="mf">0.50</span><span class="o">*</span><span class="p">(</span><span class="mf">3.0</span><span class="o">*</span> <span class="n">cos_beta_ch1</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="c1">#scd_ch2 = 0.50*(3.0* cos_beta_ch1**2 -1.0)</span>
+            <span class="n">Scd</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">scd_ch1</span><span class="p">)</span>
+            <span class="c1">#Scd.push(scd_ch2)</span>
+        <span class="n">Scd_out</span><span class="p">[</span><span class="n">f</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">curr_time</span>
+        <span class="n">Scd_out</span><span class="p">[</span><span class="n">f</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">Scd</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">Scd_out</span><span class="p">[</span><span class="n">f</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">Scd</span><span class="o">.</span><span class="n">deviation</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">Scd_out</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

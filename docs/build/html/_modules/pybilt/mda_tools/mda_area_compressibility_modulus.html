@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.mda_tools.mda_area_compressibility_modulus &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.mda_tools.mda_area_compressibility_modulus</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.mda_tools.mda_area_compressibility_modulus</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Implementation of area compressibilty modulus</span>
+<span class="sd">The are compressibilty modulus is an elastic property that can be computed from the total area (in the lateral</span>
+<span class="sd">dimension) and its fluctuations. The quantity is given by</span>
+<span class="sd">    K_A = kT&lt;A&gt;[ &lt;(A - &lt;A&gt;)^2&gt;]^-1,</span>
+<span class="sd">where A is the area per lipid, k is Boltzmann&#39;s constant</span>
+<span class="sd">and T is the temperature (in Kelvin).</span>
+<span class="sd">See references:</span>
+<span class="sd">Coarse Grained Model for Semiquantitative Lipid Simulations</span>
+<span class="sd">Siewert J. Marrink, Alex H. de Vries, and Alan E. Mark</span>
+<span class="sd">J. Phys. Chem. B, 2004, 108 (2), pp 750-760</span>
+<span class="sd">DOI: 10.1021/jp036508g</span>
+
+<span class="sd">Molecular Dynamics Simulations of Cardiolipin Bilayers</span>
+<span class="sd">Martin Dahlberg and Arnold Maliniak</span>
+<span class="sd">J. Phys. Chem. B, 2008, 112 (37), pp 11655-11663</span>
+<span class="sd">DOI: 10.1021/jp803414g</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># we are going to use the MDAnalysis to read in topo and traj</span>
+<span class="c1"># numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># import my running stats class</span>
+<span class="kn">from</span> <span class="nn">pybilt.common.running_stats</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">scipy.constants</span> <span class="k">as</span> <span class="nn">scicon</span>
+
+
+<div class="viewcode-block" id="area_compressibility_modulus"><a class="viewcode-back" href="../../../pybilt.mda_tools.html#pybilt.mda_tools.mda_area_compressibility_modulus.area_compressibility_modulus">[docs]</a><span class="k">def</span> <span class="nf">area_compressibility_modulus</span><span class="p">(</span><span class="n">mda_trajectory</span><span class="p">,</span> <span class="n">temperature</span><span class="p">,</span> <span class="n">normal</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span>
+                                <span class="n">first</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">last</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># set the indices for indexing the lateral dimensions</span>
+    <span class="n">lateral_index</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">normal</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">normal</span> <span class="o">==</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span>
+        <span class="n">lateral_index</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">normal</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+        <span class="n">lateral_index</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="c1">#per_leaflet = nlipids / 2</span>
+    <span class="c1"># get the lateral area at each frame</span>
+    <span class="n">area_run</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">K_a</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">mda_trajectory</span><span class="p">[</span><span class="n">first</span><span class="p">:</span><span class="n">last</span><span class="p">:</span><span class="n">interval</span><span class="p">]:</span>
+        <span class="n">area_run</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">lateral_index</span><span class="p">]</span><span class="o">.</span><span class="n">prod</span><span class="p">())</span>
+        <span class="c1"># compute the modulus</span>
+        <span class="n">Ka</span> <span class="o">=</span> <span class="p">(</span><span class="n">scicon</span><span class="o">.</span><span class="n">k</span> <span class="o">*</span> <span class="n">temperature</span> <span class="o">*</span> <span class="n">area_run</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span><span class="o">/</span><span class="n">area_run</span><span class="o">.</span><span class="n">variance</span><span class="p">()</span>
+        <span class="c1">#conversion factor for Joules/Angstrom^2 to milliNewtons/meter</span>
+        <span class="n">Ka</span><span class="o">*=</span><span class="mf">10.0</span><span class="o">**</span><span class="mi">23</span>
+        <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="n">K_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ka</span><span class="p">)</span>
+    <span class="c1"># approximate area per lipid</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="n">K_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">K_a</span><span class="p">)</span>
+    <span class="n">K_a_run</span> <span class="o">=</span> <span class="n">gen_running_average</span><span class="p">(</span><span class="n">K_a</span><span class="p">)</span>
+    <span class="n">time_series</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">K_a_run</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">time_series</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">times</span><span class="p">[:]</span>
+    <span class="n">time_series</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">K_a</span><span class="p">[:]</span>
+    <span class="k">return</span> <span class="n">time_series</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

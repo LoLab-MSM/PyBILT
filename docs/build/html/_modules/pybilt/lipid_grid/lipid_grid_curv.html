@@ -1,0 +1,410 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybilt.lipid_grid.lipid_grid_curv &mdash; PyBILT 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> PyBILT
+          
+
+          
+            
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyBILT</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybilt.lipid_grid.lipid_grid_curv</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybilt.lipid_grid.lipid_grid_curv</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Classes and functions to implement gridding and curvature correlation analysis for lipid bilayers.</span>
+<span class="sd">    The gridding and anlaysis procedures are based on</span>
+<span class="sd">    the decription given in section &quot;Correlation between bilayer surface curvature and the</span>
+<span class="sd">clustering of lipid molecules&quot; of Koldso H, Shorthouse D, He lie J, Sansom MSP (2014)</span>
+<span class="sd">Lipid Clustering Correlates with Membrane Curvature as Revealed by Molecular Simulations of</span>
+<span class="sd">Complex Lipid Bilayers. PLoS Comput Biol 10(10): e1003911. doi:10.1371/journal.pcbi.1003911</span>
+<span class="sd">However, this implementation currently uses the z position (or normal position) of the lipids&#39; centers of mass, while</span>
+<span class="sd">their implementaion uses &quot;the z coordinate of the interface between the head groups of the</span>
+<span class="sd">lipids (excluding the current species being calculated and tails in</span>
+<span class="sd">that box.&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="LipidGrid_2d"><a class="viewcode-back" href="../../../pybilt.lipid_grid.html#pybilt.lipid_grid.lipid_grid_curv.LipidGrid_2d">[docs]</a><span class="k">class</span> <span class="nc">LipidGrid_2d</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">com_frame</span><span class="p">,</span> <span class="n">com_frame_indices</span><span class="p">,</span><span class="n">plane</span><span class="p">,</span><span class="n">nxbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">nybins</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="c1">#store the frame and leaflet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">com_frame</span>
+        <span class="c1">#self.leaflet = ms_leaflet</span>
+        <span class="c1">#get the x and y indices</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="n">plane</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">iy</span> <span class="o">=</span> <span class="n">plane</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">iz</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plane</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#get the box dimemsions</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">com_frame</span><span class="o">.</span><span class="n">box</span>
+        <span class="n">boxx</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+        <span class="n">boxy</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="n">iy</span><span class="p">]</span>
+        <span class="c1">#box_com = com_frame.mem_com</span>
+        <span class="c1">#box_com_x = box_com[ix]</span>
+        <span class="c1">#box_com_y = box_com[iy]</span>
+        <span class="c1">#save the numbers of bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_nbins</span> <span class="o">=</span> <span class="n">nxbins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_nbins</span> <span class="o">=</span> <span class="n">nybins</span>
+        <span class="c1">#initialize the edges of the and centers of the gridpoints</span>
+        <span class="c1"># x</span>
+        <span class="c1">#self.x_min = -box_com_x</span>
+        <span class="c1">#self.x_max = boxx - box_com_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_min</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">=</span> <span class="n">boxx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,(</span><span class="n">nxbins</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_incr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x_incr_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_incr</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nxbins</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">x_nedges</span><span class="p">):</span>
+            <span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">x_incr_h</span>
+
+        <span class="c1"># y</span>
+        <span class="c1">#self.y_min = -box_com_y</span>
+        <span class="c1">#self.y_max = boxy - box_com_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_min</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span> <span class="o">=</span> <span class="n">boxy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_max</span><span class="p">,(</span><span class="n">nybins</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_incr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_incr_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_incr</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nybins</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">y_nedges</span><span class="p">):</span>
+            <span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">y_incr_h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x_min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_max</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">y_min</span>
+        <span class="c1"># get the lipid indices for this leaflet</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">com_frame_indices</span>
+        <span class="c1">#now assign lipids to the gridpoints</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lipid_grid</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1">#cx = 0</span>
+        <span class="c1">#print self.x_edges</span>
+        <span class="n">mx_x</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1000.0</span>
+        <span class="n">mn_x</span> <span class="o">=</span> <span class="mf">1000.0</span>
+        <span class="k">for</span> <span class="n">cx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lipid_grid</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="n">x_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span><span class="p">[</span><span class="n">cx</span><span class="p">]</span>
+            <span class="n">x_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_edges</span><span class="p">[</span><span class="n">cx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1">#print &quot;x_upper &quot;,x_upper, &quot; x_lower &quot;,x_lower</span>
+            <span class="k">for</span> <span class="n">cy</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lipid_grid</span><span class="p">[</span><span class="n">cx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">y_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span><span class="p">[</span><span class="n">cy</span><span class="p">]</span>
+                <span class="n">y_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_edges</span><span class="p">[</span><span class="n">cy</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1">#check lipid COMs</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+                    <span class="n">xi</span> <span class="o">=</span> <span class="n">com_frame</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">com</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+                    <span class="n">yi</span> <span class="o">=</span> <span class="n">com_frame</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">com</span><span class="p">[</span><span class="n">iy</span><span class="p">]</span>
+                    <span class="n">zi</span> <span class="o">=</span> <span class="n">com_frame</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">com_unwrap</span><span class="p">[</span><span class="n">iz</span><span class="p">]</span>
+                    <span class="n">x_box</span> <span class="o">=</span> <span class="n">xi</span> <span class="o">&gt;</span> <span class="n">x_lower</span> <span class="ow">and</span> <span class="n">xi</span> <span class="o">&lt;</span> <span class="n">x_upper</span>
+                    <span class="n">y_box</span> <span class="o">=</span> <span class="n">yi</span> <span class="o">&gt;</span> <span class="n">y_lower</span> <span class="ow">and</span> <span class="n">yi</span> <span class="o">&lt;</span> <span class="n">y_upper</span>
+                    <span class="k">if</span> <span class="n">xi</span> <span class="o">&lt;</span> <span class="n">mn_x</span><span class="p">:</span>
+                        <span class="n">mn_x</span> <span class="o">=</span> <span class="n">xi</span>
+                    <span class="k">if</span> <span class="n">xi</span> <span class="o">&gt;</span> <span class="n">mx_x</span><span class="p">:</span>
+                        <span class="n">mx_x</span> <span class="o">=</span> <span class="n">xi</span>
+                    <span class="k">if</span> <span class="n">x_box</span> <span class="ow">and</span> <span class="n">y_box</span><span class="p">:</span>
+                        <span class="c1">#add to this grid</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">lipid_grid</span><span class="p">[</span><span class="n">cx</span><span class="p">][</span><span class="n">cy</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">com_frame</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">zi</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="LipidGrid_2d.get_index_at"><a class="viewcode-back" href="../../../pybilt.lipid_grid.html#pybilt.lipid_grid.lipid_grid_curv.LipidGrid_2d.get_index_at">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipid_grid</span><span class="p">[</span><span class="n">ix</span><span class="p">][</span><span class="n">iy</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="LipidGrid_2d.get_z_at"><a class="viewcode-back" href="../../../pybilt.lipid_grid.html#pybilt.lipid_grid.lipid_grid_curv.LipidGrid_2d.get_z_at">[docs]</a>    <span class="k">def</span> <span class="nf">get_z_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipid_grid</span><span class="p">[</span><span class="n">ix</span><span class="p">][</span><span class="n">iy</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span></div></div>
+
+
+
+<div class="viewcode-block" id="LipidGrids"><a class="viewcode-back" href="../../../pybilt.lipid_grid.html#pybilt.lipid_grid.lipid_grid_curv.LipidGrids">[docs]</a><span class="k">class</span> <span class="nc">LipidGrids</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">com_frame</span><span class="p">,</span> <span class="n">leaflets</span><span class="p">,</span><span class="n">plane</span><span class="p">,</span><span class="n">nxbins</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">nybins</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="c1">#store the frame and leaflet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">com_frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaflets</span> <span class="o">=</span> <span class="n">leaflets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plane</span> <span class="o">=</span> <span class="n">plane</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plane</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbins_x</span> <span class="o">=</span> <span class="n">nxbins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nbins_y</span> <span class="o">=</span> <span class="n">nybins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaf_grid</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">myframe</span> <span class="o">=</span> <span class="n">com_frame</span><span class="o">.</span><span class="n">mdnumber</span>
+        <span class="c1">#initialize the grids</span>
+        <span class="c1">#upper</span>
+        <span class="n">upper_indices</span> <span class="o">=</span> <span class="n">leaflets</span><span class="p">[</span><span class="s1">&#39;upper&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_member_indices</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaf_grid</span><span class="p">[</span><span class="s1">&#39;upper&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LipidGrid_2d</span><span class="p">(</span><span class="n">com_frame</span><span class="p">,</span><span class="n">upper_indices</span><span class="p">,</span><span class="n">plane</span><span class="p">,</span><span class="n">nxbins</span><span class="o">=</span><span class="n">nxbins</span><span class="p">,</span><span class="n">nybins</span><span class="o">=</span><span class="n">nybins</span><span class="p">)</span>
+        <span class="c1">#lower</span>
+        <span class="n">lower_indices</span> <span class="o">=</span> <span class="n">leaflets</span><span class="p">[</span><span class="s1">&#39;lower&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_member_indices</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaf_grid</span><span class="p">[</span><span class="s1">&#39;lower&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">LipidGrid_2d</span><span class="p">(</span><span class="n">com_frame</span><span class="p">,</span><span class="n">lower_indices</span><span class="p">,</span><span class="n">plane</span><span class="p">,</span><span class="n">nxbins</span><span class="o">=</span><span class="n">nxbins</span><span class="p">,</span><span class="n">nybins</span><span class="o">=</span><span class="n">nybins</span><span class="p">)</span>
+        <span class="k">return</span>
+
+
+<div class="viewcode-block" id="LipidGrids.norm_displacement_cross_correlation"><a class="viewcode-back" href="../../../pybilt.lipid_grid.html#pybilt.lipid_grid.lipid_grid_curv.LipidGrids.norm_displacement_cross_correlation">[docs]</a>    <span class="k">def</span> <span class="nf">norm_displacement_cross_correlation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaflets</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">leaf</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">ll_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaflets</span><span class="p">[</span><span class="n">leaf</span><span class="p">]</span><span class="o">.</span><span class="n">get_group_names</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">l_type</span> <span class="ow">in</span> <span class="n">ll_types</span><span class="p">:</span>
+                <span class="c1">#loop over grid boxes</span>
+                <span class="n">count</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">z_vals</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">n_box</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="k">for</span> <span class="n">xb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaf_grid</span><span class="p">[</span><span class="n">leaf</span><span class="p">]</span><span class="o">.</span><span class="n">lipid_grid</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">yb</span> <span class="ow">in</span> <span class="n">xb</span><span class="p">:</span>
+                        <span class="n">box_count</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">box_z_vals</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="n">yb</span><span class="p">:</span>
+                         <span class="c1">#   print(lipid)</span>
+                            <span class="n">lipid_type</span> <span class="o">=</span> <span class="n">lipid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="n">lipid_z</span> <span class="o">=</span> <span class="n">lipid</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                            <span class="c1">#print &quot;lipid_z: &quot;,lipid_z</span>
+                            <span class="k">if</span> <span class="n">lipid_type</span> <span class="o">==</span> <span class="n">l_type</span><span class="p">:</span>
+                                <span class="n">box_count</span><span class="o">+=</span><span class="mi">1</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">box_z_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lipid_z</span><span class="p">)</span>
+                        <span class="n">n_box</span><span class="o">+=</span><span class="mi">1</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">box_z_vals</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1">#n_box+=1.0</span>
+                            <span class="n">box_z_avg</span> <span class="o">=</span> <span class="n">box_z_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">box_z_vals</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">box_z_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">box_z_vals</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                            <span class="n">count</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">box_count</span><span class="p">))</span>
+                            <span class="n">z_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box_z_avg</span><span class="p">)</span>
+                <span class="n">cross_corr</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+                    <span class="n">z_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
+                    <span class="n">count_mean</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                    <span class="n">count_std</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                    <span class="n">z_mean</span> <span class="o">=</span> <span class="n">z_vals</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+                    <span class="n">z_std</span> <span class="o">=</span> <span class="n">z_vals</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+                    <span class="n">cross_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">count</span><span class="o">-</span><span class="n">count_mean</span><span class="p">,</span> <span class="n">z_vals</span><span class="o">-</span><span class="n">z_mean</span><span class="p">)</span>
+                    <span class="n">cross_corr</span> <span class="o">=</span> <span class="n">cross_sum</span><span class="o">/</span><span class="p">(</span><span class="n">count_std</span><span class="o">*</span><span class="n">z_std</span><span class="o">*</span><span class="n">n_box</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cross_corr</span><span class="p">):</span>
+                    <span class="n">cross_corr</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">output</span><span class="p">[</span><span class="n">leaf</span><span class="p">][</span><span class="n">l_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">cross_corr</span>
+        <span class="c1">#quit()</span>
+        <span class="k">return</span> <span class="n">output</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Blake A. Wilson.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
