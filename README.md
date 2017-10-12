@@ -8,6 +8,8 @@
 ------
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
+##### Updates: Now with some [documentation](./docs/build/html/index.html)!
+
 The analyses include:
    * Mean Squared Displacement (MSD)
    * Diffusion coefficent estimators (from MSD curves) - includes Einstein relation, linear fit, and anomalous diffusion fit.
@@ -112,8 +114,13 @@ individual analyses and the representations they use.
 
 ## Documentation
 
-Detailed documentation for PyBILT is in the pipeline. There are currently a
-few Jupyter IPython [notebooks](jupyter_notebooks) that provide some examples and show some basic usage. More of these are also in the pipeline. Although they are also not fully extensive, the [tests](tests) can serve as a useful place to examine some basic usage and functionality.
+Although still under construction, the detailed documentation for PyBILT has
+begun! See the current version [here](docs/build/html/index.html). In addition
+to the docs, there are currently a few Jupyter IPython
+[notebooks](jupyter_notebooks) that provide some examples and show some basic
+usage. More of these are in the pipeline. Although they are also not fully
+extensive, the [tests](tests) can serve as a useful place to examine some basic
+usage and functionality.
 
 ## Core Developers
 
@@ -144,5 +151,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 * [Sublime Text](https://www.sublimetext.com/) - Text Editor used in earlier work
 * [Landscape](https://landscape.io/) - Code quality analysis and tracking
 * [Git](https://git-scm.com/) - Version control
-* [GitHub](https://github.com/) - Development Platform and repository storage  
-* [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  simple audit tool for examining python source files for missing docstrings.
+* [GitHub](https://github.com/) - Development Platform and repository storage
+* [Sphinx](http://www.sphinx-doc.org/en/stable/index.html) - Python documentation generator
+* [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark
+* [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  A simple audit tool for examining python source files for missing docstrings.
