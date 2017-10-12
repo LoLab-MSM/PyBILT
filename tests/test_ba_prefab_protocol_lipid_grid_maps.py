@@ -2,7 +2,7 @@ from pybilt.bilayer_analyzer.prefab_analysis_protocols import lipid_grid_maps
 
 
 def test_analysis_module_lipid_grid_maps():
-    sel_string = "not resname CLA and not resname TIP3 and not resname POT"
+    sel_string = "resname POPC DOPE TLCL2"
     name_dict = None
     lipid_grid_maps(structure_file='../pybilt/sample_bilayer/sample_bilayer.psf',
                   trajectory_file='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',

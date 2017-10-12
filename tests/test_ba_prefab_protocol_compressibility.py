@@ -3,7 +3,7 @@ from pybilt.bilayer_analyzer.prefab_analysis_protocols import compressibility
 
 
 def test_analysis_module_compressibility():
-    sel_string = "not resname CLA and not resname TIP3 and not resname POT"
+    sel_string = "resname POPC DOPE TLCL2"
     compressibility(structure_file='../pybilt/sample_bilayer/sample_bilayer.psf',
                   trajectory_file='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
                   selection_string=sel_string,

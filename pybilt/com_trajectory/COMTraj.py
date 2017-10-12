@@ -35,7 +35,7 @@ from pybilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parall
 #range/range fix
 if sys.version_info < (3,0):
     def range(*args, **kwargs):
-        return range(*args, **kwargs)
+        return xrange(*args, **kwargs)
 
 
 # This function is incomplete!

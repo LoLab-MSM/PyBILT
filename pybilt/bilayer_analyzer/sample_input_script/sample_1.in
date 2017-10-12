@@ -5,7 +5,7 @@ structure ../../sample_bilayer/sample_bilayer.psf
 trajectory ../../sample_bilayer/sample_bilayer_10frames.dcd
 
 #MDAnalysis syntax selection text to select the bilayer
-selection "not resname CLA and not resname TIP3 and not resname POT"
+selection "resname POPC DOPE TLCL"
 #define an analysis for mean squared displacement (msd): named 'msd_1'
 analysis msd msd_1
 
