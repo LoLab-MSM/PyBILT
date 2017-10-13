@@ -1,6 +1,6 @@
 name: pybilt
 channels:
-- mdanalysis
+- mdanalysis/label/broken
 - blakeaw
 - conda-forge
 - https://conda.anaconda.org/blakeaw
@@ -233,4 +233,3 @@ dependencies:
   - recommonmark==0.4.0
   - sphinx-rtd-theme==0.2.4
   - tables==3.3.0
-
