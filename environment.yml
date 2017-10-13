@@ -3,10 +3,8 @@ channels:
 - mdanalysis/label/broken
 - blakeaw
 - conda-forge
-- https://conda.anaconda.org/blakeaw
 - defaults
 dependencies:
-- pybilt=0.0.1=py27hcd85718_0
 - griddataformats=0.3.3=py27_0
 - hdf4=4.2.12=0
 - joblib=0.11=py27_0

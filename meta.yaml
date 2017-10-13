@@ -1,0 +1,25 @@
+package:
+  name: pybilt
+  version: "0.0.1"
+
+source:
+  git_url: https://github.com/blakeaw/PyBILT.git
+
+requirements:
+  build:
+    - python
+
+  run:
+    - python
+
+build:
+  script: python setup.py install
+
+test:
+  imports:
+    - pybilt
+
+about:
+  home: https://github.com/blakeaw/PyBILT
+  license: MIT
+  summary: "Toolkit to aid in the analysis of lipid bilayer molecular simulation trajectories. "
