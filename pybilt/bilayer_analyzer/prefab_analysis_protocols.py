@@ -992,7 +992,7 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string,
             break
         analyzer.reset()
 
-    analyzer.analysis_protocol.use_objects['lipid_grid'] = True
+    analyzer._analysis_protocol.use_objects['lipid_grid'] = True
     # adjust the number of bins for gridding
     analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
     analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins

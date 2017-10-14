@@ -18,8 +18,8 @@ def test_position_density_map_2d_multi_align():
     #print(counts)
     #print(len(x_centers))
     #print(len(y_centers))
-    plot_position_density_map_2d(x_centers, y_centers, counts['POPC'], save=False, show=True, scaled_to_max=True)
-    plot_position_density_map_2d(x_centers, y_centers, counts['DOPE'], save=False, show=True, scaled_to_max=True)
+    plot_position_density_map_2d(x_centers, y_centers, counts['POPC'], save=False, show=False, scaled_to_max=True)
+    plot_position_density_map_2d(x_centers, y_centers, counts['DOPE'], save=False, show=False, scaled_to_max=True)
     return
 
 if __name__ == '__main__':
