@@ -47,8 +47,12 @@ installing the 'pybilt' package using a conda environment and the setup.py
 script.
 
 #### Setup and install using Anaconda's conda tool
+First, clone or download the GitHub repo
+```
+git clone https://github.com/blakeaw/PyBILT.git
+```
 The file environment.yml has been provided to allow for easy setup of a new
-environment with all the appropriate dependencies using the conda tool. Run
+environment with all the appropriate dependencies using the conda tool. From the PyBILT root run
 ```
 conda env create -f environment.yml
 ```
@@ -124,25 +128,24 @@ usage and functionality.
 
 ------
 
-## Core Developers
-
-* **Blake A Wilson** - Currently a Postdoctoral Fellow at Vanderbilt University
-  * Vandy e-mail: blake.a.wilson@vanderbilt.edu
-  * Gmail: blakeaw1102@gmail.com
-  * [Blake's VU Website]( https://my.vanderbilt.edu/blakeaw/)
-  * Also find me on [LinkedIn](https://www.linkedin.com/in/blakewilson3/) and [Research Gate](https://www.researchgate.net/profile/Blake_Wilson3)
-
-------
-
 ## Contact
 
-If you have any comments, suggestions, or feature requests for PyBILT please feel free to open a [GitHub Issue](https://github.com/blakeaw/PyBILT/issues) with those comments, suggestions, or feature requests. Or you can contact Blake directly via e-mail at either blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com. You may also contact Blake with any questions about PyBILT use or implementation.
+To report problems or bugs please open a
+[GitHub Issue](https://github.com/blakeaw/PyBILT/issues). Additionally, any
+comments, suggestions, or feature requests for PyBILT can also be submitted as
+a
+[GitHub Issue](https://github.com/blakeaw/PyBILT/issues).
+
+For any other inquiries, including questions about PyBILT use or
+implementation, you can contact Blake directly via e-mail at either
+blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com; please include "PyBILT
+inquiry" in the e-mail subject line.
 
 ------
 
 ## Contributing
 
-If would you like to contribute to PyBILT's development please follow these steps:
+If you would like to contribute directly to PyBILT's development please
  1. Fork the repo (https://github.com/blakeaw/PyBILT/fork)
  2. Create a new branch for your feature (git checkout -b feature/foo_bar)
  3. Create test code for your feature and then run all the tests using py.test  
@@ -178,3 +181,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 * [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark
 * [Read the Docs](https://readthedocs.org/) - Documentation hosting
 * [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  A simple audit tool for examining python source files for missing docstrings.
+
+------
+
+## Core Developers
+
+* **Blake A Wilson** - Currently a Postdoctoral Fellow at Vanderbilt University
+  * Vandy e-mail: blake.a.wilson@vanderbilt.edu
+  * Gmail: blakeaw1102@gmail.com
+  * [Blake's VU Website]( https://my.vanderbilt.edu/blakeaw/)
+  * Also find me on [LinkedIn](https://www.linkedin.com/in/blakewilson3/) and [Research Gate](https://www.researchgate.net/profile/Blake_Wilson3)
+
+------
