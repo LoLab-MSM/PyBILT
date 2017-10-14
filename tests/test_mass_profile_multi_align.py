@@ -17,7 +17,7 @@ def test_mass_density_profile_multi_align():
     print(counts)
 
     plot_density_profile([(centers[1:-1], counts['POPC'][1:-1]), (centers[1:-1], counts['BILAYER'][1:-1])],
-                         save=False, label_list=['POPC', 'BILAYER'],  show=True)
+                         save=False, label_list=['POPC', 'BILAYER'],  show=False)
     return
 
 if __name__ == '__main__':
