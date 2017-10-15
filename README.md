@@ -32,12 +32,12 @@ The analyses include:
 
 #### PyBILT run dependencies
 PyBILT has the following major dependencies that need to be installed before it
-can be run:
-   * MDAnalysis 0.16.0
-   * NumPy  1.11.3
-   * SciPy 0.18.1
-   * Matplotlib 2.0.0
-   * Seaborn 0.7.1
+can be run (versions are the latest that pybilt has been tested with):
+   * MDAnalysis 0.16.2
+   * NumPy 1.13.3
+   * SciPy 0.19.1
+   * Matplotlib 2.1.0
+   * Seaborn 0.8.0
 
 In addition, it is highly recommended that you install [Anaconda
 Python](https://www.continuum.io/) version 4.3.1 Python 2.7 before installing
