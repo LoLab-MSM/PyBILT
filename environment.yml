@@ -45,7 +45,8 @@ dependencies:
 - xorg-libxau=1.0.8=3
 - xorg-libxdmcp=1.1.2=3
 - xz=5.2.3=0
-- asn1crypto=0.22.0=py27h94ebe91_1
+- alabaster=0.7.9=py27_0
+- asn1crypto=0.22.0=py27_0
 - babel=2.5.0=py27h20693cd_0
 - biopython=1.69=np113py27_0
 - ca-certificates=2017.08.26=h1d4fec5_0
