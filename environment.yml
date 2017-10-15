@@ -47,7 +47,7 @@ dependencies:
 - xz=5.2.3=0
 - alabaster=0.7.9=py27_0
 - asn1crypto=0.22.0=py27_0
-- babel=2.5.0=py27h20693cd_0
+- babel=2.5.0=py27_0
 - biopython=1.69=np113py27_0
 - ca-certificates=2017.08.26=h1d4fec5_0
 - certifi=2017.7.27.1=py27h9ceb091_0
