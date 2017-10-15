@@ -1,11 +1,8 @@
 name: pybilt
 channels:
-- blakeaw
 - conda-forge
-- https://conda.anaconda.org/blakeaw
 - defaults
 dependencies:
-- pybilt=0.0.1=py27hcd85718_0
 - griddataformats=0.3.3=py27_0
 - hdf4=4.2.12=0
 - joblib=0.11=py27_0
@@ -238,5 +235,3 @@ dependencies:
   - recommonmark==0.4.0
   - sphinx-rtd-theme==0.2.4
   - tables==3.4.2
-prefix: /home/blake/anaconda2/envs/pybilt
-
