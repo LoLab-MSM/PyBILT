@@ -38,17 +38,18 @@ can be run:
    * SciPy 0.18.1
    * Matplotlib 2.0.0
    * Seaborn 0.7.1
-   The versions of the above packages are the latest that the pybilt package has
-   been tested with under Anaconda 4.3.1 Python 2.7; these are the package
-   versions included in the conda environment.yml file.  Therefore, to reproduce
-   the environment that PyBILT has been tested under it is recommended that you
-   install [Anaconda Python](https://www.anaconda.com/) version 4.3.1 Python 2.7
-   before installing PyBILT. PyBILT has yet to be tested outside of an Anaconda
-   environment.
 
-   The following section describes the process for setting up the dependencies and
-   installing the 'pybilt' package using a conda environment and the setup.py
-   script.
+The versions of the above packages are the latest that the pybilt package has
+been tested with under Anaconda 4.3.1 Python 2.7; these are the package
+versions included in the conda environment.yml file.  Therefore, to reproduce
+the environment that PyBILT has been tested under it is recommended that you
+install [Anaconda Python](https://www.anaconda.com/) version 4.3.1 Python 2.7
+before installing PyBILT. PyBILT has yet to be tested outside of an Anaconda
+environment.
+
+The following section describes the process for setting up the dependencies and
+installing the 'pybilt' package using a conda environment and the setup.py
+script.
 
 #### Setup and install using Anaconda's conda tool
 First, clone or download the GitHub repo

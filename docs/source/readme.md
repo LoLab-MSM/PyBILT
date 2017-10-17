@@ -4,7 +4,7 @@
 ------
 
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
-[![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
+[![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](https://github.com/blakeaw/PyBILT/blob/master/LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
 [![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](https://github.com/blakeaw/PyBILT/blob/master/.docstring-coverage_report.txt)
 
@@ -41,6 +41,7 @@ can be run:
    * SciPy 0.18.1
    * Matplotlib 2.0.0
    * Seaborn 0.7.1
+
 The versions of the above packages are the latest that the pybilt package has
 been tested with under Anaconda 4.3.1 Python 2.7; these are the package
 versions included in the conda environment.yml file.  Therefore, to reproduce
