@@ -220,6 +220,21 @@ class BilayerAnalyzer(object):
                 object dictionaries are dumped. Default: './'
             leaflets:update_interval (int): Determines how ofter to update the
                 leaflet assignments. Default: 1, or every frame.
+            leaflets:assign_method (str): Set which method is used to assign
+                lipids to leaflets. There are two options: 'avg_norm' which
+                which compares lipid coms along the bilayer normal dimension
+                to the average for all lipids, and 'orientation' which assigns
+                a vector to each lipid and uses the orientation of that vector
+                relative to the bilayer normal to assign the lipids to leaflets.
+                Default: 'avg_norm'
+            leaflets:orientation_atoms (dict): A dictionary keyed to lipid
+                resnames which defines the atoms to use for the orientation
+                vector. Each key (lipid resname) should be assigined a two
+                element list of tail and head atoms for that lipid type,
+                specified by the atom names; e.g. {'POPC':['C128', 'P']}.
+                Default: None.
+                Note: This option is only used in conjuction with
+                leaflets:assign_method = 'orientation'.
             lipid_grid:dump (bool): Determines wheter the LipidGrids objects
                 built during interations of the analysis loop are dumped to
                 disc as pickle files. Default: False
