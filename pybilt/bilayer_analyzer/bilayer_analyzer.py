@@ -38,7 +38,7 @@ import analysis_protocols as ap
 import plot_protocols as pp
 from pybilt.common.running_stats import RunningStats
 import mda_data as md
-
+import MDAnalysis as mda
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates, \
     wrap_coordinates_parallel
@@ -288,14 +288,16 @@ class BilayerAnalyzer(object):
         self.reps['current_mda_frame'] = None
         #com_frame
         self.reps['com_frame'] = None
-        self.rep_settings['com_frame'] = {'dump' : False,
-                                         'dump_path' : "./",
-                                         'name_dict' : None}
+        self.rep_settings['com_frame'] = {'dump': False,
+                                         'dump_path': "./",
+                                         'name_dict': None}
         #leaflets
         self.reps['leaflets'] = None
         self.rep_settings['leaflets'] = {'dump': False,
-                                         'dump_path' : "./",
-                                         'update_interval': 1}
+                                         'dump_path': "./",
+                                         'update_interval': 1,
+                                         'assign_method': 'avg_norm',
+                                         'orientation_atoms': None}
         #lipid_grid
         self.reps['lipid_grid'] = None
         self.rep_settings['lipid_grid'] = {'dump' : False,
@@ -805,6 +807,41 @@ class BilayerAnalyzer(object):
             l += 1
         return leaflets
 
+    def _build_leaflets_orientation(self):
+        com_frame = self.reps['com_frame']
+        leaflets = {'upper': lf.Leaflet('upper'),
+                    'lower': lf.Leaflet('lower')}
+        l = 0
+        for lipcom in com_frame.lipidcom:
+            sel_str = "resname {} and resid {}".format(lipcom.type, lipcom.resid)
+            # residue = self._mda_data.mda_universe.select_atoms(sel_str)
+            resname = lipcom.type
+            resid = lipcom.resid
+            tail_str = "resname {} and resid {} and name {}".format(resname, resid,self.rep_settings['leaflets']['orientation_atoms'][resname][0])
+            tail = self._mda_data.mda_universe.select_atoms(tail_str)
+            tail_v = tail.center_of_mass()
+            head_str = "resname {} and resid {} and name {}".format(resname, resid,self.rep_settings['leaflets']['orientation_atoms'][resname][1])
+            head = self._mda_data.mda_universe.select_atoms(head_str)
+            head_v = head.center_of_mass()
+            # print(tail_v)
+            # print(head_v)
+            vec = head_v - tail_v
+            # print(vec)
+            norm = self.settings['norm']
+            norm_vec = np.zeros(3)
+            norm_vec[norm] = 1.0
+            cost = np.dot(vec, norm_vec)/np.sqrt(np.dot(vec, vec))
+            # print(cost)
+            pos = ""
+            if cost > 0.0:
+                pos = 'upper'
+            elif cost<0.0:
+                pos = 'lower'
+            # add to the chosen leaflet
+            leaflets[pos].add_member(l, lipcom.type, lipcom.resid)
+            l+=1
+        return leaflets
+
     def _update_com_frame_leaflet_positions(self):
         for leaflet in self.reps['leaflets'].keys():
             leaf_lipidcom = self.reps['leaflets'][leaflet].get_member_indices()
@@ -891,10 +928,16 @@ class BilayerAnalyzer(object):
             # now we can assign the lipids to the leaflets
             if self._first_leaflet:
                 self._first_leaflet = False
-                self.reps['leaflets'] = self._build_leaflets()
+                if self.rep_settings['leaflets']['assign_method'] == 'avg_norm':
+                    self.reps['leaflets'] = self._build_leaflets()
+                elif self.rep_settings['leaflets']['assign_method'] == 'orientation':
+                    self.reps['leaflets'] = self._build_leaflets_orientation()
                 self._update_com_frame_leaflet_positions()
             elif (self._leaflet_counter%self.rep_settings['leaflets']['update_interval'])==0:
-                self.reps['leaflets'] = self._build_leaflets()
+                if self.rep_settings['leaflets']['assign_method'] == 'avg_norm':
+                    self.reps['leaflets'] = self._build_leaflets()
+                elif self.rep_settings['leaflets']['assign_method'] == 'orientation':
+                    self.reps['leaflets'] = self._build_leaflets_orientation()
                 self._update_com_frame_leaflet_positions()
             if self.rep_settings['com_frame']['dump']:
                 ofname = self.rep_settings['com_frame']['dump_path'] + "com_frame_" + str(
