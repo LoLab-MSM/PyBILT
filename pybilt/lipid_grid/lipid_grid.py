@@ -1,12 +1,12 @@
 """Build lipid grids derived from COMFrame objects.
-Classes and functions to implement lipid COM gridding and analysis for 
-lipid bilayers. This module defines version that build grids off of 
-COMFrame objects and is meant primarily for internal use by the 
+Classes and functions to implement lipid COM gridding and analysis for
+lipid bilayers. This module defines version that build grids off of
+COMFrame objects and is meant primarily for internal use by the
 BilayerAnalyzer class. The gridding and anlaysis procedures are based on
-the descriptions given in Gapsys et al. J Comput Aided Mol Des (2013) 
-27:845-858, which is itself a modified version of the GridMAT-MD method 
+the descriptions given in Gapsys et al. J Comput Aided Mol Des (2013)
+27:845-858, which is itself a modified version of the GridMAT-MD method
 by Allen et al. Vol. 30, No. 12 Journal of Computational Chemistry.
-However, I have currently left out bits of the extra functionality like 
+However, I have currently left out bits of the extra functionality like
 the handling of an embedded proteins.
 """
 
@@ -14,7 +14,7 @@ the handling of an embedded proteins.
 
 import numpy as np
 import sys
-
+from scipy.ndimage.filters import gaussian_filter
 # pybilt imports
 from pybilt.common.running_stats import RunningStats
 
@@ -24,63 +24,118 @@ if sys.version_info < (3, 0):
         return xrange(*args, **kwargs)
 
 
+
+def grid_curvature(x_vals, y_vals, zgrid):
+    """Compute the Mean and Gaussian curvature across a grid.
+    Args:
+        x_vals (np.array): The bin labels along the x-axis of the gridded data.
+        y_vals (np.arrray): The bin labels along the y-axis of the gridded data.
+        zgrid (np.array): The 2d grid of bin values.
+
+    Returns:
+        tuple: Returns a 2 item tuple with the 2d numpy arrays of the curvatures with
+            format (mean curvature, Gaussian curvature).
+    """
+    nxb = len(x_vals)
+    nyb = len(y_vals)
+    x_incr = x_vals[1]-x_vals[0]
+    y_incr = y_vals[1]-y_vals[0]
+    # print("x_incr {} y_incr {}".format(x_incr, y_incr))
+    [sy, sx] = np.gradient(zgrid, y_incr, x_incr)
+    [syy, syx] = np.gradient(sy, y_incr, x_incr)
+    [sxy, sxx] = np.gradient(sx, y_incr, x_incr)
+    #now get curvatures
+    curv_mean_u = np.zeros((nxb, nyb))
+    curv_gauss_u = np.zeros((nxb, nyb))
+    for ix in range(nxb):
+        for iy in range(nyb):
+            #upper
+            sx_c = sx[ix, iy]
+            sy_c = sy[ix, iy]
+            ssx = sxx[ix, iy]
+            ssy = syy[ix, iy]
+            ssxy = sxy[ix, iy]
+            sx_v = np.array([x_incr, 0.0, sx_c])
+            sy_v = np.array([0.0, y_incr, sy_c])
+            ssx_v = np.array([x_incr, 0.0, ssx])
+            ssy_v = np.array([0.0, y_incr, ssy])
+            ssxy_v = np.array([0.0, y_incr, ssxy])
+            E = np.dot(sx_v, sx_v)
+            F = np.dot(sx_v, sy_v)
+            G = np.dot(sy_v, sy_v)
+            n = np.cross(sx_v, sy_v)
+            n /=np.linalg.norm(n)
+            L = np.dot(ssx_v, n)
+            M = np.dot(ssxy_v, n)
+            N = np.dot(ssy_v, n)
+            #mean curvature
+            J = (E*N+G*L-2.0*F*M)/(2.0*(E*G-F)**2)
+            #Gaussian curvature
+            K = (L*N-M**2)/(E*G-F**2)
+            curv_mean_u[ix, iy] = J
+            curv_gauss_u[ix, iy] = K
+            # print("ix: {} iy: {} J: {} K: {}".format(ix,iy,J,K))
+
+
+    return (curv_mean_u, curv_gauss_u)
+
 class LipidGrid2d(object):
     """A 2d lipid grid object.
-    
-    This object is used by the LipidGrids object to construct a 2d grid for 
-    a bilayer leaflet and assign lipids to it using the coordinates derived 
-    from a COMFrame representation object. 
-     
+
+    This object is used by the LipidGrids object to construct a 2d grid for
+    a bilayer leaflet and assign lipids to it using the coordinates derived
+    from a COMFrame representation object.
+
     Attributes:
-        frame (COMFrame): Stores a local copy of the COMFrame object from 
+        frame (COMFrame): Stores a local copy of the COMFrame object from
             which the the coordinate data and lipid type data is derived from.
         x_nbins (int): The number of grid bins in the 'x' dimension.
         y_nbins (int): The number of grid bins in the 'y' dimension.
-        x_min (float): The lower boundary of the grid range in the 'x' 
+        x_min (float): The lower boundary of the grid range in the 'x'
             dimension.
-        x_max (float): The upper boundary of the grid range in the 'x' 
+        x_max (float): The upper boundary of the grid range in the 'x'
             dimension.
-        x_incr (float): The size of grid boxes (or spacing between grid 
+        x_incr (float): The size of grid boxes (or spacing between grid
             points) in the 'x' dimension.
         x_centers (np.array): The center points of the grid boxes in the 'x'
             dimension.
         x_edges (np.array): The edges of the grid boxes in the 'x' dimension.
-        x_centers (np.array): The centers of the grid boxes in the 'x' 
+        x_centers (np.array): The centers of the grid boxes in the 'x'
             dimension.
-        y_min (float): The lower boundary of the grid range in the 'y' 
+        y_min (float): The lower boundary of the grid range in the 'y'
             dimension.
-        y_max (float): The upper boundary of the grid range in the 'y' 
+        y_max (float): The upper boundary of the grid range in the 'y'
             dimension.
-        y_incr (float): The size of grid boxes (or spacing between grid 
+        y_incr (float): The size of grid boxes (or spacing between grid
             points) in the 'y' dimension.
         y_centers (np.array): The center points of the grid boxes in the 'y'
             dimension.
         y_edges (np.array): The edges of the grid boxes in the 'y' dimension.
-        y_centers (np.array): The centers of the grid boxes in the 'y' 
+        y_centers (np.array): The centers of the grid boxes in the 'y'
             dimension.
-        lipid_grid (np.array): A 2d array of size x_nbins*y_nbins that stores 
-            the index of lipids from the COMFrame that are assigned to each 
-            grid box. 
+        lipid_grid (np.array): A 2d array of size x_nbins*y_nbins that stores
+            the index of lipids from the COMFrame that are assigned to each
+            grid box.
         lipid_grid_z (np.array): A 2d array of size x_nbins*y_nbins that stores
             the z coordinate of the lipids assigned to each grid box.
-        
+
     """
     def __init__(self, com_frame, com_frame_indices, plane, nxbins=50,
                  nybins=50):
         """Initialize the LipidGrid2d object.
-        
+
         Args:
-            com_frame (COMFrame): The instance of COMFrame from which to 
-                pull the coordinates for lipids to use when building the grid. 
-            com_frame_indices (list): A list COMFrame lipid indices to 
+            com_frame (COMFrame): The instance of COMFrame from which to
+                pull the coordinates for lipids to use when building the grid.
+            com_frame_indices (list): A list COMFrame lipid indices to
                 include when building the grid.
-            plane (list): The indices from the 3d coordinates for the 
-                coordinates that correspond to the bilayer lateral plane. 
-            nxbins (Optional[int]): The number of bins along the 'x' 
-                dimension, i.e. along the dimension corresponding to plane[0]. 
-                Defaults to 50. 
-            nybins (Optional[int): The number of bins along the 'y' 
-                dimension, i.e. along the dimension corresponding to 
+            plane (list): The indices from the 3d coordinates for the
+                coordinates that correspond to the bilayer lateral plane.
+            nxbins (Optional[int]): The number of bins along the 'x'
+                dimension, i.e. along the dimension corresponding to plane[0].
+                Defaults to 50.
+            nybins (Optional[int): The number of bins along the 'y'
+                dimension, i.e. along the dimension corresponding to
                 plane[1]. Defaults to 50.
         """
         # store the frame and leaflet
@@ -166,11 +221,11 @@ class LipidGrid2d(object):
             cx += 1
 
     def get_index_at(self, ix, iy):
-        """Returns the COMFrame index of the lipid at the specified position 
+        """Returns the COMFrame index of the lipid at the specified position
         in the lipid_grid.
-        
+
         Args:
-            ix (int): The 'x' index in the lipid_grid. 
+            ix (int): The 'x' index in the lipid_grid.
             iy (): The 'y' index in the lipid_grid.
 
         Returns:
@@ -180,11 +235,11 @@ class LipidGrid2d(object):
         return self.lipid_grid[ix, iy]
 
     def get_z_at(self, ix, iy):
-        """Returns the z coordinate of the lipid at the specified position 
+        """Returns the z coordinate of the lipid at the specified position
         in the lipid_grid.
 
         Args:
-            ix (int): The 'x' index in the lipid_grid. 
+            ix (int): The 'x' index in the lipid_grid.
             iy (): The 'y' index in the lipid_grid.
 
         Returns:
@@ -195,7 +250,7 @@ class LipidGrid2d(object):
 
     def z_perturb_grid(self):
         """Returns the array with z coordinates shifted by the mean.
-        
+
         Returns:
             np.array: The mean shifted z coordinate array.
 
@@ -209,10 +264,10 @@ class LipidGrid2d(object):
     # Outputs the grid as an xyz coordinate file
     def write_xyz(self, xyz_name):
         """Write out the lipid grid as an xyz coordinate file.
-        
+
         Args:
-            xyz_name (str): File path and name for the output file. 
-            
+            xyz_name (str): File path and name for the output file.
+
 
         """
         # Open up the file to write to
@@ -366,150 +421,21 @@ class LipidGrids(object):
         output = (system_average, average_per_res, area_per_lipid)
         return output
 
-    def curvature(self):
-        nxb = self.nbins_x
-        nyb = self.nbins_y
-        #first order derivtives
-        sx_u = np.zeros((nxb,nyb))
-        sy_u = np.zeros((nxb,nyb))
-        sx_l = np.zeros((nxb,nyb))
-        sy_l = np.zeros((nxb,nyb))
+    def curvature(self, use_gaussian_filter=True, filter_sigma=10.0, filter_mode='nearest'):
+        x_vals = self.leaf_grid['upper'].x_centers
+        y_vals = self.leaf_grid['upper'].y_centers
+        z_grid = self.leaf_grid['upper'].lipid_grid_z
+        if use_gaussian_filter:
+            z_grid = gaussian_filter(z_grid, filter_sigma, mode=filter_mode)
+        curv_upper = grid_curvature(x_vals, y_vals, z_grid)
+        x_vals = self.leaf_grid['lower'].x_centers
+        y_vals = self.leaf_grid['lower'].y_centers
+        z_grid = self.leaf_grid['lower'].lipid_grid_z
+        if use_gaussian_filter:
+            z_grid = gaussian_filter(z_grid, filter_sigma, mode=filter_mode)
+        curv_lower = grid_curvature(x_vals, y_vals, z_grid)
 
-        for ix in range(nxb):
-            for iy in range(nyb):
-                ixp = ix-1
-                if ixp < 0:
-                    ixp+=nxb
-                ixn = ix+1
-                if ixn >= nxb:
-                    ixn-=nxb
-                iyp = ix-1
-                if iyp < 0:
-                    iyp+=nyb
-                iyn = iy+1
-                if iyn >= nyb:
-                    iyn-=nyb
-                #upper
-                    ## using central difference for numerical first derivative
-                sx = self.leaf_grid['upper'].lipid_grid_z[ixn,iy]-self.leaf_grid['upper'].lipid_grid_z[ixp,iy]
-                sx/= (self.leaf_grid['upper'].x_incr)**2
-                sy = self.leaf_grid['upper'].lipid_grid_z[ix,iyn]-self.leaf_grid['upper'].lipid_grid_z[ix,iyp]
-                sy/= (self.leaf_grid['upper'].y_incr)**2
-                sx_u[ix,iy]=sx
-                sy_u[ix,iy]=sy
-                #lower
-                sx = self.leaf_grid['lower'].lipid_grid_z[ixn,iy]-self.leaf_grid['lower'].lipid_grid_z[ixp,iy]
-                sx/= (self.leaf_grid['lower'].x_incr)**2
-                sy = self.leaf_grid['lower'].lipid_grid_z[ix,iyn]-self.leaf_grid['lower'].lipid_grid_z[ix,iyp]
-                sy/= (self.leaf_grid['lower'].y_incr)**2
-                sx_l[ix,iy]=sx
-                sy_l[ix,iy]=sy
-        #now do second order derivatives - central difference numerical derivative of the first derivative
-        ssx_u = np.zeros((nxb,nyb))
-        ssy_u = np.zeros((nxb,nyb))
-        ssxy_u = np.zeros((nxb,nyb))
-        ssx_l = np.zeros((nxb,nyb))
-        ssy_l = np.zeros((nxb,nyb))
-        ssxy_l = np.zeros((nxb,nyb))
-        for ix in range(nxb):
-            for iy in range(nyb):
-                ixp = ix-1
-                if ixp < 0:
-                    ixp+=nxb
-                ixn = ix+1
-                if ixn >= nxb:
-                    ixn-=nxb
-                iyp = ix-1
-                if iyp < 0:
-                    iyp+=nyb
-                iyn = iy+1
-                if iyn >= nyb:
-                    iyn-=nyb
-                #upper
-                    ## using central difference for numerical first derivative
-                ssx = sx_u[ixn,iy]-sx_u[ixp,iy]
-                ssx/= (self.leaf_grid['upper'].x_incr)**2
-                ssy = sy_u[ix,iyn]-sy_u[ix,iyp]
-                ssy/= (self.leaf_grid['upper'].y_incr)**2
-                ssxy = sx_u[ix,iyn]-sx_u[ix,iyp]
-                ssxy/=(self.leaf_grid['upper'].y_incr)**2
-                ssx_u[ix,iy]=ssx
-                ssy_u[ix,iy]=ssy
-                ssxy_u[ix,iy]=ssxy
-
-                #lower
-                ssx = sx_l[ixn,iy]-sx_l[ixp,iy]
-                ssx/= (self.leaf_grid['lower'].x_incr)**2
-                ssy = sy_l[ix,iyn]-sy_l[ix,iyp]
-                ssy/= (self.leaf_grid['lower'].y_incr)**2
-                ssxy = sx_l[ix,iyn]-sx_l[ix,iyp]
-                ssxy/=(self.leaf_grid['upper'].y_incr)**2
-                ssx_l[ix,iy]=ssx
-                ssy_l[ix,iy]=ssy
-                ssxy_l[ix,iy]=ssxy
-        #now get curvatures
-        curv_mean_u = np.zeros((nxb,nyb))
-        curv_gauss_u = np.zeros((nxb,nyb))
-        curv_mean_l = np.zeros((nxb,nyb))
-        curv_gauss_l = np.zeros((nxb,nyb))
-        dx_u = self.leaf_grid['upper'].x_incr
-        dy_u = self.leaf_grid['upper'].y_incr
-        dx_l = self.leaf_grid['lower'].x_incr
-        dy_l = self.leaf_grid['lower'].y_incr
-        for ix in range(nxb):
-            for iy in range(nyb):
-                #upper
-                sx = sx_u[ix,iy]
-                sy = sy_u[ix,iy]
-                ssx = ssx_u[ix,iy]
-                ssy = ssy_u[ix,iy]
-                ssxy = ssxy_u[ix,iy]
-                sx_v = np.array([self.leaf_grid['upper'].x_centers[ix]+dx_u,0.0,sx])
-                sy_v = np.array([0.0,self.leaf_grid['upper'].y_centers[iy]+dy_u,sy])
-                ssx_v = np.array([self.leaf_grid['upper'].x_centers[ix]+dx_u,0.0,ssx])
-                ssy_v = np.array([0.0,self.leaf_grid['upper'].y_centers[iy]+dy_u,ssy])
-                ssxy_v = np.array([0.0,self.leaf_grid['upper'].y_centers[iy]+dy_u,ssxy])
-                E = np.dot(sx_v,sx_v)
-                F = np.dot(sx_v,sy_v)
-                G = np.dot(sy_v,sy_v)
-                n = np.cross(sx_v,sy_v)
-                n /=np.linalg.norm(n)
-                L = np.dot(ssx_v,n)
-                M = np.dot(ssxy_v,n)
-                N = np.dot(ssy_v,n)
-                #mean curvature
-                J = (E*N+G*L-2.0*F*M)/(2.0*(E*G-F)**2)
-                #Gaussian curvature
-                K = (L*N-M**2)/(E*G-F**2)
-                curv_mean_u[ix,iy] = J
-                curv_gauss_u[ix,iy] = K
-                #lower
-                sx = sx_l[ix,iy]
-                sy = sy_l[ix,iy]
-                ssx = ssx_l[ix,iy]
-                ssy = ssy_l[ix,iy]
-                ssxy = ssxy_l[ix,iy]
-                sx_v = np.array([self.leaf_grid['lower'].x_centers[ix]+dx_l,0.0,sx])
-                sy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_l,sy])
-                ssx_v = np.array([self.leaf_grid['lower'].x_centers[ix]+dx_l,0.0,ssx])
-                ssy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_l,ssy])
-                ssxy_v = np.array([0.0,self.leaf_grid['lower'].y_centers[iy]+dy_l,ssxy])
-                E = np.dot(sx_v,sx_v)
-                F = np.dot(sx_v,sy_v)
-                G = np.dot(sy_v,sy_v)
-                n = np.cross(sx_v,sy_v)
-                n /=np.linalg.norm(n)
-                L = np.dot(ssx_v,n)
-                M = np.dot(ssxy_v,n)
-                N = np.dot(ssy_v,n)
-                #mean curvature
-                J = (E*N+G*L-2.0*F*M)/(2.0*(E*G-F)**2)
-                #Gaussian curvature
-                K = (L*N-M**2)/(E*G-F**2)
-                curv_mean_l[ix,iy] = J
-                curv_gauss_l[ix,iy] = K
-
-        return ((curv_mean_u,curv_gauss_u),(curv_mean_l,curv_gauss_l))
+        return (curv_upper, curv_lower)
 
     def grid_to_dict(self,in_grid,leaflet='upper'):
         out_dict = {}
