@@ -15,7 +15,10 @@ Example:
 
 import numpy as np
 import MDAnalysis as mda
-
+try:
+    import cPickle as pickle
+except ImportError as error:
+    import pickle
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 from pybilt.diffusion import diffusion_coefficients as dc
 import pybilt.plot_generation.plot_generation_functions as pgf
@@ -1190,4 +1193,156 @@ def position_density_maps_2d(structure_file, trajectory_file,
                                          filename=outname_png,
                                          scaled_to_max=False,
                                          interpolation='gaussian')
+    return
+
+def curvature_grid(structure_file, trajectory_file, selection_string,
+                   frame_start=0, frame_end=-1, frame_interval=1,
+                   dump_path="./", name_dict=None, n_xbins=100, n_ybins=100,
+                   curvature_grid_vmin=None, curvature_grid_vmax=None):
+    """Protocol to generate curvature estimates over a grid.
+
+    This function uses the BilayerAnalyzer with the 'lipid_grid' reprentation
+    to estimate the curvature of the bilayer via the lipid grid approach.
+    Data and plots are generated and dumped to disk. The generated files have
+    the prefix 'curvature_grid'.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+        name_dict (Optional[dict]): A dictionary that defines atoms to use
+            for each lipid type when computing the center of mass, which is
+            then mapped to the lipid grid. The dictionary should have structure
+            {'lipid_resname_1':['atom_a', 'atom_b'],
+            'lipid_resname_2':['atom_c']}. Defaults to None, which means the
+            center of mass of the whole lipid is used.
+        n_xbins (Optional[int]): Specify the number of bins in the 'x'
+            direction to use in the lipid grid. Defaults to 100.
+        n_ybins (Optional[int]): Specify the number of bins in the 'y'
+            direction to use in the lipid grid. Defaults to 100.
+
+    Returns:
+        void
+
+    Notes:
+        The lipid grid will have dimensions of n_xbins by n_ybins.
+
+    """
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid
+    # center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
+    # analyzer.settings['print_interval']=1
+    # add the analysis
+    analyzer._analysis_protocol.use_objects['lipid_grid'] = True
+    # adjust the number of bins for gridding
+    analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
+    analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
+    upper_data = []
+    lower_data = []
+    times = []
+    #run analysis
+    for dummy_frame in analyzer:
+        fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
+
+        curvatures = analyzer.reps['lipid_grid'].curvature()
+        #upper leaflet
+        upper_mean = curvatures[0][0]
+        x_centers = analyzer.reps['lipid_grid'].leaf_grid['upper'].x_centers
+        y_centers = analyzer.reps['lipid_grid'].leaf_grid['upper'].y_centers
+        out_tuple = (x_centers, y_centers, upper_mean)
+        with open(dump_path+"curvature_grid_xy_mean_curvature_grid_upper_"+fs+".pickle", 'wb') as outfile:
+            pickle.dump(out_tuple, outfile)
+        pgf.plot_xygrid_as_imshow(x_centers, y_centers, upper_mean,
+                                  filename=dump_path+"curvature_grid_upper_"+fs+".pdf",
+                                  xlabel='x ($\AA$)', ylabel='y ($\AA$)',
+                                  colorbar=True, colorbarlabel='Mean curvature ($\AA^{-1}$)',
+                                  vmin=curvature_grid_vmin, vmax=curvature_grid_vmax)
+        pgf.plot_xygrid_as_imshow(x_centers, y_centers, upper_mean,
+                                  filename=dump_path+"curvature_grid_upper_"+fs+".png",
+                                  xlabel='x ($\AA$)', ylabel='y ($\AA$)',
+                                  colorbar=True, colorbarlabel='Mean curvature ($\AA^{-1}$)',
+                                  vmin=curvature_grid_vmin, vmax=curvature_grid_vmax)
+        avg_mean = upper_mean.mean()
+        max_mean = upper_mean.max()
+        min_mean = upper_mean.min()
+        upper_data.append([avg_mean, max_mean, min_mean])
+        #lower leaflet
+        lower_mean = curvatures[1][0]
+        x_centers = analyzer.reps['lipid_grid'].leaf_grid['lower'].x_centers
+        y_centers = analyzer.reps['lipid_grid'].leaf_grid['lower'].y_centers
+        out_tuple = (x_centers, y_centers, lower_mean)
+        with open(dump_path+"curvature_grid_xy_mean_curvature_grid_lower_"+fs+".pickle", 'wb') as outfile:
+            pickle.dump(out_tuple, outfile)
+        pgf.plot_xygrid_as_imshow(x_centers, y_centers, lower_mean,
+                                  filename=dump_path+"curvature_grid_lower_"+fs+".pdf",
+                                  xlabel='x ($\AA$)', ylabel='y ($\AA$)',
+                                  colorbar=True, colorbarlabel='Mean curvature ($\AA^{-1}$)',
+                                  vmin=curvature_grid_vmin, vmax=curvature_grid_vmax)
+        pgf.plot_xygrid_as_imshow(x_centers, y_centers, lower_mean,
+                                  filename=dump_path+"curvature_grid_lower_"+fs+".png",
+                                  xlabel='x ($\AA$)', ylabel='y ($\AA$)',
+                                  colorbar=True, colorbarlabel='Mean curvature ($\AA^{-1}$)',
+                                  vmin=curvature_grid_vmin, vmax=curvature_grid_vmax)
+        avg_mean = lower_mean.mean()
+        max_mean = lower_mean.max()
+        min_mean = lower_mean.min()
+        lower_data.append([avg_mean, max_mean, min_mean])
+        times.append(analyzer.reps['com_frame'].time)
+    upper_data = np.array(upper_data)
+    lower_data = np.array(lower_data)
+    times = np.array(times)/1000.0
+    with open(dump_path+"curvature_grid_times_upper_data.pickle", 'wb') as outfile:
+        pickle.dump((times, upper_data), outfile)
+    with open(dump_path+"curvature_grid_times_lower_data.pickle", 'wb') as outfile:
+        pickle.dump((times, lower_data), outfile)
+    pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0])],
+             name_list=['upper leaflet', 'lower leaflet'], show=False,
+             save=True, xlabel='Time (ns)', ylabel='Average Mean Curvature ($\AA^{-1}$)',
+             filename=dump_path+"curvature_grid_average_mean_curvature.pdf")
+    pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0])],
+             name_list=['upper leaflet', 'lower leaflet'], show=False,
+             save=True, xlabel='Time (ns)', ylabel='Average Mean Curvature ($\AA^{-1}$)',
+             filename=dump_path+"curvature_grid_average_mean_curvature.png")
+    print("Mean Average Mean Curvature in upper leaflet: {}".format(upper_data[:,0].mean()))
+    print("Mean Average Mean Curvature in lower leaflet: {}".format(lower_data[:,0].mean()))
+    pgf.plot([(times, upper_data[:, 1]), (times, lower_data[:, 1])],
+             name_list=['upper leaflet', 'lower leaflet'], show=False,
+             save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
+             filename=dump_path+"curvature_grid_max_mean_curvature.pdf")
+    pgf.plot([(times, upper_data[:, 1]), (times, lower_data[:, 1])],
+             name_list=['upper leaflet', 'lower leaflet'], show=False,
+             save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
+             filename=dump_path+"curvature_grid_max_mean_curvature.png")
+    print("Max Max Mean Curvature in upper leaflet: {}".format(upper_data[:, 1].max()))
+    print("Max Max Mean Curvature in lower leaflet: {}".format(lower_data[:, 1].max()))
+    pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 2])],
+             name_list=['upper leaflet', 'lower leaflet'], show=False,
+             save=True, xlabel='Time (ns)', ylabel='Min Mean Curvature ($\AA^{-1}$)',
+             filename=dump_path+"curvature_grid_min_mean_curvature.pdf")
+    pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 2])],
+             name_list=['upper leaflet', 'lower leaflet'], show=False,
+             save=True, xlabel='Time (ns)', ylabel='Min Mean Curvature ($\AA^{-1}$)',
+             filename=dump_path+"curvature_grid_min_mean_curvature.png")
+    print("Min Min Mean Curvature in the upper leaflet: {}".format(upper_data[:, 2].min()))
+    print("Min Min Mean Curvature in the lower leaflet: {}".format(lower_data[:, 2].min()))
     return
