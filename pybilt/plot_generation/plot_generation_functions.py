@@ -934,3 +934,55 @@ def plot_lipid_grid_thickness_map_2d(x_centers, y_centers, thickness_grid, save=
         return plt.show()
     plt.close()
     return
+
+def plot_xygrid_as_imshow(x_centers, y_centers, grid, filename='grid.pdf',
+                        save=True, show=False, colorbar=False, colorbarlabel=None,
+                        cmap=None, vmin=None, vmax=None, interpolation='none',
+                        xlabel=None, ylabel=None):
+    cma = plt.cm.get_cmap('viridis')
+    nx = grid.shape[0]
+    ny = grid.shape[1]
+    #need to rearrange the array order for imshow to match the same x and y values as is assumed with input thickness_grid
+    grid_swapped = np.zeros((ny,nx), dtype=grid.dtype)
+    for i in range(ny):
+        if i < nx:
+            ii = ny-i - 1
+            for j in range(nx):
+                if j < nx:
+                    grid_swapped[i,j] = grid[j,ii]
+    for i in range(nx):
+        if i < ny:
+            ii = nx - i - 1
+            for j in range(ny):
+                if j < ny:
+                    grid_swapped[i, j] = grid[j, ii]
+    if vmin is not None and vmax is None:
+        plt.imshow(grid_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)], vmin=vmin)
+    elif vmax is not None and vmin is None:
+        plt.imshow(grid_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)], vmax=vmax)
+    elif vmin is not None and vmax is not None:
+        plt.imshow(grid_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)],
+                   vmin=vmin, vmax=vmax)
+    else:
+        plt.imshow(grid_swapped, cmap=cma, interpolation=interpolation,
+                   extent=[np.min(x_centers), np.max(x_centers), np.min(y_centers), np.max(y_centers)])
+
+    if xlabel is not None:
+        plt.xlabel(xlabel)
+    if ylabel is not None:
+        plt.ylabel(ylabel)
+
+    if colorbar:
+        cbar = plt.colorbar()
+        if colorbarlabel is not None:
+            cbar.ax.set_ylabel(colorbarlabel)
+    plt.tight_layout()
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
