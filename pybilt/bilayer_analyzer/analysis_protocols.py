@@ -3727,3 +3727,72 @@ class HalperinNelsonProtocol(AnalysisProtocol):
 
 # update the command_protocols dictionary
 command_protocols['halperin_nelson'] = HalperinNelsonProtocol
+
+# define a new analysis protocol
+valid_analysis.append('area_fluctuation')
+analysis_obj_name_dict['area_fluctuation'] = 'com_frame'
+
+
+class AreaFluctuationProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Estimate the area fluctuation in the box along the bilayer laterals.
+
+        This protocol is identified by the analysis key: 'area_fluctuation'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            None
+
+
+        """
+        # required
+        self._short_description = "Bilayer lateral box area fluctuation."
+        self._return_length = 2
+        self.analysis_key = 'area_fluctuation'
+        self.analysis_id = 'none'
+        # default function settings
+        # adjustable
+        self.settings = dict()
+        self.settings['none'] = None
+        self._valid_settings = self.settings.keys()
+        #self.leaflet = 'both'
+        #self.resname = 'all'
+
+        self._first_frame = True
+        self._area_run = RunningStats()
+        self._area_sq_run = RunningStats()
+        # parse input arguments if given
+        self._parse_args(args)
+        self.save_file_name = self.analysis_id + ".pickle"
+        # storage for output
+        self.analysis_output = []
+        return
+
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        area = ba_reps['com_frame'].box[ba_settings['lateral']].prod()
+        self._area_run.push(area)
+        self._area_sq_run.push(area*area)
+
+        if self._first_frame:
+            self.analysis_output.append([ba_reps['com_frame'].time, area, 0.0])
+            self._first_frame = False
+        else:
+            area_fluctuation = np.sqrt(self._area_sq_run.mean() - self._area_run.mean()**2)
+            self.analysis_output.append([ba_reps['com_frame'].time, area, area_fluctuation])
+        # print([ba_reps['com_frame'].time, area, area_fluctuation])
+        return
+
+    def reset(self):
+        self._first_frame = True
+        self.analysis_output = []
+        self._area_run.reset()
+        self._area_sq_run.reset()
+        return
+
+# update the command_protocols dictionary
+command_protocols['area_fluctuation'] = AreaFluctuationProtocol
