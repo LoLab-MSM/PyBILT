@@ -3796,3 +3796,180 @@ class AreaFluctuationProtocol(AnalysisProtocol):
 
 # update the command_protocols dictionary
 command_protocols['area_fluctuation'] = AreaFluctuationProtocol
+
+# define a new analysis 'disp_vec'
+valid_analysis.append('disp_vec_corr_avg')
+analysis_obj_name_dict['disp_vec_corr_avg'] = 'com_frame'
+
+
+class DispVecCorrelationAverageProtocol(AnalysisProtocol):
+    def __init__(self, args):
+        """Comute the pair-wise cross correlation between pairs of the
+        displacement vectors for each lipid in the specified leaflet(s) of
+        bilayer and do a inverse-distance weighted averaging.
+
+        This analysis computes the displacement vectors as in DispVecProtocol,
+        but then continues to compute the pair-wise cross correlations between
+        each vector (i.e. the cos(theta) for the angle theta between the
+        vectors) and averages the values using the inverse of the distance
+        between the vector starting points as a weight.
+
+        This protocol is identified by the analysis key: 'disp_vec_corr_avg'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', includes all lipid types.
+            wrapped (bool): Specify whether to use the wrapped ('True') or
+                un-wrapped ('False') coordintes for the base of the vectors.
+                Default: False
+            interval (int): Sets the frame interval over which to compute the
+                    displacement vectors. f
+
+        References:
+            None
+        """
+        # required
+        self._short_description = "Weighted average of displacement vector correlations."
+
+        self._return_length = 4
+        self.analysis_key = 'disp_vec_corr_avg'
+        self.analysis_id = 'none'
+
+        # default function settings
+        self.settings = dict()
+        self.settings['leaflet'] = 'both'
+        self.settings['resname'] = 'all'
+        self.settings['wrapped'] = False
+        self.settings['interval'] = 5
+        self._valid_settings = self.settings.keys()
+        # parse input arguments if given
+        self._parse_args(args)
+
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        # storage for output
+        self.analysis_output = []
+        self.first_comp = True
+        self._running = RunningStats()
+        self.last_com_frame = None
+        self.last_frame = 0
+
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'interval':
+                    arg_dict[arg_key] = int(arg_arg)
+                elif arg_key == 'wrapped':
+                    arg_arg = arg_arg in ['True', 'true']
+                    arg_dict[arg_key] = arg_arg
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                warnings.warn(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+    def reset(self):
+        self.analysis_output = []
+        self.first_comp = True
+        self.last_com_frame = None
+        self.last_frame = 0
+        self._running.reset()
+
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        if self.first_comp:
+            self.last_com_frame = ba_reps['com_frame']
+            self.first_comp = False
+            return
+        current_frame = ba_reps['current_mda_frame'].frame
+
+        interval = (current_frame) - (self.last_frame)
+        #print (interval, " ", self.settings['interval'])
+        if interval == self.settings['interval']:
+            indices = []
+            if self.settings['leaflet'] == "both":
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(self.settings['resname'])
+            elif self.settings['leaflet'] == "upper":
+                curr_leaf = ba_reps['leaflets']['upper']
+                indices = curr_leaf.get_group_indices(self.settings['resname'])
+
+            elif self.settings['leaflet'] == "lower":
+                curr_leaf = ba_reps['leaflets']['lower']
+                indices = curr_leaf.get_group_indices(self.settings['resname'])
+            else:
+                # unknown option--use default "both"
+                warnings.warn(
+                    "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
+                self.settings['leaflet'] = 'both'
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(self.settings['resname'])
+            n_com = len(indices)
+
+            # get the current frame
+            curr_frame = ba_reps['com_frame']
+            prev_frame = self.last_com_frame
+            # get the coordinates for the selection at this frame
+            vec_ends = np.zeros((n_com, 4))
+            # vec_ends = []
+            count = 0
+            resnames = []
+            for i in indices:
+                resname = curr_frame.lipidcom[i].type
+                resnames.append(resname)
+                com_i = curr_frame.lipidcom[i].com_unwrap[
+                    ba_settings['lateral']]
+                com_j = prev_frame.lipidcom[i].com_unwrap[
+                    ba_settings['lateral']]
+                com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
+                if self.settings['wrapped']:
+                    vec_ends[count, 0] = com_j_w[0]
+                    vec_ends[count, 1] = com_j_w[1]
+                else:
+                    vec_ends[count, 0] = com_j[0]
+                    vec_ends[count, 1] = com_j[1]
+                vec_ends[count, 2] = com_i[0] - com_j[0]
+                vec_ends[count, 3] = com_i[1] - com_j[1]
+                #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
+                count += 1
+            total = 0.0
+            weights = 0.0
+            for i in range(n_com-1):
+                vec_end_a = vec_ends[i]
+                vec_a = vec_end_a[2:4] - vec_end_a[0:2]
+                for j in range(i+1, n_com):
+                    vec_end_b = vec_ends[j]
+                    vec_b = vec_end_b[2:4] - vec_end_b[0:2]
+                    dot = np.dot(vec_a, vec_b)
+                    cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(vec_b))
+                    diff = vec_end_a[0:2] - vec_end_b[0:2]
+                    dist = np.sqrt(np.dot(diff, diff))
+                    total += cos_t * (1.0/dist)
+                    weights += (1.0/dist)
+            w_avg = total/weights
+            self._running.push(w_avg)
+            self.analysis_output.append([ba_reps['com_frame'].time,
+                                         w_avg, self._running.mean(),
+                                         self._running.deviation()])
+            self.last_com_frame = ba_reps['com_frame']
+            self.last_frame = current_frame
+            #return vec_ends
+        return
+
+
+command_protocols['disp_vec_corr_avg'] = DispVecCorrelationAverageProtocol
