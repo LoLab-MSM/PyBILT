@@ -633,6 +633,10 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
                           + str(frame_interval))
     analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower leaflet lower interval "
                           + str(frame_interval))
+    analyzer.add_analysis("disp_vec_corr_avg disp_vec_corr_avg_upper leaflet upper interval " +
+                          str(frame_interval))
+    analyzer.add_analysis("disp_vec_corr_avg disp_vec_corr_avg_lower leaflet lower interval " +
+                          str(frame_interval))
     analyzer.print_analysis_protocol()
 
     # run analysis
@@ -682,6 +686,26 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
         pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
         counter += 1
+    disp_vec_corr_avg_upper = analyzer.get_analysis_data('disp_vec_corr_avg_upper')
+    disp_vec_corr_avg_lower = analyzer.get_analysis_data('disp_vec_corr_avg_lower')
+    ppb = len(disp_vec_corr_avg_upper)/3
+    if ppb > 1000:
+        ppb=1000
+    n_b = 2
+    while ppb < 10:
+        ppb = len(disp_vec_corr_avg_upper)/n_b
+        n_b-=1
+        if n_b == 0:
+            ppb=len(disp_vec_corr_avg_upper)
+            break
+    block_averager_upper = BlockAverager(points_per_block=ppb)
+    block_averager_upper.push_container(disp_vec_corr_avg_upper[:,1])
+    block_average, std_err = block_averager_upper.get()
+    print("Block average of disp_vec_corr_avg in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
+    block_averager_lower = BlockAverager(points_per_block=ppb)
+    block_averager_lower.push_container(disp_vec_corr_avg_lower[:,1])
+    block_average, std_err = block_averager_lower.get()
+    print("Block average of disp_vec_corr_avg in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
     return
 
 def PN_orientational_angle(structure_file, trajectory_file, selection_string,
