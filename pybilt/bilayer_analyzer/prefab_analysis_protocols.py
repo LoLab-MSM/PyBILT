@@ -506,7 +506,10 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string,
     # output final ensemble average to stdout
     bt = analyzer.get_analysis_data('bt')
     print("Bilayer thickness from gridding procedure (Angstrom): {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3]))
-
+    bt_avg_sq = (bt[:,1].mean())**2
+    bt_sq_avg = (bt[:,1]**2).mean()
+    fluctuation = np.sqrt(bt_sq_avg - bt_avg_sq)
+    print("Bilayer thickness fluctuation (Angstrom): {:0.4f}".format(fluctuation))
     return
 
 
