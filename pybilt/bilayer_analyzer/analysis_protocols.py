@@ -3973,3 +3973,236 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
 
 
 command_protocols['disp_vec_corr_avg'] = DispVecCorrelationAverageProtocol
+
+# define a new analysis 'nnf'
+#valid_analysis.append('nnf')
+#analysis_obj_name_dict['nnf'] = 'com_frame'
+
+class COMLateralRDFProtocol(AnalysisProtocol):
+
+    def __init__(self, args):
+        """Estimate the pair-wise radial distribution function in the bilayer
+        lateral plane using the lipid centers of mass.
+
+        This analysis protocol uses the 'com_frame' representation.
+
+        This protocol is identified by the analysis key: 'com_lateral_rdf'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname_1 (str): Specify the resname of the reference lipid type to
+                include in this analysis. Default: 'first', the first lipid in
+                the list pulled from the com_frame representation.
+            resname_2 (str): Specify the resname of the target lipid type to
+                include in this analysis. Default: 'first', the first lipid in
+                the list pulled from the com_frame representation.
+            n_bins (int): Specifies the number of bins to use when estimating
+                the RDF. Default: 25
+            range_inner (float): Specify the inner distance cutoff for the RDF.
+                Default: 0.0
+            range_outer (float): Specify the outer distance cutoff for the RDF.
+                Default: 12.0
+
+
+        References:
+            1.
+        """
+        # required
+        self._short_description = "Lateral lipid-lipid RDF."
+
+        self._return_length = 2
+        self.analysis_key = 'com_lateral_rdf'
+        self.analysis_id = 'none'
+
+        # default function settings
+        self.settings = dict()
+        self.settings['leaflet'] = 'both'
+        self.settings['resname_1'] = 'first'
+        self.settings['resname_2'] = 'first'
+        self.settings['n_bins'] = 25
+        self.settings['range_inner'] = 0.0
+        self.settings['range_outer'] = 12.0
+        self._valid_settings = self.settings.keys()
+        #parse input arguments/settings
+        self._parse_args(args)
+
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        # for outputs
+        self._first_frame = True
+        self._ref_coords = None
+        self._indices = []
+        self._count = None
+        self._edges = None
+        self._bins = None
+        self._n_frames = 0
+        self._area_run = RunningStats()
+        self._N = 0
+        # storage for output
+        self.analysis_output = []
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'n_bins':
+                    arg_dict[arg_key] = int(arg_arg)
+                elif arg_key == 'range_inner':
+                    arg_dict[arg_key] = float(arg_arg)
+                elif arg_key == 'range_outer':
+                    arg_dict[arg_key] = float(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                warnings.warn(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+    def reset(self):
+        self.analysis_output = []
+        self._first_frame = True
+        self._count = None
+        self._edges = None
+        self._bins = None
+        self._n_frames = 0
+        self._N = 0
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        do_leaflet = []
+        if self.settings['leaflet'] == 'both':
+            do_leaflet = ['upper', 'lower']
+        else:
+            do_leaflet = [self.settings['leaflet']]
+
+        if self._first_frame:
+            # initialize the RDF histogram
+            rdf_range = [self.settings['range_inner'],
+                         self.settings['range_outer']]
+            count, edges = np.histogram([-1], bins=self.settings['n_bins'],
+                                        range=rdf_range)
+            count = count.astype(np.float64)
+            count *= 0.0
+            self._count = count
+            self._edges = edges
+            self._bins = 0.5 * (edges[:-1] + edges[1:])
+            # build group/resname/lipid type list
+            lipid_types = []
+            nlipids = 0
+            for leaflet_name in do_leaflet:
+                leaflet = ba_reps['leaflets'][leaflet_name]
+                groups = leaflet.get_group_names()
+                nlipids += len(leaflet.get_member_indices())
+                for group in groups:
+                    if group not in lipid_types:
+                        lipid_types.append(group)
+            if self.settings['resname_1'] == 'first':
+                self.settings['resname_1'] =  lipid_types[0]
+            if self.settings['resname_2'] == 'first':
+                self.settings['resname_2'] = lipid_types[0]
+
+            n_ltypes = len(lipid_types)
+            self.lipid_types = lipid_types
+            self.n_ltypes = n_ltypes
+
+        lipid_types = self.lipid_types
+        n_ltypes = self.n_ltypes
+        #print lipid_types
+        x_index = ba_settings['lateral'][0]
+        y_index = ba_settings['lateral'][1]
+        box = ba_reps['current_mda_frame'].dimensions[0:3]
+        box_x = box[x_index]
+        box_y = box[y_index]
+        box_x_h = box_x / 2.0
+        box_y_h = box_y / 2.0
+        ltype_a = self.settings['resname_1']
+        ltype_b = self.settings['resname_2']
+        dists = []
+        N = 0
+        for leaflet_name in do_leaflet:
+            leaflet = ba_reps['leaflets'][leaflet_name]
+            if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
+                ltype_a_indices = leaflet.get_group_indices(ltype_a)
+                ltype_b_indices = leaflet.get_group_indices(ltype_b)
+                for i in ltype_a_indices:
+                    for j in ltype_b_indices:
+                        if i != j:
+                            pos_a = ba_reps['com_frame'].lipidcom[i].com
+                            pos_b = ba_reps['com_frame'].lipidcom[j].com
+                            dx = np.abs(pos_a[x_index] - pos_b[x_index])
+                            dy = np.abs(pos_a[y_index] - pos_b[y_index])
+                            # minimum image for wrapped coordinates
+                            if dx > box_x_h:
+                                dx = box_x - np.absolute(pos_a[x_index] - box_x_h) - np.absolute(
+                                    pos_b[x_index] - box_x_h)
+
+                            if dy > box_y_h:
+                                dy = box_y - np.absolute(pos_a[y_index] - box_y_h) - np.absolute(
+                                    pos_b[y_index] - box_y_h)
+                            dist = np.sqrt(dx ** 2 + dy ** 2)
+                            ltype = ba_reps['com_frame'].lipidcom[j].type
+                            #print "ltype: ",ltype," dist ",dist
+                            dists.append(dist)
+                            N+=1
+        if self._N == 0:
+            self._N = N
+        rdf_range = [self.settings['range_inner'],
+                     self.settings['range_outer']]
+        count = np.histogram(dists, bins=self.settings['n_bins'],
+                                    range=rdf_range)
+        self._count += count
+        self._area_run.push(self.reps['com_frame'].box[self.settings['lateral']])
+
+        return
+
+    def save_data(self, path=None):
+        """Dumps the outputs of this protocol to disc.
+
+        Args:
+            path (str, Optional): The string containing the path to the location
+                that the analysis results should be dumped to on disc.
+        """
+        # Area in each radial shell
+        area = np.power(self._edges[1:], 2) - np.power(self._edges[:-1], 2)
+        area *=  np.pi
+
+        # Average number density
+        box_area = self._area_run.mean()
+        density = self._N / box_area
+
+        rdf = self._count / (density * area * self._n_frames)
+
+        output = (rdf, self._bins)
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
+        with open(save_file, 'wb') as outfile:
+            pickle.dump(output, outfile)
+
+        return
+
+    def get_data(self):
+        """Returns the analysis_output of this protocol. """
+        # Area in each radial shell
+        area = np.power(self._edges[1:], 2) - np.power(self._edges[:-1], 2)
+        area *=  np.pi
+
+        # Average number density
+        box_area = self._area_run.mean()
+        density = self._N / box_area
+
+        rdf = self._count / (density * area * self._n_frames)
+
+        return rdf, self._bins
+
+
+
+# update the command_protocols dictionary
+#command_protocols['nnf'] = NNFProtocol
