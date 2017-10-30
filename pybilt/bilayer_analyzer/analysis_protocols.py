@@ -3974,9 +3974,9 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
 
 command_protocols['disp_vec_corr_avg'] = DispVecCorrelationAverageProtocol
 
-# define a new analysis 'nnf'
-#valid_analysis.append('nnf')
-#analysis_obj_name_dict['nnf'] = 'com_frame'
+# define a new analysis
+valid_analysis.append('com_lateral_rdf')
+analysis_obj_name_dict['com_lateral_rdf'] = 'com_frame'
 
 class COMLateralRDFProtocol(AnalysisProtocol):
 
@@ -4005,14 +4005,14 @@ class COMLateralRDFProtocol(AnalysisProtocol):
             range_inner (float): Specify the inner distance cutoff for the RDF.
                 Default: 0.0
             range_outer (float): Specify the outer distance cutoff for the RDF.
-                Default: 12.0
+                Default: 25.0
 
 
         References:
             1.
         """
         # required
-        self._short_description = "Lateral lipid-lipid RDF."
+        self._short_description = "Lipid-lipid RDF in the bilayer lateral plane."
 
         self._return_length = 2
         self.analysis_key = 'com_lateral_rdf'
@@ -4025,7 +4025,7 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         self.settings['resname_2'] = 'first'
         self.settings['n_bins'] = 25
         self.settings['range_inner'] = 0.0
-        self.settings['range_outer'] = 12.0
+        self.settings['range_outer'] = 25.0
         self._valid_settings = self.settings.keys()
         #parse input arguments/settings
         self._parse_args(args)
@@ -4111,7 +4111,11 @@ class COMLateralRDFProtocol(AnalysisProtocol):
             n_ltypes = len(lipid_types)
             self.lipid_types = lipid_types
             self.n_ltypes = n_ltypes
-
+            n_leaf = 0.0
+            for leaflet_name in do_leaflet:
+                self._N += len(ba_reps['leaflets'][leaflet_name].get_member_indices())
+                n_leaf +=1
+            self._N /= n_leaf
         lipid_types = self.lipid_types
         n_ltypes = self.n_ltypes
         #print lipid_types
@@ -4125,7 +4129,7 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         ltype_a = self.settings['resname_1']
         ltype_b = self.settings['resname_2']
         dists = []
-        N = 0
+
         for leaflet_name in do_leaflet:
             leaflet = ba_reps['leaflets'][leaflet_name]
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
@@ -4150,16 +4154,14 @@ class COMLateralRDFProtocol(AnalysisProtocol):
                             ltype = ba_reps['com_frame'].lipidcom[j].type
                             #print "ltype: ",ltype," dist ",dist
                             dists.append(dist)
-                            N+=1
-        if self._N == 0:
-            self._N = N
+
         rdf_range = [self.settings['range_inner'],
                      self.settings['range_outer']]
-        count = np.histogram(dists, bins=self.settings['n_bins'],
+        count, bins = np.histogram(dists, bins=self.settings['n_bins'],
                                     range=rdf_range)
-        self._count += count
-        self._area_run.push(self.reps['com_frame'].box[self.settings['lateral']])
-
+        self._count += count.astype(np.float64)
+        self._area_run.push(ba_reps['com_frame'].box[ba_settings['lateral']].prod())
+        self._n_frames += 1
         return
 
     def save_data(self, path=None):
@@ -4205,4 +4207,4 @@ class COMLateralRDFProtocol(AnalysisProtocol):
 
 
 # update the command_protocols dictionary
-#command_protocols['nnf'] = NNFProtocol
+command_protocols['com_lateral_rdf'] = COMLateralRDFProtocol
