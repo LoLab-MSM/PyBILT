@@ -3920,7 +3920,13 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(self.settings['resname'])
             n_com = len(indices)
-
+            x_index = ba_settings['lateral'][0]
+            y_index = ba_settings['lateral'][1]
+            box = ba_reps['current_mda_frame'].dimensions[0:3]
+            box_x = box[x_index]
+            box_y = box[y_index]
+            box_x_h = box_x / 2.0
+            box_y_h = box_y / 2.0
             # get the current frame
             curr_frame = ba_reps['com_frame']
             prev_frame = self.last_com_frame
@@ -3950,15 +3956,28 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
             total = 0.0
             weights = 0.0
             for i in range(n_com-1):
+                index_i = indices[i]
                 vec_end_a = vec_ends[i]
                 vec_a = vec_end_a[2:4] - vec_end_a[0:2]
+                com_i_w = prev_frame.lipidcom[index_i].com[ba_settings['lateral']]
                 for j in range(i+1, n_com):
+                    index_j = indices[j]
                     vec_end_b = vec_ends[j]
                     vec_b = vec_end_b[2:4] - vec_end_b[0:2]
                     dot = np.dot(vec_a, vec_b)
                     cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(vec_b))
-                    diff = vec_end_a[0:2] - vec_end_b[0:2]
-                    dist = np.sqrt(np.dot(diff, diff))
+                    com_j_w = prev_frame.lipidcom[index_j].com[ba_settings['lateral']]
+                    dx = np.abs(com_i_w[x_index] - com_j_w[x_index])
+                    dy = np.abs(com_i_w[y_index] - com_j_w[y_index])
+                    # minimum image for wrapped coordinates
+                    if dx > box_x_h:
+                        dx = box_x - np.absolute(com_i_w[x_index] - box_x_h) - np.absolute(
+                            com_j_w[x_index] - box_x_h)
+
+                    if dy > box_y_h:
+                        dy = box_y - np.absolute(com_i_w[y_index] - box_y_h) - np.absolute(
+                            com_j_w[y_index] - box_y_h)
+                    dist = np.sqrt(dx ** 2 + dy ** 2)
                     total += cos_t * (1.0/dist)
                     weights += (1.0/dist)
             w_avg = total/weights
