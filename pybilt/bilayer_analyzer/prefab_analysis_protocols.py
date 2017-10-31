@@ -1373,3 +1373,105 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
     print("Min Min Mean Curvature in the upper leaflet: {}".format(upper_data[:, 2].min()))
     print("Min Min Mean Curvature in the lower leaflet: {}".format(lower_data[:, 2].min()))
     return
+
+def com_lateral_rdf(structure_file, trajectory_file,
+                    bilayer_selection_string, resnames,
+                    frame_start=0, frame_end=-1, frame_interval=1,
+                    dump_path="./"):
+    """Protocol to compute the 2d RDFs for lipid types in the bilayer lateral plane.
+
+    This function uses the
+    BilayerAnalyzer with the
+    bilayer_anlayzer.analysis_protocols.COMLateralRDFProtocol analysis protocol
+    to compute the 2d RDFs of lipids in the lateral dimensions of the bilayer
+    and generates their plots. Separate plots are generated for each pair of lipid
+    types (denoted by their resnames). The plots are generated and dumped to
+    disk. The output files have the prefix 'com_lateral_rdf'.
+
+     Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        resnames (list): Specify the resnames of the lipid types
+            that are to be included in this analysis.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=bilayer_selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    res_pairs = []
+    for lipid_type_a in resnames:
+        for lipid_type_b in resnames:
+            if [lipid_type_a, lipid_type_b] not in res_pairs:
+                res_pairs.append([lipid_type_a, lipid_type_b])
+    # add the analyses
+    for pair in res_pairs:
+        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_upper resname_1 {} resname_2 {} leaflet upper range_outer 50.0 n_bins 50".format(pair[0], pair[1], pair[0], pair[1])
+        analyzer.add_analysis(add_in)
+        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_lower resname_1 {} resname_2 {} leaflet lower range_outer 50.0 n_bins 50".format(pair[0], pair[1], pair[0], pair[1])
+        analyzer.add_analysis(add_in)
+
+    analyzer.print_analysis_protocol()
+
+    analyzer.run_analysis()
+
+    analyzer.dump_data(path=dump_path)
+
+    # Generate plots
+    all_data = dict()
+    all_data['upper'] = []
+    all_data['lower'] = []
+    all_data['both'] = []
+    all_names = dict()
+    all_names['upper'] = []
+    all_names['lower'] = []
+    all_names['both'] = []
+    for pair in res_pairs:
+        item = "com_lateral_rdf_{}-{}_upper".format(pair[0], pair[1])
+        rdf, bins = analyzer.get_analysis_data(item)
+        rdf_u = rdf
+        name = "{}-{}".format(pair[0], pair[1])
+        all_data['upper'].append((bins, rdf))
+        all_names['upper'].append(name)
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+
+        item = "com_lateral_rdf_{}-{}_lower".format(pair[0], pair[1])
+        rdf, bins = analyzer.get_analysis_data(item)
+        rdf_l = rdf
+        name = "{}-{}".format(pair[0], pair[1])
+        all_data['lower'].append((bins, rdf))
+        all_names['lower'].append(name)
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+
+        rdf = (rdf_u + rdf_l)/2.0
+        name = "{}-{}".format(pair[0], pair[1])
+        all_data['both'].append((bins, rdf))
+        all_names['both'].append(name)
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+    for key in all_data.keys():
+        pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"com_lateral_rdf_all_"+key+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"com_lateral_rdf_all_"+key+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+    return
