@@ -148,7 +148,7 @@ If you would like to contribute directly to PyBILT's development please
  1. Fork the repo (https://github.com/blakeaw/PyBILT/fork)
  2. Create a new branch for your feature (git checkout -b feature/foo_bar)
  3. Create test code for your feature
- 4. Once your feature passes its own test, run all the tests using [pytest](https://docs.pytest.org/en/latest/)  
+ 4. Once your feature passes its own test, run all the tests using [pytest](https://docs.pytest.org/en/latest/) (python -m pytest)
  5. Once your feature passes all the tests, commit your changes (git commit -am 'Add the foo_bar feature.')
  6. Push to the branch (git push origin feature/foo_bar)
  7. Create a new Pull Request
