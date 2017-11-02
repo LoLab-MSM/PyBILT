@@ -624,14 +624,14 @@ class LipidGrids(object):
             z_grid_upper = gaussian_filter(z_grid_upper, filter_sigma, mode=filter_mode)
             z_max_f = z_grid_upper.max()
             z_diff = z_max_f - z_max
-            print("upper: {}".format(z_diff))
+            # print("upper: {}".format(z_diff))
             z_grid_upper -= z_diff
             z_grid_lower = self.leaf_grid['lower'].lipid_grid_z
             z_min = z_grid_lower.min()
             z_grid_lower = gaussian_filter(z_grid_lower, filter_sigma, mode=filter_mode)
             z_min_f = z_grid_lower.min()
             z_diff = z_min_f - z_min
-            print("lower: {}".format(z_diff))
+            # print("lower: {}".format(z_diff))
             z_grid_lower -= z_diff
         index = 1
         for leaf in do_leaflet:
