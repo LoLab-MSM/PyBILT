@@ -300,7 +300,6 @@ class LipidGrid2d(object):
         xyz_out.close()
         return
 
-
 class LipidGrids(object):
     def __init__(self, com_frame, leaflets, plane, nxbins=50, nybins=50):
         #store the frame and leaflet
@@ -556,6 +555,157 @@ class LipidGrids(object):
         xyz_out.close()
         return
 
+    def write_pdb(self, pdb_name, leaflet='both', z_grid_upper=None,
+                  z_grid_lower=None, beta_grid_upper=None,
+                  beta_grid_lower=None,
+                  use_gaussian_filter=False, filter_sigma=10.0,
+                  filter_mode='nearest'):
+        """Write out the lipid grid as an PDB coordinate file.
+
+        Args:
+            pdb_name (str): File path and name for the output file.
+            leaflet (Optional[str]): Specify which leaflets to write to the PDB
+                file. The options are 'both', 'upper', or 'lower'. Defaults to
+                'both'.
+            z_grid_upper (Optional[np.array]): A 2d grid of values corresponding
+                to the elements of the upper leaflet of the lipid grid that are
+                to be written as the z-coordinate in the PDB file for upper
+                leaflet members. Defaults to None.
+            z_grid_lower (Optional[np.array]): A 2d grid of values corresponding
+                to the elements of the lower leaflet of the lipid grid that are
+                to be written as the z-coordinate in the PDB file for lower
+                leaflet members. Defaults to None.
+            beta_grid_upper (Optional[np.array]): A 2d grid of values corresponding
+                to the elements of the upper leaflet of the lipid grid that are
+                to be written in the Beta column of the PDB file for upper
+                leaflet members. Defaults to None.
+            beta_grid_lower (Optional[np.array]): A 2d grid of values corresponding
+                to the elements of the lower leaflet of the lipid grid that are
+                to be written in the Beta column of the PDB file for upper
+                leaflet members. Defaults to None.
+            use_gaussian_filter (Optional[bool]): Use SciPy's Gaussian filter
+                to filter the z-coordinates before outputting the PDB file.
+                Defaults to False. This option overrides inputs for
+                z_grid_upper and z_grid_lower.
+            filter_sigma (Optional[bool]): Set the sigma value for the Gaussian
+                filter. Defaults to 10.0
+            filter_mode (Optional['str']): Set the mode for Gaussian filter.
+                Defaults to 'nearest'
+
+        """
+
+        do_leaflet = []
+        if leaflet == "both":
+            do_leaflet.append('upper')
+            do_leaflet.append('lower')
+        elif leaflet == "upper" or leaflet == "lower":
+            do_leaflet.append(leaflet)
+        else:
+            #unknown option--use default "both"
+            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe
+            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            do_leaflet.append('upper')
+            do_leaflet.append('lower')
+
+        # Open up the file to write to
+        pdb_out = open(pdb_name, "w")
+        npoints = (self.nbins_x*self.nbins_y)*len(do_leaflet)
+        # First line to write is the box dimensions
+        box = self.frame.box
+        box_data = "CRYST1  {:06.3f}  {:06.3f}  {:06.3f}".format(box[0],
+                                                                 box[1],
+                                                                 box[2])
+        box_data += "  90.000  90.000 90.00 P 1           1"
+        pdb_out.write(box_data)
+        pdb_out.write("\n")
+        if use_gaussian_filter:
+            z_grid_upper = self.leaf_grid['upper'].lipid_grid_z
+            z_max = z_grid_upper.max()
+            z_grid_upper = gaussian_filter(z_grid_upper, filter_sigma, mode=filter_mode)
+            z_max_f = z_grid_upper.max()
+            z_diff = z_max_f - z_max
+            print("upper: {}".format(z_diff))
+            z_grid_upper -= z_diff
+            z_grid_lower = self.leaf_grid['lower'].lipid_grid_z
+            z_min = z_grid_lower.min()
+            z_grid_lower = gaussian_filter(z_grid_lower, filter_sigma, mode=filter_mode)
+            z_min_f = z_grid_lower.min()
+            z_diff = z_min_f - z_min
+            print("lower: {}".format(z_diff))
+            z_grid_lower -= z_diff
+        index = 1
+        for leaf in do_leaflet:
+            cx=0
+            for x in self.leaf_grid[leaf].x_centers:
+                cy=0
+                for y in self.leaf_grid[leaf].y_centers:
+                    ic = self.leaf_grid[leaf].get_index_at(cx, cy)
+                    #get the z coordinate
+                    z = self.leaf_grid[leaf].get_z_at(cx,cy)
+                    if (leaf == 'upper') and (z_grid_upper is not None):
+                        z = z_grid_upper[cx, cy]
+                    elif (leaf == 'lower') and (z_grid_lower is not None):
+                        z = z_grid_lower[cx, cy]
+                    #get the lipid resname
+                    oname = self.frame.lipidcom[ic].type
+                    # Compose the elements of the line
+                    # ATOM, columns 1-4, char
+                    ATOM = "ATOM"
+                    # Atom serial number, columns 7-11, right justified, int
+                    serial = "{:5d}".format(index)
+                    # Atom name, columns 13-16, left justified, char
+                    name = "{:4.4}".format(oname)
+                    # Alternate location indicator, column 17, char
+                    alternate = "{:1.1}".format(" ")
+                    # Residue name, columns 18-20, right justified, char
+                    resname = "{:>3.3}".format(oname)
+                    # Chain identifier, column 22, char
+                    chain = "{:1.1}".format(leaf)
+                    # Residue sequence number, columns 23-26, right justified, int
+                    rsn = "{:>4d}".format(index)
+                    if len(rsn) > 4: rsn = rsn[:(4-len(rsn))]
+                    # Code for insertions of residues, column 27, char
+                    cir = " "
+                    # X orthogonal Angstrom coordinate, columns 31-38, right justified, real (8.3)
+                    x_pos = "{:8.3f}".format(x)
+                    # Y orthogonal Angstrom coordinate, columns 39-46, right justified, real (8.3)
+                    y_pos = "{:8.3f}".format(y)
+                    # Z orthogonal Angstrom coordinate, columns 31-38, right justified, real (8.3)
+                    z_pos = "{:8.3f}".format(z)
+                    # Occupancy, columns 55-60, right justified, real (6.2)
+                    occupancy = "{:6.2f}".format(1.0)
+                    # Temperature factor (Beta), columns 61-66, right justified, real (6.2)
+                    beta = "{:6.2f}".format(0.0)
+                    if (leaf == 'upper') and (beta_grid_upper is not None):
+                        b_val = beta_grid_upper[cx, cy]
+                        beta = "{:6.2f}".format(b_val)
+                    elif (leaf == 'lower') and (beta_grid_lower is not None):
+                        b_val = beta_grid_lower[cx, cy]
+                        beta = "{:6.2f}".format(b_val)
+                    # Segment identifier, columns 73-76, left justified, char
+                    segid = "{:4.3}".format(leaf)
+                    # Element symbol, columns 77-78, right justified, char
+                    element = "{:>2.1}".format(oname)
+                    # Charge, columns 79-80, char
+                    charge = "{:02.1f}".format(0.0)
+                    # Now put them all together to build the line
+                    #      1-4     5-6    7-11     12   13-16    17
+                    line = ATOM + "  " + serial + " " + name + alternate
+                    #        18-20    19     22    23-26  27    28-30   31-38   39-46
+                    line += resname + " " + chain + rsn + cir + "   " + x_pos + y_pos
+                    #       47-54    55-60      61-66    67-72    73-76
+                    line += z_pos + occupancy + beta + "      " + segid
+                    #        77-78     79-80
+                    line += element + charge
+                    pdb_out.write(line)
+                    pdb_out.write("\n")
+                    index += 1
+                    cy+=1
+                cx+=1
+        pdb_out.write('END')
+        pdb_out.close()
+
+        return
 
     def get_integer_type_arrays(self):
         grids_dict = {}
