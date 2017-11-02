@@ -4,7 +4,7 @@
 ------
 
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
-[![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](https://github.com/blakeaw/PyBILT/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/blakeaw/PyBILT/blob/master/LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
 [![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](https://github.com/blakeaw/PyBILT/blob/master/.docstring-coverage_report.txt)
 
@@ -144,13 +144,14 @@ inquiry" in the e-mail subject line.
 
 ## Contributing
 
-If you would like to contribute to PyBILT's development please
+If you would like to contribute directly to PyBILT's development please
  1. Fork the repo (https://github.com/blakeaw/PyBILT/fork)
  2. Create a new branch for your feature (git checkout -b feature/foo_bar)
- 3. Create test code for your feature and then run all the tests using py.test  
- 4. Once your feature passes all the tests, commit your changes (git commit -am 'Add the foo_bar feature.')
- 5. Push to the branch (git push origin feature/foo_bar)
- 6. Create a new Pull Request
+ 3. Create test code for your feature
+ 4. Once your feature passes its own test, run all the tests using [pytest](https://docs.pytest.org/en/latest/)  
+ 5. Once your feature passes all the tests, commit your changes (git commit -am 'Add the foo_bar feature.')
+ 6. Push to the branch (git push origin feature/foo_bar)
+ 7. Create a new Pull Request
 
 ## License
 
