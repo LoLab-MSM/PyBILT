@@ -1344,7 +1344,7 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
         if lm_max < 0.10:
             lm_ratio = 0.10/lm_max
             lm_factor = 100.0*lm_ratio
-        analyzer.reps['lipid_grid'].write_pdb("curvature_grid_lipid_grid_"+fs+".pdb",
+        analyzer.reps['lipid_grid'].write_pdb(dump_path+"curvature_grid_lipid_grid_"+fs+".pdb",
                                               beta_grid_upper=upper_mean*um_factor,
                                               beta_grid_lower=lower_mean*lm_factor,
                                               use_gaussian_filter=True,
