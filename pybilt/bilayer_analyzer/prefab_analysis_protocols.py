@@ -19,9 +19,9 @@ try:
     import cPickle as pickle
 except ImportError as error:
     import pickle
+import pybilt.plot_generation.plot_generation_functions as pgf
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 from pybilt.diffusion import diffusion_coefficients as dc
-import pybilt.plot_generation.plot_generation_functions as pgf
 from pybilt.plot_generation.plot_generation_functions import _color_list
 from pybilt.common.running_stats import BlockAverager
 from pybilt.mda_tools.mda_density_map import position_density_map_2d_leaflet_simple
