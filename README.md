@@ -2,7 +2,7 @@
 ## *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
 ------
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
-[![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
 [![Documentation Status](https://readthedocs.org/projects/pybilt/badge/?version=latest)](http://pybilt.readthedocs.io/en/latest/?badge=latest)
 [![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](.docstring-coverage_report.txt)
