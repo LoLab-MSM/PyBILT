@@ -1479,6 +1479,7 @@ def com_lateral_rdf(structure_file, trajectory_file,
         pgf.plot([(bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
         pgf.plot([(bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
 
+        item = "com_lateral_rdf_{}-{}_both".format(pair[0], pair[1])
         rdf = (rdf_u + rdf_l)/2.0
         name = "{}-{}".format(pair[0], pair[1])
         all_data['both'].append((bins, rdf))
