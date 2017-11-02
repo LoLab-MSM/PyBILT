@@ -1290,8 +1290,7 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
     #run analysis
     for dummy_frame in analyzer:
         fs = "frame_{:010d}".format(analyzer.reps['com_frame'].number)
-
-        curvatures = analyzer.reps['lipid_grid'].curvature()
+        curvatures = analyzer.reps['lipid_grid'].curvature(filter_sigma=5.0)
         #upper leaflet
         upper_mean = curvatures[0][0]
         x_centers = analyzer.reps['lipid_grid'].leaf_grid['upper'].x_centers
@@ -1335,6 +1334,21 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
         min_mean = lower_mean.min()
         lower_data.append([avg_mean, max_mean, min_mean])
         times.append(analyzer.reps['com_frame'].time)
+        um_max = np.abs(upper_mean).max()
+        um_factor = 1.0
+        if um_max < 0.10:
+            um_ratio = 0.10/um_max
+            um_factor = um_ratio*100.0
+        lm_max = np.abs(lower_mean).max()
+        lm_factor = 1.0
+        if lm_max < 0.10:
+            lm_ratio = 0.10/lm_max
+            lm_factor = 100.0*lm_ratio
+        analyzer.reps['lipid_grid'].write_pdb("curvature_grid_lipid_grid_"+fs+".pdb",
+                                              beta_grid_upper=upper_mean*um_factor,
+                                              beta_grid_lower=lower_mean*lm_factor,
+                                              use_gaussian_filter=True,
+                                              filter_sigma=5.0)
     upper_data = np.array(upper_data)
     lower_data = np.array(lower_data)
     times = np.array(times)/1000.0
