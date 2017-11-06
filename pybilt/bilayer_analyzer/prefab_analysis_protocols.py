@@ -1440,9 +1440,9 @@ def com_lateral_rdf(structure_file, trajectory_file,
                 res_pairs.append([lipid_type_a, lipid_type_b])
     # add the analyses
     for pair in res_pairs:
-        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_upper resname_1 {} resname_2 {} leaflet upper range_outer 50.0 n_bins 50".format(pair[0], pair[1], pair[0], pair[1])
+        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_upper resname_1 {} resname_2 {} leaflet upper range_outer 50.0 n_bins 100".format(pair[0], pair[1], pair[0], pair[1])
         analyzer.add_analysis(add_in)
-        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_lower resname_1 {} resname_2 {} leaflet lower range_outer 50.0 n_bins 50".format(pair[0], pair[1], pair[0], pair[1])
+        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_lower resname_1 {} resname_2 {} leaflet lower range_outer 50.0 n_bins 100".format(pair[0], pair[1], pair[0], pair[1])
         analyzer.add_analysis(add_in)
 
     analyzer.print_analysis_protocol()
