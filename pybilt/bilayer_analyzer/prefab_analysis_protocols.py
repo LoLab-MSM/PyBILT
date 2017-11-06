@@ -658,9 +658,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
         count = form.format(counter)
         filename = "step_vector_map_upper_"+count+".pdf"
         filename_b = "step_vector_map_upper_"+count+".png"
-        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True,
+        pgf.plot_step_vectors(disp_vec, filename=dump_path+filename, scaled=True,
                               wrapped=True)
-        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True,
+        pgf.plot_step_vectors(disp_vec, filename=dump_path+filename_b, scaled=True,
                               wrapped=True)
         counter += 1
     disp_vecs = analyzer.get_analysis_data('disp_vec_lower')
@@ -671,9 +671,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
         count = form.format(counter)
         filename = "step_vector_map_lower_" + count + ".pdf"
         filename_b = "step_vector_map_lower_" + count + ".png"
-        pgf.plot_step_vectors(disp_vec, filename=filename, scaled=True,
+        pgf.plot_step_vectors(disp_vec, filename=dump_path+filename, scaled=True,
                               wrapped=True)
-        pgf.plot_step_vectors(disp_vec, filename=filename_b, scaled=True,
+        pgf.plot_step_vectors(disp_vec, filename=dump_path+filename_b, scaled=True,
                               wrapped=True)
         counter += 1
 
@@ -686,8 +686,8 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
         count = form.format(counter)
         filename = "step_vector_correlation_map_" + count + ".pdf"
         filename_b = "step_vector_correlation_map_" + count + ".png"
-        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename)
-        pgf.plot_corr_mat_as_scatter(corr_mat, filename=filename_b)
+        pgf.plot_corr_mat_as_scatter(corr_mat, filename=dump_path+filename)
+        pgf.plot_corr_mat_as_scatter(corr_mat, filename=dump_path+filename_b)
         counter += 1
     disp_vec_corr_avg_upper = analyzer.get_analysis_data('disp_vec_corr_avg_upper')
     disp_vec_corr_avg_lower = analyzer.get_analysis_data('disp_vec_corr_avg_lower')
