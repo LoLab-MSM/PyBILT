@@ -258,3 +258,67 @@ class BlockAverager(object):
             return self._points_per_block, self._min_points_in_block, len(self._blocks[self.n_blocks-1])
         else:
             return self._points_per_block, self._min_points_in_block, self._blocks[self.n_blocks - 1].n
+
+def binned_average(data, positions, n_bins=25, position_range=None):
+    """Compute averages over a quantized range of histogram like bins.
+
+    Args:
+        data (np.array): A 1d numpy array of values.
+        positions (np.array): A 1d numpy array of positions corresponding to
+            the values in data. These are used to assign the values to the
+            histogram like bins for averaging.
+        n_bins (Optional[int]): Set the target number of bins to quantize the
+            position_range up into. Defaults to 25
+        position_range (Optional[tuple]): A two element tuple containing the
+            lower and upper range to bin the postions over; i.e.
+            (position_lower, postion_upper). Defaults to None, which uses
+            positions.min() and positions.max().
+    Returns:
+        tuple: returns a tuple with two numpy arrays of form (bins, averages)
+
+    Notes:
+        The function automatically filters out bins that have a zero count,
+        so the final value of the number of bins and values will be
+        len(bins) <= n_bins.
+    """
+    lower = None
+    upper = None
+
+    if position_range is not None:
+
+        lower = position_range[0]
+        upper = position_range[1]
+    else:
+        lower = positions.min()
+        upper = positions.max()
+
+    edges = np.linspace(lower, upper, num=n_bins+1, endpoint=True)
+    bins = np.linspace(lower, upper, num=n_bins, endpoint=False)
+    counts = (np.zeros(len(bins))).astype(np.int64)
+    sums = np.zeros(len(bins))
+    n_data = len(data)
+    # Loop over the data points.
+    for i in range(n_data):
+        c_val = data[i]
+        pos = positions[i]
+        bin_index = None
+        # Select which bin (if any) the value corresponds to.
+        for j in range(1, len(bins)+1):
+            if (pos >= edges[j-1]) and (pos <= edges[j]):
+                bin_index = j - 1
+                break
+        if bin_index is not None:
+            counts[bin_index] += 1
+            sums[bin_index] += c_val
+
+    # Filter out the bins that had zero entries.
+    keep_bins = []
+    for i in range(len(counts)):
+        if counts[i] > 0:
+            keep_bins.append(i)
+    # Return the filtered bins and averages (i.e. without NaNs).
+    bins = bins[keep_bins]
+    counts = counts[keep_bins]
+    sums = sums[keep_bins]
+    averages = sums / counts
+    return bins, averages
