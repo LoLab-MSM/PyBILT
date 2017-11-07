@@ -56,7 +56,7 @@ if sys.version_info < (3,0):
         return xrange(*args, **kwargs)
 
 # PyBILT imports
-from pybilt.common.running_stats import RunningStats
+from pybilt.common.running_stats import RunningStats, binned_average
 import pybilt.mda_tools.mda_density_profile as mda_dp
 import pybilt.lipid_grid.lipid_grid_curv as lgc
 from pybilt.common import distance_cutoff_clustering as dc_cluster
@@ -4227,3 +4227,237 @@ class COMLateralRDFProtocol(AnalysisProtocol):
 
 # update the command_protocols dictionary
 command_protocols['com_lateral_rdf'] = COMLateralRDFProtocol
+
+# define a new analysis
+valid_analysis.append('spatial_velocity_corr')
+analysis_obj_name_dict['spatial_velocity_corr'] = 'com_frame'
+
+
+class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
+    def __init__(self, args):
+        """Comute the pair-wise cross correlation between pairs of the
+        displacement vectors for each lipid in the specified leaflet(s) of
+        bilayer and do a inverse-distance weighted averaging.
+
+        This analysis computes the displacement vectors as in DispVecProtocol,
+        but then continues to compute the pair-wise cross correlations between
+        each vector (i.e. the cos(theta) for the angle theta between the
+        vectors) and averages the values using the inverse of the distance
+        between the vector starting points as a weight.
+
+        This protocol is identified by the analysis key: 'disp_vec_corr_avg'
+
+        Args:
+            args (list): list of string keys and arguments
+
+        Settings (parsed from args to settings dict):
+            leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+                leaflet to include in the estimate. Default: 'both'
+            resname (str): Specify the resname of the lipid type to include in
+                this analysis. Default: 'all', includes all lipid types.
+            wrapped (bool): Specify whether to use the wrapped ('True') or
+                un-wrapped ('False') coordintes for the base of the vectors.
+                Default: False
+            interval (int): Sets the frame interval over which to compute the
+                    displacement vectors. f
+
+        References:
+            None
+        """
+        # required
+        self._short_description = "Weighted average of displacement vector correlations."
+
+        self._return_length = 4
+        self.analysis_key = 'spatial_velocity_corr'
+        self.analysis_id = 'none'
+
+        # default function settings
+        self.settings = dict()
+        self.settings['leaflet'] = 'both'
+        self.settings['resname_1'] = 'first'
+        self.settings['resname_2'] = 'first'
+        self.settings['n_bins'] = 25
+        self.settings['range_inner'] = 0.0
+        self.settings['range_outer'] = 25.0
+        self.settings['interval'] = 5
+        self._valid_settings = self.settings.keys()
+        # parse input arguments if given
+        self._parse_args(args)
+
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        # storage for output
+        self._costheta = []
+        self._distances = []
+        self.analysis_output = []
+        self._first_frame = True
+        #self._running = RunningStats()
+        self.last_com_frame = None
+        self.last_frame = 0
+
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'interval':
+                    arg_dict[arg_key] = int(arg_arg)
+                if arg_key == 'n_bins':
+                    arg_dict[arg_key] = int(arg_arg)
+                elif arg_key == 'range_inner':
+                    arg_dict[arg_key] = float(arg_arg)
+                elif arg_key == 'range_outer':
+                    arg_dict[arg_key] = float(arg_arg)
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                warnings.warn(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+    def reset(self):
+        self.analysis_output = []
+        self.first_comp = True
+        self.last_com_frame = None
+        self.last_frame = 0
+        self._costheta = []
+        self._distances = []
+        #self._running.reset()
+
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+
+        do_leaflet = []
+        if self.settings['leaflet'] == 'both':
+            do_leaflet = ['upper', 'lower']
+        else:
+            do_leaflet = [self.settings['leaflet']]
+
+        if self._first_frame:
+            self.last_com_frame = ba_reps['com_frame']
+
+            # build group/resname/lipid type list
+            lipid_types = []
+            nlipids = 0
+            for leaflet_name in do_leaflet:
+                leaflet = ba_reps['leaflets'][leaflet_name]
+                groups = leaflet.get_group_names()
+                nlipids += len(leaflet.get_member_indices())
+                for group in groups:
+                    if group not in lipid_types:
+                        lipid_types.append(group)
+            if self.settings['resname_1'] == 'first':
+                self.settings['resname_1'] =  lipid_types[0]
+            if self.settings['resname_2'] == 'first':
+                self.settings['resname_2'] = lipid_types[0]
+            self._first_frame = False
+        current_frame = ba_reps['current_mda_frame'].frame
+
+        interval = (current_frame) - (self.last_frame)
+        #print (interval, " ", self.settings['interval'])
+        if interval == self.settings['interval']:
+            indices = []
+            for leaf in do_leaflet:
+                curr_leaf = ba_reps['leaflets'][leaf]
+                indices += curr_leaf.get_group_indices(self.settings['resname_1'])
+                if self.settings['resname_1'] != self.settings['resname_2']:
+                    indices += curr_leaf.get_group_indices(self.settings['resname_2'])
+            n_com = len(indices)
+            x_index = ba_settings['lateral'][0]
+            y_index = ba_settings['lateral'][1]
+            box = ba_reps['current_mda_frame'].dimensions[0:3]
+            box_x = box[x_index]
+            box_y = box[y_index]
+            box_x_h = box_x / 2.0
+            box_y_h = box_y / 2.0
+            # get the current frame
+            curr_frame = ba_reps['com_frame']
+            prev_frame = self.last_com_frame
+            # get the coordinates for the selection at this frame
+            vec_ends = np.zeros((n_com, 4))
+            # vec_ends = []
+            count = 0
+            resnames = []
+            for i in indices:
+                resname = curr_frame.lipidcom[i].type
+                resnames.append(resname)
+                com_i = curr_frame.lipidcom[i].com_unwrap[
+                    ba_settings['lateral']]
+                com_j = prev_frame.lipidcom[i].com_unwrap[
+                    ba_settings['lateral']]
+                com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
+
+                vec_ends[count, 0] = com_j[0]
+                vec_ends[count, 1] = com_j[1]
+                vec_ends[count, 2] = com_i[0] - com_j[0]
+                vec_ends[count, 3] = com_i[1] - com_j[1]
+                #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
+                count += 1
+            total = 0.0
+            weights = 0.0
+            for i in range(n_com-1):
+                index_i = indices[i]
+                vec_end_a = vec_ends[i]
+                vec_a = vec_end_a[2:4] - vec_end_a[0:2]
+                com_i_w = prev_frame.lipidcom[index_i].com[ba_settings['lateral']]
+                ltype_i = prev_frame.lipidcom[index_i].type
+                if (ltype_i == self.settings['resname_1']) or (self.settings['resname_1'] == 'all'):
+                    for j in range(i+1, n_com):
+                        index_j = indices[j]
+                        ltype_j = prev_frame.lipidcom[index_j].type
+                        if (ltype_j == self.settings['resname_2']) or (self.settings['resname_2'] == 'all'):
+                            if index_i != index_j:
+                                vec_end_b = vec_ends[j]
+                                vec_b = vec_end_b[2:4] - vec_end_b[0:2]
+                                dot = np.dot(vec_a, vec_b)
+                                cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(vec_b))
+                                com_j_w = prev_frame.lipidcom[index_j].com[ba_settings['lateral']]
+                                dx = np.abs(com_i_w[x_index] - com_j_w[x_index])
+                                dy = np.abs(com_i_w[y_index] - com_j_w[y_index])
+                                # minimum image for wrapped coordinates
+                                if dx > box_x_h:
+                                    dx = box_x - np.absolute(com_i_w[x_index] - box_x_h) - np.absolute(
+                                        com_j_w[x_index] - box_x_h)
+
+                                if dy > box_y_h:
+                                    dy = box_y - np.absolute(com_i_w[y_index] - box_y_h) - np.absolute(
+                                        com_j_w[y_index] - box_y_h)
+                                dist = np.sqrt(dx ** 2 + dy ** 2)
+                                self._costheta.append(cos_t)
+                                self._distances.append(dist)
+
+            self.last_com_frame = ba_reps['com_frame']
+            self.last_frame = current_frame
+            #return vec_ends
+        return
+
+    def save_data(self, path=None):
+        """Dumps the outputs of this protocol to disc.
+
+        Args:
+            path (str, Optional): The string containing the path to the location
+                that the analysis results should be dumped to on disc.
+        """
+        output = self.get_data()
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
+        with open(save_file, 'wb') as outfile:
+            pickle.dump(output, outfile)
+
+        return
+
+    def get_data(self):
+        """Returns the analysis_output of this protocol. """
+
+        cos_t = np.array(self._costheta)
+        positions = np.array(self._distances)
+        pos_range = [self.settings['range_inner'], self.settings['range_outer']]
+        return binned_average(cos_t, positions, n_bins=self.settings['n_bins'],
+                              position_range=pos_range)
+
+command_protocols['spatial_velocity_corr'] = SpatialVelocityCorrelationFunctionProtocol
