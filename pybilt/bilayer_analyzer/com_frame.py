@@ -218,6 +218,34 @@ class COMFrame(object):
         com_out/=total_mass
         return com_out
 
+    def cog(self, wrapped=True):
+        """ Computes the center of geometry (COG) for the Frame
+
+        This member function is used to compute the overall center of geometry (COG) of the
+        COMFrame using the LipidCOM object coordinates.
+
+        Args:
+            wrapped (bool, optional): Define which set of coordinates to use in the computation.
+                True (default) - The wrapped LipidCOM coordinates are used to compute
+                the COG of the frame.
+                False - The unwrapped LipidCOM coordinates are used to compute
+                the COG of the frame.
+
+        Returns:
+            np.array: A 3 element vector containing the xyz coordinates of the Frame's COG
+        """
+        com_out = np.zeros(3)
+        total_mass = 0.0
+        for lipid in self.lipidcom:
+            if wrapped:
+                com_out+=lipid.com
+                total_mass+=1.0
+            else:
+                com_out+=lipid.com_unwrap
+                total_mass+=1.0
+        com_out/=total_mass
+        return com_out
+
     def coordinates(self, wrapped=True):
         coords = []
         for item in self.lipidcom:
