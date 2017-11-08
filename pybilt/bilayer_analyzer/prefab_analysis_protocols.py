@@ -580,7 +580,7 @@ def compressibility(structure_file, trajectory_file, selection_string,
 
 def dispvector_correlation(structure_file, trajectory_file, selection_string,
                            frame_start=0, frame_end=-1, frame_interval=1,
-                           dump_path=None):
+                           dump_path="./"):
     """Protocol to compute lipid displacement vector maps and correlations.
 
     This function uses the BilayerAnalyzer with the analyses 'disp_vec',
@@ -626,10 +626,6 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
                           + str(frame_interval))
     analyzer.add_analysis("disp_vec disp_vec_lower scale True wrapped True leaflet lower interval "
                           + str(frame_interval))
-    # compute the full correlation matrix between displacement vectors
-    # (i.e. cos(theta))
-    analyzer.add_analysis("disp_vec_corr disp_vec_corr interval " +
-                          str(frame_interval))
     # compute the correlations between a displacement vector and that lipids
     # closest neighbor in the lateral dimensions
     analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper interval "
@@ -675,19 +671,6 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
                               wrapped=True)
         pgf.plot_step_vectors(disp_vec, filename=dump_path+filename_b, scaled=True,
                               wrapped=True)
-        counter += 1
-
-    disp_vec_corrs = analyzer.get_analysis_data('disp_vec_corr')
-    counter = 0
-    number = str(len("{}".format(len(disp_vecs))) + 1)
-    form = "{:0" + number + "d}"
-    for disp_vec_corr in disp_vec_corrs:
-        corr_mat = disp_vec_corr[0]
-        count = form.format(counter)
-        filename = "step_vector_correlation_map_" + count + ".pdf"
-        filename_b = "step_vector_correlation_map_" + count + ".png"
-        pgf.plot_corr_mat_as_scatter(corr_mat, filename=dump_path+filename)
-        pgf.plot_corr_mat_as_scatter(corr_mat, filename=dump_path+filename_b)
         counter += 1
     disp_vec_corr_avg_upper = analyzer.get_analysis_data('disp_vec_corr_avg_upper')
     disp_vec_corr_avg_lower = analyzer.get_analysis_data('disp_vec_corr_avg_lower')
