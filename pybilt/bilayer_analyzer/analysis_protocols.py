@@ -3918,7 +3918,7 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
             box = ba_reps['current_mda_frame'].dimensions[0:3]
             box_x = box[x_index]
             box_y = box[y_index]
-            box_l = np.array([box_x, box_y])
+            l_box = np.array([box_x, box_y])
             box_x_h = box_x / 2.0
             box_y_h = box_y / 2.0
             # get the current frame
