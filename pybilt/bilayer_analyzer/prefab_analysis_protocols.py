@@ -1490,3 +1490,130 @@ def com_lateral_rdf(structure_file, trajectory_file,
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"com_lateral_rdf_all_"+key+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"com_lateral_rdf_all_"+key+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
     return
+
+def _estimate_correlation_length(bins, averages):
+    """Estimate the correlation length of a spatial velocity correlation
+    function. The correlation length is typically defined as the radial
+    distance at which the correlation first becomes zero.
+    """
+    n_point = len(bins)
+    for i in range(0, n_point-1):
+        bottom = averages[i]
+        top = averages[i+1]
+        if bottom > 0.0 and top < 0.0:
+            return (bins[i]+bins[i+1])/2.0
+    return None
+
+def spatial_velocity_correlation_functions(structure_file, trajectory_file,
+                    bilayer_selection_string, resnames,
+                    frame_start=0, frame_end=-1, frame_interval=1,
+                    dump_path="./"):
+    """Protocol to compute the 2d spatial velocity correlation functions for
+    lipid types in the bilayer lateral plane.
+
+    This function uses the
+    BilayerAnalyzer with the
+    bilayer_anlayzer.analysis_protocols.SpatialVelocityCorrelationFunctionProtocol
+    analysis protocol
+    to compute the 2d spatial velocity correlation functions lipid-lipid interactions
+    in the lateral dimensions of the bilayer
+    and generates their plots. Separate plots are generated for each pair of lipid
+    types (denoted by their resnames) in each leaflet, as well as the composite
+    of all lipids and over both leaflets. The plots are generated and dumped to
+    disk. The output files have the prefix 'spatial_velocity_corr'.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        resnames (list): Specify the resnames of the lipid types
+            that are to be included in this analysis.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=bilayer_selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, 1)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    res_pairs = []
+    for lipid_type_a in resnames:
+        res_pairs.append([lipid_type_a, 'all'])
+        for lipid_type_b in resnames:
+            if [lipid_type_a, lipid_type_b] not in res_pairs:
+                res_pairs.append([lipid_type_a, lipid_type_b])
+    # add the analyses
+    res_pairs.append(['all', 'all'])
+    for pair in res_pairs:
+        add_in = "spatial_velocity_corr spatial_velocity_corr_{}-{}_upper resname_1 {} resname_2 {} leaflet upper range_outer 75.0 n_bins 150 interval {}".format(pair[0], pair[1], pair[0], pair[1], frame_interval)
+        analyzer.add_analysis(add_in)
+        add_in = "spatial_velocity_corr spatial_velocity_corr_{}-{}_lower resname_1 {} resname_2 {} leaflet lower range_outer 75.0 n_bins 150 interval {}".format(pair[0], pair[1], pair[0], pair[1], frame_interval)
+        analyzer.add_analysis(add_in)
+        add_in = "spatial_velocity_corr spatial_velocity_corr_{}-{}_both resname_1 {} resname_2 {} leaflet both range_outer 75.0 n_bins 150 interval {}".format(pair[0], pair[1], pair[0], pair[1], frame_interval)
+        analyzer.add_analysis(add_in)
+
+    analyzer.print_analysis_protocol()
+
+    analyzer.run_analysis()
+
+    analyzer.dump_data(path=dump_path)
+
+    # Generate plots
+    all_data = dict()
+    all_data['upper'] = []
+    all_data['lower'] = []
+    all_data['both'] = []
+    all_names = dict()
+    all_names['upper'] = []
+    all_names['lower'] = []
+    all_names['both'] = []
+    for pair in res_pairs:
+        item = "spatial_velocity_corr_{}-{}_upper".format(pair[0], pair[1])
+        bins, averages = analyzer.get_analysis_data(item)
+        name = "{}-{}".format(pair[0], pair[1])
+        all_data['upper'].append((bins, averages))
+        all_names['upper'].append(name)
+        pgf.plot([(bins, averages)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+        pgf.plot([(bins, averages)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+        corr_dist = _estimate_correlation_length(bins, averages)
+        print("Correlation distance for pair {}-{} in the upper leaflet: {} Angstroms".format(pair[0], pair[1], corr_dist))
+        item = "spatial_velocity_corr_{}-{}_lower".format(pair[0], pair[1])
+        bins, averages = analyzer.get_analysis_data(item)
+        name = "{}-{}".format(pair[0], pair[1])
+        all_data['lower'].append((bins, averages))
+        all_names['lower'].append(name)
+        pgf.plot([(bins, averages)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+        pgf.plot([(bins, averages)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+        corr_dist = _estimate_correlation_length(bins, averages)
+        print("Correlation distance for pair {}-{} in the lower leaflet: {} Angstroms".format(pair[0], pair[1], corr_dist))
+
+        item = "spatial_velocity_corr_{}-{}_both".format(pair[0], pair[1])
+        bins, averages = analyzer.get_analysis_data(item)
+        name = "{}-{}".format(pair[0], pair[1])
+        all_data['both'].append((bins, averages))
+        all_names['both'].append(name)
+        pgf.plot([(bins, averages)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+        pgf.plot([(bins, averages)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+        corr_dist = _estimate_correlation_length(bins, averages)
+        print("Correlation distance for pair {}-{} in both leaflets: {} Angstroms".format(pair[0], pair[1], corr_dist))
+    for key in all_data.keys():
+        pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"spatial_velocity_corr_all_"+key+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+        pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"spatial_velocity_corr_all_"+key+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
+    return
