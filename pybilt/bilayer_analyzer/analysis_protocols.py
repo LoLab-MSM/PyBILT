@@ -60,6 +60,7 @@ from pybilt.common.running_stats import RunningStats, binned_average
 import pybilt.mda_tools.mda_density_profile as mda_dp
 import pybilt.lipid_grid.lipid_grid_curv as lgc
 from pybilt.common import distance_cutoff_clustering as dc_cluster
+from pybilt.common.distance_cutoff_clustering import distance_euclidean_pbc
 from scipy.spatial.distance import cdist
 #need some containers for bookkeeping
 command_protocols = {}
@@ -1642,6 +1643,7 @@ class NNFProtocol(AnalysisProtocol):
         box = ba_reps['current_mda_frame'].dimensions[0:3]
         box_x = box[x_index]
         box_y = box[y_index]
+        l_box = np.array([box_x, box_y])
         box_x_h = box_x / 2.0
         box_y_h = box_y / 2.0
         ltype_a = self.settings['resname_1']
@@ -1658,19 +1660,10 @@ class NNFProtocol(AnalysisProtocol):
                     neighbors = []
                     for j in all_index:
                         if i != j:
-                            pos_a = ba_reps['com_frame'].lipidcom[i].com
-                            pos_b = ba_reps['com_frame'].lipidcom[j].com
-                            dx = np.abs(pos_a[x_index] - pos_b[x_index])
-                            dy = np.abs(pos_a[y_index] - pos_b[y_index])
-                            # minimum image for wrapped coordinates
-                            if dx > box_x_h:
-                                dx = box_x - np.absolute(pos_a[x_index] - box_x_h) - np.absolute(
-                                    pos_b[x_index] - box_x_h)
-
-                            if dy > box_y_h:
-                                dy = box_y - np.absolute(pos_a[y_index] - box_y_h) - np.absolute(
-                                    pos_b[y_index] - box_y_h)
-                            dist = np.sqrt(dx ** 2 + dy ** 2)
+                            pos_a = ba_reps['com_frame'].lipidcom[i].com[[x_index, y_index]]
+                            pos_b = ba_reps['com_frame'].lipidcom[j].com[[x_index, y_index]]
+                            dist = distance_euclidean_pbc(pos_a, pos_b, l_box,
+                                                          center='box_half')
                             ltype = ba_reps['com_frame'].lipidcom[j].type
                             #print "ltype: ",ltype," dist ",dist
                             neighbors.append([j, dist, ltype])
@@ -3925,6 +3918,7 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
             box = ba_reps['current_mda_frame'].dimensions[0:3]
             box_x = box[x_index]
             box_y = box[y_index]
+            box_l = np.array([box_x, box_y])
             box_x_h = box_x / 2.0
             box_y_h = box_y / 2.0
             # get the current frame
@@ -3967,17 +3961,10 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
                     dot = np.dot(vec_a, vec_b)
                     cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(vec_b))
                     com_j_w = prev_frame.lipidcom[index_j].com[ba_settings['lateral']]
-                    dx = np.abs(com_i_w[x_index] - com_j_w[x_index])
-                    dy = np.abs(com_i_w[y_index] - com_j_w[y_index])
-                    # minimum image for wrapped coordinates
-                    if dx > box_x_h:
-                        dx = box_x - np.absolute(com_i_w[x_index] - box_x_h) - np.absolute(
-                            com_j_w[x_index] - box_x_h)
-
-                    if dy > box_y_h:
-                        dy = box_y - np.absolute(com_i_w[y_index] - box_y_h) - np.absolute(
-                            com_j_w[y_index] - box_y_h)
-                    dist = np.sqrt(dx ** 2 + dy ** 2)
+                    pos_a = com_i_w[[x_index, y_index]]
+                    pos_b = com_j_w[[x_index, y_index]]
+                    dist = dist = distance_euclidean_pbc(pos_a, pos_b, l_box,
+                                                         center='box_half')
                     total += cos_t * (1.0/dist)
                     weights += (1.0/dist)
             w_avg = total/weights
@@ -4143,12 +4130,17 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         box = ba_reps['current_mda_frame'].dimensions[0:3]
         box_x = box[x_index]
         box_y = box[y_index]
+        l_box = np.array([box_x, box_y])
         box_x_h = box_x / 2.0
         box_y_h = box_y / 2.0
+        center = np.zeros(3)
+        center[x_index] = box_x_h
+        center[y_index] = box_y_h
         ltype_a = self.settings['resname_1']
         ltype_b = self.settings['resname_2']
         dists = []
-
+        # COG = ba_reps['com_frame'].cog()
+        # print "COG: ",COG," box_x_h: ",box_x_h
         for leaflet_name in do_leaflet:
             leaflet = ba_reps['leaflets'][leaflet_name]
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
@@ -4157,19 +4149,14 @@ class COMLateralRDFProtocol(AnalysisProtocol):
                 for i in ltype_a_indices:
                     for j in ltype_b_indices:
                         if i != j:
-                            pos_a = ba_reps['com_frame'].lipidcom[i].com
-                            pos_b = ba_reps['com_frame'].lipidcom[j].com
-                            dx = np.abs(pos_a[x_index] - pos_b[x_index])
-                            dy = np.abs(pos_a[y_index] - pos_b[y_index])
-                            # minimum image for wrapped coordinates
-                            if dx > box_x_h:
-                                dx = box_x - np.absolute(pos_a[x_index] - box_x_h) - np.absolute(
-                                    pos_b[x_index] - box_x_h)
+                            pos_a = ba_reps['com_frame'].lipidcom[i].com[[x_index, y_index]]
+                            # print "pos_a: ",pos_a+COG
+                            # print "pos_a - COG:",pos_a
+                            pos_b = ba_reps['com_frame'].lipidcom[j].com[[x_index, y_index]]
 
-                            if dy > box_y_h:
-                                dy = box_y - np.absolute(pos_a[y_index] - box_y_h) - np.absolute(
-                                    pos_b[y_index] - box_y_h)
-                            dist = np.sqrt(dx ** 2 + dy ** 2)
+                            dist = distance_euclidean_pbc(pos_a, pos_b,
+                                                          l_box,
+                                                          center='box_half')
                             ltype = ba_reps['com_frame'].lipidcom[j].type
                             #print "ltype: ",ltype," dist ",dist
                             dists.append(dist)
@@ -4388,6 +4375,7 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
             box = ba_reps['current_mda_frame'].dimensions[0:3]
             box_x = box[x_index]
             box_y = box[y_index]
+            l_box = np.array([box_x, box_y])
             box_x_h = box_x / 2.0
             box_y_h = box_y / 2.0
             # get the current frame
@@ -4432,17 +4420,10 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
                                 dot = np.dot(vec_a, vec_b)
                                 cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(vec_b))
                                 com_j_w = prev_frame.lipidcom[index_j].com[ba_settings['lateral']]
-                                dx = np.abs(com_i_w[x_index] - com_j_w[x_index])
-                                dy = np.abs(com_i_w[y_index] - com_j_w[y_index])
-                                # minimum image for wrapped coordinates
-                                if dx > box_x_h:
-                                    dx = box_x - np.absolute(com_i_w[x_index] - box_x_h) - np.absolute(
-                                        com_j_w[x_index] - box_x_h)
 
-                                if dy > box_y_h:
-                                    dy = box_y - np.absolute(com_i_w[y_index] - box_y_h) - np.absolute(
-                                        com_j_w[y_index] - box_y_h)
-                                dist = np.sqrt(dx ** 2 + dy ** 2)
+                                dist = distance_euclidean_pbc(com_i_w[[x_index, y_index]],
+                                                              com_j_w[[x_index, y_index]],
+                                                              l_box, center='box_half')
                                 self._costheta.append(cos_t)
                                 self._distances.append(dist)
 
