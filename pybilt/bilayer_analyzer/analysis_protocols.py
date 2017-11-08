@@ -4253,16 +4253,31 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
         Settings (parsed from args to settings dict):
             leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
                 leaflet to include in the estimate. Default: 'both'
-            resname (str): Specify the resname of the lipid type to include in
-                this analysis. Default: 'all', includes all lipid types.
-            wrapped (bool): Specify whether to use the wrapped ('True') or
-                un-wrapped ('False') coordintes for the base of the vectors.
-                Default: False
+            resname_1 (str): Specify the resname of the reference lipid type to
+                include in this analysis. Special names are 'first' and 'all',
+                which use the first and all lipid types respectively. Default:
+                'first', the first lipid in the list pulled from the com_frame
+                representation.
+            resname_2 (str): Specify the resname of the target lipid type to
+                include in this analysis. Special names are 'first' and 'all',
+                which use the first and all lipid types respectively. Default:
+                'first', the first lipid in the list pulled from the com_frame
+                representation.
+            n_bins (int): Specifies the number of bins to use when estimating
+                the RDF. Default: 25
+            range_inner (float): Specify the inner distance cutoff for the RDF.
+                Default: 0.0
+            range_outer (float): Specify the outer distance cutoff for the RDF.
+                Default: 25.0
             interval (int): Sets the frame interval over which to compute the
                     displacement vectors. f
 
         References:
             None
+        Notes:
+            The radial distance is centered on lipids of type resname_1 and
+            averaging is taken over the pair-wise interactions of lipids of
+            type resname_1 with lipids of type resname_2.
         """
         # required
         self._short_description = "Weighted average of displacement vector correlations."
@@ -4294,6 +4309,7 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
         #self._running = RunningStats()
         self.last_com_frame = None
         self.last_frame = 0
+        self._processed_output = None
 
         return
 
@@ -4326,7 +4342,7 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
         self._costheta = []
         self._distances = []
         #self._running.reset()
-
+        self._processed_output = None
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
@@ -4451,13 +4467,20 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
 
         return
 
+    def _process_output(self):
+        if self._processed_output is None:
+            cos_t = np.array(self._costheta)
+            positions = np.array(self._distances)
+            pos_range = [self.settings['range_inner'], self.settings['range_outer']]
+            self._processed_output = binned_average(cos_t, positions,
+                                                    n_bins=self.settings['n_bins'],
+                                                    position_range=pos_range)
+        return
+
     def get_data(self):
         """Returns the analysis_output of this protocol. """
+        self._process_output()
+        return self._processed_output
 
-        cos_t = np.array(self._costheta)
-        positions = np.array(self._distances)
-        pos_range = [self.settings['range_inner'], self.settings['range_outer']]
-        return binned_average(cos_t, positions, n_bins=self.settings['n_bins'],
-                              position_range=pos_range)
 
 command_protocols['spatial_velocity_corr'] = SpatialVelocityCorrelationFunctionProtocol
