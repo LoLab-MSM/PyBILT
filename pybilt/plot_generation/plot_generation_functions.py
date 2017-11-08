@@ -36,7 +36,7 @@ sfig_params = {
     }
 mpl.rcParams.update(sfig_params)
 params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
-    'legend.fontsize': 28,
+    'legend.fontsize': 26,
     'xtick.labelsize': 28,
     'ytick.labelsize': 28,
     'lines.linewidth': 6.0,
@@ -95,11 +95,19 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
         plt.xlabel(xlabel)
     if ylabel is not None:
         plt.ylabel(ylabel)
+    lgd = None
     if name_list is not None:
-        plt.legend(loc=0)
+        #lgd = plt.legend(loc=7)
+        if len(name_list) > 4:
+            lgd = plt.legend(loc="center left", bbox_to_anchor=(1.04, 0.5))
+        else:
+            lgd = plt.legend(loc=0)    
     plt.tight_layout()
     if save:
-        plt.savefig(filename)
+        if lgd is not None:
+            plt.savefig(filename, bbox_extra_artists=(lgd,), bbox_inches='tight')
+        else:
+            plt.savefig(filename)
     if show:
         return plt.show()
     plt.close()
