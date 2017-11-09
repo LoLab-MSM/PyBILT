@@ -8,7 +8,7 @@ def test_prefab_protocol_com_lateral_rdf():
     com_lateral_rdf(structure_file='../pybilt/sample_bilayer/sample_bilayer.psf',
                   trajectory_file='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
                   bilayer_selection_string=sel_string,
-                  resnames=['POPC', 'DOPE', 'TLCL2'], frame_interval=2)
+                  resnames=['POPC', 'DOPE', 'TLCL2'], frame_interval=1)
 
     return
 
