@@ -7,7 +7,7 @@ def test_ba_ap_dispveccorravg():
                                   selection="resname POPC DOPE TLCL2")
 
     analyzer.remove_analysis('msd_1')
-    analyzer.add_analysis('spatial_velocity_corr spatial_velocity_corr leaflet upper interval 4 n_bins 120 range_outer 60.0 resname_1 TLCL2 resname_2 DOPE')
+    analyzer.add_analysis('spatial_velocity_corr spatial_velocity_corr leaflet lower interval 9 n_bins 120 range_outer 60.0 resname_1 POPC resname_2 POPC')
 
     analyzer.print_analysis_protocol()
 
@@ -15,7 +15,7 @@ def test_ba_ap_dispveccorravg():
 
     bins, averages = analyzer.get_analysis_data('spatial_velocity_corr')
     plt.plot(bins, averages)
-    # plt.show()
+    plt.show()
     return
 
 

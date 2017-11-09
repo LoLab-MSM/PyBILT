@@ -580,7 +580,7 @@ def compressibility(structure_file, trajectory_file, selection_string,
 
 def dispvector_correlation(structure_file, trajectory_file, selection_string,
                            frame_start=0, frame_end=-1, frame_interval=1,
-                           dump_path="./"):
+                           dump_path="./", name_dict=None):
     """Protocol to compute lipid displacement vector maps and correlations.
 
     This function uses the BilayerAnalyzer with the analyses 'disp_vec',
@@ -620,6 +620,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
     # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid
+    # center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     # add the apl analyses
     # compute the displacment vectors for maps
     analyzer.add_analysis("disp_vec disp_vec_upper scale True wrapped True leaflet upper interval "
@@ -781,7 +784,8 @@ def PN_orientational_angle(structure_file, trajectory_file, selection_string,
 
 def nearest_neighbor_fraction(structure_file, trajectory_file,
                               selection_string, lipid_resnames, frame_start=0,
-                              frame_end=-1, frame_interval=1, dump_path=None):
+                              frame_end=-1, frame_interval=1, dump_path=None,
+                              name_dict=None):
     """Protocol to compute the nearest neigbor fraction.
 
     This function uses the BilayerAnalyzer with analysis 'nnf' to estimate the
@@ -821,6 +825,9 @@ def nearest_neighbor_fraction(structure_file, trajectory_file,
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
     # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid
+    # center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     nres = len(lipid_resnames)
     pairs = []
     for i in range(nres):
@@ -1388,7 +1395,7 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
     return
 
 def com_lateral_rdf(structure_file, trajectory_file,
-                    bilayer_selection_string, resnames,
+                    bilayer_selection_string, resnames, name_dict=None,
                     frame_start=0, frame_end=-1, frame_interval=1,
                     dump_path="./"):
     """Protocol to compute the 2d RDFs for lipid types in the bilayer lateral plane.
@@ -1432,6 +1439,9 @@ def com_lateral_rdf(structure_file, trajectory_file,
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
     # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid
+    # center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     res_pairs = []
     for lipid_type_a in resnames:
         for lipid_type_b in resnames:
@@ -1504,7 +1514,7 @@ def _estimate_correlation_length(bins, averages):
     return None
 
 def spatial_velocity_correlation_functions(structure_file, trajectory_file,
-                    bilayer_selection_string, resnames,
+                    bilayer_selection_string, resnames, name_dict=None,
                     frame_start=0, frame_end=-1, frame_interval=1,
                     dump_path="./"):
     """Protocol to compute the 2d spatial velocity correlation functions for
@@ -1552,6 +1562,9 @@ def spatial_velocity_correlation_functions(structure_file, trajectory_file,
     analyzer.set_frame_range(frame_start, frame_end, 1)
     # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid
+    # center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     res_pairs = []
     for lipid_type_a in resnames:
         res_pairs.append([lipid_type_a, 'all'])

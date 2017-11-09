@@ -4139,7 +4139,7 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         ltype_a = self.settings['resname_1']
         ltype_b = self.settings['resname_2']
         dists = []
-        # COG = ba_reps['com_frame'].cog()
+        COG = ba_reps['com_frame'].cog()
         # print "COG: ",COG," box_x_h: ",box_x_h
         for leaflet_name in do_leaflet:
             leaflet = ba_reps['leaflets'][leaflet_name]
@@ -4158,7 +4158,6 @@ class COMLateralRDFProtocol(AnalysisProtocol):
                                                           l_box,
                                                           center='box_half')
                             ltype = ba_reps['com_frame'].lipidcom[j].type
-                            #print "ltype: ",ltype," dist ",dist
                             dists.append(dist)
 
         rdf_range = [self.settings['range_inner'],

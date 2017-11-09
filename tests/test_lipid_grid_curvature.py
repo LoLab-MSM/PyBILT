@@ -26,7 +26,7 @@ def test_lipid_grid_curvature():
             zgrid += analyzer.reps['lipid_grid'].leaf_grid['upper'].lipid_grid_z
         i+=1
     zgrid_i = zgrid/float(i)
-    zgrid_i_f = gaussian_filter(zgrid_i, 10.0, mode="nearest")
+    zgrid_i_f = gaussian_filter(zgrid_i, 5.0, mode="nearest")
     x_vals = analyzer.reps['lipid_grid'].leaf_grid['upper'].x_centers
     y_vals = analyzer.reps['lipid_grid'].leaf_grid['upper'].y_centers
     curvature_grids_i = grid_curvature(x_vals,
@@ -37,7 +37,7 @@ def test_lipid_grid_curvature():
     #xyzc_u_mean_i = (x_vals, y_vals, x_vals, curvature_grids_i[0].flatten())
     pgf.plot_grid_as_scatter(xyzc_mean, save=False, show=False, colorbar=True)
     analyzer.reps['lipid_grid'].curvature()
-    
+
     return
 
 
