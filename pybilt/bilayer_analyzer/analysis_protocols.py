@@ -4140,7 +4140,7 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         ltype_b = self.settings['resname_2']
         dists = []
         COG = ba_reps['com_frame'].cog()
-        print "COG: ",COG," box_x_h: ",box_x_h
+        # print "COG: ",COG," box_x_h: ",box_x_h
         for leaflet_name in do_leaflet:
             leaflet = ba_reps['leaflets'][leaflet_name]
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
@@ -4158,11 +4158,6 @@ class COMLateralRDFProtocol(AnalysisProtocol):
                                                           l_box,
                                                           center='box_half')
                             ltype = ba_reps['com_frame'].lipidcom[j].type
-                            if dist < 2.0:
-                                print "ltype_a: ",ltype_a," ltype_b: ",ltype_b," dist ",dist
-                                print "pos_a: ", pos_a," pos_b: ",pos_b
-                                ba_reps['com_frame'].write_xyz('com_lateral_rdf_bughunt.xyz')
-                                # quit()
                             dists.append(dist)
 
         rdf_range = [self.settings['range_inner'],
