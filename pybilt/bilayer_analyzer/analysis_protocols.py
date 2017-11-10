@@ -4047,7 +4047,9 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         self._bins = None
         self._n_frames = 0
         self._area_run = RunningStats()
-        self._N = 0
+        self._N_a = 0
+        self._N_b = 0
+        self._n_leaf = 0
         # storage for output
         self.analysis_output = []
         return
@@ -4078,7 +4080,9 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         self._edges = None
         self._bins = None
         self._n_frames = 0
-        self._N = 0
+        self._N_a = 0
+        self._N_b = 0
+        self._n_leaf = 0
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
@@ -4119,9 +4123,9 @@ class COMLateralRDFProtocol(AnalysisProtocol):
             self.n_ltypes = n_ltypes
             n_leaf = 0.0
             for leaflet_name in do_leaflet:
-                self._N += len(ba_reps['leaflets'][leaflet_name].get_member_indices())
-                n_leaf +=1
-            self._N /= n_leaf
+                n_leaf += 1.0
+            self._n_leaf = n_leaf
+
         lipid_types = self.lipid_types
         n_ltypes = self.n_ltypes
         #print lipid_types
@@ -4139,13 +4143,15 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         ltype_a = self.settings['resname_1']
         ltype_b = self.settings['resname_2']
         dists = []
-        COG = ba_reps['com_frame'].cog()
+        # COG = ba_reps['com_frame'].cog()
         # print "COG: ",COG," box_x_h: ",box_x_h
         for leaflet_name in do_leaflet:
             leaflet = ba_reps['leaflets'][leaflet_name]
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
                 ltype_a_indices = leaflet.get_group_indices(ltype_a)
                 ltype_b_indices = leaflet.get_group_indices(ltype_b)
+                self._N_a += len(ltype_a)
+                self._N_b += len(ltype_b)
                 for i in ltype_a_indices:
                     for j in ltype_b_indices:
                         if i != j:
@@ -4157,13 +4163,21 @@ class COMLateralRDFProtocol(AnalysisProtocol):
                             dist = distance_euclidean_pbc(pos_a, pos_b,
                                                           l_box,
                                                           center='box_half')
+                            # print "dist: ", dist
                             ltype = ba_reps['com_frame'].lipidcom[j].type
+                            # if dist < 2.0:
+                            #    print "ltype_a: ",ltype_a," ltype_b: ",ltype_b," dist ",dist
+                            #    print "pos_a: ", pos_a," pos_b: ",pos_b
+                            #    ba_reps['com_frame'].write_xyz('com_lateral_rdf_bughunt.xyz')
+                            #    quit()
                             dists.append(dist)
 
         rdf_range = [self.settings['range_inner'],
                      self.settings['range_outer']]
-        count, bins = np.histogram(dists, bins=self.settings['n_bins'],
+        count, edges = np.histogram(dists, bins=self.settings['n_bins'],
                                     range=rdf_range)
+        bins = 0.5 * (edges[:-1] + edges[1:])
+
         self._count += count.astype(np.float64)
         self._area_run.push(ba_reps['com_frame'].box[ba_settings['lateral']].prod())
         self._n_frames += 1
@@ -4176,17 +4190,9 @@ class COMLateralRDFProtocol(AnalysisProtocol):
             path (str, Optional): The string containing the path to the location
                 that the analysis results should be dumped to on disc.
         """
-        # Area in each radial shell
-        area = np.power(self._edges[1:], 2) - np.power(self._edges[:-1], 2)
-        area *=  np.pi
 
-        # Average number density
-        box_area = self._area_run.mean()
-        density = self._N / box_area
 
-        rdf = self._count / (density * area * self._n_frames)
-
-        output = (rdf, self._bins)
+        output = self.get_data()
         save_file = self.save_file_name
         if path is not None:
             save_file = path+self.save_file_name
@@ -4200,19 +4206,19 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         # Area in each radial shell
         area = np.power(self._edges[1:], 2) - np.power(self._edges[:-1], 2)
         area *=  np.pi
-
+        N = (self._N_a*self._N_b)/(self._n_leaf*self._n_frames)
         # Average number density
         box_area = self._area_run.mean()
-        density = self._N / box_area
+        density = N / box_area
 
         rdf = self._count / (density * area * self._n_frames)
 
         return rdf, self._bins
 
 
-
 # update the command_protocols dictionary
 command_protocols['com_lateral_rdf'] = COMLateralRDFProtocol
+
 
 # define a new analysis
 valid_analysis.append('spatial_velocity_corr')
