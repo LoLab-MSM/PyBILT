@@ -308,7 +308,7 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
 
 def area_per_lipid(structure_file, trajectory_file, selection_string,
                    frame_start=0, frame_end=-1, frame_interval=1,
-                   dump_path=None, n_xbins=100, n_ybins=100):
+                   dump_path=None, n_xbins=100, n_ybins=100, name_dict=None):
     """Protocol to compute area per lipid.
 
     This function uses the BilayerAnalyzer with the analyses 'apl_box' and
@@ -353,6 +353,8 @@ def area_per_lipid(structure_file, trajectory_file, selection_string,
     analyzer.set_frame_range(frame_start, frame_end, frame_interval)
     # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict    
     # add the apl analyses
     analyzer.add_analysis("apl_box apl_box")
     analyzer.add_analysis("apl_grid apl_grid")
