@@ -631,10 +631,10 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
                           + str(frame_interval))
     # compute the correlations between a displacement vector and that lipids
     # closest neighbor in the lateral dimensions
-    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper interval "
-                          + str(frame_interval))
-    analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower leaflet lower interval "
-                          + str(frame_interval))
+    # analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper interval "
+    #                      + str(frame_interval))
+    # analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_lower leaflet lower interval "
+    #                      + str(frame_interval))
     analyzer.add_analysis("disp_vec_corr_avg disp_vec_corr_avg_upper leaflet upper interval " +
                           str(frame_interval))
     analyzer.add_analysis("disp_vec_corr_avg disp_vec_corr_avg_lower leaflet lower interval " +
