@@ -354,7 +354,7 @@ def area_per_lipid(structure_file, trajectory_file, selection_string,
     # remove the default msd analysis
     analyzer.remove_analysis('msd_1')
     # use a subselection of atoms instead of full lipid center of mass, if given
-    analyzer.rep_settings['com_frame']['name_dict'] = name_dict    
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     # add the apl analyses
     analyzer.add_analysis("apl_box apl_box")
     analyzer.add_analysis("apl_grid apl_grid")
@@ -1184,8 +1184,8 @@ def position_density_maps_2d(structure_file, trajectory_file,
                                                  refsel=bilayer_sel,
                                                  scale_to_max=False)
     for key in counts.keys():
-        outname_eps = 'position_density_2d_{}_upper.pdf'.format(key)
-        outname_png = 'position_density_2d_{}_upper.png'.format(key)
+        outname_eps = dump_path+'position_density_2d_{}_upper.pdf'.format(key)
+        outname_png = dump_path+'position_density_2d_{}_upper.png'.format(key)
         pgf.plot_position_density_map_2d(x_centers,
                                          y_centers,
                                          counts[key]['upper'],
@@ -1198,8 +1198,8 @@ def position_density_maps_2d(structure_file, trajectory_file,
                                          filename=outname_png,
                                          scaled_to_max=False,
                                          interpolation='gaussian')
-        outname_eps = 'position_density_2d_{}_lower.pdf'.format(key)
-        outname_png = 'position_density_2d_{}_lower.png'.format(key)
+        outname_eps = dump_path+'position_density_2d_{}_lower.pdf'.format(key)
+        outname_png = dump_path+'position_density_2d_{}_lower.png'.format(key)
         pgf.plot_position_density_map_2d(x_centers,
                                          y_centers,
                                          counts[key]['lower'],
