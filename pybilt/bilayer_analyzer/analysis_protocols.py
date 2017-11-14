@@ -4050,6 +4050,7 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         self._N_a = 0
         self._N_b = 0
         self._n_leaf = 0
+        self._N = 0
         # storage for output
         self.analysis_output = []
         return
@@ -4083,6 +4084,8 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         self._N_a = 0
         self._N_b = 0
         self._n_leaf = 0
+        self._N = 0
+        self._area_run.reset()
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
@@ -4093,6 +4096,7 @@ class COMLateralRDFProtocol(AnalysisProtocol):
             do_leaflet = [self.settings['leaflet']]
 
         if self._first_frame:
+            self._first_frame = False
             # initialize the RDF histogram
             rdf_range = [self.settings['range_inner'],
                          self.settings['range_outer']]
@@ -4147,11 +4151,13 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         # print "COG: ",COG," box_x_h: ",box_x_h
         for leaflet_name in do_leaflet:
             leaflet = ba_reps['leaflets'][leaflet_name]
+            self._N += len(leaflet.get_member_indices())
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
                 ltype_a_indices = leaflet.get_group_indices(ltype_a)
                 ltype_b_indices = leaflet.get_group_indices(ltype_b)
-                self._N_a += len(ltype_a)
-                self._N_b += len(ltype_b)
+                self._N_a += len(ltype_a_indices)
+                # print(len(ltype_a_indices))
+                self._N_b += len(ltype_b_indices)
                 for i in ltype_a_indices:
                     for j in ltype_b_indices:
                         if i != j:
@@ -4168,7 +4174,8 @@ class COMLateralRDFProtocol(AnalysisProtocol):
                             # if dist < 2.0:
                             #    print "ltype_a: ",ltype_a," ltype_b: ",ltype_b," dist ",dist
                             #    print "pos_a: ", pos_a," pos_b: ",pos_b
-                            #    ba_reps['com_frame'].write_xyz('com_lateral_rdf_bughunt.xyz')
+                            #ba_reps['com_frame'].write_xyz('com_lateral_rdf_bughunt.xyz')
+                            #quit()
                             #    quit()
                             dists.append(dist)
 
@@ -4177,8 +4184,10 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         count, edges = np.histogram(dists, bins=self.settings['n_bins'],
                                     range=rdf_range)
         bins = 0.5 * (edges[:-1] + edges[1:])
-
+        # print(count)
+        # print(self._count)
         self._count += count.astype(np.float64)
+        # print(self._count)
         self._area_run.push(ba_reps['com_frame'].box[ba_settings['lateral']].prod())
         self._n_frames += 1
         return
@@ -4206,13 +4215,27 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         # Area in each radial shell
         area = np.power(self._edges[1:], 2) - np.power(self._edges[:-1], 2)
         area *=  np.pi
-        N = (self._N_a*self._N_b)/(self._n_leaf*self._n_frames)
+        N_a = self._N_a/(self._n_leaf*self._n_frames)
+        N_b = self._N_b/(self._n_leaf*self._n_frames)
+        N_all = self._N/(self._n_leaf*self._n_frames)
+        N = N_a*N_b
+        # Adjust for duplicates when the resnames are the same.
+        if self.settings['resname_1'] == self.settings['resname_2']:
+            N -= N_a
+        # print "N_a ", N_a," N_b ",N_b," n_leaf ",self._n_leaf," n_frames ",self._n_frames
+        # print(N)
         # Average number density
         box_area = self._area_run.mean()
-        density = N / box_area
-
-        rdf = self._count / (density * area * self._n_frames)
-
+        # print "box_area: ",box_area," sqrt(box_area): ",np.sqrt(box_area)
+        pair_density = box_area / N
+        density_all = N_all/box_area
+        # print " density: ",pair_density
+        # print(self._count)
+        # print(area)
+        normf = pair_density / area
+        rdf = (self._count * normf) / self._n_frames
+        # print "n_frames ",self._n_frames
+        #rdf /= density_all
         return rdf, self._bins
 
 
