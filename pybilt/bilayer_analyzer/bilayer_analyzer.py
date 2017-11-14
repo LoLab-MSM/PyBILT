@@ -714,6 +714,7 @@ class BilayerAnalyzer(object):
 
         if first != self.settings['frame_range'][0]:
             self.settings['frame_range'][0] = first
+            self._current_frame = first
         if last != self.settings['frame_range'][1]:
             self.settings['frame_range'][1] = last
             self._last_frame = last
