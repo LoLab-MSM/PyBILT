@@ -3987,7 +3987,7 @@ analysis_obj_name_dict['com_lateral_rdf'] = 'com_frame'
 class COMLateralRDFProtocol(AnalysisProtocol):
 
     def __init__(self, args):
-        """Estimate the pair-wise radial distribution function in the bilayer
+        """Estimate the 2-d radial pair distribution function in the bilayer
         lateral plane using the lipid centers of mass.
 
         This analysis protocol uses the 'com_frame' representation.
@@ -4015,7 +4015,10 @@ class COMLateralRDFProtocol(AnalysisProtocol):
 
 
         References:
-            1.
+            1. Microsecond Molecular Dynamics Simulations of Lipid Mixing
+                Chunkit Hong, D. Peter Tieleman, and Yi Wang Langmuir 2014 30
+                (40), 11993-12001 DOI: 10.1021/la502363b
+                http://pubs.acs.org/doi/abs/10.1021/la502363b
         """
         # required
         self._short_description = "Lipid-lipid RDF in the bilayer lateral plane."
@@ -4149,13 +4152,17 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         dists = []
         # COG = ba_reps['com_frame'].cog()
         # print "COG: ",COG," box_x_h: ",box_x_h
+        N_a = 0.0
         for leaflet_name in do_leaflet:
             leaflet = ba_reps['leaflets'][leaflet_name]
             self._N += len(leaflet.get_member_indices())
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
                 ltype_a_indices = leaflet.get_group_indices(ltype_a)
+                # print(ltype_a)
+                # print(ltype_a_indices)
                 ltype_b_indices = leaflet.get_group_indices(ltype_b)
                 self._N_a += len(ltype_a_indices)
+                N_a += len(ltype_a_indices)
                 # print(len(ltype_a_indices))
                 self._N_b += len(ltype_b_indices)
                 for i in ltype_a_indices:
@@ -4222,20 +4229,30 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         # Adjust for duplicates when the resnames are the same.
         if self.settings['resname_1'] == self.settings['resname_2']:
             N -= N_a
+        elif self.settings['resname_1'] == 'all' and self.settings['resname_2'] != 'all':
+            N -= N_b
+        elif self.settings['resname_2'] == 'all' and self.settings['resname_1'] != 'all':
+            N -= N_a
+
         # print "N_a ", N_a," N_b ",N_b," n_leaf ",self._n_leaf," n_frames ",self._n_frames
         # print(N)
         # Average number density
         box_area = self._area_run.mean()
         # print "box_area: ",box_area," sqrt(box_area): ",np.sqrt(box_area)
-        pair_density = box_area / N
-        density_all = N_all/box_area
+        pair_density = N / (box_area)
+        density_all = N_all / box_area
+        density_a = N_a /  box_area
+        density_b = N_b / box_area
         # print " density: ",pair_density
         # print(self._count)
         # print(area)
-        normf = pair_density / area
+        normf = 1.0 / (pair_density * area)
+        # normf = density_a / area
         rdf = (self._count * normf) / self._n_frames
         # print "n_frames ",self._n_frames
-        #rdf /= density_all
+        # rdf /= density_all
+        # rdf *= (N_a / N_all)*(N_b / N_all)
+        # rdf *= (N_a / N_all)
         return rdf, self._bins
 
 
