@@ -1451,9 +1451,9 @@ def com_lateral_rdf(structure_file, trajectory_file,
                 res_pairs.append([lipid_type_a, lipid_type_b])
     # add the analyses
     for pair in res_pairs:
-        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_upper resname_1 {} resname_2 {} leaflet upper range_outer 50.0 n_bins 100".format(pair[0], pair[1], pair[0], pair[1])
+        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_upper resname_1 {} resname_2 {} leaflet upper range_outer 40.0 n_bins 80".format(pair[0], pair[1], pair[0], pair[1])
         analyzer.add_analysis(add_in)
-        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_lower resname_1 {} resname_2 {} leaflet lower range_outer 50.0 n_bins 100".format(pair[0], pair[1], pair[0], pair[1])
+        add_in = "com_lateral_rdf com_lateral_rdf_{}-{}_lower resname_1 {} resname_2 {} leaflet lower range_outer 40.0 n_bins 80".format(pair[0], pair[1], pair[0], pair[1])
         analyzer.add_analysis(add_in)
 
     analyzer.print_analysis_protocol()
@@ -1471,6 +1471,12 @@ def com_lateral_rdf(structure_file, trajectory_file,
     all_names['upper'] = []
     all_names['lower'] = []
     all_names['both'] = []
+    hl_x = np.array([0.0, 40.0])
+    hl_y = np.array([1.0, 1.0])
+    hl = (hl_x, hl_y)
+    for key in all_names.keys():
+        all_names[key].append("1.0")
+        all_data[key].append(hl)
     for pair in res_pairs:
         item = "com_lateral_rdf_{}-{}_upper".format(pair[0], pair[1])
         rdf, bins = analyzer.get_analysis_data(item)
@@ -1487,16 +1493,17 @@ def com_lateral_rdf(structure_file, trajectory_file,
         name = "{}-{}".format(pair[0], pair[1])
         all_data['lower'].append((bins, rdf))
         all_names['lower'].append(name)
-        pgf.plot([(bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
-        pgf.plot([(bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+
+        pgf.plot([hl, (bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot([hl, (bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
 
         item = "com_lateral_rdf_{}-{}_both".format(pair[0], pair[1])
         rdf = (rdf_u + rdf_l)/2.0
         name = "{}-{}".format(pair[0], pair[1])
         all_data['both'].append((bins, rdf))
         all_names['both'].append(name)
-        pgf.plot([(bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
-        pgf.plot([(bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot([hl, (bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot([hl, (bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
     for key in all_data.keys():
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"com_lateral_rdf_all_"+key+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"com_lateral_rdf_all_"+key+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
