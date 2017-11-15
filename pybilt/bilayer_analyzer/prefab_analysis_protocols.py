@@ -1040,7 +1040,8 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string,
 
 def distance_cutoff_clustering(structure_file, trajectory_file,
                                selection_string, resnames, frame_start=0,
-                               frame_end=-1, frame_interval=1, dump_path="./"):
+                               frame_end=-1, frame_interval=1, dump_path="./",
+                               name_dict = None):
     """Protocol to compute hiearchical distance cutoff clusters.
 
     This function uses the BilayerAnalyzer to determine the hiearchical
@@ -1087,7 +1088,9 @@ def distance_cutoff_clustering(structure_file, trajectory_file,
         analyzer.add_analysis(add_in)
         add_in = "dc_cluster dc_cluster_{}_lower resname {} leaflet lower".format(resname, resname)
         analyzer.add_analysis(add_in)
-
+    # use a subselection of atoms instead of full lipid
+    # center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     analyzer.print_analysis_protocol()
 
     analyzer.run_analysis()
