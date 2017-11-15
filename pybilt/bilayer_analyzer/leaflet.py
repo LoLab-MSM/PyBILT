@@ -101,9 +101,7 @@ class Leaflet(object):
         """
         indices = []
         if group_name == "all":
-            for element in self.group_dict:
-                gindex = self.group_dict[element]
-                indices += self.groups[gindex].lg_members
+            return self.get_member_indices()
         elif group_name in self.group_dict:
             gindex = self.group_dict[group_name]
             indices = self.groups[gindex].lg_members
@@ -111,9 +109,7 @@ class Leaflet(object):
             #unkwown group name- print warning and use the default "all"
             print "!! Warning - request for unknown Lipid Group \'",group_name,"\' from the ",self.name," leaflet"
             print "!! using the default \"all\""
-            for element in self.group_dict:
-                gindex = self.group_dict[element]
-                indices += self.groups[gindex].lg_members
+            return self.get_member_indices()
 
         return list(indices)
 
@@ -166,6 +162,8 @@ class Leaflet(object):
         Returns:
             bool: True if there is a LipidGroup with name group_name, and False otherwise.
         """
+        if group_name == 'all':
+            return True
         return group_name in self.group_dict.keys()
 
     def num_groups(self):
