@@ -7,7 +7,7 @@ dependencies:
 - griddataformats=0.3.3=py27_0
 - hdf4=4.2.12=0
 - joblib=0.11=py27_0
-- libnetcdf=4.4.1.1=4
+- libnetcdf=4.4.1.1
 - mdanalysis=0.16.2=py27_2
 - mmtf-python=1.0.9=py_0
 - msgpack-python=0.4.8=py27_0
