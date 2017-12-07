@@ -1579,7 +1579,7 @@ def spatial_velocity_correlation_functions(structure_file, trajectory_file,
     analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     res_pairs = []
     for lipid_type_a in resnames:
-        res_pairs.append([lipid_type_a, 'all'])
+        #res_pairs.append([lipid_type_a, 'all'])
         for lipid_type_b in resnames:
             if [lipid_type_a, lipid_type_b] not in res_pairs:
                 res_pairs.append([lipid_type_a, lipid_type_b])
