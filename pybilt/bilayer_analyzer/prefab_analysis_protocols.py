@@ -1657,3 +1657,86 @@ def spatial_velocity_correlation_functions(structure_file, trajectory_file,
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"spatial_velocity_corr_all_"+key+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"spatial_velocity_corr_all_"+key+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
     return
+
+def halperin_nelson(structure_file, trajectory_file, selection_string,
+                           frame_start=0, frame_end=-1, frame_interval=1,
+                           dump_path="./", name_dict=None):
+    """Protocol to compute the Halperin-Nelson rotational invariant in the bilayer leaflets.
+
+    This function uses the BilayerAnalyzer with the analysis 'halperin_nelson',
+    to compute the mean 2-d Halperin and Nelson's rotational invariant
+    parameter of lipids in each leaflet of the bilayer. Reports of data are
+    printed to standard out, while pickled data is dumped to disk. The
+    generated pickle data files have the prefix 'halperin_nelson'.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+        name_dict (Optional[dict]): A dictionary that defines atoms to use
+            for each lipid type when computing the center of mass, which is then
+            mapped to the lipid grid. The dictionary should have structure
+            {'lipid_resname_1':['atom_a', 'atom_b'], 'lipid_resname_2':['atom_c']}.
+            Defaults to None, which means the center of mass of the whole lipid
+            is used.
+    Returns:
+        void
+
+    """
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    # use a subselection of atoms instead of full lipid
+    # center of mass, if given
+    analyzer.rep_settings['com_frame']['name_dict'] = name_dict
+    # add the analyses
+    # compute the order parmeter for each leaflet
+    analyzer.add_analysis("halperin_nelson halperin_nelson_upper leaflet upper")
+    analyzer.add_analysis("halperin_nelson halperin_nelson_lower leaflet lower")
+    # run analysis
+    analyzer.run_analysis()
+
+    # output data and plots
+    analyzer.dump_data(path=dump_path)
+
+
+
+    hn_upper = analyzer.get_analysis_data('halperin_nelson_upper')
+    hn_lower = analyzer.get_analysis_data('halperin_nelson_lower')
+    ppb = len(hn_upper)/3
+    if ppb > 1000:
+        ppb=1000
+    n_b = 2
+    while ppb < 10:
+        ppb = len(hn_upper)/n_b
+        n_b-=1
+        if n_b == 0:
+            ppb=len(hn_upper)
+            break
+    block_averager_upper = BlockAverager(points_per_block=ppb)
+    block_averager_upper.push_container(hn_upper[:,1])
+    block_average, std_err = block_averager_upper.get()
+    print("Block average of Halperin-Nelson for all in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
+    block_averager_lower = BlockAverager(points_per_block=ppb)
+    block_averager_lower.push_container(hn_lower[:,1])
+    block_average, std_err = block_averager_lower.get()
+    print("Block average of Halperin-Nelson for all in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
+    
+    return
