@@ -1738,5 +1738,102 @@ def halperin_nelson(structure_file, trajectory_file, selection_string,
     block_averager_lower.push_container(hn_lower[:,1])
     block_average, std_err = block_averager_lower.get()
     print("Block average of Halperin-Nelson for all in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
-    
+
+    return
+
+def lipid_collinearity(structure_file, trajectory_file, selection_string,
+                           lipid_resnames, ref_atoms, frame_start=0,
+                           frame_end=-1, frame_interval=1, dump_path=None):
+    """Protocol to compute PN orientational angles.
+
+    This function uses the BilayerAnalyzer with the analysis 'loa' to compute
+    the PN orientational angles of the specified lipids (by resname). Reports
+    of data are printed to standard out, while pickled data (numpy array) is
+    dumped to disk. The pickle data files have prefix 'loa'.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        lipid_resnames (list): A list of lipid types as specified by their
+            resnames.
+        ref_atoms (dict): A dictionary storing the references atoms to be
+            used in building the vector representation. The outer keys of
+            ref_atoms should be the resnames of the lipids. The inner objects
+            should also be dictionaries with the keys 'start' and 'end'.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    analyzer.adjust_rep_setting('vector_frame', 'ref_atoms', ref_atoms)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    # add the loa analyses
+    n_res = len(lipid_resnames)
+    for i in range(n_res-1):
+        res_i = lipid_resnames[i]
+        for j in range(i+1, n_res):
+            res_j = lipid_resnames[j]
+            analyzer.add_analysis("lipid_collinearity lipid_collinearity_{}-{}_upper leaflet upper resname_1 {} resname_2 {}".format(res_i, res_j, res_i, res_j))
+            analyzer.add_analysis("lipid_collinearity lipid_collinearity_{}-{}_lower leaflet lower resname_1 {} resname_2 {}".format(res_i, res_j, res_i, res_j))
+    for res in lipid_resnames:
+        analyzer.add_analysis("lipid_collinearity lipid_collinearity_{}-{}_upper leaflet upper resname_1 {} resname_2 {}".format(res, res, res, res))
+        analyzer.add_analysis("lipid_collinearity lipid_collinearity_{}-{}_lower leaflet lower resname_1 {} resname_2 {}".format(res, res, res, res))
+
+    # compute the correlations between a displacement vector and that lipids
+    # closest neighbor in the lateral dimensions
+    analyzer.print_analysis_protocol()
+
+    # run analysis
+    analyzer.run_analysis()
+
+    # output data and plots
+    analyzer.dump_data(path=dump_path)
+
+    for resname in lipid_resnames:
+        col_upper = analyzer.get_analysis_data("lipid_collinearity_{}-{}_upper".format(resname,resname))
+        col_lower = analyzer.get_analysis_data("lipid_collinearity_{}-{}_lower".format(resname,resname))
+        col_upper = (col_upper[:,1].mean(), col_upper[:,1].std())
+        col_lower = (col_lower[:,1].mean(), col_lower[:,1].std())
+        print("Lipid pair {}-{} has average collinearity orientation anlge of {} in the upper leaflet".format(resname, resname, col_upper))
+        complement = 90.0 - col_upper[0]
+        print("    complement angle: {}".format(complement))
+        print("Lipid pair {}-{} has average collinearity orientation anlge of {} in the lower leaflet".format(resname, resname, col_lower))
+        complement = 90.0 - np.abs(col_lower[0])
+        print("    complement angle: {}".format(complement))
+        print(" ")
+        for i in range(n_res-1):
+            res_i = lipid_resnames[i]
+            for j in range(i+1, n_res):
+                res_j = lipid_resnames[j]
+                col_upper = analyzer.get_analysis_data("lipid_collinearity_{}-{}_upper".format(res_i,res_j))
+                col_lower = analyzer.get_analysis_data("lipid_collinearity_{}-{}_lower".format(res_i,res_j))
+                col_upper = (col_upper[:,1].mean(), col_upper[:,1].std())
+                col_lower = (col_lower[:,1].mean(), col_lower[:,1].std())
+                print("Lipid pair {}-{} has average collinearity orientation angle of {} in the upper leaflet".format(res_i, res_j, col_upper))
+                complement = 90.0 - col_upper[0]
+                print("    complement angle: {}".format(complement))
+                print("Lipid pair {}-{} has average collinearity orientation angle of {} in the lower leaflet".format(res_i, res_j, col_lower))
+                complement = 90.0 - np.abs(col_lower[0])
+                print("    complement angle: {}".format(complement))
+                print(" ")
     return
