@@ -582,7 +582,7 @@ def compressibility(structure_file, trajectory_file, selection_string,
 
 def dispvector_correlation(structure_file, trajectory_file, selection_string,
                            frame_start=0, frame_end=-1, frame_interval=1,
-                           dump_path="./", name_dict=None):
+                           dump_path="./", name_dict=None, resnames=None):
     """Protocol to compute lipid displacement vector maps and correlations.
 
     This function uses the BilayerAnalyzer with the analyses 'disp_vec',
@@ -641,6 +641,10 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
                           str(frame_interval))
     analyzer.add_analysis("disp_vec_corr_avg disp_vec_corr_avg_lower leaflet lower interval " +
                           str(frame_interval))
+    if resnames is not None:
+        for resname in resnames:
+                analyzer.add_analysis("disp_vec_corr_avg disp_vec_corr_avg_{}_upper resname {} leaflet upper interval {}".format(resname, resname, frame_interval))
+                analyzer.add_analysis("disp_vec_corr_avg disp_vec_corr_avg_{}_lower resname {} leaflet lower interval {}".format(resname, resname, frame_interval))
     analyzer.print_analysis_protocol()
 
     # run analysis
@@ -692,11 +696,23 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
     block_averager_upper = BlockAverager(points_per_block=ppb)
     block_averager_upper.push_container(disp_vec_corr_avg_upper[:,1])
     block_average, std_err = block_averager_upper.get()
-    print("Block average of disp_vec_corr_avg in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
+    print("Block average of disp_vec_corr_avg for all in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
     block_averager_lower = BlockAverager(points_per_block=ppb)
     block_averager_lower.push_container(disp_vec_corr_avg_lower[:,1])
     block_average, std_err = block_averager_lower.get()
-    print("Block average of disp_vec_corr_avg in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
+    print("Block average of disp_vec_corr_avg for all in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
+    if resnames is not None:
+        for resname in resnames:
+            disp_vec_corr_avg_upper = analyzer.get_analysis_data('disp_vec_corr_avg_{}_upper'.format(resname))
+            disp_vec_corr_avg_lower = analyzer.get_analysis_data('disp_vec_corr_avg_{}_lower'.format(resname))
+            block_averager_upper = BlockAverager(points_per_block=ppb)
+            block_averager_upper.push_container(disp_vec_corr_avg_upper[:,1])
+            block_average, std_err = block_averager_upper.get()
+            print("Block average of disp_vec_corr_avg for {} in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(resname, block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
+            block_averager_lower = BlockAverager(points_per_block=ppb)
+            block_averager_lower.push_container(disp_vec_corr_avg_lower[:,1])
+            block_average, std_err = block_averager_lower.get()
+            print("Block average of disp_vec_corr_avg for {} in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(resname, block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
     return
 
 def PN_orientational_angle(structure_file, trajectory_file, selection_string,
