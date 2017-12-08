@@ -1910,3 +1910,76 @@ def lipid_length(structure_file, trajectory_file, selection_string,
         print(" ")
 
     return
+
+def lipid_tilt(structure_file, trajectory_file, selection_string,
+               lipid_resnames, ref_atoms, frame_start=0,
+               frame_end=-1, frame_interval=1, dump_path=None, ref_axis='z'):
+    """Protocol to compute lengths of lipids.
+
+    This function uses the BilayerAnalyzer with the analysis 'lipid_tilt' to
+    estimate the tilt angle of specified lipids (by resname). Reports of data
+    are printed to standard out, while pickled data (numpy array) is dumped to
+    disk. The pickle data files have prefix 'lipid_tilt'.
+
+    Args:
+        structure_file (str): The path and filename of the structure file.
+        trajectory_file (str, list): The path and filename of the trajectory
+            file. Also accepts a list of path/filenames.
+        selection_string (str): The MDAnalysis compatible string used to select
+            the bilayer components.
+        lipid_resnames (list): A list of lipid types as specified by their
+            resnames.
+        ref_atoms (dict): A dictionary storing the references atoms to be
+            used in building the vector representation. The outer keys of
+            ref_atoms should be the resnames of the lipids. The inner objects
+            should also be dictionaries with the keys 'start' and 'end'.
+        frame_start (Optional[int]): Specify the index of the first frame
+            of the trajectory to include in the analysis. Defaults to 0,
+            which is the first frame of the trajectory.
+        frame_end (Optional[int]): Specify the index of the last frame
+            of the trajectory to include in the analysis. Defaults to -1,
+            which is the last frame of the trajectory.
+        frame_interval (Optional[int]): Specify the interval between frames of
+            the trajectory to include in the analysis, or the frame frequency.
+            Defaults to 1, which includes all frames [frame_start, frame_end].
+        dump_path (Optional[str]): Specify a file path for the output files.
+            Defaults to None, which outputs in the current directory.
+
+    Returns:
+        void
+
+    """
+    analyzer = BilayerAnalyzer(structure=structure_file,
+                               trajectory=trajectory_file,
+                               selection=selection_string)
+
+    analyzer.set_frame_range(frame_start, frame_end, frame_interval)
+    analyzer.adjust_rep_setting('vector_frame', 'ref_atoms', ref_atoms)
+    # remove the default msd analysis
+    analyzer.remove_analysis('msd_1')
+    # add the loa analyses
+    lipid_resnames.append("all")
+    for res in lipid_resnames:
+        analyzer.add_analysis("lipid_tilt lipid_tilt_{}_upper leaflet upper resname {} ref_axis {}".format(res, res, ref_axis))
+        analyzer.add_analysis("lipid_tilt lipid_tilt_{}_lower leaflet lower resname {} ref_axis {}".format(res, res, ref_axis))
+
+    # compute the correlations between a displacement vector and that lipids
+    # closest neighbor in the lateral dimensions
+    analyzer.print_analysis_protocol()
+
+    # run analysis
+    analyzer.run_analysis()
+
+    # output data and plots
+    analyzer.dump_data(path=dump_path)
+
+    for resname in lipid_resnames:
+        ll_upper = analyzer.get_analysis_data("lipid_tilt_{}_upper".format(resname))
+        ll_lower = analyzer.get_analysis_data("lipid_tilt_{}_lower".format(resname))
+        ll_upper = (ll_upper[:,1].mean(), ll_upper[:,1].std())
+        ll_lower = (ll_lower[:,1].mean(), ll_lower[:,1].std())
+        print("Lipid {} has average tilt of {} in the upper leaflet".format(resname, ll_upper))
+        print("Lipid {} has average tilt of {} in the lower leaflet".format(resname, ll_lower))
+        print(" ")
+
+    return
