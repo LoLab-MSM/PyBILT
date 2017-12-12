@@ -1192,6 +1192,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.settings['wrapped'] = False
         self.settings['interval'] = 5
         self.settings['scale'] = False
+        self.settings['scale_to_max'] = False
         self._valid_settings = self.settings.keys()
         #self.leaflet = 'both'
         #self.group = 'all'
@@ -1200,6 +1201,9 @@ class DispVecProtocol(AnalysisProtocol):
         # parse input arguments
         self._parse_args(args)
 
+        #check the scaling settings
+        if self.settings['scale'] and self.settings['scale_to_max']:
+            self.settings['scale'] = False
         # default function settings
         self.save_file_name = self.analysis_id + ".pickle"
 
@@ -1208,7 +1212,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
-
+        self.boxes = []
         return
 
     # required- function to parse the input arguments from string
@@ -1225,6 +1229,9 @@ class DispVecProtocol(AnalysisProtocol):
                 elif arg_key == 'scale':
                     arg_arg = arg_arg in ['True', 'true']
                     arg_dict[arg_key] = arg_arg
+                elif arg_key == 'scale_to_max':
+                    arg_arg = arg_arg in ['True', 'true']
+                    arg_dict[arg_key] = arg_arg
             elif arg_key == 'analysis_id':
                 pass
             else:
@@ -1238,7 +1245,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.first_comp = True
         self.last_com_frame = None
         self.last_frame = 0
-
+        self.boxes = []
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
@@ -1283,6 +1290,7 @@ class DispVecProtocol(AnalysisProtocol):
             #get box dimensions for reference frame (i.e. prev_frame)
             box = prev_frame.box
             box_lateral = box[ba_settings['lateral']]
+            self.boxes.append(box_lateral)
             # get the coordinates for the selection at this frame
             vec_ends = np.zeros((n_com, 4))
             # vec_ends = []
@@ -1326,19 +1334,37 @@ class DispVecProtocol(AnalysisProtocol):
             self.last_frame = current_frame
             return
         return
+    def _process_output(self):
+        if self.settings['scale_to_max']:
+            boxes = np.array(self.boxes)
+            #print(boxes)
+            max_x = boxes[:,0].max()
+            max_y = boxes[:, 1].max()
+            #print(max_x, max_y)
+            scaled_out = []
+            for vec_end_res in self.analysis_output:
+                vec_ends = vec_end_res[0]
+                resnames = vec_end_res[1]
+                vec_ends[:,0]/=max_x
+                vec_ends[:,2]/=max_x
+                vec_ends[:,1]/=max_y
+                vec_ends[:,3]/=max_y
+                scaled_out.append([vec_ends, resnames])
+            return scaled_out
+        return self.analysis_output
 
     def save_data(self, path=None):
         save_file = self.save_file_name
         if path is not None:
             save_file = path+self.save_file_name
-
+        output = self.get_data()
         with open(save_file, 'wb') as outfile:
-            pickle.dump(self.analysis_output, outfile)
+            pickle.dump(output, outfile)
 
         return
 
     def get_data(self):
-        return self.analysis_output
+        return self._process_output()
 
 
 command_protocols['disp_vec'] = DispVecProtocol
@@ -4158,8 +4184,8 @@ class COMLateralRDFProtocol(AnalysisProtocol):
             self._N += len(leaflet.get_member_indices())
             if leaflet.has_group(ltype_a) and leaflet.has_group(ltype_b):
                 ltype_a_indices = leaflet.get_group_indices(ltype_a)
-                # print(ltype_a)
-                # print(ltype_a_indices)
+                print(ltype_a)
+                print(ltype_a_indices)
                 ltype_b_indices = leaflet.get_group_indices(ltype_b)
                 self._N_a += len(ltype_a_indices)
                 N_a += len(ltype_a_indices)
@@ -4510,3 +4536,199 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
 
 
 command_protocols['spatial_velocity_corr'] = SpatialVelocityCorrelationFunctionProtocol
+
+# define a new analysis
+# valid_analysis.append('stroboscopic_trajectory')
+# analysis_obj_name_dict['stroboscopic_trajectory'] = 'com_frame'
+#
+# #need to think more about box scaling (settings['scale']). currently if set True
+# # will scale by the box size of the reference frame
+# class StroboscopicTrajectoryProtocol(AnalysisProtocol):
+#     def __init__(self, args):
+#         """Compute the stroboscopic trajectory for a specified lipids.
+#
+#         This protocol is identified by the analysis key: 'stroboscopic_trajectory'
+#
+#         Args:
+#             args (list): list of string keys and arguments
+#
+#         Settings (parsed from args to settings dict):
+#             resid (str): MDAnalysis selection string to used to select
+#                 the lipids to include in the analysis. Default: 'all'
+#             wrapped (bool): Specify whether to use the wrapped ('True') or
+#                 un-wrapped ('False') coordinates for the base of the vectors.
+#                 Default: False
+#             interval (int): Sets the frame interval over which to compute the
+#                     displacement vectors. f
+#             scale (bool): Specify whether to scale the coordinates by the box
+#                 dimensions of the reference frame. Default: False
+#
+#         References:
+#             1. Emma Falck, Tomasz Rog, Mikko Karttunen, and Ilpo Vattulainen,
+#                 Lateral Diffusion in Lipid Membranes through Collective Flows,
+#                 Journal of the American Chemical Society, 2008 130 (1), 44-45
+#                 DOI: 10.1021/ja7103558
+#         """
+#         # required
+#         self._short_description = "Displacement vectors."
+#         self._return_length = 4
+#         self.analysis_key = 'disp_vec'
+#         self.analysis_id = 'none'
+#
+#         #default settings
+#         self.settings = dict()
+#         self.settings['leaflet'] = 'both'
+#         self.settings['resname'] = 'all'
+#         self.settings['wrapped'] = False
+#         self.settings['interval'] = 5
+#         self.settings['scale'] = False
+#         self._valid_settings = self.settings.keys()
+#         #self.leaflet = 'both'
+#         #self.group = 'all'
+#         #self.wrapped = False
+#         #self.interval = 10
+#         # parse input arguments
+#         self._parse_args(args)
+#
+#         # default function settings
+#         self.save_file_name = self.analysis_id + ".pickle"
+#
+#         # storage for output
+#         self.analysis_output = []
+#         self.first_comp = True
+#         self.last_com_frame = None
+#         self.last_frame = 0
+#
+#         return
+#
+#     # required- function to parse the input arguments from string
+#     def _cast_settings(self, arg_dict):
+#
+#         for arg_key in arg_dict.keys():
+#             arg_arg = arg_dict[arg_key]
+#             if arg_key in self._valid_settings:
+#                 if arg_key == 'interval':
+#                     arg_dict[arg_key] = int(arg_arg)
+#                 elif arg_key == 'wrapped':
+#                     arg_arg = arg_arg in ['True', 'true']
+#                     arg_dict[arg_key] = arg_arg
+#                 elif arg_key == 'scale':
+#                     arg_arg = arg_arg in ['True', 'true']
+#                     arg_dict[arg_key] = arg_arg
+#             elif arg_key == 'analysis_id':
+#                 pass
+#             else:
+#                 warnings.warn(
+#                     "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+#         return arg_dict
+#
+#
+#     def reset(self):
+#         self.analysis_output = []
+#         self.first_comp = True
+#         self.last_com_frame = None
+#         self.last_frame = 0
+#
+#         return
+#
+#     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+#
+#         if self.first_comp:
+#             self.last_com_frame = ba_reps['com_frame']
+#             self.first_comp = False
+#             self.last_frame = ba_settings['frame_range'][0]
+#             return
+#         current_frame = ba_reps['current_mda_frame'].frame
+#         #print(self.settings['leaflet'])
+#         #print(self.settings['scale'])
+#         interval = (current_frame) - (self.last_frame)
+#         #print (interval, " ", self.settings['interval'])
+#         if interval == self.settings['interval']:
+#             indices = []
+#             if self.settings['leaflet'] == "both":
+#                 for leaflets in ba_reps['leaflets']:
+#                     curr_leaf = ba_reps['leaflets'][leaflets]
+#                     indices += curr_leaf.get_group_indices(self.settings['resname'])
+#             elif self.settings['leaflet'] == "upper":
+#                 curr_leaf = ba_reps['leaflets']['upper']
+#                 indices = curr_leaf.get_group_indices(self.settings['resname'])
+#
+#             elif self.settings['leaflet'] == "lower":
+#                 curr_leaf = ba_reps['leaflets']['lower']
+#                 indices = curr_leaf.get_group_indices(self.settings['resname'])
+#             else:
+#                 # unknown option--use default "both"
+#                 warnings.warn(
+#                     "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
+#                 self.settings['leaflet'] = 'both'
+#                 for leaflets in ba_reps['leaflets']:
+#                     curr_leaf = ba_reps['leaflets'][leaflets]
+#                     indices += curr_leaf.get_group_indices(self.settings['resname'])
+#             n_com = len(indices)
+#
+#             # get the current frame
+#             curr_frame = ba_reps['com_frame']
+#             prev_frame = self.last_com_frame
+#
+#             #get box dimensions for reference frame (i.e. prev_frame)
+#             box = prev_frame.box
+#             box_lateral = box[ba_settings['lateral']]
+#             # get the coordinates for the selection at this frame
+#             vec_ends = np.zeros((n_com, 4))
+#             # vec_ends = []
+#             count = 0
+#             resnames = []
+#             for i in indices:
+#                 resname = curr_frame.lipidcom[i].type
+#                 resnames.append(resname)
+#                 com_i = curr_frame.lipidcom[i].com_unwrap[
+#                     ba_settings['lateral']]
+#                 com_j = prev_frame.lipidcom[i].com_unwrap[
+#                     ba_settings['lateral']]
+#                 com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
+#                 if self.settings['scale']:
+#                     #print("scaling coordinates..")
+#                     #print(self.settings['leaflet'])
+#                     #print(self.settings['scale'])
+#                     #print(type(self.settings['scale']))
+#                     #print(type(self.settings['wrapped']))
+#                     #quit()
+#                     com_i[0]/=box_lateral[0]
+#                     com_i[1]/=box_lateral[1]
+#                     com_j[0]/=box_lateral[0]
+#                     com_j[1]/=box_lateral[1]
+#                     com_j_w[0]/=box_lateral[0]
+#                     com_j_w[1]/=box_lateral[1]
+#
+#                 if self.settings['wrapped']:
+#                     vec_ends[count, 0] = com_j_w[0]
+#                     vec_ends[count, 1] = com_j_w[1]
+#                 else:
+#                     vec_ends[count, 0] = com_j[0]
+#                     vec_ends[count, 1] = com_j[1]
+#                 vec_ends[count, 2] = com_i[0] - com_j[0]
+#                 vec_ends[count, 3] = com_i[1] - com_j[1]
+#
+#                 #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
+#                 count += 1
+#             self.analysis_output.append([vec_ends, resnames])
+#             self.last_com_frame = ba_reps['com_frame']
+#             self.last_frame = current_frame
+#             return
+#         return
+#
+#     def save_data(self, path=None):
+#         save_file = self.save_file_name
+#         if path is not None:
+#             save_file = path+self.save_file_name
+#
+#         with open(save_file, 'wb') as outfile:
+#             pickle.dump(self.analysis_output, outfile)
+#
+#         return
+#
+#     def get_data(self):
+#         return self.analysis_output
+#
+#
+# command_protocols['disp_vec'] = DispVecProtocol
