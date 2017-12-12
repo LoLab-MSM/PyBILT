@@ -66,28 +66,31 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
         marker (str, Optional): Specify a matplotlib marker type for data points.
 
     """
+    ls = '--'
     i = 0
     for dat in dat_list:
+        if i > 5:
+            ls = '-'
         if yerr_list is None:
             if name_list is not None:
                 if marker is None:
-                    plt.plot(dat[0], dat[1],label=name_list[i])
+                    plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls)
                 else:
-                   plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle='--')
+                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle='--')
             else:
                 if marker is None:
-                    plt.plot(dat[0], dat[1])
+                    plt.plot(dat[0], dat[1], linestyle=ls)
                 else:
                     plt.plot(dat[0], dat[1], marker=marker, linestyle='--')
         else:
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i])
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i], linestyle=ls)
                 else:
                     plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle='--')
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i])
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linestyle=ls)
                 else:
                     plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle='--')
         i+=1
@@ -98,10 +101,10 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
     lgd = None
     if name_list is not None:
         #lgd = plt.legend(loc=7)
-        if len(name_list) > 4:
+        if len(name_list) > 3:
             lgd = plt.legend(loc="center left", bbox_to_anchor=(1.04, 0.5))
         else:
-            lgd = plt.legend(loc=0)    
+            lgd = plt.legend(loc=0)
     plt.tight_layout()
     if save:
         if lgd is not None:
@@ -162,6 +165,9 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True, s
     if scaled and wrapped:
         plt.xlim((-0.1, 1.1))
         plt.ylim((-0.1, 1.1))
+    elif scaled and not wrapped:
+        plt.xlim(-0.2, 1.2)
+        plt.ylim(-0.1, 1.2)
     plt.tight_layout()
     if save:
         plt.savefig(filename)
@@ -190,6 +196,53 @@ def plot_step_vectors_comtraj(vectors, colors=None, filename='step_vectors.pdf',
     else:
         plt.quiver(x,y,vx,vy)
     #plt.title('Lateral Displacement Vectors')
+    plt.tight_layout()
+    if save:
+        plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_step_vectors_stroboscopic(vectors_resnames, index=0,
+                                   filename='step_vectors_stroboscopic.pdf',
+                                   save=True, show=False, scaled=False,
+                                   wrapped=False):
+    '''
+    Generates a stroboscopic trajectory plot with the displacement vectors
+    (or step vectors) of a single lipid.
+    Takes the output from the 'disp_vec' analysis of the bilayer_analyzer:
+    '''
+    color_list = _color_list
+    sns.set_style("whitegrid")
+
+    plt.figure()
+    x = []
+    y = []
+    for dv_res in vectors_resnames:
+        dv = dv_res[0]
+        x.append(dv[index][0])
+        y.append(dv[index][1])
+    #print(x)
+    #print(y)
+    Q = plt.plot(x, y)
+    label_string = ""
+
+    #else:
+    #    plt.quiver(x,y,vx,vy)
+    #plt.title('Lateral Displacement Vectors')
+    if scaled:
+        plt.xlabel("x (scaled coordinates)")
+        plt.ylabel("y (scaled coordinates)")
+    else:
+        plt.xlabel("x ($\AA$)")
+        plt.ylabel("y ($\AA$)")
+    if scaled and wrapped:
+        plt.xlim((-0.1, 1.1))
+        plt.ylim((-0.1, 1.1))
+    elif scaled and not wrapped:
+        plt.xlim(-0.2, 1.2)
+        plt.ylim(-0.1, 1.2)
     plt.tight_layout()
     if save:
         plt.savefig(filename)
