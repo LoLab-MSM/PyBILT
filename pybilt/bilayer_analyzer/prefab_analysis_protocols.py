@@ -582,7 +582,8 @@ def compressibility(structure_file, trajectory_file, selection_string,
 
 def dispvector_correlation(structure_file, trajectory_file, selection_string,
                            frame_start=0, frame_end=-1, frame_interval=1,
-                           dump_path="./", name_dict=None, resnames=None):
+                           dump_path="./", name_dict=None, resnames=None,
+                           generate_stroboscopic=False):
     """Protocol to compute lipid displacement vector maps and correlations.
 
     This function uses the BilayerAnalyzer with the analyses 'disp_vec',
@@ -627,9 +628,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
     analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     # add the apl analyses
     # compute the displacment vectors for maps
-    analyzer.add_analysis("disp_vec disp_vec_upper scale True wrapped True leaflet upper interval "
+    analyzer.add_analysis("disp_vec disp_vec_upper scale_to_max True wrapped True leaflet upper interval "
                           + str(frame_interval))
-    analyzer.add_analysis("disp_vec disp_vec_lower scale True wrapped True leaflet lower interval "
+    analyzer.add_analysis("disp_vec disp_vec_lower scale_to_max True wrapped True leaflet lower interval "
                           + str(frame_interval))
     # compute the correlations between a displacement vector and that lipids
     # closest neighbor in the lateral dimensions
@@ -668,6 +669,18 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
         pgf.plot_step_vectors(disp_vec, filename=dump_path+filename_b, scaled=True,
                               wrapped=True)
         counter += 1
+    if generate_stroboscopic:
+        nlipid = len(disp_vecs[0][0])
+        for i in range(nlipid):
+            resname = disp_vecs[0][1][i]
+            counter = i
+            count = form.format(counter)
+            filename = "stroboscopic_upper_"+count+"_"+resname+".pdf"
+            filename_b = "stroboscopic_upper_"+count+"_"+resname+".png"
+            pgf.plot_step_vectors_stroboscopic(disp_vecs, index=i, filename=dump_path+filename, scaled=True,
+                                  wrapped=True)
+            pgf.plot_step_vectors_stroboscopic(disp_vecs, index=i, filename=dump_path+filename_b, scaled=True,
+                                  wrapped=True)
     disp_vecs = analyzer.get_analysis_data('disp_vec_lower')
     counter = 0
     number = str(len("{}".format(len(disp_vecs))) + 1)
@@ -681,6 +694,18 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
         pgf.plot_step_vectors(disp_vec, filename=dump_path+filename_b, scaled=True,
                               wrapped=True)
         counter += 1
+    if generate_stroboscopic:
+        nlipid = len(disp_vecs[0][0])
+        for i in range(nlipid):
+            resname = disp_vecs[0][1][i]
+            counter = i
+            count = form.format(counter)
+            filename = "stroboscopic_lower_"+count+"_"+resname+".pdf"
+            filename_b = "stroboscopic_lower_"+count+"_"+resname+".png"
+            pgf.plot_step_vectors_stroboscopic(disp_vecs, index=i, filename=dump_path+filename, scaled=True,
+                                  wrapped=True)
+            pgf.plot_step_vectors_stroboscopic(disp_vecs, index=i, filename=dump_path+filename_b, scaled=True,
+                                  wrapped=True)
     disp_vec_corr_avg_upper = analyzer.get_analysis_data('disp_vec_corr_avg_upper')
     disp_vec_corr_avg_lower = analyzer.get_analysis_data('disp_vec_corr_avg_lower')
     ppb = len(disp_vec_corr_avg_upper)/3
