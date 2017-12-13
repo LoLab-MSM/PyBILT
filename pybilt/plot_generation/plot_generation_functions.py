@@ -50,7 +50,7 @@ sns.set_style("ticks")
 _color_list = ['blue', 'green','orange','purple', 'black', 'red', 'yellow', 'gray']
 
 def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True, show=False, xlabel=None, ylabel=None,
-         marker=None):
+         marker=None, linestyle=None):
     """Generic plotting function for (multiple) xy datasets.
 
     Args:
@@ -66,33 +66,35 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
         marker (str, Optional): Specify a matplotlib marker type for data points.
 
     """
-    ls = '--'
+    ls = linestyle
+    if linestyle is None:
+        ls = '-'
     i = 0
     for dat in dat_list:
-        if i > 5:
-            ls = '-'
+        if i > 5 and (linestyle is None):
+            ls = '--'
         if yerr_list is None:
             if name_list is not None:
                 if marker is None:
                     plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls)
                 else:
-                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle='--')
+                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle=ls)
             else:
                 if marker is None:
                     plt.plot(dat[0], dat[1], linestyle=ls)
                 else:
-                    plt.plot(dat[0], dat[1], marker=marker, linestyle='--')
+                    plt.plot(dat[0], dat[1], marker=marker, linestyle=ls)
         else:
             if name_list is not None:
                 if marker is None:
                     plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i], linestyle=ls)
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle='--')
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls)
             else:
                 if marker is None:
                     plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linestyle=ls)
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle='--')
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle=ls)
         i+=1
     if xlabel is not None:
         plt.xlabel(xlabel)
