@@ -1345,9 +1345,10 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
                                   colorbar=True, colorbarlabel='Mean curvature ($\AA^{-1}$)',
                                   vmin=curvature_grid_vmin, vmax=curvature_grid_vmax)
         avg_mean = upper_mean.mean()
+        std_mean = upper_mean.std()
         max_mean = upper_mean.max()
         min_mean = upper_mean.min()
-        upper_data.append([avg_mean, max_mean, min_mean])
+        upper_data.append([avg_mean, std_mean, max_mean, min_mean])
         #lower leaflet
         lower_mean = curvatures[1][0]
         x_centers = analyzer.reps['lipid_grid'].leaf_grid['lower'].x_centers
@@ -1366,9 +1367,10 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
                                   colorbar=True, colorbarlabel='Mean curvature ($\AA^{-1}$)',
                                   vmin=curvature_grid_vmin, vmax=curvature_grid_vmax)
         avg_mean = lower_mean.mean()
+        std_mean = lower_mean.std()
         max_mean = lower_mean.max()
         min_mean = lower_mean.min()
-        lower_data.append([avg_mean, max_mean, min_mean])
+        lower_data.append([avg_mean, std_mean, max_mean, min_mean])
         times.append(analyzer.reps['com_frame'].time)
         um_max = np.abs(upper_mean).max()
         um_factor = 1.0
@@ -1393,49 +1395,61 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
     with open(dump_path+"curvature_grid_times_lower_data.pickle", 'wb') as outfile:
         pickle.dump((times, lower_data), outfile)
     pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0])],
+             yerr_list=[upper_data[:, 1], lower_data[:, 1]],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Average Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_average_mean_curvature.pdf")
+             filename=dump_path+"curvature_grid_average_mean_curvature.pdf",
+             marker='s', linestyle="--")
     pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0])],
+             yerr_list=[upper_data[:, 1], lower_data[:, 1]],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Average Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_average_mean_curvature.png")
+             filename=dump_path+"curvature_grid_average_mean_curvature.png",
+             marker='s', linestyle="--")
     print("Mean Average Mean Curvature in upper leaflet: {}".format(upper_data[:,0].mean()))
     print("Mean Average Mean Curvature in lower leaflet: {}".format(lower_data[:,0].mean()))
     pgf.plot([(times, upper_data[:, 1]), (times, lower_data[:, 1])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_max_mean_curvature.pdf")
+             filename=dump_path+"curvature_grid_max_mean_curvature.pdf",
+             marker='s', linestyle="--")
     pgf.plot([(times, upper_data[:, 1]), (times, lower_data[:, 1])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_max_mean_curvature.png")
+             filename=dump_path+"curvature_grid_max_mean_curvature.png",
+             marker='s', linestyle="--")
     print("Max Max Mean Curvature in upper leaflet: {}".format(upper_data[:, 1].max()))
     print("Max Max Mean Curvature in lower leaflet: {}".format(lower_data[:, 1].max()))
     pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 2])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Min Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_min_mean_curvature.pdf")
+             filename=dump_path+"curvature_grid_min_mean_curvature.pdf",
+             marker='s', linestyle="--")
     pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 2])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Min Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_min_mean_curvature.png")
+             filename=dump_path+"curvature_grid_min_mean_curvature.png",
+             marker='s', linestyle="--")
     pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0]),
              (times, upper_data[:, 1]), (times, lower_data[:, 1]),
              (times, upper_data[:, 2]), (times, lower_data[:, 2])],
+             yerr_list=[upper_data[:, 1], lower_data[:, 1], None, None, None, None],
              name_list=['Avg-ul', 'Avg-ll',
              'Max-ul', 'Max-ll', 'Min-ul',
              'Min-ll'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_all_mean_curvature.pdf")
+             filename=dump_path+"curvature_grid_all_mean_curvature.pdf",
+             marker='s', linestyle="--")
     pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0]),
              (times, upper_data[:, 1]), (times, lower_data[:, 1]),
              (times, upper_data[:, 2]), (times, lower_data[:, 2])],
+             yerr_list=[upper_data[:, 1], lower_data[:, 1], None, None, None, None],
              name_list=['Avg-ul', 'Avg-ll',
              'Max-ul', 'Max-ll', 'Min-ul',
              'Min-ll'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Mean Curvature ($\AA^{-1}$)',
-             filename=dump_path+"curvature_grid_all_mean_curvature.png")
+             filename=dump_path+"curvature_grid_all_mean_curvature.png",
+             marker='s', linestyle="--")
     print("Min Min Mean Curvature in the upper leaflet: {}".format(upper_data[:, 2].min()))
     print("Min Min Mean Curvature in the lower leaflet: {}".format(lower_data[:, 2].min()))
     return
@@ -1528,8 +1542,14 @@ def com_lateral_rdf(structure_file, trajectory_file,
         name = "{}-{}".format(pair[0], pair[1])
         all_data['upper'].append((bins, rdf))
         all_names['upper'].append(name)
-        pgf.plot([(bins, rdf)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
-        pgf.plot([(bins, rdf)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Radial Distribution")
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".png",
+                 xlabel="Radial Distance ($\AA$)",
+                 ylabel="Radial Distribution",
+                 linestyle="-")
+        pgf.plot([(bins, rdf)], filename=dump_path+item+".eps",
+                 xlabel="Radial Distance ($\AA$)",
+                 ylabel="Radial Distribution",
+                 linestyle="-")
 
         item = "com_lateral_rdf_{}-{}_lower".format(pair[0], pair[1])
         rdf, bins = analyzer.get_analysis_data(item)
