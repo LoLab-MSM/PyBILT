@@ -1408,31 +1408,31 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
              marker='s', linestyle="--")
     print("Mean Average Mean Curvature in upper leaflet: {}".format(upper_data[:,0].mean()))
     print("Mean Average Mean Curvature in lower leaflet: {}".format(lower_data[:,0].mean()))
-    pgf.plot([(times, upper_data[:, 1]), (times, lower_data[:, 1])],
+    pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 1])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
              filename=dump_path+"curvature_grid_max_mean_curvature.pdf",
              marker='s', linestyle="--")
-    pgf.plot([(times, upper_data[:, 1]), (times, lower_data[:, 1])],
+    pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 1])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
              filename=dump_path+"curvature_grid_max_mean_curvature.png",
              marker='s', linestyle="--")
     print("Max Max Mean Curvature in upper leaflet: {}".format(upper_data[:, 1].max()))
     print("Max Max Mean Curvature in lower leaflet: {}".format(lower_data[:, 1].max()))
-    pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 2])],
+    pgf.plot([(times, upper_data[:, 3]), (times, lower_data[:, 2])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Min Mean Curvature ($\AA^{-1}$)',
              filename=dump_path+"curvature_grid_min_mean_curvature.pdf",
              marker='s', linestyle="--")
-    pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 2])],
+    pgf.plot([(times, upper_data[:, 3]), (times, lower_data[:, 2])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Min Mean Curvature ($\AA^{-1}$)',
              filename=dump_path+"curvature_grid_min_mean_curvature.png",
              marker='s', linestyle="--")
     pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0]),
-             (times, upper_data[:, 1]), (times, lower_data[:, 1]),
-             (times, upper_data[:, 2]), (times, lower_data[:, 2])],
+             (times, upper_data[:, 2]), (times, lower_data[:, 2]),
+             (times, upper_data[:, 3]), (times, lower_data[:, 3])],
              yerr_list=[upper_data[:, 1], lower_data[:, 1], None, None, None, None],
              name_list=['Avg-ul', 'Avg-ll',
              'Max-ul', 'Max-ll', 'Min-ul',
@@ -1441,8 +1441,8 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
              filename=dump_path+"curvature_grid_all_mean_curvature.pdf",
              marker='s', linestyle="--")
     pgf.plot([(times, upper_data[:, 0]), (times, lower_data[:, 0]),
-             (times, upper_data[:, 1]), (times, lower_data[:, 1]),
-             (times, upper_data[:, 2]), (times, lower_data[:, 2])],
+             (times, upper_data[:, 2]), (times, lower_data[:, 2]),
+             (times, upper_data[:, 3]), (times, lower_data[:, 3])],
              yerr_list=[upper_data[:, 1], lower_data[:, 1], None, None, None, None],
              name_list=['Avg-ul', 'Avg-ll',
              'Max-ul', 'Max-ll', 'Min-ul',
