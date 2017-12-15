@@ -1337,18 +1337,29 @@ class DispVecProtocol(AnalysisProtocol):
     def _process_output(self):
         if self.settings['scale_to_max']:
             boxes = np.array(self.boxes)
-            #print(boxes)
+            # print(boxes)
             max_x = boxes[:,0].max()
             max_y = boxes[:, 1].max()
-            #print(max_x, max_y)
+            # print(self.settings['scale'])
+            # print(max_x, max_y)
             scaled_out = []
             for vec_end_res in self.analysis_output:
-                vec_ends = vec_end_res[0]
+                vec_ends = vec_end_res[0].copy()
                 resnames = vec_end_res[1]
-                vec_ends[:,0]/=max_x
-                vec_ends[:,2]/=max_x
-                vec_ends[:,1]/=max_y
-                vec_ends[:,3]/=max_y
+                #print(vec_ends[:,0])
+                #print(max_x)
+                #for i in range(len(vec_ends)):
+                #    vec_ends[i, 0] /= max_x
+                #    vec_ends[i, 2] /= max_x
+                #    vec_ends[i, 1] /= max_y
+                #    vec_ends[i, 3] /= max_y
+                vec_ends[:, 0] /= max_x
+                #vec_ends *= 1.0
+                #print(vec_ends[:,0])
+                vec_ends[:, 2] /= max_x
+                vec_ends[:, 1] /= max_y
+                vec_ends[:, 3] /= max_y
+                #quit()
                 scaled_out.append([vec_ends, resnames])
             return scaled_out
         return self.analysis_output

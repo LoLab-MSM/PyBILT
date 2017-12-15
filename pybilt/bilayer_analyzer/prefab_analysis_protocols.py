@@ -628,10 +628,9 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
     analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     # add the apl analyses
     # compute the displacment vectors for maps
-    analyzer.add_analysis("disp_vec disp_vec_upper scale_to_max True wrapped True leaflet upper interval "
-                          + str(frame_interval))
-    analyzer.add_analysis("disp_vec disp_vec_lower scale_to_max True wrapped True leaflet lower interval "
-                          + str(frame_interval))
+    analyzer.add_analysis("disp_vec disp_vec_upper interval {} wrapped True leaflet upper scale_to_max True".format(frame_interval))
+    analyzer.add_analysis("disp_vec disp_vec_lower interval {} wrapped True leaflet lower scale_to_max True".format(frame_interval))
+
     # compute the correlations between a displacement vector and that lipids
     # closest neighbor in the lateral dimensions
     # analyzer.add_analysis("disp_vec_nncorr disp_vec_nncorr_upper leaflet upper interval "
@@ -664,6 +663,7 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
         count = form.format(counter)
         filename = "step_vector_map_upper_"+count+".pdf"
         filename_b = "step_vector_map_upper_"+count+".png"
+        #pgf.plot_step_vectors(disp_vec, save=False, show=True, scaled=True, wrapped=True)
         pgf.plot_step_vectors(disp_vec, filename=dump_path+filename, scaled=True,
                               wrapped=True)
         pgf.plot_step_vectors(disp_vec, filename=dump_path+filename_b, scaled=True,
