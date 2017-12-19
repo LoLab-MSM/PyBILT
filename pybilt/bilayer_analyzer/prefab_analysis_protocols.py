@@ -656,6 +656,8 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
 
     # generate the plots/maps for displacement vectors
     disp_vecs = analyzer.get_analysis_data('disp_vec_upper')
+    max_dim = analyzer._analysis_protocol['disp_vec_upper'].max_dim
+    print("The maximum box dimensions used for scaling are X: {} and Y: {}".format(max_dim[0], max_dim[1]))
     counter = 0
     number = str(len("{}".format(len(disp_vecs))) + 1)
     form = "{:0"+number+"d}"

@@ -1213,6 +1213,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.last_com_frame = None
         self.last_frame = 0
         self.boxes = []
+        self.max_dim = None
         return
 
     # required- function to parse the input arguments from string
@@ -1246,6 +1247,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.last_com_frame = None
         self.last_frame = 0
         self.boxes = []
+        self.max_dim = None
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
@@ -1340,6 +1342,7 @@ class DispVecProtocol(AnalysisProtocol):
             # print(boxes)
             max_x = boxes[:,0].max()
             max_y = boxes[:, 1].max()
+            self.max_dim = [max_x, max_y]
             # print(self.settings['scale'])
             # print(max_x, max_y)
             scaled_out = []
