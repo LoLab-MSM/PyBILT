@@ -305,7 +305,8 @@ class BilayerAnalyzer(object):
         self.reps['com_frame'] = None
         self.rep_settings['com_frame'] = {'dump': False,
                                          'dump_path': "./",
-                                         'name_dict': None}
+                                         'name_dict': None,
+                                         'multi_bead': False}
         #leaflets
         self.reps['leaflets'] = None
         self.rep_settings['leaflets'] = {'dump': False,
@@ -633,7 +634,7 @@ class BilayerAnalyzer(object):
         return
 
     # mda_trajectory data/access
-    def update_mda_trajectory(self, new_trajectory):
+    def update_mda_trajectory(self, new_trajectory, reset_iterator=True):
         """Set a new trajectory file to read frames from.
         Args:
             new_trajectory (str): A file path and file name for the new
@@ -643,6 +644,8 @@ class BilayerAnalyzer(object):
         print ("updating mda trajectory to:", new_trajectory)
         self._commands['trajectory'] = [new_trajectory]
         self._mda_data.update_trajectory(new_trajectory)
+        if reset_iterator:
+            self._current_frame = self.settings['frame_range'][0]
         return
 
     # buildable objects functions
@@ -763,6 +766,7 @@ class BilayerAnalyzer(object):
         """
 
         for _frame in self:
+            #print(self._current_frame)
             pass
         return
 
@@ -870,7 +874,12 @@ class BilayerAnalyzer(object):
             for index in leaf_lipidvec:
                 self.reps['vector_frame'].lipidvec[index].leaflet = leaflet
         return
-
+    def turn_off_representation(self, rep_key):
+        self._analysis_protocol.use_objects[rep_key] = False
+        return
+    def turn_on_representation(self, rep_key):
+        self._analysis_protocol.use_objects[rep_key] = True
+        return
     #iterator functions --
     def __iter__(self):
         return self
@@ -911,6 +920,7 @@ class BilayerAnalyzer(object):
         #print(self._current_frame)
         #frame = self.mda_data.mda_trajectory[self._current_frame]
         for frame in self._mda_data.mda_trajectory[self._current_frame:self._current_frame+1]:
+            #print(frame.time/1000.0)
             self.reps['current_mda_frame'] = frame
             currcoord = frame.positions[index]
             if firstframe:
@@ -932,39 +942,41 @@ class BilayerAnalyzer(object):
                 # print ("wrapped coords:")
             self._oldcoords = oldcoord
             # print (wrapcoord)
-            #if self._analysis_protocol.use_objects['com_frame']:
+            if self._analysis_protocol.use_objects['com_frame']:
             # now build the COMFrame
-            self.reps['com_frame'] = cf.COMFrame(frame, self._mda_data.bilayer_sel,
-                                         wrapcoord,
-                                         name_dict =
-                                    self.rep_settings['com_frame']['name_dict'])
-            if first_com:
-                self.reps['first_com_frame'] = self.reps['com_frame']
-                self._first_com = False
-            # now we can assign the lipids to the leaflets
-            if self._first_leaflet:
-                self._first_leaflet = False
-                if self.rep_settings['leaflets']['assign_method'] == 'avg_norm':
-                    self.reps['leaflets'] = self._build_leaflets()
-                elif self.rep_settings['leaflets']['assign_method'] == 'orientation':
-                    self.reps['leaflets'] = self._build_leaflets_orientation()
-                self._update_com_frame_leaflet_positions()
-            elif (self._leaflet_counter%self.rep_settings['leaflets']['update_interval'])==0:
-                if self.rep_settings['leaflets']['assign_method'] == 'avg_norm':
-                    self.reps['leaflets'] = self._build_leaflets()
-                elif self.rep_settings['leaflets']['assign_method'] == 'orientation':
-                    self.reps['leaflets'] = self._build_leaflets_orientation()
-                self._update_com_frame_leaflet_positions()
-            if self.rep_settings['com_frame']['dump']:
-                ofname = self.rep_settings['com_frame']['dump_path'] + "com_frame_" + str(
-                    frame.frame) + ".pickle"
-                with open(ofname, 'wb') as ofile:
-                    pickle.dump(self.reps['com_frame'], ofile)
-            if self.rep_settings['leaflets']['dump']:
-                ofname = self.rep_settings['leaflets']['dump_path'] + "leaflets_" + str(
-                    frame.frame) + ".pickle"
-                with open(ofname, 'wb') as ofile:
-                    pickle.dump(self.reps['leaflets'], ofile)
+                self.reps['com_frame'] = cf.COMFrame(frame, self._mda_data.bilayer_sel,
+                                             wrapcoord,
+                                             name_dict =
+                                        self.rep_settings['com_frame']['name_dict'],
+                                        multi_bead=self.rep_settings['com_frame']['multi_bead'])
+                if first_com:
+                    self.reps['first_com_frame'] = self.reps['com_frame']
+                    self._first_com = False
+            if self._analysis_protocol.use_objects['com_frame']:
+                # now we can assign the lipids to the leaflets
+                if self._first_leaflet:
+                    self._first_leaflet = False
+                    if self.rep_settings['leaflets']['assign_method'] == 'avg_norm':
+                        self.reps['leaflets'] = self._build_leaflets()
+                    elif self.rep_settings['leaflets']['assign_method'] == 'orientation':
+                        self.reps['leaflets'] = self._build_leaflets_orientation()
+                    self._update_com_frame_leaflet_positions()
+                elif (self._leaflet_counter%self.rep_settings['leaflets']['update_interval'])==0:
+                    if self.rep_settings['leaflets']['assign_method'] == 'avg_norm':
+                        self.reps['leaflets'] = self._build_leaflets()
+                    elif self.rep_settings['leaflets']['assign_method'] == 'orientation':
+                        self.reps['leaflets'] = self._build_leaflets_orientation()
+                    self._update_com_frame_leaflet_positions()
+                if self.rep_settings['com_frame']['dump']:
+                    ofname = self.rep_settings['com_frame']['dump_path'] + "com_frame_" + str(
+                        frame.frame) + ".pickle"
+                    with open(ofname, 'wb') as ofile:
+                        pickle.dump(self.reps['com_frame'], ofile)
+                if self.rep_settings['leaflets']['dump']:
+                    ofname = self.rep_settings['leaflets']['dump_path'] + "leaflets_" + str(
+                        frame.frame) + ".pickle"
+                    with open(ofname, 'wb') as ofile:
+                        pickle.dump(self.reps['leaflets'], ofile)
 
             if self._analysis_protocol.use_objects['lipid_grid']:
                 self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
@@ -1003,3 +1015,50 @@ class BilayerAnalyzer(object):
         self._current_frame+=self.settings['frame_range'][2]
         if self._current_frame <= self._last_frame:
             return
+
+
+    def unwrap_coordinates_up_to(frame_index):
+        # now we need to unwrap the coordinates
+        natoms = self._mda_data.natoms
+        oldcoord = np.zeros((natoms, 3))
+        currcoord = np.zeros((natoms, 3))
+        wrapcoord = np.zeros((natoms, 3))
+        #first_frame_coord = np.zeros((natoms, 3))
+        index = self._mda_data.bilayer_sel.indices
+        firstframe = self._first_frame
+        #first_com = self._first_com
+        #print("first com: ",first_com)
+        #print("first frame: ", firstframe)
+        #self.settings['frame_index'] = self.settings['frame_range'][0]
+        #for frame in self.mda_data.mda_trajectory[
+        #             self._current_frame:self._current_frame+self.frame_range[2]:self.frame_range[
+        #                 2]]:
+        #with self.mda_data.mda_trajectory[self._current_frame] as frame:
+        #print(self._current_frame)
+        #frame = self.mda_data.mda_trajectory[self._current_frame]
+        last_frame = frame_index
+        frame_step = self.settings['frame_range'][1]
+        if last_frame == -1:
+            last_frame = len(self._mda_data.mda_trajectory)
+        for frame in self._mda_data.mda_trajectory[0:last_frame+1:frame_step]:
+            # self.reps['current_mda_frame'] = frame
+            currcoord = frame.positions[index]
+            if firstframe:
+                oldcoord = np.copy(currcoord)
+                #first_frame_coord = np.copy(oldcoord)
+                self._first_frame = False
+                firstframe = False
+                wrapcoord = np.copy(currcoord)
+            else:
+                abc = frame.dimensions[0:3]
+                oldcoord = self._oldcoords
+                if parallel:
+                    wrapcoord = wrap_coordinates_parallel(abc, currcoord,
+                                                          oldcoord,
+                                                          nprocs=nprocs)
+                else:
+                    wrapcoord = wrap_coordinates(abc, currcoord, oldcoord)
+                # frame._pos[index] = wrapcoord[:]
+                oldcoord = np.copy(wrapcoord)
+                # print ("wrapped coords:")
+            self._oldcoords = oldcoord
