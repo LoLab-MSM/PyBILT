@@ -58,19 +58,28 @@ class LipidCOM(object):
         self.resid = mda_residue.resid
         self.atom_names = mda_residue.atoms.names
         atom_group = mda_residue.atoms
+
         if isinstance(name_dict, dict):
 
             names = name_dict[self.type]
+
             self.atom_names = names
-            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+names[0])])
             n_names = len(names)
+            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+names[0])])
+            #if (not unwrap) and (n_names > 1):
+            #    mda.lib.mdamath.make_whole(mda_residue.atoms, reference_atom=atom_group)
+
             for i in range(1, n_names):
                 atom_group+=eval("mda_residue.atoms."+names[i])
 
+        #else:
+        #    if not unwrap:
+        #        mda.lib.mdamath.make_whole(mda_residue.atoms)
         if unwrap:
             self.com_unwrap = atom_group.center_of_mass()
 
         else:
+
             if box is not None:
                 self.com = atom_group.center_of_mass()
                 self.com_unwrap = self.com[:]
@@ -97,7 +106,7 @@ class COMFrame(object):
     """
 
     # does not check that nlipids is an int
-    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None):
+    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None, multi_bead=False):
         """ Frame initialization.
 
         Args:
@@ -119,6 +128,18 @@ class COMFrame(object):
         # frame number in the MD trajectory
         self.mdnumber = mda_frame.frame
         self.number = self.mdnumber
+        self._multi_bead = multi_bead
+        self._name_dict = name_dict
+        if (name_dict is not None) and multi_bead:
+            self._build_multi_bead(mda_frame, mda_bilayer_selection,
+                                   unwrap_coords, name_dict)
+        else:
+            self._build_single_bead(mda_frame, mda_bilayer_selection,
+                                    unwrap_coords, name_dict=name_dict)
+
+        return
+
+    def _build_single_bead(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None):
         nlipids = len(mda_bilayer_selection.residues)
         # initialize all the LipidCOM objects
         for dummy_i in range(nlipids):
@@ -140,15 +161,64 @@ class COMFrame(object):
         mda_frame._pos[index] = unwrap_coords[:]
         #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
         # to remove center of mass motion of the membrane
-        mem_com = mda_frame.positions[index].mean(axis=0)
+        total_mass = mda_bilayer_selection.masses.sum()
+        mem_com_x = (mda_frame.positions[index][:,0]*mda_bilayer_selection.masses).sum()/total_mass
+        mem_com_y = (mda_frame.positions[index][:,1]*mda_bilayer_selection.masses).sum()/total_mass
+        mem_com_z = (mda_frame.positions[index][:,2]*mda_bilayer_selection.masses).sum()/total_mass
+        mem_com = np.array([mem_com_x, mem_com_y, mem_com_z])
         mda_frame._pos[index] -= mem_com
         self.mem_com = mem_com
         r=0
         for res in mda_bilayer_selection.residues:
             self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict)
             r+=1
-
         return
+
+    def _build_multi_bead(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict):
+        nlipids = len(mda_bilayer_selection.residues)
+
+        #atom indices in mda selection/frame
+        index = mda_bilayer_selection.indices
+        # loop over the residues (lipids) and get the centers of mass
+        ## do the wrapped coordinates
+
+        r=0
+        for res in mda_bilayer_selection.residues:
+            #print(res," ",res.center_of_mass())
+            resname = res.resname
+            # initialize all the LipidCOM objects
+            for atom in name_dict[resname]:
+                name_dict_single = {resname:[atom]}
+                self.lipidcom.append(LipidCOM())
+                self.lipidcom[r].extract(res, name_dict=name_dict_single)
+            #self.lipidcom[r].mass = res.total_mass()
+                r+=1
+        #now unwrapped coordinates
+
+
+        mda_frame._pos[index] = unwrap_coords[:]
+        #now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)
+        # to remove center of mass motion of the membrane
+        total_mass = mda_bilayer_selection.masses.sum()
+        mem_com_x = (mda_frame.positions[index][:,0]*mda_bilayer_selection.masses).sum()/total_mass
+        mem_com_y = (mda_frame.positions[index][:,1]*mda_bilayer_selection.masses).sum()/total_mass
+        mem_com_z = (mda_frame.positions[index][:,2]*mda_bilayer_selection.masses).sum()/total_mass
+        mem_com = np.array([mem_com_x, mem_com_y, mem_com_z])
+        mda_frame._pos[index] -= mem_com
+        self.mem_com = mem_com
+        r=0
+        for res in mda_bilayer_selection.residues:
+
+            #print(res," ",res.center_of_mass())
+            resname = res.resname
+            # initialize all the LipidCOM objects
+            for atom in name_dict[resname]:
+                name_dict_single = {resname:[atom]}
+                self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict_single)
+            #self.lipidcom[r].mass = res.total_mass()
+                r+=1
+        return
+
     def __repr__(self):
         return 'COMFrame for frame %s with %s lipids' % (self.number, len(self.lipidcom))
 
