@@ -154,5 +154,5 @@ dependencies:
   - pip:
     - commonmark==0.5.4
     - recommonmark==0.4.0
-
+    - sphinx-rtd-theme==0.3.1
 
