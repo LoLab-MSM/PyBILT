@@ -1,4 +1,4 @@
-name: pybilt_iss33_test_4
+name: pybilt
 channels:
   - conda-forge
   - defaults
