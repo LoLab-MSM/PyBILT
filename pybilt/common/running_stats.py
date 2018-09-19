@@ -5,7 +5,11 @@ gen_running_average function.
 
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
+from six.moves import range
 
 # Running Statistics
 class RunningStats(object):
@@ -96,7 +100,7 @@ def gen_running_average(onednparray):
     averager = RunningStats()
     nele = len(onednparray)
     output = np.zeros((nele,2))
-    for i in xrange(nele):
+    for i in range(nele):
         averager.push(onednparray[i])
         run_avg = averager.mean()
         run_dev = averager.deviation()

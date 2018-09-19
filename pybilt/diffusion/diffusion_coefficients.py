@@ -5,10 +5,13 @@ from mean squared displacement (MSD) time trajectories.
 
 """
 
-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 from scipy import stats
 from scipy.optimize import curve_fit
+from six.moves import range
 
 
 def diffusion_coefficient_Einstein(times, msd_vals, dim=2, time_range=None):

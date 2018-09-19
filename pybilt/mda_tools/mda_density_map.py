@@ -1,5 +1,9 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 from MDAnalysis.analysis import align
+from six.moves import range
 
 def _adjust_frame_range_for_slicing(fstart, fend, nframes):
     if fend != -1:
@@ -83,12 +87,12 @@ def position_density_map_2d(universe, mda_selections, fstart=0, fend=-1, fstep=1
 
     x_centers = np.zeros(nbins)
     x_nedges = len(x_edges)
-    for i in xrange(1, x_nedges):
+    for i in range(1, x_nedges):
         j = i - 1
         x_centers[j] = x_edges[j] + x_incr_h
     y_centers = np.zeros(nbins)
     y_nedges = len(x_edges)
-    for i in xrange(1, y_nedges):
+    for i in range(1, y_nedges):
         j = i - 1
         y_centers[j] = y_edges[j] + y_incr_h
 
@@ -220,12 +224,12 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
 
     x_centers = np.zeros(nbins)
     x_nedges = len(x_edges)
-    for i in xrange(1, x_nedges):
+    for i in range(1, x_nedges):
         j = i - 1
         x_centers[j] = x_edges[j] + x_incr_h
     y_centers = np.zeros(nbins)
     y_nedges = len(x_edges)
-    for i in xrange(1, y_nedges):
+    for i in range(1, y_nedges):
         j = i - 1
         y_centers[j] = y_edges[j] + y_incr_h
 
@@ -361,12 +365,12 @@ def position_density_map_2d_leaflet_simple(universe, bilayer_selection, resnames
 
     x_centers = np.zeros(nbins)
     x_nedges = len(x_edges)
-    for i in xrange(1, x_nedges):
+    for i in range(1, x_nedges):
         j = i - 1
         x_centers[j] = x_edges[j] + x_incr_h
     y_centers = np.zeros(nbins)
     y_nedges = len(x_edges)
-    for i in xrange(1, y_nedges):
+    for i in range(1, y_nedges):
         j = i - 1
         y_centers[j] = y_edges[j] + y_incr_h
 

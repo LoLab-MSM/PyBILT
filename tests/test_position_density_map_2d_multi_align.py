@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.mda_tools.mda_density_map import position_density_map_2d_multi_align
 import MDAnalysis as mda
 from pybilt.plot_generation.plot_generation_functions import plot_position_density_map_2d

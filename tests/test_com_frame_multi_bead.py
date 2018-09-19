@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 def test_com_frame_multi_bead():
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
@@ -12,7 +13,7 @@ def test_com_frame_multi_bead():
     analyzer.run_analysis()
     com_halp = analyzer.get_analysis_data('halperin_nelson_upper')
     nbeads = len(analyzer.reps['com_frame'])
-    print("There are {} COM beads.".format(nbeads))
+    print(("There are {} COM beads.".format(nbeads)))
     print(com_halp)
 
 if __name__ == '__main__':

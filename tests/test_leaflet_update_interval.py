@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 def test_leaflet_update_interval():
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
@@ -18,11 +19,11 @@ def test_leaflet_update_interval():
 
     analyzer.run_analysis()
 
-    print analyzer.get_analysis_data('nnf_a')
-    print " "
-    print analyzer.get_analysis_data('nnf_b')
-    print " "
-    print analyzer.get_analysis_data('nnf_c')
+    print(analyzer.get_analysis_data('nnf_a'))
+    print(" ")
+    print(analyzer.get_analysis_data('nnf_b'))
+    print(" ")
+    print(analyzer.get_analysis_data('nnf_c'))
 
 if __name__ == '__main__':
     test_leaflet_update_interval()

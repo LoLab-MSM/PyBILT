@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 def test_vector_frame():
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',

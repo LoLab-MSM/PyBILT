@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.mda_tools.mda_distance import com_com_distances_axis_align
 import MDAnalysis as mda
 
@@ -15,7 +16,7 @@ def test_com_com_distances_axis_align():
     print(times)
     print(dists)
 
-    print("average distance: {} +- {}".format(dists[0].mean(), dists[0].std()))
+    print(("average distance: {} +- {}".format(dists[0].mean(), dists[0].std())))
     return
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 import matplotlib.pyplot as plt
 

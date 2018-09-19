@@ -15,6 +15,9 @@ Example:
 """
 
 #imports
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 import matplotlib.cm as cm
 import os
@@ -30,12 +33,7 @@ from scipy.spatial import Delaunay
 from pybilt.common.running_stats import *
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
-
-
-#range/range fix
-if sys.version_info < (3,0):
-    def range(*args, **kwargs):
-        return xrange(*args, **kwargs)
+from six.moves import range
 
 
 # This function is incomplete!
@@ -285,7 +283,7 @@ class FrameShelve(object):
         self.save = save
         if os.path.isdir(self.path):
             shutil.rmtree(self.path)
-        os.mkdir(self.path, 0755)
+        os.mkdir(self.path, 0o755)
         self.fs_name = self.path +'/shelf_frames.db'
         self.frame_shelf = shelve.open(self.fs_name,flag="c", protocol=2)
         return
@@ -548,8 +546,8 @@ class Leaflet(object):
             indices = self.groups[gindex].lg_members
         else:
             #unkwown group name- print warning and use the default "all"
-            print "!! Warning - request for unknown Lipid Group \'",group_name,"\' from the ",self.name," leaflet"
-            print "!! using the default \"all\""
+            print("!! Warning - request for unknown Lipid Group \'",group_name,"\' from the ",self.name," leaflet")
+            print("!! using the default \"all\"")
             for element in self.group_dict:
                 gindex = self.group_dict[element]
                 indices += self.groups[gindex].lg_members
@@ -578,7 +576,7 @@ class Leaflet(object):
         Returns:
             bool: True if there is a LipidGroup with name group_name, and False otherwise.
         """
-        return group_name in self.group_dict.keys()
+        return group_name in list(self.group_dict.keys())
 
     def num_groups(self):
         """ Get the number of LipidGroups in the Leaflet.
@@ -1027,7 +1025,7 @@ class COMTraj(object):
         # you can slice the MDAnalysis trajectory in a loop
         for frame in mda_traj[fstart:fend:fskip]:
             mdframe = frame.frame
-            print "doing full trajectory frame ", mdframe, ", COM trajectory frame ",f
+            print("doing full trajectory frame ", mdframe, ", COM trajectory frame ",f)
             #add the frame object for this frame
             cframe = Frame(self.nlipids)
             # set the box dimensions and the time for this frame
@@ -1036,7 +1034,7 @@ class COMTraj(object):
                 dimensions = self.frame[f-1].box[:]
             cframe.set_box(dimensions)
             cframe.set_time(frame.time)
-            print "time ",mda_traj.time
+            print("time ",mda_traj.time)
             cframe.number = f
             cframe.mdnumber = mdframe
             # loop over the residues (lipids) and get the centers of mass
@@ -1178,8 +1176,8 @@ class COMTraj(object):
             indices=curr_leaf.get_group_indices(group)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
@@ -1453,8 +1451,8 @@ class COMTraj(object):
             indices=curr_leaf.get_group_indices(group)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
@@ -1605,8 +1603,8 @@ class COMTraj(object):
                 For i in range( nframes ).
         """
         if len(self.clusters) == 0:
-            print "Warning!! - call to \'ExportClustersForPlotting\' of a MemSys object with no cluster lists"
-            print "      the \'CheckClustering\' function needs to be called first!"
+            print("Warning!! - call to \'ExportClustersForPlotting\' of a MemSys object with no cluster lists")
+            print("      the \'CheckClustering\' function needs to be called first!")
             return
         xi = self.plane[0]
         yi = self.plane[1]
@@ -1689,8 +1687,8 @@ class COMTraj(object):
             #nlip = len(self.leaflets[leaflet])
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
 
         xi = self.plane[0]
         yi = self.plane[1]
@@ -1808,8 +1806,8 @@ class COMTraj(object):
             nlip = len(self.leaflets[leaflet])
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
 
         xi = self.plane[0]
         yi = self.plane[1]
@@ -1860,8 +1858,8 @@ class COMTraj(object):
             indices=curr_leaf.get_group_indices(group)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
@@ -1905,8 +1903,8 @@ class COMTraj(object):
             indices=curr_leaf.get_group_indices(group)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
@@ -1954,8 +1952,8 @@ class COMTraj(object):
 
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
@@ -2048,8 +2046,8 @@ class COMTraj(object):
 
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
@@ -2105,8 +2103,8 @@ class COMTraj(object):
             nlip = len(self.leaflets[leaflet])
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
         leaf_indices = {}
@@ -2174,8 +2172,8 @@ class COMTraj(object):
             indices=curr_leaf.get_group_indices(group)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet"
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the ",self.name," leaflet")
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             for leaflets in self.leaflets:
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
@@ -2319,7 +2317,7 @@ class COMTraj(object):
         for p in results_ordered:
             fs = frame_ranges[i][0]
             fe = frame_ranges[i][1]
-            print fs, fe
+            print(fs, fe)
             #print msd[fs:(fe+1)].shape
             #print p[:].shape
             zdistf = p[0]

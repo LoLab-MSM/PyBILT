@@ -6,9 +6,13 @@
     However, I have currently left out several bits of the extra functionality, e.g. the handling of an embedded protein.
 '''
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 # import my running stats class
 from pybilt.common.running_stats import RunningStats
+from six.moves import range
 
 
 class LipidGrid_2d(object):
@@ -36,7 +40,7 @@ class LipidGrid_2d(object):
         x_incr_h = self.x_incr / 2.0
         self.x_centers = np.zeros(nxbins)
         self.x_nedges = len(self.x_edges)
-        for i in xrange(1, self.x_nedges):
+        for i in range(1, self.x_nedges):
             j = i - 1
             self.x_centers[j] = self.x_edges[j] + x_incr_h
 
@@ -48,7 +52,7 @@ class LipidGrid_2d(object):
         y_incr_h = self.y_incr / 2.0
         self.y_centers = np.zeros(nybins)
         self.y_nedges = len(self.y_edges)
-        for i in xrange(1, self.x_nedges):
+        for i in range(1, self.x_nedges):
             j = i - 1
             self.y_centers[j] = self.y_edges[j] + y_incr_h
         self.x_length = self.x_max - self.x_min
@@ -165,21 +169,21 @@ class LipidGrids(object):
 
     def thickness_grid(self):
         tgrid = np.zeros((self.nbins_x, self.nbins_y))
-        for ix in xrange(self.nbins_x):
-            for iy in xrange(self.nbins_y):
+        for ix in range(self.nbins_x):
+            for iy in range(self.nbins_y):
                 zu = self.leaf_grid['upper'].get_z_at(ix, iy)
                 zl = self.leaf_grid['lower'].get_z_at(ix, iy)
                 dz = zu - zl
                 tgrid[ix, iy] = dz
                 if dz < 0.0:
-                    print "Warning!!--MD frame number ", self.myframe, " --Value thickness less than zero (", dz, ") at grid point ", ix, " ", iy
+                    print("Warning!!--MD frame number ", self.myframe, " --Value thickness less than zero (", dz, ") at grid point ", ix, " ", iy)
         return tgrid
 
     def average_thickness(self, return_grid=False):
         trun = RunningStats()
         tgrid = self.thickness_grid()
-        for ix in xrange(self.nbins_x):
-            for iy in xrange(self.nbins_y):
+        for ix in range(self.nbins_x):
+            for iy in range(self.nbins_y):
                 tc = tgrid[ix, iy]
                 trun.push(tc)
         avg_out = (trun.mean(), trun.deviation())
@@ -197,16 +201,16 @@ class LipidGrids(object):
             do_leaflet.append(leaflet)
         else:
             # unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'", leaflet, "\' from the LeafletGrids of frame ", self.myframe
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'", leaflet, "\' from the LeafletGrids of frame ", self.myframe)
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
 
         out_dict = {}
         for leaf in do_leaflet:
             out_dict[leaf] = np.zeros((self.nbins_x, self.nbins_y))
-            for ix in xrange(self.nbins_x):
-                for iy in xrange(self.nbins_y):
+            for ix in range(self.nbins_x):
+                for iy in range(self.nbins_y):
                     com_ind = self.leaf_grid[leaf].get_index_at(ix, iy)
                     value = com_values_dict[com_ind]
                     out_dict[leaf][ix, iy] = value
@@ -268,8 +272,8 @@ class LipidGrids(object):
         sx_l = np.zeros((nxb, nyb))
         sy_l = np.zeros((nxb, nyb))
 
-        for ix in xrange(nxb):
-            for iy in xrange(nyb):
+        for ix in range(nxb):
+            for iy in range(nyb):
                 ixp = ix - 1
                 if ixp < 0:
                     ixp += nxb
@@ -304,8 +308,8 @@ class LipidGrids(object):
         ssx_l = np.zeros((nxb, nyb))
         ssy_l = np.zeros((nxb, nyb))
         ssxy_l = np.zeros((nxb, nyb))
-        for ix in xrange(nxb):
-            for iy in xrange(nyb):
+        for ix in range(nxb):
+            for iy in range(nyb):
                 ixp = ix - 1
                 if ixp < 0:
                     ixp += nxb
@@ -349,8 +353,8 @@ class LipidGrids(object):
         dy_u = self.leaf_grid['upper'].y_incr
         dx_l = self.leaf_grid['lower'].x_incr
         dy_l = self.leaf_grid['lower'].y_incr
-        for ix in xrange(nxb):
-            for iy in xrange(nyb):
+        for ix in range(nxb):
+            for iy in range(nyb):
                 # upper
                 sx = sx_u[ix, iy]
                 sy = sy_u[ix, iy]
@@ -406,8 +410,8 @@ class LipidGrids(object):
 
     def grid_to_dict(self, in_grid, leaflet='upper'):
         out_dict = {}
-        for ix in xrange(self.nbins_x):
-            for iy in xrange(self.nbins_y):
+        for ix in range(self.nbins_x):
+            for iy in range(self.nbins_y):
                 l_i = self.leaf_grid[leaflet].get_index_at(ix, iy)
                 grid_val = in_grid[ix, iy]
                 out_dict[l_i] = grid_val
@@ -422,8 +426,8 @@ class LipidGrids(object):
             do_leaflet.append(leaflet)
         else:
             # unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'", leaflet, "\' from the LeafletGrids of frame ", self.myframe
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'", leaflet, "\' from the LeafletGrids of frame ", self.myframe)
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
         out_dict = {}
@@ -436,7 +440,7 @@ class LipidGrids(object):
             if len(color_dict.shape) == 2:
                 C = np.zeros((npoints, color_dict.shape[1]))
         if color_type_dict is not None:
-            dict_type = type(color_type_dict[color_type_dict.keys()[0]])
+            dict_type = type(color_type_dict[list(color_type_dict.keys())[0]])
             if dict_type is str:
                 C = np.zeros(npoints, dtype=np.str)
         for leaf in do_leaflet:
@@ -490,8 +494,8 @@ class LipidGrids(object):
             do_leaflet.append(leaflet)
         else:
             # unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'", leaflet, "\' from the LeafletGrids of frame ", self.myframe
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'", leaflet, "\' from the LeafletGrids of frame ", self.myframe)
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
         out_name = out_path + "leaflet_grid_f" + str(self.myframe) + "_"

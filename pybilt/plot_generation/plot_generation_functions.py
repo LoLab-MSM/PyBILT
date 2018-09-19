@@ -4,8 +4,14 @@ These functions use matplotlib (http://matplotlib.org/index.html) along with Sea
 https://stanford.edu/~mwaskom/software/seaborn/index.html).
 
 '''
+
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import os
 import matplotlib as mpl
+from six.moves import range
 #check for display and swith mpl backend to Agg is there is none
 # solution based on answer by Jindra Helcl on
 # https://stackoverflow.com/questions/8257385/automatic-detection-of-display-availability-with-matplotlib
@@ -21,11 +27,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import sys
-
-#range/xrange fix
-if sys.version_info < (3,0):
-    def range(*args, **kwargs):
-        return xrange(*args, **kwargs)
 
 # the default savefig params can be different from the display params
 # e.g., you may want a higher resolution, or to make the figure
@@ -763,7 +764,7 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
 
     color_list = _color_list
     #build the data objects
-    leaflets = sorted(analyzer_data.keys(), reverse=True)
+    leaflets = sorted(list(analyzer_data.keys()), reverse=True)
     count = 0
     lipid_types = []
     yvals = []
@@ -797,7 +798,7 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
         yv = yvals[i]
         ye = yerr[i]
         color = colors[i]
-        if lipid in val_by_lipid.keys():
+        if lipid in list(val_by_lipid.keys()):
             val_by_lipid[lipid][0].append(xv)
             val_by_lipid[lipid][1].append(yv)
             val_by_lipid[lipid][2].append(ye)

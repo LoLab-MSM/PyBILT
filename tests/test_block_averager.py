@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from pybilt.common.running_stats import BlockAverager
 
@@ -13,20 +14,20 @@ def test_block_averager():
     block_average = np.array([block_0_mean, block_1_mean, block_2_mean]).mean()
     std_err = np.array([block_0_mean, block_1_mean, block_2_mean]).std()/np.sqrt(3)
     #print np.array([block_0_mean, block_1_mean, block_2_mean]).std()
-    print("Manual Block averaging: {} +- {}".format(block_average, std_err))
+    print(("Manual Block averaging: {} +- {}".format(block_average, std_err)))
 
     block_averager = BlockAverager(points_per_block=5)
     block_averager.push_container(block_0_data)
     block_averager.push_container(block_1_data)
     block_averager.push_container(block_2_data)
     block_average, std_err = block_averager.get()
-    print("BlockAverager block averaging: {} +- {}".format(block_average, std_err))
+    print(("BlockAverager block averaging: {} +- {}".format(block_average, std_err)))
     block_averager = BlockAverager(points_per_block=5, store_data=True)
     block_averager.push_container(block_0_data)
     block_averager.push_container(block_1_data)
     block_averager.push_container(block_2_data)
     block_average, std_err = block_averager.get()
-    print("BlockAverager block averaging (store_data=True): {} +- {}".format(block_average, std_err))
+    print(("BlockAverager block averaging (store_data=True): {} +- {}".format(block_average, std_err)))
     return
 
 if __name__ == '__main__':

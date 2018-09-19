@@ -12,6 +12,7 @@ that box."
 
 '''
 import numpy as np
+from six.moves import range
 
 class LipidGrid_2d(object):
     def __init__(self, com_frame, com_frame_indices,plane,nxbins=20,nybins=20):
@@ -43,7 +44,7 @@ class LipidGrid_2d(object):
         x_incr_h = self.x_incr/2.0
         self.x_centers = np.zeros(nxbins)
         self.x_nedges = len(self.x_edges)
-        for i in xrange(1,self.x_nedges):
+        for i in range(1,self.x_nedges):
             j=i-1
             self.x_centers[j]=self.x_edges[j]+x_incr_h
 
@@ -57,7 +58,7 @@ class LipidGrid_2d(object):
         y_incr_h = self.y_incr/2.0
         self.y_centers = np.zeros(nybins)
         self.y_nedges = len(self.y_edges)
-        for i in xrange(1,self.y_nedges):
+        for i in range(1,self.y_nedges):
             j=i-1
             self.y_centers[j]=self.y_edges[j]+y_incr_h
         self.x_length = self.x_max-self.x_min

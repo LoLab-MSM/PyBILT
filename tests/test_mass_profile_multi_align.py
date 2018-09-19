@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.mda_tools.mda_density_profile import mass_density_profile_multi_align
 import MDAnalysis as mda
 from pybilt.plot_generation.plot_generation_functions import plot_density_profile

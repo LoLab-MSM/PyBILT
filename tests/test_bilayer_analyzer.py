@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.bilayer_analyzer import BilayerAnalyzer
 from pybilt.bilayer_analyzer.analysis_protocols import valid_analysis
 
@@ -68,8 +69,8 @@ def test_analysis_defaults():
     print("outputs:")
     for key in valid_analysis:
         a_id = key+"_t"
-        print(a_id+":")
-        print(ba.get_analysis_data(a_id))
+        print((a_id+":"))
+        print((ba.get_analysis_data(a_id)))
 
 
 def test_analysis_iterator():
@@ -85,7 +86,7 @@ def test_analysis_iterator():
     ba.add_analysis('msd msd_2 leaflet upper resname POPC')
     print('Doing analysis iteration...')
     for _frame in ba:
-        print(ba.reps['com_frame'])
+        print((ba.reps['com_frame']))
         print(" ")
 
 

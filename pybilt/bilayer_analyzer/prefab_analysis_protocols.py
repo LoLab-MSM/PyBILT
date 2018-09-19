@@ -13,10 +13,14 @@ Example:
     ... dump_path='./my_output_directory/')
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 import MDAnalysis as mda
+from six.moves import range
 try:
-    import cPickle as pickle
+    import six.moves.cPickle as pickle
 except ImportError as error:
     import pickle
 import pybilt.plot_generation.plot_generation_functions as pgf
@@ -139,11 +143,11 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
     print("Composite for all lipids and both leaflets; whole time range")
     print("Values from estimators:")
     print("  Basic Einstein relation:")
-    print("    Diffusion coefficient: {}".format(D_e))
+    print(("    Diffusion coefficient: {}".format(D_e)))
     print("  Linear fit:")
-    print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+    print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
     print("  Anomalous diffusion fit:")
-    print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+    print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
     # diffusion coeff, first 10 ns
     # Simple application of Einstein relation
     D_e = dc.diffusion_coefficient_Einstein(times, msd_vals,
@@ -157,11 +161,11 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
     print("Composite for all lipids and both leaflets; 0-10 ns")
     print("Values from estimators:")
     print("  Basic Einstein relation:")
-    print("    Diffusion coefficient: {}".format(D_e))
+    print(("    Diffusion coefficient: {}".format(D_e)))
     print("  Linear fit:")
-    print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+    print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
     print("  Anomalous diffusion fit:")
-    print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+    print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
     # diffusion coeff,  10-100 ns
     if max(times) > t10:
         # Simple application of Einstein relation
@@ -176,11 +180,11 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
         print("Composite for all lipids and both leaflets; 10-100 ns")
         print("Values from estimators:")
         print("  Basic Einstein relation:")
-        print("    Diffusion coefficient: {}".format(D_e))
+        print(("    Diffusion coefficient: {}".format(D_e)))
         print("  Linear fit:")
-        print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+        print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
         print("  Anomalous diffusion fit:")
-        print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+        print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
 
     #now each individual lipid type
     for lipid_type in resnames:
@@ -198,14 +202,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
         D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals)
         # Use anomalous diffusion fit
         D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals)
-        print("Composite for "+lipid_type+" and both leaflets; whole time range")
+        print(("Composite for "+lipid_type+" and both leaflets; whole time range"))
         print("Values from estimators:")
         print("  Basic Einstein relation:")
-        print("    Diffusion coefficient: {}".format(D_e))
+        print(("    Diffusion coefficient: {}".format(D_e)))
         print("  Linear fit:")
-        print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+        print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
         print("  Anomalous diffusion fit:")
-        print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+        print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
         # diffusion coeff, first 10 ns
         # Simple application of Einstein relation
         D_e = dc.diffusion_coefficient_Einstein(times, msd_vals,
@@ -216,14 +220,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
         # Use anomalous diffusion fit
         D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals,
                                                      time_range=[t0, t10])
-        print("Composite for "+lipid_type+" and both leaflets; 0-10 ns")
+        print(("Composite for "+lipid_type+" and both leaflets; 0-10 ns"))
         print("Values from estimators:")
         print("  Basic Einstein relation:")
-        print("    Diffusion coefficient: {}".format(D_e))
+        print(("    Diffusion coefficient: {}".format(D_e)))
         print("  Linear fit:")
-        print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+        print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
         print("  Anomalous diffusion fit:")
-        print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+        print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
         if max(times)>t10:
             # diffusion coeff,  10-100 ns
             # Simple application of Einstein relation
@@ -235,16 +239,16 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
             # Use anomalous diffusion fit
             D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals,
                                                          time_range=[t10, t100])
-            print("Composite for "+lipid_type+" and both leaflets; 10-100 ns")
+            print(("Composite for "+lipid_type+" and both leaflets; 10-100 ns"))
             print("Values from estimators:")
             print("  Basic Einstein relation:")
-            print("    Diffusion coefficient: {}".format(D_e))
+            print(("    Diffusion coefficient: {}".format(D_e)))
             print("  Linear fit:")
-            print("    Diffusion coefficient: {} Std Error: {}"
-                  .format(D_l[0], D_l[1]))
+            print(("    Diffusion coefficient: {} Std Error: {}"
+                  .format(D_l[0], D_l[1])))
             print("  Anomalous diffusion fit:")
-            print("    Diffusion coefficient: {} Alpha value: {}"
-                  .format(D_a[0], D_a[1]))
+            print(("    Diffusion coefficient: {} Alpha value: {}"
+                  .format(D_a[0], D_a[1])))
         # now do individual leaflets
         for leaflet in ['upper', 'lower']:
             msd_dat = analyzer.get_analysis_data("msd_" +
@@ -262,14 +266,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
             D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals)
             # Use anomalous diffusion fit
             D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals)
-            print("Composite for " + lipid_type + " and "+leaflet+" leaflet; whole time range")
+            print(("Composite for " + lipid_type + " and "+leaflet+" leaflet; whole time range"))
             print("Values from estimators:")
             print("  Basic Einstein relation:")
-            print("    Diffusion coefficient: {}".format(D_e))
+            print(("    Diffusion coefficient: {}".format(D_e)))
             print("  Linear fit:")
-            print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+            print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
             print("  Anomalous diffusion fit:")
-            print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+            print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
             # diffusion coeff, first 10 ns
             # Simple application of Einstein relation
             D_e = dc.diffusion_coefficient_Einstein(times, msd_vals, time_range=[t0, t10])
@@ -277,14 +281,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
             D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t0, t10])
             # Use anomalous diffusion fit
             D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t0, t10])
-            print("Composite for " + lipid_type + " and "+leaflet+" leaflet; 0-10 ns")
+            print(("Composite for " + lipid_type + " and "+leaflet+" leaflet; 0-10 ns"))
             print("Values from estimators:")
             print("  Basic Einstein relation:")
-            print("    Diffusion coefficient: {}".format(D_e))
+            print(("    Diffusion coefficient: {}".format(D_e)))
             print("  Linear fit:")
-            print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+            print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
             print("  Anomalous diffusion fit:")
-            print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+            print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
             if max(times) > t10:
                 # diffusion coeff,  10-100 ns
                 # Simple application of Einstein relation
@@ -293,14 +297,14 @@ def msd_diffusion(structure_file, trajectory_file, selection_string,
                 D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, time_range=[t10, t100])
                 # Use anomalous diffusion fit
                 D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, time_range=[t10, t100])
-                print("Composite for " + lipid_type + " and "+leaflet+" leaflet; 10-100 ns")
+                print(("Composite for " + lipid_type + " and "+leaflet+" leaflet; 10-100 ns"))
                 print("Values from estimators:")
                 print("  Basic Einstein relation:")
-                print("    Diffusion coefficient: {}".format(D_e))
+                print(("    Diffusion coefficient: {}".format(D_e)))
                 print("  Linear fit:")
-                print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+                print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
                 print("  Anomalous diffusion fit:")
-                print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+                print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
 
 
     return
@@ -382,11 +386,11 @@ def area_per_lipid(structure_file, trajectory_file, selection_string,
     apl_box = analyzer.get_analysis_data('apl_box')
 
     print("Final running average Area per lipid estimates (squared Angstrom): ")
-    print("  via the box dimensions: {:0.4f} +- {:0.4f}".format(apl_box[-1][2], apl_box[-1][3]))
+    print(("  via the box dimensions: {:0.4f} +- {:0.4f}".format(apl_box[-1][2], apl_box[-1][3])))
     print("  via the gridding procedure: ")
     apl_grid = analyzer.get_analysis_data('apl_grid')
     for item in apl_grid.keys():
-        print("    {}: {:0.4f} +- {:0.4f}".format(item, apl_grid[item][-1][2], apl_grid[item][-1][3]))
+        print(("    {}: {:0.4f} +- {:0.4f}".format(item, apl_grid[item][-1][2], apl_grid[item][-1][3])))
     ppb = len(apl_box)/10
     if ppb > 1000:
         ppb=1000
@@ -397,19 +401,19 @@ def area_per_lipid(structure_file, trajectory_file, selection_string,
         if n_b == 0:
             ppb=len(apl_box)
             break
-    print("Will do block average with {} points per block".format(ppb))
+    print(("Will do block average with {} points per block".format(ppb)))
     block_averager = BlockAverager(points_per_block=ppb)
     block_averager.push_container(apl_box[:,1])
     block_average, std_err = block_averager.get()
-    print("Block Averaged ({} points with {} blocks) Area per lipid estimates (squared Angstrom): ".format(len(apl_box),block_averager.number_of_blocks()))
-    print("  via the box dimensions: {:0.4f} +- {:0.4f}".format(block_average, std_err))
+    print(("Block Averaged ({} points with {} blocks) Area per lipid estimates (squared Angstrom): ".format(len(apl_box),block_averager.number_of_blocks())))
+    print(("  via the box dimensions: {:0.4f} +- {:0.4f}".format(block_average, std_err)))
     print("  via the gridding procedure: ")
     apl_grid = analyzer.get_analysis_data('apl_grid')
     for item in apl_grid.keys():
         block_averager = BlockAverager(points_per_block=ppb)
         block_averager.push_container(apl_grid[item][:, 1])
         block_average, std_err = block_averager.get()
-        print("    {}: {:0.4f} +- {:0.4f}".format(item, block_average, std_err))
+        print(("    {}: {:0.4f} +- {:0.4f}".format(item, block_average, std_err)))
     return
 
 
@@ -507,11 +511,11 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string,
     analyzer.save_all_plots()
     # output final ensemble average to stdout
     bt = analyzer.get_analysis_data('bt')
-    print("Bilayer thickness from gridding procedure (Angstrom): {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3]))
+    print(("Bilayer thickness from gridding procedure (Angstrom): {:0.4f} +- {:0.4f}".format(bt[-1][2], bt[-1][3])))
     bt_avg_sq = (bt[:,1].mean())**2
     bt_sq_avg = (bt[:,1]**2).mean()
     fluctuation = np.sqrt(bt_sq_avg - bt_avg_sq)
-    print("Bilayer thickness fluctuation (Angstrom): {:0.4f}".format(fluctuation))
+    print(("Bilayer thickness fluctuation (Angstrom): {:0.4f}".format(fluctuation)))
     return
 
 
@@ -573,9 +577,9 @@ def compressibility(structure_file, trajectory_file, selection_string,
     acm = analyzer.get_analysis_data('acm')
     vcm = analyzer.get_analysis_data('vcm')
     ac = analyzer.get_analysis_data('ac')
-    print("Area compressibility modulus: {} mN/m".format(acm[-1:,1]))
-    print("Area compressibility: {} m/mN".format(ac[-1:,1]))
-    print("Volume compressibility modulus: {} J/Angstrom^3".format(vcm[-1:,1]))
+    print(("Area compressibility modulus: {} mN/m".format(acm[-1:,1])))
+    print(("Area compressibility: {} m/mN".format(ac[-1:,1])))
+    print(("Volume compressibility modulus: {} J/Angstrom^3".format(vcm[-1:,1])))
 
     return
 
@@ -657,7 +661,7 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
     # generate the plots/maps for displacement vectors
     disp_vecs = analyzer.get_analysis_data('disp_vec_upper')
     max_dim = analyzer._analysis_protocol['disp_vec_upper'].max_dim
-    print("The maximum box dimensions used for scaling are X: {} and Y: {}".format(max_dim[0], max_dim[1]))
+    print(("The maximum box dimensions used for scaling are X: {} and Y: {}".format(max_dim[0], max_dim[1])))
     counter = 0
     number = str(len("{}".format(len(disp_vecs))) + 1)
     form = "{:0"+number+"d}"
@@ -723,11 +727,11 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
     block_averager_upper = BlockAverager(points_per_block=ppb)
     block_averager_upper.push_container(disp_vec_corr_avg_upper[:,1])
     block_average, std_err = block_averager_upper.get()
-    print("Block average of disp_vec_corr_avg for all in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
+    print(("Block average of disp_vec_corr_avg for all in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block())))
     block_averager_lower = BlockAverager(points_per_block=ppb)
     block_averager_lower.push_container(disp_vec_corr_avg_lower[:,1])
     block_average, std_err = block_averager_lower.get()
-    print("Block average of disp_vec_corr_avg for all in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
+    print(("Block average of disp_vec_corr_avg for all in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block())))
     if resnames is not None:
         for resname in resnames:
             disp_vec_corr_avg_upper = analyzer.get_analysis_data('disp_vec_corr_avg_{}_upper'.format(resname))
@@ -735,11 +739,11 @@ def dispvector_correlation(structure_file, trajectory_file, selection_string,
             block_averager_upper = BlockAverager(points_per_block=ppb)
             block_averager_upper.push_container(disp_vec_corr_avg_upper[:,1])
             block_average, std_err = block_averager_upper.get()
-            print("Block average of disp_vec_corr_avg for {} in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(resname, block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
+            print(("Block average of disp_vec_corr_avg for {} in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(resname, block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block())))
             block_averager_lower = BlockAverager(points_per_block=ppb)
             block_averager_lower.push_container(disp_vec_corr_avg_lower[:,1])
             block_average, std_err = block_averager_lower.get()
-            print("Block average of disp_vec_corr_avg for {} in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(resname, block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
+            print(("Block average of disp_vec_corr_avg for {} in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(resname, block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block())))
     return
 
 def PN_orientational_angle(structure_file, trajectory_file, selection_string,
@@ -817,12 +821,12 @@ def PN_orientational_angle(structure_file, trajectory_file, selection_string,
     for resname in lipid_resnames:
         loa_upper = analyzer.get_analysis_data("loa_" + resname + "_upper")
         loa_lower = analyzer.get_analysis_data("loa_" + resname + "_lower")
-        print("Lipid resname {} has average PN orientation anlge of {} in the upper leaflet".format(resname, loa_upper[-1][1]))
+        print(("Lipid resname {} has average PN orientation anlge of {} in the upper leaflet".format(resname, loa_upper[-1][1])))
         complement = 90.0 - loa_upper[-1][1]
-        print("    complement angle: {}".format(complement))
-        print("Lipid resname {} has average PN orientation anlge of {} in the lower leaflet".format(resname, np.abs(loa_lower[-1][1])))
+        print(("    complement angle: {}".format(complement)))
+        print(("Lipid resname {} has average PN orientation anlge of {} in the lower leaflet".format(resname, np.abs(loa_lower[-1][1]))))
         complement = 90.0 - np.abs(loa_lower[-1][1])
-        print("    complement angle: {}".format(complement))
+        print(("    complement angle: {}".format(complement)))
         print(" ")
     return
 
@@ -899,7 +903,7 @@ def nearest_neighbor_fraction(structure_file, trajectory_file,
         l1 = pair[0]
         l2 = pair[1]
         t_nnf = analyzer.get_analysis_data("nnf_"+l1+"_"+l2)
-        print("Nearest neighbor fraction for lipid pair {} and {} : {:0.4f} +- {:0.4f}".format(l1, l2, t_nnf[-1][2], t_nnf[-1][3]))
+        print(("Nearest neighbor fraction for lipid pair {} and {} : {:0.4f} +- {:0.4f}".format(l1, l2, t_nnf[-1][2], t_nnf[-1][3])))
     return
 
 
@@ -968,11 +972,11 @@ def normal_displacement_lipid_type_correlation(structure_file, trajectory_file,
     print("Normal dimension displacement-lipid type cross correlation results:"
           )
     for leaflet in ndcorr.keys():
-        print("  {} leaflet:".format(leaflet))
+        print(("  {} leaflet:".format(leaflet)))
         for lipid_resname in ndcorr[leaflet].keys():
             mean = ndcorr[leaflet][lipid_resname][-1][2]
             deviation = ndcorr[leaflet][lipid_resname][-1][3]
-            print("    Lipid resname {}: {:0.4f} +- {:0.4f}".format(lipid_resname, mean, deviation))
+            print(("    Lipid resname {}: {:0.4f} +- {:0.4f}".format(lipid_resname, mean, deviation)))
 
     pgf.plot_displacement_lipid_type_cross_correlation(ndcorr,
                                                        filename="ndcorr.png")
@@ -1078,7 +1082,7 @@ def lipid_grid_maps(structure_file, trajectory_file, selection_string,
 
 
     for resname in sorted(type_colors.keys()):
-        print("lipid resname {} is color {}".format(resname,type_colors[resname]))
+        print(("lipid resname {} is color {}".format(resname,type_colors[resname])))
     return
 
 def distance_cutoff_clustering(structure_file, trajectory_file,
@@ -1155,10 +1159,10 @@ def distance_cutoff_clustering(structure_file, trajectory_file,
         stds = results['avg_size'][:, 3]
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
-        print("resname {} has distance cutoff cluster results in upper leaflet: ".format(resname))
+        print(("resname {} has distance cutoff cluster results in upper leaflet: ".format(resname)))
         for key in results.keys():
             if key is not 'clusters':
-                print("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3]))
+                print(("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3])))
 
         results = analyzer.get_analysis_data("dc_cluster_{}_lower".format(resname))
         plotname_png = "{}dc_cluster_lower_{}_nclusters.png".format(dump_path,resname)
@@ -1174,10 +1178,10 @@ def distance_cutoff_clustering(structure_file, trajectory_file,
         stds = results['avg_size'][:, 3]
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_png)
         pgf.plot_dc_cluster_dat_number([(times, means, stds)], filename=plotname_eps)
-        print("resname {} has distance cutoff cluster results in lower leaflet: ".format(resname))
+        print(("resname {} has distance cutoff cluster results in lower leaflet: ".format(resname)))
         for key in results.keys():
             if key is not 'clusters':
-                print("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3]))
+                print(("  mean {}: {} +- {}".format(key, results[key][-1][2], results[key][-1][3])))
         print("------------------------------------------")
 
     return
@@ -1408,8 +1412,8 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
              save=True, xlabel='Time (ns)', ylabel='Average Mean Curvature ($\AA^{-1}$)',
              filename=dump_path+"curvature_grid_average_mean_curvature.png",
              marker='s', linestyle="--")
-    print("Mean Average Mean Curvature in upper leaflet: {}".format(upper_data[:,0].mean()))
-    print("Mean Average Mean Curvature in lower leaflet: {}".format(lower_data[:,0].mean()))
+    print(("Mean Average Mean Curvature in upper leaflet: {}".format(upper_data[:,0].mean())))
+    print(("Mean Average Mean Curvature in lower leaflet: {}".format(lower_data[:,0].mean())))
     pgf.plot([(times, upper_data[:, 2]), (times, lower_data[:, 1])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
@@ -1420,8 +1424,8 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
              save=True, xlabel='Time (ns)', ylabel='Max Mean Curvature ($\AA^{-1}$)',
              filename=dump_path+"curvature_grid_max_mean_curvature.png",
              marker='s', linestyle="--")
-    print("Max Max Mean Curvature in upper leaflet: {}".format(upper_data[:, 1].max()))
-    print("Max Max Mean Curvature in lower leaflet: {}".format(lower_data[:, 1].max()))
+    print(("Max Max Mean Curvature in upper leaflet: {}".format(upper_data[:, 1].max())))
+    print(("Max Max Mean Curvature in lower leaflet: {}".format(lower_data[:, 1].max())))
     pgf.plot([(times, upper_data[:, 3]), (times, lower_data[:, 2])],
              name_list=['upper leaflet', 'lower leaflet'], show=False,
              save=True, xlabel='Time (ns)', ylabel='Min Mean Curvature ($\AA^{-1}$)',
@@ -1452,8 +1456,8 @@ def curvature_grid(structure_file, trajectory_file, selection_string,
              save=True, xlabel='Time (ns)', ylabel='Mean Curvature ($\AA^{-1}$)',
              filename=dump_path+"curvature_grid_all_mean_curvature.png",
              marker='s', linestyle="--")
-    print("Min Min Mean Curvature in the upper leaflet: {}".format(upper_data[:, 2].min()))
-    print("Min Min Mean Curvature in the lower leaflet: {}".format(lower_data[:, 2].min()))
+    print(("Min Min Mean Curvature in the upper leaflet: {}".format(upper_data[:, 2].min())))
+    print(("Min Min Mean Curvature in the lower leaflet: {}".format(lower_data[:, 2].min())))
     return
 
 def com_lateral_rdf(structure_file, trajectory_file,
@@ -1680,7 +1684,7 @@ def spatial_velocity_correlation_functions(structure_file, trajectory_file,
         pgf.plot([(bins, averages)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         pgf.plot([(bins, averages)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         corr_dist = _estimate_correlation_length(bins, averages)
-        print("Correlation distance for pair {}-{} in the upper leaflet: {} Angstroms".format(pair[0], pair[1], corr_dist))
+        print(("Correlation distance for pair {}-{} in the upper leaflet: {} Angstroms".format(pair[0], pair[1], corr_dist)))
         item = "spatial_velocity_corr_{}-{}_lower".format(pair[0], pair[1])
         bins, averages = analyzer.get_analysis_data(item)
         name = "{}-{}".format(pair[0], pair[1])
@@ -1689,7 +1693,7 @@ def spatial_velocity_correlation_functions(structure_file, trajectory_file,
         pgf.plot([(bins, averages)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         pgf.plot([(bins, averages)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         corr_dist = _estimate_correlation_length(bins, averages)
-        print("Correlation distance for pair {}-{} in the lower leaflet: {} Angstroms".format(pair[0], pair[1], corr_dist))
+        print(("Correlation distance for pair {}-{} in the lower leaflet: {} Angstroms".format(pair[0], pair[1], corr_dist)))
 
         item = "spatial_velocity_corr_{}-{}_both".format(pair[0], pair[1])
         bins, averages = analyzer.get_analysis_data(item)
@@ -1699,7 +1703,7 @@ def spatial_velocity_correlation_functions(structure_file, trajectory_file,
         pgf.plot([(bins, averages)], filename=dump_path+item+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         pgf.plot([(bins, averages)], filename=dump_path+item+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         corr_dist = _estimate_correlation_length(bins, averages)
-        print("Correlation distance for pair {}-{} in both leaflets: {} Angstroms".format(pair[0], pair[1], corr_dist))
+        print(("Correlation distance for pair {}-{} in both leaflets: {} Angstroms".format(pair[0], pair[1], corr_dist)))
     for key in all_data.keys():
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"spatial_velocity_corr_all_"+key+".png", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
         pgf.plot(all_data[key], name_list=all_names[key], filename=dump_path+"spatial_velocity_corr_all_"+key+".eps", xlabel="Radial Distance ($\AA$)", ylabel="Velocity Correlation")
@@ -1780,11 +1784,11 @@ def halperin_nelson(structure_file, trajectory_file, selection_string,
     block_averager_upper = BlockAverager(points_per_block=ppb)
     block_averager_upper.push_container(hn_upper[:,1])
     block_average, std_err = block_averager_upper.get()
-    print("Block average of Halperin-Nelson for all in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block()))
+    print(("Block average of Halperin-Nelson for all in the upper leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_upper.n_blocks, block_averager_upper.points_per_block())))
     block_averager_lower = BlockAverager(points_per_block=ppb)
     block_averager_lower.push_container(hn_lower[:,1])
     block_average, std_err = block_averager_lower.get()
-    print("Block average of Halperin-Nelson for all in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block()))
+    print(("Block average of Halperin-Nelson for all in the lower leaflet: {} +- {} using {} blocks and {} points per block.".format(block_average, std_err, block_averager_lower.n_blocks, block_averager_lower.points_per_block())))
 
     return
 
@@ -1861,12 +1865,12 @@ def lipid_collinearity(structure_file, trajectory_file, selection_string,
         col_lower = analyzer.get_analysis_data("lipid_collinearity_{}-{}_lower".format(resname,resname))
         col_upper = (col_upper[:,1].mean(), col_upper[:,1].std())
         col_lower = (col_lower[:,1].mean(), col_lower[:,1].std())
-        print("Lipid pair {}-{} has average collinearity orientation anlge of {} in the upper leaflet".format(resname, resname, col_upper))
+        print(("Lipid pair {}-{} has average collinearity orientation anlge of {} in the upper leaflet".format(resname, resname, col_upper)))
         complement = 90.0 - col_upper[0]
-        print("    complement angle: {}".format(complement))
-        print("Lipid pair {}-{} has average collinearity orientation anlge of {} in the lower leaflet".format(resname, resname, col_lower))
+        print(("    complement angle: {}".format(complement)))
+        print(("Lipid pair {}-{} has average collinearity orientation anlge of {} in the lower leaflet".format(resname, resname, col_lower)))
         complement = 90.0 - np.abs(col_lower[0])
-        print("    complement angle: {}".format(complement))
+        print(("    complement angle: {}".format(complement)))
         print(" ")
     for i in range(n_res-1):
         res_i = lipid_resnames[i]
@@ -1876,12 +1880,12 @@ def lipid_collinearity(structure_file, trajectory_file, selection_string,
             col_lower = analyzer.get_analysis_data("lipid_collinearity_{}-{}_lower".format(res_i,res_j))
             col_upper = (col_upper[:,1].mean(), col_upper[:,1].std())
             col_lower = (col_lower[:,1].mean(), col_lower[:,1].std())
-            print("Lipid pair {}-{} has average collinearity orientation angle of {} in the upper leaflet".format(res_i, res_j, col_upper))
+            print(("Lipid pair {}-{} has average collinearity orientation angle of {} in the upper leaflet".format(res_i, res_j, col_upper)))
             complement = 90.0 - col_upper[0]
-            print("    complement angle: {}".format(complement))
-            print("Lipid pair {}-{} has average collinearity orientation angle of {} in the lower leaflet".format(res_i, res_j, col_lower))
+            print(("    complement angle: {}".format(complement)))
+            print(("Lipid pair {}-{} has average collinearity orientation angle of {} in the lower leaflet".format(res_i, res_j, col_lower)))
             complement = 90.0 - np.abs(col_lower[0])
-            print("    complement angle: {}".format(complement))
+            print(("    complement angle: {}".format(complement)))
             print(" ")
     return
 
@@ -1952,8 +1956,8 @@ def lipid_length(structure_file, trajectory_file, selection_string,
         ll_lower = analyzer.get_analysis_data("lipid_length_{}_lower".format(resname))
         ll_upper = (ll_upper[:,1].mean(), ll_upper[:,1].std())
         ll_lower = (ll_lower[:,1].mean(), ll_lower[:,1].std())
-        print("Lipid {} has average length of {} in the upper leaflet".format(resname, ll_upper))
-        print("Lipid {} has average length of {} in the lower leaflet".format(resname, ll_lower))
+        print(("Lipid {} has average length of {} in the upper leaflet".format(resname, ll_upper)))
+        print(("Lipid {} has average length of {} in the lower leaflet".format(resname, ll_lower)))
         print(" ")
 
     return
@@ -2025,8 +2029,8 @@ def lipid_tilt(structure_file, trajectory_file, selection_string,
         ll_lower = analyzer.get_analysis_data("lipid_tilt_{}_lower".format(resname))
         ll_upper = (ll_upper[:,1].mean(), ll_upper[:,1].std())
         ll_lower = (ll_lower[:,1].mean(), ll_lower[:,1].std())
-        print("Lipid {} has average tilt of {} in the upper leaflet".format(resname, ll_upper))
-        print("Lipid {} has average tilt of {} in the lower leaflet".format(resname, ll_lower))
+        print(("Lipid {} has average tilt of {} in the upper leaflet".format(resname, ll_upper)))
+        print(("Lipid {} has average tilt of {} in the lower leaflet".format(resname, ll_lower)))
         print(" ")
 
     return

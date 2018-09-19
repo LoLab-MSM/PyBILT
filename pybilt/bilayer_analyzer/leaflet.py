@@ -1,7 +1,11 @@
 
-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 # leaflet object
+
+
 class Leaflet(object):
     """ Create a bilayer Leaflet representation.
     This class object is used to group lipids together according to their bilayer leaflet. It is primarily meant to
@@ -107,8 +111,8 @@ class Leaflet(object):
             indices = self.groups[gindex].lg_members
         else:
             #unkwown group name- print warning and use the default "all"
-            print "!! Warning - request for unknown Lipid Group \'",group_name,"\' from the ",self.name," leaflet"
-            print "!! using the default \"all\""
+            print("!! Warning - request for unknown Lipid Group \'",group_name,"\' from the ",self.name," leaflet")
+            print("!! using the default \"all\"")
             return self.get_member_indices()
 
         return list(indices)
@@ -164,7 +168,7 @@ class Leaflet(object):
         """
         if group_name == 'all':
             return True
-        return group_name in self.group_dict.keys()
+        return group_name in list(self.group_dict.keys())
 
     def num_groups(self):
         """ Get the number of LipidGroups in the Leaflet.

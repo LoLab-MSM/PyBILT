@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 def test_msd_multi():
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
@@ -12,9 +13,9 @@ def test_msd_multi():
 
     analyzer.run_analysis()
 
-    print analyzer.get_analysis_data('msd_multi_1')
-    print analyzer.get_analysis_data('msd_1')
-    print analyzer.get_analysis_data('msd_multi_2')
+    print(analyzer.get_analysis_data('msd_multi_1'))
+    print(analyzer.get_analysis_data('msd_1'))
+    print(analyzer.get_analysis_data('msd_multi_2'))
 
     return
 

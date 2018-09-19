@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 
 
@@ -13,7 +14,7 @@ def test_ba_ap_dispveccorravg():
 
     analyzer.run_analysis()
 
-    print(analyzer.get_analysis_data('disp_vec_corr_avg'))
+    print((analyzer.get_analysis_data('disp_vec_corr_avg')))
     return
 
 

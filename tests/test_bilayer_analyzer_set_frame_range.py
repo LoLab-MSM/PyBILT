@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 
 def test_bilayer_analyzer_set_frame_range():
@@ -14,15 +15,15 @@ def test_bilayer_analyzer_set_frame_range():
     last = 8
     ba.set_frame_range(first=first, last=last)
     print("checking normal integer input:")
-    print("input: first {} and last {}".format(first, last))
-    print("analyzer internal: first {} and last {}".format(ba.settings['frame_range'][0], ba.settings['frame_range'][1]))
+    print(("input: first {} and last {}".format(first, last)))
+    print(("analyzer internal: first {} and last {}".format(ba.settings['frame_range'][0], ba.settings['frame_range'][1])))
 
     print("checking fraction inputs:")
     first = 0.5
     last = 0.9
     ba.set_frame_range(first=first, last=last)
-    print("input: first {} and last {}".format(first, last))
-    print("analyzer internal: first {} and last {}".format(ba.settings['frame_range'][0], ba.settings['frame_range'][1]))
+    print(("input: first {} and last {}".format(first, last)))
+    print(("analyzer internal: first {} and last {}".format(ba.settings['frame_range'][0], ba.settings['frame_range'][1])))
 
     return
 

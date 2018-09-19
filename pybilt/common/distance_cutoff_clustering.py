@@ -1,6 +1,10 @@
 """Function to compute hiearchical distance cutoff clusters."""
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
+from six.moves import range
 
 
 def distance_euclidean(v_a, v_b):

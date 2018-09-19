@@ -1,9 +1,13 @@
 #numpy
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 #MDAnalysis
 import MDAnalysis as mda
 #multiprocessing module
 import multiprocessing as mp
+from six.moves import range
 
 def wrap_coordinates(abc, coord, refcoord):
 	wrapcoord = coord.copy()
@@ -88,7 +92,7 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 	#print "atoms per proc ",atoms_per_proc_base
 	#print "left over ",left_over
 	#assign base ranges
-	for i in xrange(nprocs):
+	for i in range(nprocs):
 		fs = i*atoms_per_proc_base
 		fe = fs + atoms_per_proc_base - 1
 		index_ranges.append([fs,fe])
@@ -97,9 +101,9 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 	#now adjust for leftovers - divide them "equally" over the processes
 	lo = left_over
 	while lo > 0:
-		for i in xrange(nprocs):
+		for i in range(nprocs):
 			index_ranges[i][1]+=1
-			for j in xrange(i+1,nprocs):
+			for j in range(i+1,nprocs):
 				index_ranges[j][0]+=1
 				index_ranges[j][1]+=1
 			lo-=1
@@ -114,7 +118,7 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 	c = []
 	#reference
 	r = []
-	for i in xrange(nprocs):
+	for i in range(nprocs):
 		sfs = index_ranges[i][0]
 		sfe = index_ranges[i][1]+1
 		c.append(coord[sfs:sfe])
@@ -150,7 +154,7 @@ def wrap_coordinates_parallel(abc, coord, refcoord,nprocs=2):
 
 def mda_unwrap(universe, out_file_name):
 	frames = universe.trajectory
-	print "unwrapping coordinates - ouput is ",out_file_name
+	print("unwrapping coordinates - ouput is ",out_file_name)
 	# Setup writer to write aligned dcd file
 	writer = mda.coordinates.DCD.DCDWriter(
 		out_file_name, frames.n_atoms,
@@ -176,7 +180,7 @@ def mda_unwrap(universe, out_file_name):
 
 def mda_unwrap_parallel(universe, out_file_name,nprocs=2):
 	frames = universe.trajectory
-	print "unwrapping coordinates - ouput is ",out_file_name
+	print("unwrapping coordinates - ouput is ",out_file_name)
 	# Setup writer to write aligned dcd file
 	writer = mda.coordinates.DCD.DCDWriter(
 		out_file_name, frames.n_atoms,

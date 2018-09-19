@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.bilayer_analyzer import BilayerAnalyzer
 import numpy as np
 from pybilt.plot_generation import plot_generation_functions as pgf
@@ -30,13 +31,13 @@ def test_lipid_grid_opt():
         lgo_u = lipid_grid_opt.leaf_grid['upper'].lipid_grid
         lg_l = lipid_grid.leaf_grid['lower'].lipid_grid
         lgo_l = lipid_grid_opt.leaf_grid['lower'].lipid_grid
-        print(np.array_equal(lg_u, lgo_u))
-        print(np.array_equal(lg_l, lgo_l))
+        print((np.array_equal(lg_u, lgo_u)))
+        print((np.array_equal(lg_l, lgo_l)))
         comp_l = lg_l == lgo_l
         wh = np.where(comp_l == False)
         print(wh)
-        print(lg_l[wh])
-        print(lgo_l[wh])
+        print((lg_l[wh]))
+        print((lgo_l[wh]))
         # break
     return
 

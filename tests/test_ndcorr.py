@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 
 
@@ -10,6 +11,6 @@ def test_ndcorr():
     analyzer.print_analysis_protocol()
     #use the phosphorous atoms instead of full lipid center of mass
     analyzer.run_analysis()
-    print(analyzer.get_analysis_data('ndcorr_a'))
+    print((analyzer.get_analysis_data('ndcorr_a')))
 
 test_ndcorr()

@@ -1,6 +1,8 @@
 """Defines the MDAData class that is used to store the MDAnalysis objects built from the structure and trajectory file.
 """
-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import MDAnalysis as mda
 
 class MDAData(object):
@@ -21,7 +23,7 @@ class MDAData(object):
         self.indices = self.bilayer_sel.indices
         self.residues = self.bilayer_sel.residues
         self.n_residues = len(self.residues)
-        print(self.__dict__.keys())
+        print((list(self.__dict__.keys())))
 
     def update_trajectory(self, trajectory_file):
         self.mda_universe.load_new(trajectory_file)

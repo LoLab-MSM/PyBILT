@@ -1,7 +1,11 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 import MDAnalysis as mda
 #import the running stats class
 from pybilt.common.running_stats import RunningStats
+from six.moves import range
 
 def vector_to_unit(v):
     #returns the unit vector version of v: v_u = v/|v|
@@ -102,12 +106,12 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
     #adjust the frame end points for slicing
     fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, len(trajectory))
     nframes = (fend-fstart)/fstep + 1
-    print("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep))
-    print("total of {} frames".format(nframes))
+    print(("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep)))
+    print(("total of {} frames".format(nframes)))
     #build the index lists of acyl components
     print("building index lists for acyl groups")
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
-    print("there are {} acyl groups".format(len(acyl_carbons)))
+    print(("there are {} acyl groups".format(len(acyl_carbons))))
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
     Scd_out = np.zeros((nframes,6))
@@ -120,7 +124,7 @@ def average_deuterium_order_Moore(trajectory,membrane_sel, fstart=0,fend=-1,fste
                 #print(res)
                 mda.lib.mdamath.make_whole(res.atoms)
         Scd_i = RunningStats()
-        for i in xrange(len(acyl_carbons)):
+        for i in range(len(acyl_carbons)):
 
             c_pos = frame.positions[acyl_carbons[i]]
             h1_pos = frame.positions[acyl_hydrogens[i][0]]
@@ -215,8 +219,8 @@ def deuterium_order_parameter(mda_universe, lipid_segids, lipid_acyl_carbons,
     first_frame, last_frame = _adjust_frame_range_for_slicing(first_frame, last_frame, nframes)
 
     nframes = (last_frame - first_frame) / frame_interval
-    print("doing frame slice points {} to {} with step/interval {}".format(first_frame, last_frame, frame_interval))
-    print("total of {} frames".format(nframes))
+    print(("doing frame slice points {} to {} with step/interval {}".format(first_frame, last_frame, frame_interval)))
+    print(("total of {} frames".format(nframes)))
 
     for frame in trajectory[first_frame:last_frame:frame_interval]:
         for lipid_type in lipid_acyl_carbons.keys():
@@ -268,13 +272,13 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
     fstart, fend = _adjust_frame_range_for_slicing(fstart, fend, nframes)
 
     nframes = (fend - fstart)/fstep
-    print("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep))
-    print("total of {} frames".format(nframes))
+    print(("doing frame slice points {} to {} with step/interval {}".format(fstart, fend, fstep)))
+    print(("total of {} frames".format(nframes)))
 
     #build the index lists of acyl components
-    print "building index lists for acyl groups"
+    print("building index lists for acyl groups")
     acyl_carbons,acyl_hydrogens = build_acyl_index_lists(membrane_sel)
-    print "there are ",len(acyl_carbons)," acyl groups"
+    print("there are ",len(acyl_carbons)," acyl groups")
     #configuration and time average for Scd = < 0.5 ( 3 cos**2(beta) - 1) >
     Scd = RunningStats()
     # Scd_out = np.zeros((nframes,3))
@@ -284,7 +288,7 @@ def average_deuterium_order_Vermeer(trajectory,membrane_sel, fstart=0,fend=-1,fs
     for frame in trajectory[fstart:fend:fstep]:
         curr_time = frame.time
         Scd_i = RunningStats()
-        for i in xrange(len(acyl_carbons)):
+        for i in range(len(acyl_carbons)):
 
             c_i = acyl_carbons[i]
             h1_i = acyl_hydrogens[i][0]

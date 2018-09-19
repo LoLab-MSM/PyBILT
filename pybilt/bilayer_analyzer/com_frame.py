@@ -1,13 +1,13 @@
 #imports
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import MDAnalysis as mda
 import numpy as np
 
 import sys
+from six.moves import range
 
-#range/xrange fix
-if sys.version_info < (3,0):
-    def range(*args, **kwargs):
-        return xrange(*args, **kwargs)
 
 class LipidCOM(object):
     """ A lipid center of mass (COM) object.
@@ -262,7 +262,7 @@ class COMFrame(object):
                 # print('bl bh',box_low, box_high)
                 # print('mc b', self.mem_com, self.box)
                 self.lipidcom[r].com = pos_n
-        print('n_re', n_re)
+        print(('n_re', n_re))
         return
 
     def __repr__(self):

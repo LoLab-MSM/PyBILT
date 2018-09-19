@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 import pybilt.com_trajectory.COMTraj as comtraj
 import MDAnalysis as mda
@@ -22,7 +23,7 @@ def test_msd():
     print("MSD from COMTraj:")
     print(msd_dat_b)
 
-    print("BilayerAnalyzer and COMTraj match: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001)))
+    print(("BilayerAnalyzer and COMTraj match: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001))))
 
     #redo bilayer_anlayzer calc, but use the iterator looper
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
@@ -36,7 +37,7 @@ def test_msd():
     msd_dat_c = analyzer.get_analysis_data('msd_1')
     print("MSD from BilayerAnalyzer obtained using iterator:")
     print(msd_dat_c)
-    print("matches first BilayerAnalyzer comp: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001)))
+    print(("matches first BilayerAnalyzer comp: {}".format(np.isclose(msd_dat_a, msd_dat_b, rtol=0.001))))
     #print(analyzer.mda_data.bilayer_sel.residues[0].center_of_mass())
 
 

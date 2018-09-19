@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 def test_halperin_nelson():
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
@@ -12,7 +13,7 @@ def test_halperin_nelson():
 
     analyzer.run_analysis()
 
-    print analyzer.get_analysis_data('hn')
+    print(analyzer.get_analysis_data('hn'))
 
 if __name__ == '__main__':
     test_halperin_nelson()
