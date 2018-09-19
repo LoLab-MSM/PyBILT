@@ -106,7 +106,9 @@ class COMFrame(object):
     """
 
     # does not check that nlipids is an int
-    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None, multi_bead=False, rewrap=False):
+    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords,
+                 name_dict=None, multi_bead=False, rewrap=False,
+                 make_whole=False):
         """ Frame initialization.
 
         Args:
@@ -131,6 +133,7 @@ class COMFrame(object):
         self._multi_bead = multi_bead
         self._name_dict = name_dict
         self._rewrapped = rewrap
+        self._make_whole = make_whole
         if (name_dict is not None) and multi_bead:
             self._build_multi_bead(mda_frame, mda_bilayer_selection,
                                    unwrap_coords, name_dict)
@@ -142,7 +145,8 @@ class COMFrame(object):
 
         return
 
-    def _build_single_bead(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None):
+    def _build_single_bead(self, mda_frame, mda_bilayer_selection,
+                           unwrap_coords, name_dict=None):
         nlipids = len(mda_bilayer_selection.residues)
         # initialize all the LipidCOM objects
         for dummy_i in range(nlipids):
@@ -155,7 +159,7 @@ class COMFrame(object):
         r=0
         for res in mda_bilayer_selection.residues:
             #print(res," ",res.center_of_mass())
-            self.lipidcom[r].extract(res, name_dict=name_dict)
+            self.lipidcom[r].extract(res, name_dict=name_dict, make_whole=self._make_whole)
             #self.lipidcom[r].mass = res.total_mass()
             r+=1
         #now unwrapped coordinates
@@ -173,7 +177,7 @@ class COMFrame(object):
         self.mem_com = mem_com
         r=0
         for res in mda_bilayer_selection.residues:
-            self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict)
+            self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict, make_whole=self._make_whole)
             r+=1
         return
 
@@ -193,7 +197,7 @@ class COMFrame(object):
             for atom in name_dict[resname]:
                 name_dict_single = {resname:[atom]}
                 self.lipidcom.append(LipidCOM())
-                self.lipidcom[r].extract(res, name_dict=name_dict_single)
+                self.lipidcom[r].extract(res, name_dict=name_dict_single, make_whole=self._make_whole)
             #self.lipidcom[r].mass = res.total_mass()
                 r+=1
         #now unwrapped coordinates
@@ -217,7 +221,7 @@ class COMFrame(object):
             # initialize all the LipidCOM objects
             for atom in name_dict[resname]:
                 name_dict_single = {resname:[atom]}
-                self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict_single)
+                self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict_single, make_whole=self._make_whole)
             #self.lipidcom[r].mass = res.total_mass()
                 r+=1
         return

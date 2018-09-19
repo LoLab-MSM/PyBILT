@@ -308,7 +308,8 @@ class BilayerAnalyzer(object):
                                          'dump_path': "./",
                                          'name_dict': None,
                                          'multi_bead': False,
-                                         'rewrap': False}
+                                         'rewrap': False,
+                                         'make_whole': False}
         #leaflets
         self.reps['leaflets'] = None
         self.rep_settings['leaflets'] = {'dump': False,
