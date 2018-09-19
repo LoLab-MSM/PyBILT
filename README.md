@@ -1,7 +1,7 @@
 ![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
 ## *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
 ------
-![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
+![Python version badge](https://img.shields.io/badge/python-2.7%2C3.6-blue.svg)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
 [![Documentation Status](https://readthedocs.org/projects/pybilt/badge/?version=latest)](http://pybilt.readthedocs.io/en/latest/?badge=latest)
@@ -33,11 +33,14 @@ The analyses include:
 #### PyBILT run dependencies
 PyBILT has the following major dependencies that need to be installed before it
 can be run:
-   * MDAnalysis 0.16.2
-   * NumPy 1.11.3
-   * SciPy 0.18.1
-   * Matplotlib 2.0.0
-   * Seaborn 0.7.1
+   * MDAnalysis
+   * NumPy
+   * SciPy
+   * Matplotlib
+   * Seaborn
+   * six
+   * future
+
 
 The versions of the above packages are the latest that the pybilt package has
 been tested with under Anaconda 4.3.1 Python 2.7; these are the package
