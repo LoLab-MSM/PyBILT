@@ -34,6 +34,7 @@ import com_frame as cf
 import leaflet as lf
 import vector_frame as vf
 import pybilt.lipid_grid.lipid_grid as lg
+#import pybilt.lipid_grid.lipid_grid_opt as lg
 import analysis_protocols as ap
 import plot_protocols as pp
 from pybilt.common.running_stats import RunningStats
@@ -306,7 +307,8 @@ class BilayerAnalyzer(object):
         self.rep_settings['com_frame'] = {'dump': False,
                                          'dump_path': "./",
                                          'name_dict': None,
-                                         'multi_bead': False}
+                                         'multi_bead': False,
+                                         'rewrap': False}
         #leaflets
         self.reps['leaflets'] = None
         self.rep_settings['leaflets'] = {'dump': False,
@@ -948,7 +950,8 @@ class BilayerAnalyzer(object):
                                              wrapcoord,
                                              name_dict =
                                         self.rep_settings['com_frame']['name_dict'],
-                                        multi_bead=self.rep_settings['com_frame']['multi_bead'])
+                                        multi_bead=self.rep_settings['com_frame']['multi_bead'],
+                                        rewrap=self.rep_settings['com_frame']['rewrap'])
                 if first_com:
                     self.reps['first_com_frame'] = self.reps['com_frame']
                     self._first_com = False
@@ -1017,7 +1020,7 @@ class BilayerAnalyzer(object):
             return
 
 
-    def unwrap_coordinates_up_to(frame_index):
+    def unwrap_coordinates_up_to(self, frame_index):
         # now we need to unwrap the coordinates
         natoms = self._mda_data.natoms
         oldcoord = np.zeros((natoms, 3))
@@ -1026,6 +1029,7 @@ class BilayerAnalyzer(object):
         #first_frame_coord = np.zeros((natoms, 3))
         index = self._mda_data.bilayer_sel.indices
         firstframe = self._first_frame
+        parallel = False
         #first_com = self._first_com
         #print("first com: ",first_com)
         #print("first frame: ", firstframe)
@@ -1037,7 +1041,7 @@ class BilayerAnalyzer(object):
         #print(self._current_frame)
         #frame = self.mda_data.mda_trajectory[self._current_frame]
         last_frame = frame_index
-        frame_step = self.settings['frame_range'][1]
+        frame_step = self.settings['frame_range'][2]
         if last_frame == -1:
             last_frame = len(self._mda_data.mda_trajectory)
         for frame in self._mda_data.mda_trajectory[0:last_frame+1:frame_step]:

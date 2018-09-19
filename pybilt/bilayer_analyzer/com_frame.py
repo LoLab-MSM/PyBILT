@@ -39,7 +39,7 @@ class LipidCOM(object):
         return
     # The name of this function could be changed to be more desriptive, e.g.
     # extract_com_mda_residue
-    def extract(self, mda_residue, unwrap=False, box=None, name_dict=None):
+    def extract(self, mda_residue, unwrap=False, box=None, name_dict=None, make_whole=True):
         """ Get the center of mass coordinates from an MDAnalysis residue
 
         This function calls the MDAnalysis member function center_of_mass() of the residue
@@ -73,8 +73,8 @@ class LipidCOM(object):
                 atom_group+=eval("mda_residue.atoms."+names[i])
 
         #else:
-        #    if not unwrap:
-        #        mda.lib.mdamath.make_whole(mda_residue.atoms)
+        if (not unwrap) and make_whole:
+            mda.lib.mdamath.make_whole(mda_residue.atoms)
         if unwrap:
             self.com_unwrap = atom_group.center_of_mass()
 
@@ -106,7 +106,7 @@ class COMFrame(object):
     """
 
     # does not check that nlipids is an int
-    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None, multi_bead=False):
+    def __init__(self, mda_frame, mda_bilayer_selection, unwrap_coords, name_dict=None, multi_bead=False, rewrap=False):
         """ Frame initialization.
 
         Args:
@@ -130,12 +130,15 @@ class COMFrame(object):
         self.number = self.mdnumber
         self._multi_bead = multi_bead
         self._name_dict = name_dict
+        self._rewrapped = rewrap
         if (name_dict is not None) and multi_bead:
             self._build_multi_bead(mda_frame, mda_bilayer_selection,
                                    unwrap_coords, name_dict)
         else:
             self._build_single_bead(mda_frame, mda_bilayer_selection,
                                     unwrap_coords, name_dict=name_dict)
+        if rewrap:
+            self._rewrap()
 
         return
 
@@ -217,6 +220,45 @@ class COMFrame(object):
                 self.lipidcom[r].extract(res, unwrap=True, name_dict=name_dict_single)
             #self.lipidcom[r].mass = res.total_mass()
                 r+=1
+        return
+
+    def _rewrap(self):
+        ncom = len(self.lipidcom)
+        box_low = np.array([0.0, 0.0, 0.0])
+        box_high = self.box
+        # print(box_low)
+        # print(box_high)
+        # print(self.box)
+        # print(self.mem_com)
+        n_re = 0
+        for r in range(ncom):
+            pos_c = self.lipidcom[r].com_unwrap + self.mem_com
+            pos_n = np.zeros(3)
+            diff = pos_c - self.lipidcom[r].com
+            dist = np.sqrt(np.dot(diff, diff))
+            # is_wrap = False
+            if dist > 1.0:
+                n_re += 1
+                for i in range(3):
+                    p_i = pos_c[i]
+                    b_l = box_low[i]
+                    b_h = box_high[i]
+                    b = self.box[i]
+
+                    while p_i < b_l:
+                        p_i += b
+                        # is_wrap = True
+                    while p_i > b_h:
+                        p_i -= b
+                        # is_wrap = True
+                    pos_n[i] = p_i
+                # print(r, pos_c, pos_n)
+                # print('com', self.lipidcom[r].com)
+                # print('com_u', self.lipidcom[r].com_unwrap)
+                # print('bl bh',box_low, box_high)
+                # print('mc b', self.mem_com, self.box)
+                self.lipidcom[r].com = pos_n
+        print('n_re', n_re)
         return
 
     def __repr__(self):
