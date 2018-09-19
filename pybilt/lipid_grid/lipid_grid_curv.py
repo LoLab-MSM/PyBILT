@@ -153,7 +153,7 @@ class LipidGrids(object):
                         if len(box_z_vals) > 0:
                             #n_box+=1.0
                             box_z_avg = box_z_vals[0]
-                            if box_z_vals > 1:
+                            if len(box_z_vals) > 1:
                                 box_z_avg = np.array(box_z_vals).mean()
                             count.append(float(box_count))
                             z_vals.append(box_z_avg)
