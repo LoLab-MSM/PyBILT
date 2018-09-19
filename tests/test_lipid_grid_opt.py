@@ -37,7 +37,7 @@ def test_lipid_grid_opt():
         print(wh)
         print(lg_l[wh])
         print(lgo_l[wh])
-        break
+        # break
     return
 
 

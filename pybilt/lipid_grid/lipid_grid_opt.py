@@ -161,7 +161,7 @@ class LipidGrid2d(object):
         assigned by distance search over nearest neighbor list of the lipid
         assigned to the previous corner grid point
         (i.e. [max(0,i-1), max(0,j-1)] ). The overall speed improvement is
-        roughly 2-3x with a system of 300 lipids per leaflet. 
+        roughly 2-3x with a system of 300 lipids per leaflet.
 
         Args:
             com_frame (COMFrame): The instance of COMFrame from which to
