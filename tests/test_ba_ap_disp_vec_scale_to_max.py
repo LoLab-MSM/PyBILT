@@ -21,6 +21,6 @@ def test_ba_ap_dv_stm():
     dv_res = output[len(output)-1]
     pgf.plot_step_vectors(dv_res, save=False, show=True, scaled=True, wrapped=True)
     output = analyzer.get_analysis_data('disp_vec_b')
-    pgf.plot_step_vectors_stroboscopic(output, index=0, scaled=True, wrapped=True, save=False, show=True)
+    pgf.plot_step_vectors_stroboscopic(output, index=0, scaled=True, wrapped=True, save=False, show=False)
 if __name__ == '__main__':
     test_ba_ap_dv_stm()

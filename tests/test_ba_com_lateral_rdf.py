@@ -25,7 +25,7 @@ def test_ba_com_lateral_rdf():
     print('com_lateral_rdf: ')
     rdf, bins = ba.get_analysis_data('com_lateral_rdf')
     plt.plot(bins, rdf)
-    plt.show()
+    #plt.show()
     return
 
 if __name__ == '__main__':

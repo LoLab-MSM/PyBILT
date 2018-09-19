@@ -15,7 +15,7 @@ def test_ba_ap_dispveccorravg():
 
     bins, averages = analyzer.get_analysis_data('spatial_velocity_corr')
     plt.plot(bins, averages)
-    plt.show()
+    #plt.show()
     return
 
 
