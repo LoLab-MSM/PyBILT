@@ -34,7 +34,6 @@ import com_frame as cf
 import leaflet as lf
 import vector_frame as vf
 import pybilt.lipid_grid.lipid_grid as lg
-#import pybilt.lipid_grid.lipid_grid_opt as lg
 import analysis_protocols as ap
 import plot_protocols as pp
 from pybilt.common.running_stats import RunningStats
