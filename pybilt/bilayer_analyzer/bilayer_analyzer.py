@@ -37,7 +37,7 @@ import pybilt.lipid_grid.lipid_grid_opt as lg
 from . import analysis_protocols as ap
 from . import plot_protocols as pp
 from pybilt.common.running_stats import RunningStats
-import .mda_data as md
+from . import mda_data as md
 import MDAnalysis as mda
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates, \
@@ -284,6 +284,10 @@ class BilayerAnalyzer(object):
             input_file (str): Optional, the path and filename of input setup file.
             input_dict (dict): Optional, a dictionary of keyed by valid commands and their input values.
         """
+        # Patch for python 2/3 compatibility -- python 2 uses next while
+        # python 3 uses __next__
+        self.next = self.__next__
+        
         #adjustable settings -- used internally in analysis loops and
         #   are passed to the individual analyses.
         self.settings = dict()
@@ -882,10 +886,12 @@ class BilayerAnalyzer(object):
     def turn_on_representation(self, rep_key):
         self._analysis_protocol.use_objects[rep_key] = True
         return
+
     #iterator functions --
     def __iter__(self):
         return self
-    def next(self):
+
+    def __next__(self):
         """ Runs the analysis as an iterator.
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
