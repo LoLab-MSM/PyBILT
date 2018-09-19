@@ -15,6 +15,7 @@ the handling of an embedded proteins.
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from builtins import object
 import numpy as np
 import sys
 from scipy.ndimage.filters import gaussian_filter
