@@ -1,1 +1,1 @@
-from diffusion_coefficients import *
+from .diffusion_coefficients import *

@@ -29,14 +29,14 @@ import multiprocessing
 import sys
 
 # PyBILT imports
-import com_frame as cf
-import leaflet as lf
-import vector_frame as vf
+from . import com_frame as cf
+from . import leaflet as lf
+from . import vector_frame as vf
 import pybilt.lipid_grid.lipid_grid_opt as lg
-import analysis_protocols as ap
-import plot_protocols as pp
+from . import analysis_protocols as ap
+from . import plot_protocols as pp
 from pybilt.common.running_stats import RunningStats
-import mda_data as md
+import .mda_data as md
 import MDAnalysis as mda
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates, \
