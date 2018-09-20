@@ -423,7 +423,7 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         system_com = system_sel.atoms.center_of_mass()
         system_z = system_com[dir_ind]
         #now do the alignment and get new com and axis coordinates
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         system_com_a = system_sel.atoms.center_of_mass()
         system_z_a = system_com_a[dir_ind]
         dz_a = system_z_a - system_z
@@ -467,7 +467,7 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         bx = frame.dimensions[lat_ind[0]]
         by = frame.dimensions[lat_ind[1]]
         # now do the alignment
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         binvolume = incr * bx * by
         for key in mda_selections.keys():
             indices = mda_selections[key].indices
