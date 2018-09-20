@@ -178,7 +178,7 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
         system_x = system_com[lat_ind][0]
         system_y = system_com[lat_ind][1]
         #now do the alignment and get new com and axis coordinates
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         system_com_a = system_sel.atoms.center_of_mass()
         system_x_a = system_com_a[lat_ind][0]
         system_y_a = system_com_a[lat_ind][1]
@@ -247,7 +247,7 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
     for frame in universe.trajectory[fstart:fend:fstep]:
 
         # now do the alignment
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
 
         for key in mda_selections.keys():
             indices = mda_selections[key].indices
