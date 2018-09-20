@@ -825,7 +825,7 @@ def plot_displacement_lipid_type_cross_correlation(analyzer_data, filename='norm
     plt.legend(loc=0)
     plt.xlabel('Lipid type')
     plt.ylabel('Cross correlation')
-    plt.tick_params(labelbottom='off')
+    plt.tick_params(labelbottom=False)
     plt.tight_layout()
     if save:
         plt.savefig(filename)
