@@ -1,5 +1,9 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 from MDAnalysis.analysis import align
+from six.moves import range
 
 def _adjust_frame_range_for_slicing(fstart, fend, nframes):
     if fend != -1:
@@ -83,12 +87,12 @@ def position_density_map_2d(universe, mda_selections, fstart=0, fend=-1, fstep=1
 
     x_centers = np.zeros(nbins)
     x_nedges = len(x_edges)
-    for i in xrange(1, x_nedges):
+    for i in range(1, x_nedges):
         j = i - 1
         x_centers[j] = x_edges[j] + x_incr_h
     y_centers = np.zeros(nbins)
     y_nedges = len(x_edges)
-    for i in xrange(1, y_nedges):
+    for i in range(1, y_nedges):
         j = i - 1
         y_centers[j] = y_edges[j] + y_incr_h
 
@@ -174,7 +178,7 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
         system_x = system_com[lat_ind][0]
         system_y = system_com[lat_ind][1]
         #now do the alignment and get new com and axis coordinates
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         system_com_a = system_sel.atoms.center_of_mass()
         system_x_a = system_com_a[lat_ind][0]
         system_y_a = system_com_a[lat_ind][1]
@@ -220,12 +224,12 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
 
     x_centers = np.zeros(nbins)
     x_nedges = len(x_edges)
-    for i in xrange(1, x_nedges):
+    for i in range(1, x_nedges):
         j = i - 1
         x_centers[j] = x_edges[j] + x_incr_h
     y_centers = np.zeros(nbins)
     y_nedges = len(x_edges)
-    for i in xrange(1, y_nedges):
+    for i in range(1, y_nedges):
         j = i - 1
         y_centers[j] = y_edges[j] + y_incr_h
 
@@ -243,7 +247,7 @@ def position_density_map_2d_multi_align(universe, mda_selections, align_struct_u
     for frame in universe.trajectory[fstart:fend:fstep]:
 
         # now do the alignment
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
 
         for key in mda_selections.keys():
             indices = mda_selections[key].indices
@@ -361,12 +365,12 @@ def position_density_map_2d_leaflet_simple(universe, bilayer_selection, resnames
 
     x_centers = np.zeros(nbins)
     x_nedges = len(x_edges)
-    for i in xrange(1, x_nedges):
+    for i in range(1, x_nedges):
         j = i - 1
         x_centers[j] = x_edges[j] + x_incr_h
     y_centers = np.zeros(nbins)
     y_nedges = len(x_edges)
-    for i in xrange(1, y_nedges):
+    for i in range(1, y_nedges):
         j = i - 1
         y_centers[j] = y_edges[j] + y_incr_h
 

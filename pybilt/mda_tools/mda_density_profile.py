@@ -1,7 +1,11 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 import pybilt.common.gaussian as gauss
 
 from MDAnalysis.analysis import align
+from six.moves import range
 
 #dictionary of elements and their valence electron counts - used for electron profile density
 valence_dict = {'H':1,'C':4,'N':5,'O':6,'P':5}
@@ -81,7 +85,7 @@ def electron_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1,
     incr_h = incr/2.0
     centers = np.zeros(nbins)
     nedges = len(edges)
-    for i in xrange(1,nedges):
+    for i in range(1,nedges):
         j=i-1
         centers[j]=edges[j]+incr_h
 
@@ -193,7 +197,7 @@ def electron_density_profile_gaussians(trajectory,mda_selection, fstart=0,fend=-
     incr_h = incr/2.0
     centers = np.zeros(nbins)
     nedges = len(edges)
-    for i in xrange(1,nedges):
+    for i in range(1,nedges):
         j=i-1
         centers[j]=edges[j]+incr_h
 
@@ -205,7 +209,7 @@ def electron_density_profile_gaussians(trajectory,mda_selection, fstart=0,fend=-
         sel_z = np.array(sel_z)
     f=0
     for frame in trajectory[fstart:fend:fstep]:
-        print "doing frame ",f
+        print("doing frame ",f)
         bx = frame.dimensions[lat_ind[0]]
         by = frame.dimensions[lat_ind[1]]
         binvolume = incr*bx*by
@@ -220,7 +224,7 @@ def electron_density_profile_gaussians(trajectory,mda_selection, fstart=0,fend=-
             sigma = sizes[j]/size_to_sigma
             gc = gauss.GaussianRange((minz,maxz),z,sigma,npoints=(2*nbins))
             #now loop over the edges of the profile axis
-            for i in xrange(1,nbins+1):
+            for i in range(1,nbins+1):
                 zl = edges[i-1]
                 zu = edges[i]
 
@@ -295,7 +299,7 @@ def mass_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axi
     incr_h = incr/2.0
     centers = np.zeros(nbins)
     nedges = len(edges)
-    for i in xrange(1,nedges):
+    for i in range(1,nedges):
         j=i-1
         centers[j]=edges[j]+incr_h
 
@@ -355,7 +359,7 @@ def get_intersections(x, y1, y2):
         yl = y2
         yh = y1
     output = []
-    for i in xrange(1,nx):
+    for i in range(1,nx):
         ylc = yl[i]
         ylp = yl[i-1]
         yhp = yh[i-1]
@@ -419,7 +423,7 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         system_com = system_sel.atoms.center_of_mass()
         system_z = system_com[dir_ind]
         #now do the alignment and get new com and axis coordinates
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         system_com_a = system_sel.atoms.center_of_mass()
         system_z_a = system_com_a[dir_ind]
         dz_a = system_z_a - system_z
@@ -446,7 +450,7 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
     incr_h = incr / 2.0
     centers = np.zeros(nbins)
     nedges = len(edges)
-    for i in xrange(1, nedges):
+    for i in range(1, nedges):
         j = i - 1
         centers[j] = edges[j] + incr_h
 
@@ -463,7 +467,7 @@ def mass_density_profile_multi_align(universe, mda_selections, align_struct_univ
         bx = frame.dimensions[lat_ind[0]]
         by = frame.dimensions[lat_ind[1]]
         # now do the alignment
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         binvolume = incr * bx * by
         for key in mda_selections.keys():
             indices = mda_selections[key].indices

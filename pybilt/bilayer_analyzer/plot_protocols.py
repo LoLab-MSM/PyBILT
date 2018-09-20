@@ -1,4 +1,9 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from builtins import object
 import pybilt.plot_generation.plot_generation_functions as pgf
+from six.moves import range
 
 
 command_protocols = {}
@@ -105,8 +110,8 @@ class PlotProtocol(object):
     def save_plots(self, analysis_protocol):
         print ('dumping plot data to pickle files...')
         for plot_id in self.plot_ids:
-            print ("plot id: " + plot_id + " ---> " + self.command_protocol[
-                plot_id].save_file_name)
+            print(("plot id: " + plot_id + " ---> " + self.command_protocol[
+                plot_id].save_file_name))
             self.command_protocol[plot_id].generate_plot(analysis_protocol)
 
 
@@ -210,8 +215,8 @@ class MSDPlotProtocol(PlotFunctionProtocol):
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print (
-        "Plot " + self.plot_id + " for MSD analysis:" + str(self.include))
+        print((
+        "Plot " + self.plot_id + " for MSD analysis:" + str(self.include)))
         return
 
     def generate_plot(self, analysis_protocol):
@@ -293,9 +298,9 @@ class APLPlotProtocol(PlotFunctionProtocol):
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print (
+        print((
         "Plot " + self.plot_id + " for area per lipid (APL) analysis:" + str(
-            self.include))
+            self.include)))
         return
 
     def generate_plot(self, analysis_protocol):
@@ -391,8 +396,8 @@ class DispVecPlotProtocol(PlotFunctionProtocol):
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print ("Plot {} for displacement vector "
-               "analysis: {}".format(self.plot_id, self.include))
+        print(("Plot {} for displacement vector "
+               "analysis: {}".format(self.plot_id, self.include)))
         return
 
     def generate_plot(self, analysis_protocol):
@@ -488,8 +493,8 @@ class BTPlotProtocol(PlotFunctionProtocol):
         # required - a check protocol function which reports relevant settings
 
     def print_protocol(self):
-        print ("Plot {} for bilayer thickness "
-               "analysis: {}".format(self.plot_id, self.include))
+        print(("Plot {} for bilayer thickness "
+               "analysis: {}".format(self.plot_id, self.include)))
         return
 
     def generate_plot(self, analysis_protocol):

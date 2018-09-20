@@ -12,17 +12,18 @@ the handling of an embedded proteins.
 
 # TODO (blakeaw1102@gmail): Add embedded protein functionality to lipid grid.
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from builtins import object
 import numpy as np
 import sys
 from scipy.ndimage.filters import gaussian_filter
 # pybilt imports
 from pybilt.common.running_stats import RunningStats
 from pybilt.common.distance_cutoff_clustering import distance_euclidean_pbc
+from six.moves import range
 
-# range/xrange fix
-if sys.version_info < (3, 0):
-    def range(*args, **kwargs):
-        return xrange(*args, **kwargs)
 
 
 
@@ -500,8 +501,8 @@ class LipidGrids(object):
             do_leaflet.append(leaflet)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe)
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
 
@@ -611,8 +612,8 @@ class LipidGrids(object):
             do_leaflet.append(leaflet)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe)
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
         out_dict = {}
@@ -669,8 +670,8 @@ class LipidGrids(object):
             do_leaflet.append(leaflet)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe)
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
         out_name = out_path+"leaflet_grid_f"+str(self.myframe)+"_"
@@ -759,8 +760,8 @@ class LipidGrids(object):
             do_leaflet.append(leaflet)
         else:
             #unknown option--use default "both"
-            print "!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe
-            print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+            print("!! Warning - request for unknown leaflet name \'",leaflet,"\' from the LeafletGrids of frame ",self.myframe)
+            print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
             do_leaflet.append('upper')
             do_leaflet.append('lower')
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.bilayer_analyzer.bilayer_analyzer import BilayerAnalyzer
 from pybilt.bilayer_analyzer.analysis_protocols import valid_analysis
 
@@ -18,9 +19,9 @@ def test_ba_lop():
     ba.add_analysis('lop lop_l resname POPC leaflet lower')
     ba.run_analysis()
     print('Lateral Orientation Parameter (lop) upper: ')
-    print(ba.get_analysis_data('lop_u'))
+    print((ba.get_analysis_data('lop_u')))
     print('Lateral Orientation Parameter (lop) lower: ')
-    print(ba.get_analysis_data('lop_l'))
+    print((ba.get_analysis_data('lop_l')))
     return
 
 if __name__ == '__main__':

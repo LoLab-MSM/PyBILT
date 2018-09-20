@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from pybilt.diffusion import diffusion_coefficients as dc
 
@@ -19,14 +20,14 @@ def test_diffusion_coefficient_estimation():
     D_l = dc.diffusion_coefficient_linear_fit(times, msd_vals, dim=dim)
     #Use anomalous diffusion fit
     D_a = dc.diffusion_coefficient_anomalous_fit(times, msd_vals, dim=dim)
-    print("Test data has diffusion coefficient: {}".format(diff_coeff))
+    print(("Test data has diffusion coefficient: {}".format(diff_coeff)))
     print("Values from estimators:")
     print("  Basic Einstein relation:")
-    print("    Diffusion coefficient: {}".format(D_e))
+    print(("    Diffusion coefficient: {}".format(D_e)))
     print("  Linear fit:")
-    print("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1]))
+    print(("    Diffusion coefficient: {} Std Error: {}".format(D_l[0], D_l[1])))
     print("  Anomalous diffusion fit:")
-    print("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1]))
+    print(("    Diffusion coefficient: {} Alpha value: {}".format(D_a[0], D_a[1])))
 
     return
 

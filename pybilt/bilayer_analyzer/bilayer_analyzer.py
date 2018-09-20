@@ -13,10 +13,15 @@ Example:
 """
 
 # imports
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from builtins import object
 import numpy as np
 import warnings
+from six.moves import range
 try:
-    import cPickle as pickle
+    import six.moves.cPickle as pickle
 except ImportWarning as warn:
     import pickle
 
@@ -24,20 +29,15 @@ import os
 import multiprocessing
 import sys
 
-#range/xrange fix
-if sys.version_info < (3,0):
-    def range(*args, **kwargs):
-        return xrange(*args, **kwargs)
-
 # PyBILT imports
-import com_frame as cf
-import leaflet as lf
-import vector_frame as vf
+from . import com_frame as cf
+from . import leaflet as lf
+from . import vector_frame as vf
 import pybilt.lipid_grid.lipid_grid_opt as lg
-import analysis_protocols as ap
-import plot_protocols as pp
+from . import analysis_protocols as ap
+from . import plot_protocols as pp
 from pybilt.common.running_stats import RunningStats
-import mda_data as md
+from . import mda_data as md
 import MDAnalysis as mda
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates, \
@@ -66,12 +66,12 @@ def print_valid_analyses(show_settings=True):
     for a_id in analyses.command_protocol.keys():
         a_key = analyses.command_protocol[a_id].analysis_key
         descript = analyses.command_protocol[a_id].short_description()
-        print("analysis_key: {} ---> {}".format(a_key,descript))
+        print(("analysis_key: {} ---> {}".format(a_key,descript)))
         if show_settings:
             print("  with settings:")
             for setting in analyses.command_protocol[a_id].settings.keys():
                 value = analyses.command_protocol[a_id].settings[setting]
-                print("    {} --> {}".format(setting,type(value)))
+                print(("    {} --> {}".format(setting,type(value))))
     return
 
 def print_analysis_settings(analysis_key):
@@ -85,20 +85,20 @@ def print_analysis_settings(analysis_key):
         for a_id in analyses.command_protocol.keys():
             a_key = analyses.command_protocol[a_id].analysis_key
             descript = analyses.command_protocol[a_id].short_description()
-            print("analysis_key: {} ---> {}".format(a_key,descript))
+            print(("analysis_key: {} ---> {}".format(a_key,descript)))
             print("  with settings:")
             for setting in analyses.command_protocol[a_id].settings.keys():
                 value = analyses.command_protocol[a_id].settings[setting]
-                print("    {} --> {}".format(setting,type(value)))
+                print(("    {} --> {}".format(setting,type(value))))
     else:
-        print("{} is not a valid analysis".format(analysis_key))
+        print(("{} is not a valid analysis".format(analysis_key)))
     return
 
 def print_available_plots():
     """Print to std out the valid plotting protocols available to the
     BilayerAnalyzer.
     """
-    print(pp.valid_plots)
+    print((pp.valid_plots))
     return
 
 
@@ -284,6 +284,10 @@ class BilayerAnalyzer(object):
             input_file (str): Optional, the path and filename of input setup file.
             input_dict (dict): Optional, a dictionary of keyed by valid commands and their input values.
         """
+        # Patch for python 2/3 compatibility -- python 2 uses next while
+        # python 3 uses __next__
+        self.next = self.__next__
+        
         #adjustable settings -- used internally in analysis loops and
         #   are passed to the individual analyses.
         self.settings = dict()
@@ -338,11 +342,11 @@ class BilayerAnalyzer(object):
 
         #input file parsing
         if input_file is not None:
-            print ("parsing input file \'" + input_file + "\'...")
+            print(("parsing input file \'" + input_file + "\'..."))
             self._commands = self.parse_input_script(self._input_script_name)
             # parse 'frames' input key--
             # for setting the frame range of the analysis
-            if 'frames' in self._commands.keys():
+            if 'frames' in list(self._commands.keys()):
                 f_args = self._commands['frames']
                 for i in range(0, len(f_args), 2):
                     arg_key = f_args[i]
@@ -355,7 +359,7 @@ class BilayerAnalyzer(object):
                         self.settings['frame_range'][2] = arg_value
 
             # parse inputs for lipid_grid settings
-            if 'lipid_grid' in self._commands.keys():
+            if 'lipid_grid' in list(self._commands.keys()):
                 lg_args = self._commands['lipid_grid']
                 for i in range(0, len(lg_args), 2):
                     arg_key = lg_args[i]
@@ -375,7 +379,7 @@ class BilayerAnalyzer(object):
 
         elif input_dict is not None and isinstance(input_dict, dict):
             self._commands = dict()
-            id_keys = input_dict.keys()
+            id_keys = list(input_dict.keys())
             for key in self._required_commands:
                 if key not in id_keys:
                     raise RuntimeError("key \'{}\' needs to be included in the input dictionary.".format(key))
@@ -384,7 +388,7 @@ class BilayerAnalyzer(object):
                     self._commands[key] = input_dict[key]
             # parse 'frames' input key--
             # for setting the frame range of the analysis
-            if 'frames' in self._commands.keys():
+            if 'frames' in list(self._commands.keys()):
                 f_args = self._commands['frames']
                 for i in range(0, len(f_args), 2):
                     arg_key = f_args[i]
@@ -397,7 +401,7 @@ class BilayerAnalyzer(object):
                         self.settings['frame_range'][2] = int(arg_value)
 
                         # parse inputs for lipid_grid settings
-            if 'lipid_grid' in self._commands.keys():
+            if 'lipid_grid' in list(self._commands.keys()):
                 lg_args = self._commands['lipid_grid']
                 for i in range(0, len(lg_args), 2):
                     arg_key = lg_args[i]
@@ -413,7 +417,7 @@ class BilayerAnalyzer(object):
 
             # set up the analysis protocol
         print ("setting up analysis protocol:")
-        if 'analysis' in self._commands.keys():
+        if 'analysis' in list(self._commands.keys()):
             self._analysis_protocol = ap.Analyses(
                 self._commands['analysis'])
         else:
@@ -422,13 +426,13 @@ class BilayerAnalyzer(object):
         self.print_analysis_protocol()
         # set up the plot protocol
         print ("setting up plot protocol")
-        if "plot" in self._commands.keys():
+        if "plot" in list(self._commands.keys()):
             self._plot_protocol = pp.PlotProtocol(self._commands['plot'],
                                                  self._analysis_protocol)
         else:
             self._plot_protocol = pp.PlotProtocol(None, self._analysis_protocol)
         for i in self._commands:
-            print(i, self._commands[i])
+            print((i, self._commands[i]))
         # build selection string for the MDAData object
         sel_string = self._commands['selection']
 
@@ -493,7 +497,7 @@ class BilayerAnalyzer(object):
                     commands[key] = second_term
                 else:
                     if key in self._valid_commands:
-                        if key in commands.keys():
+                        if key in list(commands.keys()):
                             input_string = word_list_to_string(words[1:])
                             print (input_string)
                             commands[key].append(input_string)
@@ -503,12 +507,12 @@ class BilayerAnalyzer(object):
                             print(input_string)
                             commands[key].append(input_string)
                     else:
-                        print("input command {} is not a valid"
-                              " command".format(key))
+                        print(("input command {} is not a valid"
+                              " command".format(key)))
                         error_str = "invalid input command '{}'".format(key)
                         raise RuntimeError(error_str)
         for required in self._required_commands:
-            if required not in commands.keys():
+            if required not in list(commands.keys()):
                 error_string = self._required_command_error_strings[required]
                 raise RuntimeError(error_string)
 
@@ -598,7 +602,7 @@ class BilayerAnalyzer(object):
 
     def print_plot_ids(self):
         """Print the ids of initialized plots in the plot protocol."""
-        print(self._plot_protocol.plot_ids)
+        print((self._plot_protocol.plot_ids))
 
     def get_plot_ids(self):
         """Return the ids of the plots in the plot protocol.
@@ -643,7 +647,7 @@ class BilayerAnalyzer(object):
             trajectory.
 
         """
-        print ("updating mda trajectory to:", new_trajectory)
+        print(("updating mda trajectory to:", new_trajectory))
         self._commands['trajectory'] = [new_trajectory]
         self._mda_data.update_trajectory(new_trajectory)
         if reset_iterator:
@@ -735,10 +739,10 @@ class BilayerAnalyzer(object):
 
     def print_rep_settings(self):
         for rep in self.rep_settings.keys():
-            print("represetation: {}".format(rep))
+            print(("represetation: {}".format(rep)))
             for setting in self.rep_settings[rep].keys():
-                print("  setting:value {}:{}".format(setting,
-                                            self.rep_settings[rep][setting]))
+                print(("  setting:value {}:{}".format(setting,
+                                            self.rep_settings[rep][setting])))
         return
 
     def reset(self):
@@ -777,13 +781,13 @@ class BilayerAnalyzer(object):
         """Prints the keys of analysiss that can initialized.
 
         """
-        print(ap.command_protocols.keys())
+        print((list(ap.command_protocols.keys())))
         return
 
     @staticmethod
     def print_available_plots():
         """Prints a list of the keys of the available plot types.        """
-        print (pp.command_protocols.keys())
+        print((list(pp.command_protocols.keys())))
         return
 
     @staticmethod
@@ -794,7 +798,7 @@ class BilayerAnalyzer(object):
             (list): A list of string keys for available plot types.
 
         """
-        return pp.command_protocols.keys()
+        return list(pp.command_protocols.keys())
 
     @staticmethod
     def available_analysis():
@@ -804,7 +808,7 @@ class BilayerAnalyzer(object):
             analysis.
 
         """
-        return ap.command_protocols.keys()
+        return list(ap.command_protocols.keys())
 
     def _build_leaflets(self):
         com_frame = self.reps['com_frame']
@@ -882,10 +886,12 @@ class BilayerAnalyzer(object):
     def turn_on_representation(self, rep_key):
         self._analysis_protocol.use_objects[rep_key] = True
         return
+
     #iterator functions --
     def __iter__(self):
         return self
-    def next(self):
+
+    def __next__(self):
         """ Runs the analysis as an iterator.
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
@@ -999,11 +1005,11 @@ class BilayerAnalyzer(object):
                 self._update_vector_frame_leaflet_positions()
             # now do analyses
             if self._frame_loop_count % self.settings['print_interval'] == 0:
-                print("Frame: {}".format(frame.frame))
+                print(("Frame: {}".format(frame.frame)))
             i = 0
             for analysis_id in self._analysis_protocol.analysis_ids:
                 if self._frame_loop_count % self.settings['print_interval'] == 0:
-                    print ("  analysis: {}".format(analysis_id))
+                    print(("  analysis: {}".format(analysis_id)))
                 self._analysis_protocol.command_protocol[analysis_id].run_analysis(
                     self.settings, self.reps, self._mda_data)
                 # comp_out = analysis.run_analysis(self)

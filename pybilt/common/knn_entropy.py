@@ -1,41 +1,45 @@
 """Functions to evaluate information theoretic measures using knn approaches.
 
-This module defines a set of functions to compute information theoretic 
-measures (i.e. Shannon Entropy, Mutual Information, etc.) using the 
-k-nearest neighbors (knn) approach.  
+This module defines a set of functions to compute information theoretic
+measures (i.e. Shannon Entropy, Mutual Information, etc.) using the
+k-nearest neighbors (knn) approach.
 
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 from scipy.special import gamma,psi
 from scipy.spatial.distance import cdist
+from six.moves import range
 
 
 def k_nearest_neighbors(X, k=1):
     """Get the k-nearest neighbors between points in a random variable/vector.
 
-    Determines the k nearest neighbors for each point in teh random 
+    Determines the k nearest neighbors for each point in teh random
     variable/vector using Euclidean style distances.
-    
+
     Args:
-        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or 
-            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N, 
-            y_n)}. 
-        k (Optional[int]): The number of nearest neighbors to store for each 
-            point. Defaults to 1. 
+        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or
+            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+            y_n)}.
+        k (Optional[int]): The number of nearest neighbors to store for each
+            point. Defaults to 1.
 
     Returns:
-        dict: A dictionary keyed by the indices of X and containing a list 
-            of the k nearest neighbor for each point along with the distance 
+        dict: A dictionary keyed by the indices of X and containing a list
+            of the k nearest neighbor for each point along with the distance
             value between the point and the nearest neighbor.
     """
     nX = len(X)
     # initialize knn dict
-    knn = {key: [] for key in xrange(nX)}
+    knn = {key: [] for key in range(nX)}
     # make sure X has the right shape for the cdist function
     X = np.reshape(X, (nX,-1))
     dists_arr = cdist(X, X)
-    distances = [[i,j,dists_arr[i,j]] for i in xrange(nX-1) for j in xrange(i+1,nX)]
+    distances = [[i,j,dists_arr[i,j]] for i in range(nX-1) for j in range(i+1,nX)]
     # sort distances
     distances.sort(key=lambda x: x[2])
     # pick up the k nearest
@@ -52,16 +56,16 @@ def k_nearest_neighbors(X, k=1):
 
 # knn kth neighbor distances for entropy calcs.
 def kth_nearest_neighbor_distances(X, k=1):
-    """Returns the distance for the kth nearest neighbor of each point. 
-    
+    """Returns the distance for the kth nearest neighbor of each point.
+
    Args:
-        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or 
-            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N, 
-            y_n)}. 
-        k (Optional[int]): The number of nearest neighbors to check for each 
-            point. Defaults to 1. 
+        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or
+            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+            y_n)}.
+        k (Optional[int]): The number of nearest neighbors to check for each
+            point. Defaults to 1.
     Returns:
-        list: A list in same order as X with the distance value to the kth 
+        list: A list in same order as X with the distance value to the kth
         nearest neighbor of each point in X.
 
     """
@@ -71,33 +75,33 @@ def kth_nearest_neighbor_distances(X, k=1):
     dists_arr = cdist(X, X)
     # sorts each row
     dists_arr.sort()
-    return [dists_arr[i][k] for i in xrange(nX)]
+    return [dists_arr[i][k] for i in range(nX)]
 
 def shannon_entropy(X, k=1, kth_dists=None):
     """Return the Shannon Entropy of the random variable/vector.
-    
-    This function computes the Shannon information entropy of the 
-    random variable/vector as estimated using the Kozachenko-Leonenko (KL) 
-    knn estimator.  
-    
+
+    This function computes the Shannon information entropy of the
+    random variable/vector as estimated using the Kozachenko-Leonenko (KL)
+    knn estimator.
+
     Args:
-        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or 
-            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N, 
-            y_n)}. 
-        k (Optional[int]): The number of nearest neighbors to store for each 
+        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or
+            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+            y_n)}.
+        k (Optional[int]): The number of nearest neighbors to store for each
             point. Defaults to 1.
-        kth_dists (Optional[list]): A list in the same order as points in X 
-            that has the pre-computed distances between the points in X and 
-            their kth nearest neighbors at. Defaults to None. 
-            
+        kth_dists (Optional[list]): A list in the same order as points in X
+            that has the pre-computed distances between the points in X and
+            their kth nearest neighbors at. Defaults to None.
+
     References:
-        1. Damiano Lombardi and Sanjay Pant, A non-parametric k-nearest 
+        1. Damiano Lombardi and Sanjay Pant, A non-parametric k-nearest
             neighbour entropy estimator, arXiv preprint,
                 [cs.IT] 2015, arXiv:1506.06501v1.
                 https://arxiv.org/pdf/1506.06501v1.pdf
-                
+
         2. https://www.cs.tut.fi/~timhome/tim/tim/core/differential_entropy_kl_details.htm
-        
+
         3. Kozachenko, L. F. & Leonenko, N. N. 1987 Sample estimate of entropy
             of a random vector. Probl. Inf. Transm. 23, 95-101.
 
@@ -128,19 +132,19 @@ def shannon_entropy(X, k=1, kth_dists=None):
 def shannon_entropy_pc(X, k=1, kth_dists=None):
     """Return the Shannon Entropy of the random variable/vector.
 
-    This function computes the Shannon information entropy of the 
-    random variable/vector as estimated using the Perez-Cruz knn estimator 
-    described in Reference 1.  
+    This function computes the Shannon information entropy of the
+    random variable/vector as estimated using the Perez-Cruz knn estimator
+    described in Reference 1.
 
     Args:
-        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or 
-            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N, 
-            y_n)}. 
-        k (Optional[int]): The number of nearest neighbors to store for each 
+        X (np.array): A random variable of form X = {x_1, x_2, x_3,...,x_N} or
+            a random vector of form X = {(x_1, y_1), (x_2, y_2),...,(x_N,
+            y_n)}.
+        k (Optional[int]): The number of nearest neighbors to store for each
             point. Defaults to 1.
-        kth_dists (Optional[list]): A list in the same order as points in X 
-            that has the pre-computed distances between the points in X and 
-            their kth nearest neighbors at. Defaults to None. 
+        kth_dists (Optional[list]): A list in the same order as points in X
+            that has the pre-computed distances between the points in X and
+            their kth nearest neighbors at. Defaults to None.
 
     References:
         1. Perez-Cruz, (2008). Estimation of Information Theoretic Measures
@@ -172,35 +176,35 @@ def shannon_entropy_pc(X, k=1, kth_dists=None):
 
 def mutual_information(var_tuple, k=2):
     """Returns an estimate of the mutual information.
-    
-    This function computes an estimate of the mutual information between a 
-    set of random variables or random vectors using knn estimators for the 
-    entropy calculations. 
-    
+
+    This function computes an estimate of the mutual information between a
+    set of random variables or random vectors using knn estimators for the
+    entropy calculations.
+
     Args:
-        var_tuple (tuple): A tuple of random variables or random 
-            vectors (i.e. numpy.array); e.g. var_tuple = (X, Y) where X form 
-            X = {x_1, x_2, x_3,...,x_N} and Y has form 
+        var_tuple (tuple): A tuple of random variables or random
+            vectors (i.e. numpy.array); e.g. var_tuple = (X, Y) where X form
+            X = {x_1, x_2, x_3,...,x_N} and Y has form
             Y = {x_1, x_2, x_3,...,x_N}, or where X has form
             X = {(x_X1, y_X1), (x_X2, y_X2),...,(x_XN, y_XN)} and Y has form
-            Y = {(x_Y1, y_Y1), (x_Y2, y_Y2),...,(x_YN, y_YN)}. 
-         k (Optional[int]): The number of nearest neighbors to store for each 
+            Y = {(x_Y1, y_Y1), (x_Y2, y_Y2),...,(x_YN, y_YN)}.
+         k (Optional[int]): The number of nearest neighbors to store for each
              point. Defaults to 2.
-    
+
     Returns:
         float: The mutual information estimate.
-        
+
     Notes:
-        The information entropies used to estimate the mutual information 
+        The information entropies used to estimate the mutual information
         are computed using the shannon_entropy function. All input random
         variable/vector arrays must have the same shape.
-        
+
     """
     nvar = len(var_tuple)
     # make sure the input arrays are properly shaped for hstacking
-    var_tuple = tuple( var_tuple[i].reshape(len(var_tuple[i]),-1) for i in xrange(nvar) )
+    var_tuple = tuple( var_tuple[i].reshape(len(var_tuple[i]),-1) for i in range(nvar) )
     # compute the individual entropies of each variable
-    Hx = [shannon_entropy(var_tuple[i],k=k) for i in xrange(nvar)]
+    Hx = [shannon_entropy(var_tuple[i],k=k) for i in range(nvar)]
     Hx = np.array(Hx)
     # and get the sum
     Hxtot = Hx.sum()
@@ -218,31 +222,31 @@ def mutual_information(var_tuple, k=2):
 def conditional_mutual_information(var_tuple, cond_tuple, k=2):
     """Returns an estimate of the conditional mutual information.
 
-    This function computes an estimate of the mutual information 
+    This function computes an estimate of the mutual information
     between a set of random variables or random vectors conditioned on other
-    random variables or vectors using knn estimators for the entropy 
-    calculations. 
+    random variables or vectors using knn estimators for the entropy
+    calculations.
 
     Args:
-        var_tuple (tuple): A tuple of random variables or random 
-            vectors (i.e. numpy.array) to estimate the mutual information 
-            between.; e.g. var_tuple = (X, Y) where X form 
-            X = {x_1, x_2, x_3,...,x_N} and Y has form 
+        var_tuple (tuple): A tuple of random variables or random
+            vectors (i.e. numpy.array) to estimate the mutual information
+            between.; e.g. var_tuple = (X, Y) where X form
+            X = {x_1, x_2, x_3,...,x_N} and Y has form
             Y = {x_1, x_2, x_3,...,x_N}, or where X has form
             X = {(x_X1, y_X1), (x_X2, y_X2),...,(x_XN, y_XN)} and Y has form
-            Y = {(x_Y1, y_Y1), (x_Y2, y_Y2),...,(x_YN, y_YN)}. 
-        cond_tuple (tuple): A tuple of random variables or random 
-            vectors (i.e. numpy.array) that the mutual information is to be 
-            conditioned on; e.g. var_tuple = (X) where X has  the form 
-            X = {x_1, x_2, x_3,...,x_N}.  
-         k (Optional[int]): The number of nearest neighbors to store for each 
+            Y = {(x_Y1, y_Y1), (x_Y2, y_Y2),...,(x_YN, y_YN)}.
+        cond_tuple (tuple): A tuple of random variables or random
+            vectors (i.e. numpy.array) that the mutual information is to be
+            conditioned on; e.g. var_tuple = (X) where X has  the form
+            X = {x_1, x_2, x_3,...,x_N}.
+         k (Optional[int]): The number of nearest neighbors to store for each
              point. Defaults to 2.
 
     Returns:
         float: The mutual information estimate.
 
     Notes:
-        The information entropies used to estimate the mutual information 
+        The information entropies used to estimate the mutual information
         are computed using the shannon_entropy function. All input random
         variable/vector arrays must have the same shape.
 
@@ -251,11 +255,11 @@ def conditional_mutual_information(var_tuple, cond_tuple, k=2):
     ncon = len(cond_tuple)
     #make sure the input arrays are properly shaped for hstacking
     var_tuple = tuple(var_tuple[i].reshape(len(var_tuple[i]),-1)
-                      for i in xrange(nvar))
+                      for i in range(nvar))
     cond_tuple = tuple(cond_tuple[i].reshape(len(cond_tuple[i]),-1)
-                       for i in xrange(ncon))
+                       for i in range(ncon))
     # compute pair joint entropies
-    Hxz = [shannon_entropy(np.hstack(var_tuple[i]+cond_tuple), k=k) for i in xrange(nvar)]
+    Hxz = [shannon_entropy(np.hstack(var_tuple[i]+cond_tuple), k=k) for i in range(nvar)]
     Hxz = np.array(Hxz)
     jtup = var_tuple + cond_tuple
     joint = np.hstack( jtup )

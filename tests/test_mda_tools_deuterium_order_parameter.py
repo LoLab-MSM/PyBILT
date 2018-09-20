@@ -1,3 +1,4 @@
+from __future__ import print_function
 from pybilt.mda_tools import deuterium_order_parameter
 import MDAnalysis as mda
 
@@ -11,8 +12,8 @@ def test_mda_tools_deuterium_order_parameter():
     avgs, stds = deuterium_order_parameter(u, lipid_segids, lipid_acyl_carbons,
                                            lipid_acyl_hydrogens)
 
-    print avgs['POPC']
-    print stds['POPC']
+    print(avgs['POPC'])
+    print(stds['POPC'])
 
 if __name__ == '__main__':
     test_mda_tools_deuterium_order_parameter()

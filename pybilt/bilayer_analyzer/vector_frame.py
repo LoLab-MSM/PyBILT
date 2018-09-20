@@ -1,15 +1,15 @@
 #imports
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from builtins import object
 import MDAnalysis as mda
 import numpy as np
 from mpl_toolkits.mplot3d import axes3d
 import pybilt.plot_generation.plot_generation_functions as pgf
 import matplotlib.pyplot as plt
 import sys
-
-#range/xrange fix
-if sys.version_info < (3,0):
-    def range(*args, **kwargs):
-        return xrange(*args, **kwargs)
+from six.moves import range
 
 class LipidVec(object):
     """ A lipid vector object.

@@ -1,10 +1,14 @@
 #we are going to use the MDAnalysis to read in topo and traj
 #numpy
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 #import my running stats class
 from pybilt.common.running_stats import RunningStats
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates
+from six.moves import range
 
 
 '''
@@ -46,7 +50,7 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
 
     #combine all the selections into one (for wrapping)
     msel = atom_sel_list[0]
-    for s in xrange(1, nsels):
+    for s in range(1, nsels):
          msel+=atom_sel_list[s]
 
     natoms = len(msel)
@@ -57,12 +61,12 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
     for ts in trajectory:
         time=ts.time
         if	verbose:
-            print " "
-            print "frame ",ts.frame
+            print(" ")
+            print("frame ",ts.frame)
     #unwrap coordinates -- currently unwraps all the coordinates
         if	unwrap:
             if	verbose:
-                print "unwrapping frame ",ts.frame
+                print("unwrapping frame ",ts.frame)
             currcoord = ts.positions[index]
             if firstframe:
                 oldcoord = currcoord
@@ -73,9 +77,9 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
                 ts._pos[index] = wrapcoord[:]
 
         #loop over the selections
-        for i in xrange(nsels):
+        for i in range(nsels):
             if	verbose:
-                print "frame ",ts.frame," getting com of selection ",atom_sel_list[i]
+                print("frame ",ts.frame," getting com of selection ",atom_sel_list[i])
             #compute the center of mass of the current selection and current frame
             com = atom_sel_list[i].center_of_mass()
             #print "com ",com
@@ -95,13 +99,13 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
     #print len(comlist)
     coml0 = comlist[:,0,plane_index]
     #print coml0
-    for i in xrange(1, nframes):
+    for i in range(1, nframes):
         # get the current com frame list
         comlcurr = comlist[:,i,plane_index]
         dr = comlcurr - coml0
         drs = dr*dr
         #loop over the selections for this frame
-        for	j in xrange(nsels):
+        for	j in range(nsels):
             drs_curr = drs[j,:]
             drs_mag = drs_curr.sum()
             drs_stat.push(drs_mag)
@@ -120,7 +124,7 @@ def mda_msd (trajectory, atom_sel_list, lateral=False, plane="xy", unwrap=True, 
         msd[i,4]=diff_stat.mean()
         msd[i,5]=diff_stat.deviation()
         if	verbose:
-            print "selection number ",i," has msd ",msdcurr," with deviation ",devcurr
+            print("selection number ",i," has msd ",msdcurr," with deviation ",devcurr)
         #reset the running stats object--prepare for next selection
         drs_stat.Reset()
     #return msd array

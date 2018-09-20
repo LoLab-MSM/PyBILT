@@ -40,20 +40,23 @@ Example:
 """
 
 # imports
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from builtins import object
 import scipy.constants as scicon
 import numpy as np
+import six
+from six.moves import range
 #import ast
 try:
-    import cPickle as pickle
+    import six.moves.cPickle as pickle
 except ImportError as error:
     import pickle
 import warnings
 import sys
 import cmath
-#range/xrange fix
-if sys.version_info < (3,0):
-    def range(*args, **kwargs):
-        return xrange(*args, **kwargs)
+
 
 # PyBILT imports
 from pybilt.common.running_stats import RunningStats, binned_average
@@ -173,7 +176,7 @@ class Analyses(object):
                 type of analysis and its settings to be added to set of
                 analyses.
         """
-        if isinstance(inputs, (str, basestring)):
+        if isinstance(inputs, (str, six.string_types)):
             self._add_analysis_from_string(inputs)
         elif isinstance(inputs, (list, tuple)):
             self._add_analysis_from_list(inputs)
@@ -239,7 +242,7 @@ class Analyses(object):
     def _add_analysis_from_dict(self, analysis_dict):
         """ Parses dict inputs. """
         for key in ['analysis_key', 'analysis_id', "analysis_settings"]:
-            if key not in analysis_dict.keys():
+            if key not in list(analysis_dict.keys()):
                 raise RuntimeError("required key: {} , not in the input dictionary.".format(key))
         comp_key = analysis_dict['analysis_key']
         comp_id = analysis_dict['analysis_id']
@@ -312,9 +315,9 @@ class Analyses(object):
         """
         print ('dumping analysis data to pickle files...')
         for analysis_id in self.analysis_ids:
-            print ("analysis id: {} ---> {} ".format(
+            print(("analysis id: {} ---> {} ".format(
                 analysis_id,
-                self.command_protocol[analysis_id].save_file_name))
+                self.command_protocol[analysis_id].save_file_name)))
             self.command_protocol[analysis_id].save_data(path=path)
 
     def reset(self):
@@ -353,7 +356,7 @@ class AnalysisProtocol(object):
         #define adjustable settings
         self.settings = dict()
         self.settings['none'] = None
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # default function settings
         self.save_file_name = self.analysis_id + ".pickle"
         # parse input arguments if given
@@ -369,7 +372,7 @@ class AnalysisProtocol(object):
             args (list): List of argument keys and values.
         """
         # print args
-        if isinstance(args, (basestring, str)):
+        if isinstance(args, (six.string_types, str)):
             self._parse_string(args)
         elif isinstance(args, dict):
             self._parse_dict(args)
@@ -414,7 +417,7 @@ class AnalysisProtocol(object):
     def _parse_dict(self, args):
         """Parses the input arguments from a dict. """
 
-        if 'analysis_id' not in args.keys():
+        if 'analysis_id' not in list(args.keys()):
             raise RuntimeError("required key \'anlaysis_id\' not assigned in input dict for analysis type: \'"+self.analysis_key+"\'")
         for arg_key in args.keys():
             arg_arg = args[arg_key]
@@ -437,11 +440,11 @@ class AnalysisProtocol(object):
 
     def print_protocol(self):
         """Prints to std out the internal data and settings for the protocol."""
-        print ("Analysis: "+self._short_description)
-        print ("  with analysis_id: {} ".format(self.analysis_id))
+        print(("Analysis: "+self._short_description))
+        print(("  with analysis_id: {} ".format(self.analysis_id)))
         print ("   and settings: ")
         for key in self.settings.keys():
-            print ("    {}: {} ".format(key, self.settings[key]))
+            print(("    {}: {} ".format(key, self.settings[key])))
         return
 
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
@@ -549,7 +552,7 @@ class MSDProtocol(AnalysisProtocol):
         self.settings = dict()
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -582,8 +585,8 @@ class MSDProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(group)
             else:
                 # unknown option--use default "both"
-                print "!! Warning - request for unknown leaflet name \'", leaflet
-                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                print("!! Warning - request for unknown leaflet name \'", leaflet)
+                print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
@@ -709,7 +712,7 @@ class MSDMultiProtocol(AnalysisProtocol):
         self.settings['resname'] = 'all'
         self.settings['n_tau'] = 50
         self.settings['n_sigma'] = 50
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -763,8 +766,8 @@ class MSDMultiProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(group)
             else:
                 # unknown option--use default "both"
-                print "!! Warning - request for unknown leaflet name \'", leaflet
-                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                print("!! Warning - request for unknown leaflet name \'", leaflet)
+                print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
@@ -939,7 +942,7 @@ class APLBoxProtocol(AnalysisProtocol):
         #define adjustable settings
         self.settings = dict()
         self.settings['none'] = None
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
 
@@ -1005,7 +1008,7 @@ class BTGridProtocol(AnalysisProtocol):
         #define adjustable settings
         self.settings = dict()
         self.settings['none'] = None
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
 
@@ -1072,7 +1075,7 @@ class APLGridProtocol(AnalysisProtocol):
         #define adjustable settings
         self.settings = dict()
         self.settings['none'] = None
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments
         self._parse_args(args)
 
@@ -1193,7 +1196,7 @@ class DispVecProtocol(AnalysisProtocol):
         self.settings['interval'] = 5
         self.settings['scale'] = False
         self.settings['scale_to_max'] = False
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.group = 'all'
         #self.wrapped = False
@@ -1425,7 +1428,7 @@ class MassDensProtocol(AnalysisProtocol):
         self.settings = dict()
         self.settings['selection_string'] = "BILAYER"
         self.settings['n_bins'] = 25
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.selection_string = 'all'
         #self.n_bins = 25
 
@@ -1496,7 +1499,7 @@ class MassDensProtocol(AnalysisProtocol):
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
         first = self.first_comp
         if self.first_comp:
-            print self.settings['selection_string']
+            print(self.settings['selection_string'])
             if self.settings['selection_string'] == "BILAYER":
                 print("bilayer_sel")
                 self.selection = ba_mda_data.bilayer_sel
@@ -1609,7 +1612,7 @@ class NNFProtocol(AnalysisProtocol):
         self.settings['n_neighbors'] = 5
         self.settings['resname_1'] = 'first'
         self.settings['resname_2'] = 'first'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #parse input arguments/settings
         self._parse_args(args)
 
@@ -1852,7 +1855,7 @@ class DispVecCorrelationProtocol(AnalysisProtocol):
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
         self.settings['interval'] = 5
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
 
@@ -2038,7 +2041,7 @@ class DispVecNNCorrelationProtocol(AnalysisProtocol):
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
         self.settings['interval'] = 5
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
         self.save_file_name = self.analysis_id + ".pickle"
@@ -2221,7 +2224,7 @@ class NDCorrProtocol(AnalysisProtocol):
         #define adjustable settings
         self.settings = dict()
         self.settings['none'] = None
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # default function settings
 
         # parse input arguments if given
@@ -2242,7 +2245,7 @@ class NDCorrProtocol(AnalysisProtocol):
         grids = lgc.LipidGrids(ba_reps['com_frame'],ba_reps['leaflets'],ba_settings['lateral'])
 
         if self._first_frame:
-            leafs = grids.leaf_grid.keys()
+            leafs = list(grids.leaf_grid.keys())
             all_types = []
             for leaf in leafs:
                 self.analysis_output[leaf] = dict()
@@ -2260,7 +2263,7 @@ class NDCorrProtocol(AnalysisProtocol):
         correlations = grids.norm_displacement_cross_correlation()
         time = ba_reps['current_mda_frame'].time
         #extract the data
-        leafs = correlations.keys()
+        leafs = list(correlations.keys())
         for leaf in leafs:
             for l_type in correlations[leaf].keys():
                 corr = correlations[leaf][l_type]
@@ -2328,7 +2331,7 @@ class DCClusterProtocol(AnalysisProtocol):
         self.settings['resname'] = 'first'
         self.settings['leaflet'] = 'upper'
         self.settings['cutoff'] = 12.0
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # default function settings
 
         # parse input arguments if given
@@ -2488,7 +2491,7 @@ class VolumeCompressibilityModulusProtocol(AnalysisProtocol):
         # default function settings
         self.settings = dict()
         self.settings['temperature'] = 298.15
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
 
         # parse input arguments
         self._parse_args(args)
@@ -2591,7 +2594,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         # default function settings
         self.settings = dict()
         self.settings['temperature'] = 298.15
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
 
         # parse input arguments
         self._parse_args(args)
@@ -2697,7 +2700,7 @@ class ALDProtocol(AnalysisProtocol):
         self.settings = dict()
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -2732,8 +2735,8 @@ class ALDProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(group)
             else:
                 # unknown option--use default "both"
-                print "!! Warning - request for unknown leaflet name \'", leaflet
-                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                print("!! Warning - request for unknown leaflet name \'", leaflet)
+                print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
@@ -2813,7 +2816,7 @@ class AreaCompressibilityProtocol(AnalysisProtocol):
         # default function settings
         self.settings = dict()
         self.settings['temperature'] = 298.15
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
 
         # parse input arguments
         self._parse_args(args)
@@ -2895,7 +2898,7 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
         self.settings['leaflet'] = 'upper'
         self.settings['ref_atom_1'] = 'P'
         self.settings['ref_atom_2'] = 'N'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
 
@@ -2992,7 +2995,7 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
         self.settings['leaflet'] = 'upper'
         self.settings['ref_atom_1'] = 'P'
         self.settings['ref_atom_2'] = 'N'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
 
@@ -3105,7 +3108,7 @@ class FlipFlopProtocol(AnalysisProtocol):
         # adjustable
         self.settings = dict()
         self.settings['none'] = None
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -3248,7 +3251,7 @@ class LipidLengthProtocol(AnalysisProtocol):
         self.settings = dict()
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -3281,8 +3284,8 @@ class LipidLengthProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(group)
             else:
                 # unknown option--use default "both"
-                print "!! Warning - request for unknown leaflet name \'", leaflet
-                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                print("!! Warning - request for unknown leaflet name \'", leaflet)
+                print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
@@ -3359,7 +3362,7 @@ class LipidTiltProtocol(AnalysisProtocol):
         self.settings['resname'] = 'all'
         self.settings['style'] = 'angle'
         self.settings['ref_axis'] = 'z'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -3393,8 +3396,8 @@ class LipidTiltProtocol(AnalysisProtocol):
                 indices = curr_leaf.get_group_indices(group)
             else:
                 # unknown option--use default "both"
-                print "!! Warning - request for unknown leaflet name \'", leaflet
-                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                print("!! Warning - request for unknown leaflet name \'", leaflet)
+                print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices += curr_leaf.get_group_indices(group)
@@ -3486,7 +3489,7 @@ class LipidCollinearityProtocol(AnalysisProtocol):
         self.settings['resname_1'] = 'first'
         self.settings['resname_2'] = 'first'
         self.settings['style'] = 'angle'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -3505,7 +3508,7 @@ class LipidCollinearityProtocol(AnalysisProtocol):
 
         if self._first_frame:
             leaflet = self.settings['leaflet']
-            print("leaflet: {}".format(leaflet))
+            print(("leaflet: {}".format(leaflet)))
             group_1 = self.settings['resname_1']
             group_2 = self.settings['resname_2']
             lipid_types = []
@@ -3540,8 +3543,8 @@ class LipidCollinearityProtocol(AnalysisProtocol):
                 indices_2 = curr_leaf.get_group_indices(group_2)
             else:
                 # unknown option--use default "both"
-                print "!! Warning - request for unknown leaflet name \'", leaflet
-                print "!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\""
+                print("!! Warning - request for unknown leaflet name \'", leaflet)
+                print("!! the options are \"upper\", \"lower\", or \"both\"--using the default \"both\"")
                 for leaflets in ba_reps['leaflets']:
                     curr_leaf = ba_reps['leaflets'][leaflets]
                     indices_1 += curr_leaf.get_group_indices(group_1)
@@ -3647,7 +3650,7 @@ class HalperinNelsonProtocol(AnalysisProtocol):
         # adjustable
         self.settings = dict()
         self.settings['leaflet'] = 'upper'
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -3662,7 +3665,7 @@ class HalperinNelsonProtocol(AnalysisProtocol):
         return
 
     def _distance_euclidean_pbc(self, v_a, v_b, box_lengths, center='box_half'):
-        if isinstance(center, (str, basestring)):
+        if isinstance(center, (str, six.string_types)):
             if center == 'zero':
                 center = np.zeros(len(v_a))
             elif center == 'box_half':
@@ -3693,7 +3696,7 @@ class HalperinNelsonProtocol(AnalysisProtocol):
         distances = [[indices[i], indices[j],\
          self._distance_euclidean_pbc(com_frame.lipidcom[indices[i]].com[lateral],\
          com_frame.lipidcom[indices[j]].com[lateral], com_frame.box[lateral], center='box_half')] \
-         for i in xrange(nX-1) for j in xrange(i+1,nX)]
+         for i in range(nX-1) for j in range(i+1,nX)]
         #sort distances
         distances.sort(key=lambda x: x[2][0])
         #pick up the k nearest
@@ -3790,7 +3793,7 @@ class AreaFluctuationProtocol(AnalysisProtocol):
         # adjustable
         self.settings = dict()
         self.settings['none'] = None
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
 
@@ -3879,7 +3882,7 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
         self.settings['resname'] = 'all'
         self.settings['wrapped'] = False
         self.settings['interval'] = 5
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
 
@@ -4075,7 +4078,7 @@ class COMLateralRDFProtocol(AnalysisProtocol):
         self.settings['n_bins'] = 25
         self.settings['range_inner'] = 0.0
         self.settings['range_outer'] = 25.0
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         #parse input arguments/settings
         self._parse_args(args)
 
@@ -4367,7 +4370,7 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
         self.settings['range_inner'] = 0.0
         self.settings['range_outer'] = 25.0
         self.settings['interval'] = 5
-        self._valid_settings = self.settings.keys()
+        self._valid_settings = list(self.settings.keys())
         # parse input arguments if given
         self._parse_args(args)
 

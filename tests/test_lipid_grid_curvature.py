@@ -3,6 +3,7 @@ import numpy as np
 from pybilt.plot_generation import plot_generation_functions as pgf
 from pybilt.plot_generation.plot_generation_functions import _color_list
 from scipy.ndimage.filters import gaussian_filter
+from six.moves import range
 def test_lipid_grid_curvature():
     sel_string = "resname POPC DOPE TLCL2"
     name_dict = {'DOPE':['P'],'POPC':['P'],'TLCL2':['P1','P3']}

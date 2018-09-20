@@ -1,15 +1,13 @@
 ![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
 ## *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
 ------
-![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
+![Python version badge](https://img.shields.io/badge/python-2.7%2C3.6-blue.svg)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
 [![Documentation Status](https://readthedocs.org/projects/pybilt/badge/?version=latest)](http://pybilt.readthedocs.io/en/latest/?badge=latest)
 [![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](.docstring-coverage_report.txt)
 ------
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
-
-#### Updates: Now with some [documentation](http://pybilt.readthedocs.io/en/latest/index.html)!
 
 The analyses include:
    * Mean Squared Displacement (MSD)
@@ -31,36 +29,77 @@ The analyses include:
 **Warning:** PyBILT is still under heavy development and may rapidly change.
 
 #### PyBILT run dependencies
-PyBILT has the following major dependencies that need to be installed before it
-can be run:
-   * MDAnalysis 0.16.2
-   * NumPy 1.11.3
-   * SciPy 0.18.1
-   * Matplotlib 2.0.0
-   * Seaborn 0.7.1
+PyBILT has the following major dependencies:
+   * MDAnalysis - https://www.mdanalysis.org/
+   * NumPy - http://www.numpy.org/
+   * SciPy - https://www.scipy.org/
+   * Matplotlib - https://matplotlib.org/
+   * Seaborn - https://seaborn.pydata.org/
+   * six - https://pypi.org/project/six/
+   * future - http://python-future.org/
 
-The versions of the above packages are the latest that the pybilt package has
-been tested with under Anaconda 4.3.1 Python 2.7; these are the package
-versions included in the conda environment.yml file.  Therefore, to reproduce
-the environment that PyBILT has been tested under it is recommended that you
-install [Anaconda Python](https://www.anaconda.com/) version 4.3.1 Python 2.7
-before installing PyBILT. PyBILT has yet to be tested outside of an Anaconda
-environment.
+To use the PyBILT Jupyter Notebooks:
+   * Jupyter - http://jupyter.org/
+
+The pybilt package has been tested using [Anaconda Python](https://www.anaconda.com/) 2.7 and Python 3.6;
 
 The following section describes the process for setting up the dependencies and
 installing the 'pybilt' package using a conda environment and the setup.py
 script.
 
 #### Setup and install using Anaconda's conda tool
+
+##### Method 1 (manual package installation)
 First, clone or download the GitHub repo
 ```
 git clone https://github.com/blakeaw/PyBILT.git
 ```
-The file environment.yml has been provided to allow for easy setup of a new
-environment with all the appropriate dependencies using the conda tool. From the PyBILT root run
+Then create a new conda environment for pybilt and activate it:
 ```
-conda env create -f environment.yml
+conda create --name pybilt
+source activate pybilt
 ```
+The install the preferred python version:
+ * for Python 2.7
+```
+conda install python=2.7
+```
+ * for Python 3.6
+ ```
+ conda install python=3.6
+ ```
+
+Then install all the dependencies:
+```
+conda install numpy scipy matplotlib seaborn six future
+conda install -c conda-forge MDAnalysis
+```
+Then install pybilt:
+```
+python PyBILT/setup.py install
+```
+
+If you want to run the pybilt Jupyter notebooks (PyBILT/jupyter_notebooks), then install Jupyter:
+```
+conda install jupyter
+```
+Note that the notebooks have not been updated for Python 3 yet.
+
+
+##### Method 2 (From environment yaml)
+
+The files environment_py27.yml and environment_py36.yml have been provided to allow for easy setup of a new conda
+environment with all of the most recently tested versions of dependencies.
+Run:
+ * For Python 2.7:
+```
+conda env create -f environment_py27.yml
+```
+ * For Python 3.6
+ ```
+ conda env create -f environment_py36.yml
+ ```
+
 which will create a new conda environment named *pybilt* with the appropriate
 dependencies. Then activate the environment
 ```
@@ -68,9 +107,15 @@ source activate pybilt
 ```
 Next, run the setup.py script with install,
 ```
-python setup.py install
+python PyBILT/setup.py install
 ```
 to install the 'pybilt' package into the *pybilt* environment.  
+
+If you want to run the pybilt Jupyter notebooks (PyBILT/jupyter_notebooks), then install Jupyter:
+```
+conda install jupyter
+```
+Note that the notebooks have not been updated for Python 3 yet.
 
 ------
 
@@ -123,8 +168,7 @@ individual analyses and the representations they use.
 
 ## Documentation
 
-PyBILT now has some documentation! Visit them on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html). The repo level source
-and build are in [docs](docs). In addition
+PyBILT now has some documentation! Visit them on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html). In addition
 to the docs, there are currently a few Jupyter IPython
 [notebooks](jupyter_notebooks) that provide some examples and show some basic
 usage. More of these are in the pipeline. Although they are also not fully
@@ -177,8 +221,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Built With
 
 * [ANACONDA](https://www.continuum.io/) - ANACONDA Python distribution and CONDA package and environment manager
-* [PyCharm](https://www.jetbrains.com/pycharm/) - Primary Text Editor/IDE
-* [ATOM](https://atom.io/) - Secondary Text Editor
+* [PyCharm](https://www.jetbrains.com/pycharm/) - Text Editor/IDE
+* [ATOM](https://atom.io/) - Text Editor/IDE
 * [Sublime Text](https://www.sublimetext.com/) - Text Editor used in earlier work
 * [Landscape](https://landscape.io/) - Code quality analysis and tracking
 * [Git](https://git-scm.com/) - Version control
@@ -187,6 +231,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 * [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark
 * [Read the Docs](https://readthedocs.org/) - Documentation hosting
 * [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  A simple audit tool for examining python source files for missing docstrings.
+* [Python-Modernize](https://python-modernize.readthedocs.io/en/latest/) - Automatic modernization of Python 2 code for dual Python 2 and 3 support.
 
 ------
 

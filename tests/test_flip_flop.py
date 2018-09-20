@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pybilt.bilayer_analyzer.bilayer_analyzer as ba
 def test_flip_flop():
     analyzer = ba.BilayerAnalyzer(structure='../pybilt/sample_bilayer/sample_bilayer.psf',
@@ -11,7 +12,7 @@ def test_flip_flop():
 
     analyzer.run_analysis()
 
-    print analyzer.get_analysis_data('flip_flop')
+    print(analyzer.get_analysis_data('flip_flop'))
 
     return
 

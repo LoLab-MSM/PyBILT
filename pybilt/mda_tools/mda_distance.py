@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 import numpy as np
 from MDAnalysis.analysis import align
 
@@ -207,7 +210,7 @@ def com_com_distances_axis_align(universe, mda_selection_pairs, align_struct_uni
     for frame in universe.trajectory[fstart:fend:fstep]:
         times.append(frame.time)
         # now do the alignment
-        align.alignto(universe, align_struct_universe, select=align_sel_string, mass_weighted=True)
+        align.alignto(universe, align_struct_universe, select=align_sel_string, weights='mass')
         i = 0
         for pair in mda_selection_pairs:
             sel_1 = pair[0]
