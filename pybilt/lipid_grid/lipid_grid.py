@@ -79,6 +79,36 @@ def grid_curvature(x_vals, y_vals, zgrid):
 
     return (curv_mean_u, curv_gauss_u)
 
+def grid_surface_area(x_vals, y_vals, zgrid):
+    """Compute the surface area across a regular 2d grid.
+    Args:
+        x_vals (np.array): The bin labels along the x-axis of the gridded data.
+        y_vals (np.arrray): The bin labels along the y-axis of the gridded data.
+        zgrid (np.array): The 2d grid of bin values.
+
+    Returns:
+        float: Returns a the surface area estimate.
+    """
+    nxb = len(x_vals)
+    nyb = len(y_vals)
+    x_incr = x_vals[1]-x_vals[0]
+    y_incr = y_vals[1]-y_vals[0]
+    # print("x_incr {} y_incr {}".format(x_incr, y_incr))
+    [sy, sx] = np.gradient(zgrid, y_incr, x_incr)
+    #now get curvatures
+    sa = 0.0
+    for ix in range(nxb):
+        for iy in range(nyb):
+            #upper
+            sx_c = sx[ix, iy]
+            sy_c = sy[ix, iy]
+            sx_v = np.array([1.0, 0.0, sx_c])
+            sy_v = np.array([0.0, 1.0, sy_c])
+            cross = np.cross(sx_v, sy_v)
+            dA = np.sqrt(np.dot(cross, cross))*x_incr*y_incr
+            sa += dA
+    return sa
+
 class LipidGrid2d(object):
     """A 2d lipid grid object.
 
@@ -435,6 +465,21 @@ class LipidGrids(object):
         curv_lower = grid_curvature(x_vals, y_vals, z_grid)
 
         return (curv_upper, curv_lower)
+
+    def surface_area(self, use_gaussian_filter=True, filter_sigma=10.0, filter_mode='nearest'):
+        x_vals = self.leaf_grid['upper'].x_centers
+        y_vals = self.leaf_grid['upper'].y_centers
+        z_grid = self.leaf_grid['upper'].lipid_grid_z
+        if use_gaussian_filter:
+            z_grid = gaussian_filter(z_grid, filter_sigma, mode=filter_mode)
+        sa_upper = grid_surface_area(x_vals, y_vals, z_grid)
+        x_vals = self.leaf_grid['lower'].x_centers
+        y_vals = self.leaf_grid['lower'].y_centers
+        z_grid = self.leaf_grid['lower'].lipid_grid_z
+        if use_gaussian_filter:
+            z_grid = gaussian_filter(z_grid, filter_sigma, mode=filter_mode)
+        sa_lower = grid_surface_area(x_vals, y_vals, z_grid)
+        return (sa_upper, sa_lower)
 
     def grid_to_dict(self,in_grid,leaflet='upper'):
         out_dict = {}

@@ -27,21 +27,24 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import sys
+import itertools
 
 # the default savefig params can be different from the display params
 # e.g., you may want a higher resolution, or to make the figure
 # background white
 sfig_params = {
-    'savefig.dpi' : 400,
-    'savefig.format' : 'pdf'
+    'savefig.dpi' : 750,
+    'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
+#params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
+params = {'figure.figsize': [14.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
     'legend.fontsize': 26,
     'xtick.labelsize': 28,
     'ytick.labelsize': 28,
-    'lines.linewidth': 6.0,
-    'lines.markersize': 20}
+    'lines.linewidth': 4.0,
+    'lines.markersize': 20,
+    'mathtext.fontset' : 'cm'}
 mpl.rcParams.update(params)
 #sns.set_style("whitegrid")
 #sns.set_style("white")
@@ -50,8 +53,8 @@ sns.set_style("ticks")
 
 _color_list = ['blue', 'green','orange','purple', 'black', 'red', 'yellow', 'gray']
 
-def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True, show=False, xlabel=None, ylabel=None,
-         marker=None, linestyle=None):
+def plot(dat_list,xerr_list=None, yerr_list=None, name_list=None,filename='plot.eps', save=True, show=False, xlabel=None, ylabel=None,
+         marker=None, linestyle=None, xticks='None'):
     """Generic plotting function for (multiple) xy datasets.
 
     Args:
@@ -67,36 +70,62 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
         marker (str, Optional): Specify a matplotlib marker type for data points.
 
     """
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
+    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
     ls = linestyle
     if linestyle is None:
         ls = '-'
     i = 0
     for dat in dat_list:
-        if i > 5 and (linestyle is None):
+        if i > 6 and (linestyle is None):
             ls = '--'
-        if yerr_list is None:
+        if (yerr_list is None and xerr_list is None):
             if name_list is not None:
                 if marker is None:
-                    plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls)
+                    plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
                 else:
-                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle=ls)
+                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
             else:
                 if marker is None:
-                    plt.plot(dat[0], dat[1], linestyle=ls)
+                    plt.plot(dat[0], dat[1], linestyle=ls, marker=_marker.next(), color=_colors.next())
                 else:
-                    plt.plot(dat[0], dat[1], marker=marker, linestyle=ls)
+                    plt.plot(dat[0], dat[1], marker=marker, linestyle=ls, color=_colors.next())
+        elif (yerr_list is not None) and (xerr_list is None):
+            if name_list is not None:
+                if marker is None:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                else:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
+            else:
+                if marker is None:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                else:
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle=ls, color=_colors.next())
+        elif (yerr_list is None) and (xerr_list is not None):
+            if name_list is not None:
+                if marker is None:
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                else:
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
+            else:
+                if marker is None:
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                else:
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], marker=marker, linestyle=ls, color=_colors.next())
         else:
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i], linestyle=ls)
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls)
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linestyle=ls)
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle=ls)
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], marker=marker, linestyle=ls, color=_colors.next())
         i+=1
+    if xticks is not None:
+        plt.xticks(xticks)
     if xlabel is not None:
         plt.xlabel(xlabel)
     if ylabel is not None:
@@ -119,7 +148,255 @@ def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True,
     plt.close()
     return
 
-def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True, show=False, scaled=False, wrapped=False):
+def gen_step_vector_ghost_tails(vectors_resnames, length=5, periodic_cut=75.0):
+    n_traj = len(vectors_resnames)
+    n_vecs = len(vectors_resnames[0][0])
+    tails = []
+    for i in range(n_traj):
+        back_index = i - length
+        while back_index < 0:
+            back_index += 1
+        tails.append([])
+        for j in range(n_vecs):
+            x = []
+            y = []
+            for k in range(back_index, i+1):
+                vec_c = vectors_resnames[k][0][j]
+                x.append(vec_c[0])
+                y.append(vec_c[1])
+            xx = []
+            yy = []
+            n_p = len(x)
+            for l in range(0, n_p-1):
+                cx = x[l]
+                nx = x[l+1]
+                cy = y[l]
+                ny = y[l+1]
+                dx = np.abs(nx - cx)
+                dy = np.abs(ny - cy)
+                #dist = np.sqrt(dx**2 + dy**2)
+                #print(dx, dy)
+                if dx < periodic_cut and dy < periodic_cut:
+                    xx.append(cx)
+                    yy.append(cy)
+                else:
+                    xx = []
+                    yy = []
+
+            xx.append(x[n_p-1])
+            yy.append(y[n_p-1])
+            #print(xx)
+            xk = np.array(xx)
+            yk = np.array(yy)
+            tails[i].append((xk, yk))
+    return tails
+
+def gen_step_vector_net_ghost_tails(vectors_resnames, length=6, group_size=2, periodic_cut=75.0):
+    n_traj = len(vectors_resnames)
+    n_vecs = len(vectors_resnames[0][0])
+    tails = []
+    for i in range(n_traj):
+        back_index = i - length
+        while back_index < 0:
+            back_index += 1
+        tails.append([])
+        for j in range(n_vecs):
+            x = []
+            y = []
+            for k in range(back_index, i+1, group_size):
+                vec_c = vectors_resnames[k][0][j]
+                x.append(vec_c[0])
+                y.append(vec_c[1])
+            if (i+1 - back_index) % group_size != 0:
+                vec_c = vectors_resnames[i][0][j]
+                x.append(vec_c[0])
+                y.append(vec_c[1])
+            xx = []
+            yy = []
+            n_p = len(x)
+            for l in range(0, n_p-1):
+                cx = x[l]
+                nx = x[l+1]
+                cy = y[l]
+                ny = y[l+1]
+                dx = np.abs(nx - cx)
+                dy = np.abs(ny - cy)
+                #dist = np.sqrt(dx**2 + dy**2)
+                #print(dx, dy)
+                if dx < periodic_cut and dy < periodic_cut:
+                    xx.append(cx)
+                    yy.append(cy)
+                else:
+                    xx = []
+                    yy = []
+
+            xx.append(x[n_p-1])
+            yy.append(y[n_p-1])
+            #print(xx)
+            xk = np.array(xx)
+            yk = np.array(yy)
+            tails[i].append((xk, yk))
+    return tails
+
+def gen_step_vector_smooth_ghost_tails(vectors_resnames, length=9, window=3, periodic_cut=75.0):
+    n_traj = len(vectors_resnames)
+    n_vecs = len(vectors_resnames[0][0])
+    print(n_vecs, n_traj)
+    smooth_delta = (window -1)/2
+    tails = []
+    for i in range(n_traj):
+        back_index = i - length
+        while back_index < 0:
+            back_index += 1
+        tails.append([])
+        #n_vecs = len(vectors_resnames[])
+        for j in range(n_vecs):
+            x = []
+            y = []
+            for k in range(back_index, i+1):
+                #print(j, i, k, vectors_resnames[k][1][j], vectors_resnames[i][1][j])
+                print(len(vectors_resnames[k][1]), len(vectors_resnames[i][1]))
+                # if vectors_resnames[k][1][j] != vectors_resnames[i][1][j]:
+                #     quit()
+                # elif len(vectors_resnames[k][1]) != 300:
+                #     quit()
+                # elif len(vectors_resnames[i][1]) != 300:
+                #     quit()
+                #print(j, len(vectors_resnames[k][0]))
+                #if j >= len(vectors_resnames[k][0]):
+                #    quit()
+                #    j = len(vectors_resnames[k][0])-1
+                vec_c = vectors_resnames[k][0][j]
+                x.append(vec_c[0])
+                y.append(vec_c[1])
+            xx = []
+            yy = []
+            n_p = len(x)
+            for l in range(0, n_p-1):
+                cx = x[l]
+                nx = x[l+1]
+                cy = y[l]
+                ny = y[l+1]
+                dx = np.abs(nx - cx)
+                dy = np.abs(ny - cy)
+                #dist = np.sqrt(dx**2 + dy**2)
+                #print(dx, dy)
+                if dx < periodic_cut and dy < periodic_cut:
+                    xx.append(cx)
+                    yy.append(cy)
+                else:
+                    xx = []
+                    yy = []
+
+            xx.append(x[n_p-1])
+            yy.append(y[n_p-1])
+            n_pp = len(xx)
+            xxx = []
+            yyy = []
+            for k in range(n_pp):
+                b_i = k - smooth_delta
+                if b_i < 0:
+                    b_i = 0
+                f_i = k + smooth_delta
+                if f_i >= n_pp:
+                    f_i = n_pp-1
+                #print "k ",k," b_i ",b_i," f_i ",f_i," n_pp ",n_pp
+                x_s = 0.0
+                y_s = 0.0
+                a_s = 0
+                for l in range(b_i, f_i+1):
+                    #print "k ",k," l ",l
+                    x_s += xx[l]
+                    y_s += yy[l]
+                    a_s += 1
+                x_s /= a_s
+                y_s /= a_s
+                if a_s == window:
+                    xxx.append(x_s)
+                    yyy.append(y_s)
+            xxx.append(x[n_p-1])
+            yyy.append(y[n_p-1])
+            #print(xx)
+            xk = np.array(xxx)
+            yk = np.array(yyy)
+            tails[i].append((xk, yk))
+    return tails
+
+##incomplete
+def gen_step_vector_smooth_ghost_tails_forwards(vectors_resnames, length_back=9, length_forward=9, window=3, periodic_cut=75.0):
+    n_traj = len(vectors_resnames)
+    n_vecs = len(vectors_resnames[0][0])
+    smooth_delta = (window -1)/2
+    tails = []
+    #first do tails back
+    for i in range(n_traj):
+        back_index = i - length
+        while back_index < 0:
+            back_index += 1
+        tails.append([])
+        for j in range(n_vecs):
+            x = []
+            y = []
+            for k in range(back_index, i+1):
+                vec_c = vectors_resnames[k][0][j]
+                x.append(vec_c[0])
+                y.append(vec_c[1])
+            xx = []
+            yy = []
+            n_p = len(x)
+            for l in range(0, n_p-1):
+                cx = x[l]
+                nx = x[l+1]
+                cy = y[l]
+                ny = y[l+1]
+                dx = np.abs(nx - cx)
+                dy = np.abs(ny - cy)
+                #dist = np.sqrt(dx**2 + dy**2)
+                #print(dx, dy)
+                if dx < periodic_cut and dy < periodic_cut:
+                    xx.append(cx)
+                    yy.append(cy)
+                else:
+                    xx = []
+                    yy = []
+
+            xx.append(x[n_p-1])
+            yy.append(y[n_p-1])
+            n_pp = len(xx)
+            xxx = []
+            yyy = []
+            for k in range(n_pp):
+                b_i = k - smooth_delta
+                if b_i < 0:
+                    b_i = 0
+                f_i = k + smooth_delta
+                if f_i >= n_pp:
+                    f_i = n_pp-1
+                #print "k ",k," b_i ",b_i," f_i ",f_i," n_pp ",n_pp
+                x_s = 0.0
+                y_s = 0.0
+                a_s = 0
+                for l in range(b_i, f_i+1):
+                    #print "k ",k," l ",l
+                    x_s += xx[l]
+                    y_s += yy[l]
+                    a_s += 1
+                x_s /= a_s
+                y_s /= a_s
+                if a_s == window:
+                    xxx.append(x_s)
+                    yyy.append(y_s)
+            xxx.append(x[n_p-1])
+            yyy.append(y[n_p-1])
+            #print(xx)
+            xk = np.array(xxx)
+            yk = np.array(yyy)
+            tails[i].append((xk, yk))
+    return tails
+
+def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True,
+                      show=False, scaled=False, wrapped=False,
+                      ghost_tails=None, ghost_tail_alpha=0.5, ghost_tail_arrow=False, ylim=None, xlim=None):
     '''
     Generates a single plot with the lipid displacement vectors (or step vectors)
     Takes a single frame of the output from:
@@ -129,54 +406,99 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True, s
         MemSys.StepVectorColors
     '''
     color_list = _color_list
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
     sns.set_style("whitegrid")
     x = vectors_resnames[0][:,0]
     y=vectors_resnames[0][:,1]
     vx = vectors_resnames[0][:,2]
     vy = vectors_resnames[0][:,3]
-    plt.figure()
-    resnames = sorted(set(vectors_resnames[1]))
-    i = 0
-    color_dict = {}
-    for res in resnames:
-        color_dict[res] = color_list[i]
-        i+=1
-        if i > len(color_list)-1:
-            i=0
-    colors = []
-    for residue in vectors_resnames[1]:
-        colors.append(color_dict[residue])
-    #print(x)
-   # Q = plt.quiver(x,y,vx,vy,color=colors)
-    #vector = np.array([vx[0], vy[1]])
-    #print("vector 0 length is: {}".format(np.sqrt(np.dot(vector,vector))))
-    Q = plt.quiver(x, y, vx, vy, color=colors, angles='xy', scale_units='xy', scale=1)
-    label_string = ""
-    for resname in color_dict:
-        label_string+=resname+":"+color_dict[resname]+" "
-    dummy_qk = plt.quiverkey(Q, 0.20, 0.975, 2, label_string, labelpos='E',
-                   coordinates='figure')
-    #else:
-    #    plt.quiver(x,y,vx,vy)
-    #plt.title('Lateral Displacement Vectors')
-    if scaled:
-        plt.xlabel("x (scaled coordinates)")
-        plt.ylabel("y (scaled coordinates)")
-    else:
-        plt.xlabel("x ($\AA$)")
-        plt.ylabel("y ($\AA$)")
-    if scaled and wrapped:
-        plt.xlim((-0.1, 1.1))
-        plt.ylim((-0.1, 1.1))
-    elif scaled and not wrapped:
-        plt.xlim(-0.2, 1.2)
-        plt.ylim(-0.1, 1.2)
-    plt.tight_layout()
-    if save:
-        plt.savefig(filename)
-    if show:
-        return plt.show()
-    plt.close()
+    with plt.rc_context({'figure.figsize': [8.00, 7.25], 'font.size': 16, 'axes.labelsize': 22,
+        'legend.fontsize': 20,
+        'xtick.labelsize': 16,
+        'ytick.labelsize': 16}):
+        plt.figure()
+        #plt.style.use('figure.figsize': [14.75, 7.25])
+        resnames = sorted(set(vectors_resnames[1]))
+        resnames = ['POPC', 'DOPE', 'TLCL2']
+        i = 0
+        color_dict = {}
+        color_names = {'POPC':'green', 'DOPE':'blue', 'TLCL2':'gold'}
+        for res in resnames:
+            color_dict[res] = _colors.next()
+        #color_dict['POPC'] = '#1e8449'
+        colors = []
+        for residue in vectors_resnames[1]:
+            colors.append(color_dict[residue])
+        #print(x)
+       # Q = plt.quiver(x,y,vx,vy,color=colors)
+        #vector = np.array([vx[0], vy[1]])
+        #print("vector 0 length is: {}".format(np.sqrt(np.dot(vector,vector))))
+        # plot tails first
+        if ghost_tails is not None:
+            res = 0
+            for ghost_tail in ghost_tails:
+                #print(ghost_tail)
+                resn = vectors_resnames[1][res]
+                color = color_dict[resn]
+                #print(color)
+                if ghost_tail_arrow:
+                    npoint = len(ghost_tail[0])
+                    # if npoint > 1:
+                    #     print(npoint)
+                    #     print(range(1, npoint, 1))
+                    #     quit()
+                    for iii in range(1, npoint, 1):
+                        x2 = ghost_tail[0][iii]
+                        y2 = ghost_tail[1][iii]
+                        x1 = ghost_tail[0][iii-1]
+                        y1 = ghost_tail[1][iii-1]
+                        #print(iii, x1, y1, x2, y2, npoint)
+                        plt.arrow(x1, y1, x2-x1, y2-y1, width=0.375, length_includes_head=True, alpha=ghost_tail_alpha, linewidth=1.0, color=color, zorder=1)
+                        #break
+                    # if npoint > 1:
+                    #     print(npoint)
+                    #     print(range(1, npoint, 1))
+                    #     quit()
+                else:
+                    plt.plot(ghost_tail[0], ghost_tail[1], color=color,
+                         alpha=ghost_tail_alpha, linewidth = 1.5)
+                res += 1
+        #Now plot the disp vecs
+        Q = plt.quiver(x, y, vx, vy, color=colors, angles='xy', scale_units='xy', scale=1, zorder=2)
+        label_string = ""
+        for resname in resnames:
+            label_string+=resname+":"+color_names[resname]+" "
+        #dummy_qk = plt.quiverkey(Q, 0.20, 0.975, 2, label_string, labelpos='E',
+        #               coordinates='figure')
+        #else:
+        #    plt.quiver(x,y,vx,vy)
+        #plt.title('Lateral Displacement Vectors')
+
+
+        if scaled:
+            plt.xlabel("x (scaled coordinates)")
+            plt.ylabel("y (scaled coordinates)")
+        else:
+            plt.xlabel("x ($\AA$)")
+            plt.ylabel("y ($\AA$)")
+            if ylim is not None:
+                plt.ylim(ylim)
+            if xlim is not None:
+                plt.xlim(xlim)
+        if scaled and wrapped:
+            plt.xlim((-0.1, 1.1))
+            plt.ylim((-0.1, 1.1))
+        elif scaled and not wrapped:
+            plt.xlim(-0.2, 1.2)
+            plt.ylim(-0.1, 1.2)
+        plt.tight_layout()
+        if save:
+            #plt.savefig(filename, transparent=True, bbox_inches='tight')
+            plt.savefig(filename, transparent=True)
+            #plt.savefig(filename, bbox_inches='tight')
+        if show:
+            return plt.show()
+        plt.close()
     return
 
 def plot_step_vectors_comtraj(vectors, colors=None, filename='step_vectors.pdf',show=False, save=True):
@@ -694,8 +1016,8 @@ def plot_average_deuterium_op(dop_dat_list,name_list=None,filename='dop.pdf',tim
             t/=1000.0
         elif time_in == 'ns' and time_out == 'ps':
             t*=1000.0
-        dop = dop_d[::interval,1]
-        dop_dev = dop_d[::interval,2]
+        dop = dop_d[::interval,4]
+        dop_dev = dop_d[::interval,5]
         if name_list is not None:
             #print "plotting",name_list[i]," with errorbars"
             #print t
@@ -1046,6 +1368,262 @@ def plot_xygrid_as_imshow(x_centers, y_centers, grid, filename='grid.pdf',
     plt.tight_layout()
     if save:
         plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_ebar_hists(center_count_err, name_list=None, filename='ebar_hist.eps',
+                    save=True, show=False, xlabel=None, ylabel='Counts'):
+    """Generic plotting function for (multiple) xy datasets.
+
+    Args:
+        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]
+        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]
+        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.
+        filename (str, Optional): The string containing the path and filename for the exported plot file.
+        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True
+        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+            Default: False
+        xlabel (str, Optional): Specify a x-axis label.
+        ylabel (str, Optional): Specify a y-axis label
+        marker (str, Optional): Specify a matplotlib marker type for data points.
+
+    """
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00',
+                               '#cc33ff', '#33ccff', '#009999', '#996633',
+                               '#666699'))
+    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
+    i = 0
+    for cce in center_count_err:
+        if name_list is not None:
+            plt.errorbar(cce[0], cce[1], yerr=cce[2], marker=_marker.next(),
+                         drawstyle='steps-mid', color=_colors.next(),
+                         label=name_list[i])
+        else:
+            plt.errorbar(cce[0], cce[1], yerr=cce[2], marker=_marker.next(),
+                         drawstyle='steps-mid', color=_colors.next())
+        i += 1
+    if xlabel is not None:
+        plt.xlabel(xlabel)
+    if ylabel is not None:
+        plt.ylabel(ylabel)
+    lgd = None
+    if name_list is not None:
+        #lgd = plt.legend(loc=7)
+        if len(name_list) > 3:
+            lgd = plt.legend(loc="center left", bbox_to_anchor=(1.04, 0.5))
+        else:
+            lgd = plt.legend(loc=0)
+    plt.tight_layout()
+    if save:
+        if lgd is not None:
+            plt.savefig(filename, bbox_extra_artists=(lgd,), bbox_inches='tight')
+        else:
+            plt.savefig(filename)
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+
+def plot_spark(xdat,ydat,filename='plot.eps', save=True, show=False, color='#47d147'):
+    """Generic plotting function for (multiple) xy datasets.
+    Based on matplotlib spark_line function defined here:
+    https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/
+    Args:
+        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]
+        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]
+        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.
+        filename (str, Optional): The string containing the path and filename for the exported plot file.
+        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True
+        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+            Default: False
+        xlabel (str, Optional): Specify a x-axis label.
+        ylabel (str, Optional): Specify a y-axis label
+        marker (str, Optional): Specify a matplotlib marker type for data points.
+
+    """
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
+    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
+
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(xdat, ydat, color=color)
+    for k,v in ax.spines.items():
+        v.set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    #plt.plot(xdata, ydata, 'r.')
+
+    ax.fill_between(xdat, ydat, min(ydat), alpha=0.1, color=color)
+    plt.tight_layout()
+    if save:
+        plt.savefig(filename, transparent=True, bbox_inches='tight')
+
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_spark_multi(xdats,ydats,filename='plot.eps', save=True, show=False, colors=None):
+    """Generic plotting function for (multiple) xy datasets.
+    Based on matplotlib spark_line function defined here:
+    https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/
+    Args:
+        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]
+        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]
+        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.
+        filename (str, Optional): The string containing the path and filename for the exported plot file.
+        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True
+        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+            Default: False
+        xlabel (str, Optional): Specify a x-axis label.
+        ylabel (str, Optional): Specify a y-axis label
+        marker (str, Optional): Specify a matplotlib marker type for data points.
+
+    """
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
+    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
+
+    fig, ax = plt.subplots(1, 1)
+    nsets = len(xdats)
+    for i in range(nsets):
+        xdat = xdats[i]
+        ydat = ydats[i]
+        try:
+            color = colors[i]
+        except:
+            color = _colors.next()
+        ax.plot(xdat, ydat, color=color, marker=_marker.next(), linestyle='-')
+        ax.fill_between(xdat, ydat, min(ydats[2]), alpha=0.2, color=color)
+    for k,v in ax.spines.items():
+        v.set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    #plt.plot(xdata, ydata, 'r.')
+
+    plt.tight_layout()
+    if save:
+        plt.savefig(filename, transparent=True, bbox_inches='tight')
+
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_spark_error(xdat,ydat, error, filename='plot.eps', save=True, show=False, color='#47d147'):
+    """Generic plotting function for (multiple) xy datasets.
+    Based on matplotlib spark_line function defined here:
+    https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/
+    Args:
+        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]
+        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]
+        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.
+        filename (str, Optional): The string containing the path and filename for the exported plot file.
+        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True
+        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+            Default: False
+        xlabel (str, Optional): Specify a x-axis label.
+        ylabel (str, Optional): Specify a y-axis label
+        marker (str, Optional): Specify a matplotlib marker type for data points.
+
+    """
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
+    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
+
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(xdat, ydat, color=color)
+    for k,v in ax.spines.items():
+        v.set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    #plt.plot(xdata, ydata, 'r.')
+    ydat = np.array(ydat)
+    error = np.array(error)
+    ax.fill_between(xdat, ydat-error, min(ydat-error), alpha=0.1, color=color)
+    ax.fill_between(xdat, ydat+error, ydat-error, alpha=0.25, color=color)
+    plt.tight_layout()
+    if save:
+        plt.savefig(filename, transparent=True, bbox_inches='tight')
+
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_spark_marker(xdat,ydat,filename='plot.eps', save=True, show=False, color='#47d147', marker='s'):
+    """Generic plotting function for (multiple) xy datasets.
+    Based on matplotlib spark_line function defined here:
+    https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/
+    Args:
+        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]
+        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]
+        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.
+        filename (str, Optional): The string containing the path and filename for the exported plot file.
+        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True
+        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+            Default: False
+        xlabel (str, Optional): Specify a x-axis label.
+        ylabel (str, Optional): Specify a y-axis label
+        marker (str, Optional): Specify a matplotlib marker type for data points.
+
+    """
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
+    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
+
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(xdat, ydat, color=color, marker=marker, markersize=40)
+    for k,v in ax.spines.items():
+        v.set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    #plt.plot(xdata, ydata, 'r.')
+
+    ax.fill_between(xdat, ydat, min(ydat), alpha=0.1, color=color)
+    plt.tight_layout()
+    if save:
+        plt.savefig(filename, transparent=True, bbox_inches='tight')
+
+    if show:
+        return plt.show()
+    plt.close()
+    return
+
+def plot_spark_error_marker(xdat,ydat, error, filename='plot.eps', save=True, show=False, color='#47d147', marker='s'):
+    """Generic plotting function for (multiple) xy datasets.
+    Based on matplotlib spark_line function defined here:
+    https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/
+    Args:
+        dat_list (list or list like): List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]
+        yerr_list (list or list like): List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]
+        name_list (list or list like, Optional): List of string legend names to assign the curves being plotted.
+        filename (str, Optional): The string containing the path and filename for the exported plot file.
+        save (bool, Optional): Set whether to save the generated plot to disc with filename. Default: True
+        show (bool, Optional): Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+            Default: False
+        xlabel (str, Optional): Specify a x-axis label.
+        ylabel (str, Optional): Specify a y-axis label
+        marker (str, Optional): Specify a matplotlib marker type for data points.
+
+    """
+    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
+    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
+
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(xdat, ydat, color=color, marker=marker, markersize=40)
+    for k,v in ax.spines.items():
+        v.set_visible(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    #plt.plot(xdata, ydata, 'r.')
+    ydat = np.array(ydat)
+    error = np.array(error)
+    ax.fill_between(xdat, ydat-error, min(ydat-error), alpha=0.1, color=color)
+    ax.fill_between(xdat, ydat+error, ydat-error, alpha=0.25, color=color)
+    plt.tight_layout()
+    if save:
+        plt.savefig(filename, transparent=True, bbox_inches='tight')
+
     if show:
         return plt.show()
     plt.close()

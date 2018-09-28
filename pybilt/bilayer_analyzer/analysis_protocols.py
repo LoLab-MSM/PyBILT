@@ -56,6 +56,7 @@ except ImportError as error:
 import warnings
 import sys
 import cmath
+import copy as cp
 
 
 # PyBILT imports
@@ -63,7 +64,7 @@ from pybilt.common.running_stats import RunningStats, binned_average
 import pybilt.mda_tools.mda_density_profile as mda_dp
 import pybilt.lipid_grid.lipid_grid_curv as lgc
 from pybilt.common import distance_cutoff_clustering as dc_cluster
-from pybilt.common.distance_cutoff_clustering import distance_euclidean_pbc
+from pybilt.common.distance_cutoff_clustering import distance_euclidean_pbc, vector_difference_pbc
 from scipy.spatial.distance import cdist
 #need some containers for bookkeeping
 command_protocols = {}
@@ -558,6 +559,7 @@ class MSDProtocol(AnalysisProtocol):
 
         self._first_frame = True
         self._ref_coords = None
+        self._ref_time = 0.0
         self._indices = []
         # parse input arguments if given
         self._parse_args(args)
@@ -608,6 +610,8 @@ class MSDProtocol(AnalysisProtocol):
         drs_stat = RunningStats()
 
         ref_coords = np.zeros((n_com, 2))
+
+
         if self._first_frame:
             count = 0
             for i in indices:
@@ -617,11 +621,18 @@ class MSDProtocol(AnalysisProtocol):
                 ref_coords[count] = com_curr[:]
                 count += 1
             self._ref_coords = ref_coords[:]
+            self._ref_time = ba_reps['first_com_frame'].time
             self._first_frame = False
         else:
             ref_coords = self._ref_coords
             # get the current com frame list
         tc = ba_reps['com_frame'].time
+        if (tc - self._ref_time) >= 50000.0:
+            self._ref_coords = selcoords[:]
+            ref_coords = selcoords[:]
+            self._ref_time = tc
+            print("updating ref_coords at time {}".format(tc))
+            # quit()
         dt = tc
         dr = selcoords - ref_coords
         drs = dr * dr
@@ -2640,6 +2651,7 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
         #print(area)
         self.area_run.push(area)
         Ka = 1.0
+        Ka_err = 0.0
         if self.first_comp:
             self.first_comp = False
             self.n_frames+=1
@@ -2647,13 +2659,22 @@ class AreaCompressibilityModulusProtocol(AnalysisProtocol):
             Ka = 0.0
         else:
             Ka = (self.area_run.mean()*scicon.k*self.settings['temperature'])/self.area_run.variance()
+            area_std = self.area_run.deviation()
+            area_mean = self.area_run.mean()
+            n_areas = self.area_run.n
+            #area_err = area_std/np.sqrt(self.area_run.n)
+            area_var_of_var = (np.sqrt(2.0)*area_std**2)/np.sqrt(n_areas - 1)
+            area_std_of_var = np.sqrt(area_var_of_var)
+            #area_err_of_var = np.sqrt(area_var_of_var)/np.sqrt(self.area_run.n)
+            Ka_err = np.sqrt((area_std/area_mean)**2 + (area_std_of_var/area_std**2)**2)*Ka
+            #Ka_err = (area_std/area_mean + ( (np.sqrt(2.0)*area_std**2)/np.sqrt(n_areas -1))/area_std**2 )*Ka
         #print "<A>: ", self.area_run.mean(), " var(A): ",self.area_run.variance()
         #print "T: ",self.settings['temperature']," k: ",scicon.k
         #conversion factor for Joules/Angstrom^2 to milliNewtons/meter
         Ka*=10.0**23
-
+        Ka_err*=10.0**23
         time = ba_reps['current_mda_frame'].time
-        self.analysis_output.append([time, Ka])
+        self.analysis_output.append([time, Ka, Ka_err, area])
         self.n_frames += 1
         return
 
@@ -3297,13 +3318,26 @@ class LipidLengthProtocol(AnalysisProtocol):
         for i in indices:
             vec_curr = ba_reps['vector_frame'].lipidvec[i].vector
             lengths[count] = np.sqrt(np.dot(vec_curr, vec_curr))
+            #l_full = np.sqrt(np.dot(vec_curr, vec_curr))
+            #vec_curr[0] = 0.0
+            #vec_curr[1] = 0.0
+            #l_z = np.sqrt(np.dot(vec_curr, vec_curr))
+            #l_z = np.abs(vec_curr[2])
+            #if l_full < 30.0:
+            #    print(l_full, l_z)
+            #lengths[count] = l_z
+            #if lengths[count] > 30.0:
+            #    print(lengths[count])
             count += 1
-
+        #quit()
             # get the current com frame list
         tc = ba_reps['vector_frame'].time
         # get the msd for the current selection
-        mean_length = lengths.mean()
+        # The extract is a patch to exclude vectors that are broken across periodic boundaries
+        mean_length = np.extract(lengths < 30.0, lengths).mean()
         lipid_length = np.array([tc, mean_length])
+        #print(lipid_length)
+        #quit()
         self.analysis_output.append(lipid_length)
         return
 
@@ -3927,7 +3961,8 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
     def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
 
         if self.first_comp:
-            self.last_com_frame = ba_reps['com_frame']
+            self.last_com_frame = cp.deepcopy(ba_reps['com_frame'])
+            self.last_frame = ba_reps['current_mda_frame'].frame
             self.first_comp = False
             return
         current_frame = ba_reps['current_mda_frame'].frame
@@ -3975,23 +4010,48 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
             for i in indices:
                 resname = curr_frame.lipidcom[i].type
                 resnames.append(resname)
-                com_i = curr_frame.lipidcom[i].com_unwrap[
+                com_i_uw = curr_frame.lipidcom[i].com_unwrap[
                     ba_settings['lateral']]
-                com_j = prev_frame.lipidcom[i].com_unwrap[
+                com_j_uw = prev_frame.lipidcom[i].com_unwrap[
+                    ba_settings['lateral']]
+                com_i = curr_frame.lipidcom[i].com[
+                    ba_settings['lateral']]
+                com_j = prev_frame.lipidcom[i].com[
                     ba_settings['lateral']]
                 com_j_w = prev_frame.lipidcom[i].com[ba_settings['lateral']]
+                d_v = vector_difference_pbc(com_j, com_i, l_box, center='box_half')
+                ddv = com_i - com_j
+                #print " ddv: ",ddv, " box_l: ", l_box
+                #print "com_j: ",com_j," com_i: ",com_i," d_v: ",d_v
+                #print
+                #if not np.allclose(ddv, d_v):
+                #    quit()
+                #print(d_v)
                 if self.settings['wrapped']:
                     vec_ends[count, 0] = com_j_w[0]
                     vec_ends[count, 1] = com_j_w[1]
+                    vec_ends[count, 2] = com_j_w[0] + d_v[0]
+                    vec_ends[count, 3] = com_j_w[1] + d_v[1]
                 else:
                     vec_ends[count, 0] = com_j[0]
                     vec_ends[count, 1] = com_j[1]
-                vec_ends[count, 2] = com_i[0] - com_j[0]
-                vec_ends[count, 3] = com_i[1] - com_j[1]
+                    vec_ends[count, 2] = com_j[0] + d_v[0]
+                    vec_ends[count, 3] = com_j[1] + d_v[1]
+
+
                 #    vec_ends.append([com_j[0],com_j[0],com_i[0]-com_j[0],com_i[1]-com_j[1]])
                 count += 1
             total = 0.0
             weights = 0.0
+            n_inter = 0
+            cos_sum = 0.0
+            neighbors = {}
+            total_pos = 0.0
+            weight_pos = 0.0
+            total_neg = 0.0
+            weight_neg = 0.0
+            weight_tot = 0.0
+            for i in range(n_com): neighbors[i] = []
             for i in range(n_com-1):
                 index_i = indices[i]
                 vec_end_a = vec_ends[i]
@@ -4003,19 +4063,70 @@ class DispVecCorrelationAverageProtocol(AnalysisProtocol):
                     vec_b = vec_end_b[2:4] - vec_end_b[0:2]
                     dot = np.dot(vec_a, vec_b)
                     cos_t = dot/(np.linalg.norm(vec_a)*np.linalg.norm(vec_b))
+                    #print "cos_t: ", cos_t, " vev_a: ", vec_a, " vec_b: ", vec_b
                     com_j_w = prev_frame.lipidcom[index_j].com[ba_settings['lateral']]
                     pos_a = com_i_w[[x_index, y_index]]
                     pos_b = com_j_w[[x_index, y_index]]
-                    dist = dist = distance_euclidean_pbc(pos_a, pos_b, l_box,
+                    dist = distance_euclidean_pbc(pos_a, pos_b, l_box,
                                                          center='box_half')
-                    total += cos_t * (1.0/dist)
-                    weights += (1.0/dist)
+                    #print " dist: ", dist, " cos_t: ",cos_t
+                    #if dist < 60.0:
+                    total += cos_t * (1.0/dist**2)
+                    weights += (1.0/dist**2)
+                    n_inter += 1.0
+                    cos_sum += cos_t
+                    weight_tot += (1.0/dist**2)
+                    if cos_t > 0.0:
+                        total_pos += cos_t * (1.0/dist**2)
+                        weight_pos += (1.0/dist**2)
+                    elif cos_t < 0.0:
+                        total_neg += cos_t * (1.0/dist**2)
+                        weight_neg += (1.0/dist**2)
+                    neighbors[i].append([j, cos_t, dist])
+                    neighbors[j].append([i, cos_t, dist])
+            nn_total = 0.0
+            nn_weights = 0.0
+            cos_sum = []
+            for i in range(n_com):
+                n_neighbors = neighbors[i]
+                n_neighbors.sort(key=lambda x: x[2])
+                #print(n_neighbors[:6])
+                coss = []
+                diss = []
+                for val in n_neighbors[:6]:
+                    coss.append(val[1])
+                    diss.append(val[2])
+                    cos_sum.append(val[1])
+                coss = np.array(coss)
+                diss = np.array(diss)
+                w_val = (coss/diss**2).sum()/(1.0/diss**2).sum()
+                nn_total += w_val
+                nn_weights += 1.0
+            #     total += (coss/diss).sum()
+            #     weights += (1.0/diss).sum()
+            #     #print(np.array(coss).mean())
+            #     #print(n_neighbors[0])
+            #     #print
+            #cos_sum = np.array(cos_sum)
             w_avg = total/weights
+            w_avg_pos = total_pos/weight_pos
+            w_avg_neg = total_neg/weight_neg
+            f_pos = weight_pos/weight_tot
+            f_neg = weight_neg/weight_tot
+            nn_w_avg = nn_total/nn_weights
+            #print "w_avg: ", w_avg, " total: ",total," weights: ",weights
+            #print "w_avg_pos: ", total_pos/weight_pos, " total_pos: ", total_pos, " weight_pos: ",weight_pos
+            #print "w_avg_neg: ", total_neg/weight_neg, " total_neg: ", total_neg, " weight_neg: ",weight_neg
+            #quit()
+            print(([ba_reps['com_frame'].time,
+                    w_avg, self._running.mean(),
+                    self._running.deviation()]))
+            #quit()
             self._running.push(w_avg)
             self.analysis_output.append([ba_reps['com_frame'].time,
-                                         w_avg, self._running.mean(),
-                                         self._running.deviation()])
-            self.last_com_frame = ba_reps['com_frame']
+                                         w_avg, nn_w_avg,
+                                         w_avg_pos, w_avg_neg, f_pos, f_neg])
+            self.last_com_frame = cp.deepcopy(ba_reps['com_frame'])
             self.last_frame = current_frame
             #return vec_ends
         return

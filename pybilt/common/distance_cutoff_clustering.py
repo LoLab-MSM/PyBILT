@@ -52,8 +52,11 @@ def distance_euclidean_pbc(v_a, v_b, box_lengths, center='zero'):
     # shift center to zero for minimum image
     v_a = v_a - center
     v_b = v_b - center
+    #print(v_a)
+    #print(v_b)
     # difference
     d_v = v_a - v_b
+    #print(d_v)
     d_v_a = np.absolute(d_v)
     dim = len(v_a)
     # check for minimum image
@@ -63,9 +66,63 @@ def distance_euclidean_pbc(v_a, v_b, box_lengths, center='zero'):
         box_i_h = box_i/2.0
         if v_i > box_i_h:
             d_v[i] = box_i - np.absolute(v_a[i]) - np.absolute(v_b[i])
+    #print(d_v)
     r = np.sqrt(np.dot(d_v, d_v))
     return r
 
+
+def vector_difference_pbc(v_a, v_b, box_lengths, center='zero'):
+    """Compute the Euclidean distance between two vectors under periodic boundaries.
+
+    Args:
+        v_a (numpy.array, array like): The first input vector.
+        v_b (numpy.array, array like): The second input vector.
+        box_lengths (numpy.array, array like): The periodic boundary box
+            lengths for each dimension.
+        center (Optional[str, array like]): Set the coordinate center of the
+            periodic box dimensions. Defaults to 'zero', which sets the
+            center to numpy.zeros(len(box_lengths)). Also accepts the string
+            value 'box_half', which sets the center to 0.5*box_lengths.
+
+    Returns:
+        float: The Euclidean distance between the two vectors.
+
+    Notes:
+        The two vectors should have the same size and dimension, while
+            box_lengths should have the length of the vector dimension.
+    """
+    if isinstance(center, str):
+        if center == 'zero':
+            center = np.zeros(len(v_a))
+        elif center == 'box_half':
+            center = np.array(box_lengths)/2.0
+    # shift center to zero for minimum image
+    v_a = v_a - center
+    v_b = v_b - center
+    #print(v_a)
+    #print(v_b)
+    # difference
+    d_v = v_b - v_a
+    #print(d_v)
+    d_v_a = np.absolute(d_v)
+
+    dim = len(v_a)
+    # check for minimum image
+    for i in range(dim):
+        v_i = d_v_a[i]
+        box_i = box_lengths[i]
+        box_i_h = box_i/2.0
+        if v_i > box_i_h:
+            d_v_p = box_i - np.absolute(v_a[i]) - np.absolute(v_b[i])
+            d_v_aa = np.absolute(d_v[i])
+            if (d_v_p > 0.0) and (d_v_aa > 0.0):
+                d_v[i] = d_v_p * (-1.0*d_v[i]/d_v_aa)
+
+    #print(d_v)
+
+    #d_v_pbc = d_v * d_v_n
+    #r = np.sqrt(np.dot(d_v, d_v))
+    return d_v
 
 def distance_cutoff_clustering(vectors, cutoff, dist_func, min_size=1,
                                *df_args, **df_kwargs):

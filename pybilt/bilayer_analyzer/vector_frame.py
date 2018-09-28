@@ -69,6 +69,7 @@ class LipidVec(object):
             if isinstance(start_atoms, (list, tuple)):
 
                 atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+start_atoms[0])])
+                #mda.lib.mdamath.make_whole(mda_residue.atoms, reference_atom=atom_group)
                 n_names = len(start_atoms)
                 for i in range(1, n_names):
                     atom_group+=eval("mda_residue.atoms."+start_atoms[i])
@@ -76,6 +77,7 @@ class LipidVec(object):
                 self.start_mass = atom_group.total_mass()
             else:
                 atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+start_atoms)])
+                #mda.lib.mdamath.make_whole(mda_residue.atoms, reference_atom=atom_group)
                 self.start = atom_group.center_of_mass()
                 self.start_mass = atom_group.total_mass()
 
@@ -96,6 +98,7 @@ class LipidVec(object):
             atom_group = mda_residue.atoms
             min_atom_index = np.argmin(atom_group.positions[:, 2])
             max_atom_index = np.argmax(atom_group.positions[:, 2])
+            #mda.lib.mdamath.make_whole(atom_group, reference_atom=atom_group[min_atom_index])
             self.ref_atoms = {'start':atom_group[min_atom_index].name,
                               'end': atom_group[max_atom_index].name}
             self.end = atom_group[max_atom_index].position
