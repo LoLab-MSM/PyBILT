@@ -94,8 +94,11 @@ def diffusion_coefficient_linear_fit(times, msd_vals, dim=2, time_range=None):
     msd = msd_vals
     if time_range is not None:
         t, msd = _time_block(times, msd_vals, time_range[0], time_range[1])
+    #print(t, msd)
+    dt = t - t[0]
+    print("in diffco:", t[0], t[-1])
     slope, dummy_intercept, dummy_r_value, dummy_p_value, \
-        std_err = stats.linregress(t,msd)
+        std_err = stats.linregress(dt,msd)
     return (slope/(2.0*dim), std_err/(2.0*dim))
 
 
@@ -159,6 +162,7 @@ def diffusion_coefficient_anomalous_fit(times, msd_vals, dim=2,
         func = _msd_anom_1d
     if time_range is not None:
         t, msd = _time_block(times, msd_vals, time_range[0], time_range[1])
+    t -= t[0]
     popt, dummy_pcov = curve_fit(func, t, msd)
     return popt
 

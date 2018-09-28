@@ -8,8 +8,8 @@ def test_analysis_module_bilayer_thickness():
                   trajectory_file='../pybilt/sample_bilayer/sample_bilayer_10frames.dcd',
                   selection_string=sel_string,
                   name_dict=name_dict,
-                  frame_start=2, frame_end=-2, frame_interval=2,
-                  n_xbins=60, n_ybins=60)
+                  frame_start=0, frame_end=-2, frame_interval=2,
+                  n_xbins=100, n_ybins=100)
 
     return
 

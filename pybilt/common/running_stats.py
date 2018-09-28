@@ -9,8 +9,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from builtins import object
-import numpy as np
 from six.moves import range
+import numpy as np
+from scipy import stats
 
 # Running Statistics
 class RunningStats(object):
@@ -243,6 +244,75 @@ class BlockAverager(object):
         else:
             return self._get_running()
 
+    def _aob_running(self):
+        """Get the block average quantities from interanl RunningStats
+        objects.
+        """
+        means = []
+        for block in self._blocks:
+            #print "block.n ",block.n, " min_p ",self._min_points_in_block
+            if block.n >= self._min_points_in_block:
+                means.append(block.mean())
+        means = np.array(means)
+        return means
+
+    def _aob_np(self):
+        """Get the block average quantities from internally stored numpy
+        arrays.
+        """
+        means = []
+        for block in self._blocks:
+            if len(block) >= self._min_points_in_block:
+                means.append(np.array(block).mean())
+        means = np.array(means)
+        return means
+
+    def averages_of_blocks(self):
+        """Return the block average and standard error.
+
+        Returns:
+            tuple: Returns a length two tuple with the block average and standard error estimates.
+        """
+        #print(self._blocks)
+        if self._store_data:
+            return self._aob_np()
+        else:
+            return self._aob_running()
+
+    def _sob_running(self):
+        """Get the block average quantities from interanl RunningStats
+        objects.
+        """
+        means = []
+        for block in self._blocks:
+            #print "block.n ",block.n, " min_p ",self._min_points_in_block
+            if block.n >= self._min_points_in_block:
+                means.append(block.deviation())
+        means = np.array(means)
+        return means
+
+    def _sob_np(self):
+        """Get the block average quantities from internally stored numpy
+        arrays.
+        """
+        means = []
+        for block in self._blocks:
+            if len(block) >= self._min_points_in_block:
+                means.append(np.array(block).std())
+        means = np.array(means)
+        return means
+
+    def standards_of_blocks(self):
+        """Return the block average and standard error.
+
+        Returns:
+            tuple: Returns a length two tuple with the block average and standard error estimates.
+        """
+        #print(self._blocks)
+        if self._store_data:
+            return self._sob_np()
+        else:
+            return self._sob_running()
 
     def number_of_blocks(self):
         """Return the current number of blocks.
@@ -263,6 +333,21 @@ class BlockAverager(object):
             return self._points_per_block, self._min_points_in_block, len(self._blocks[self.n_blocks-1])
         else:
             return self._points_per_block, self._min_points_in_block, self._blocks[self.n_blocks - 1].n
+
+    def n_block(self):
+        if self._store_data:
+            n_block = 0
+            for block in self._blocks:
+                if len(block) >= self._min_points_in_block:
+                    n_block += 1
+            return n_block
+        else:
+            n_block = 0
+            for block in self._blocks:
+                #print "block.n ",block.n, " min_p ",self._min_points_in_block
+                if block.n >= self._min_points_in_block:
+                    n_block += 1
+            return n_block
 
 def binned_average(data, positions, n_bins=25, position_range=None):
     """Compute averages over a quantized range of histogram like bins.
@@ -327,3 +412,45 @@ def binned_average(data, positions, n_bins=25, position_range=None):
     sums = sums[keep_bins]
     averages = sums / counts
     return bins, averages
+
+#pair t-test for comparison of the difference of two means - null is zero difference
+def pair_ttest(mean_1, std_err_1, n_1, mean_2, std_err_2, n_2):
+    m_diff = np.abs(mean_1 - mean_2)
+    diff_err = np.sqrt(std_err_1**2 + std_err_2**2)
+    degrees = n_1 + n_2 - 2
+    tval = m_diff / diff_err
+    pval = 2.0*(1.0 - stats.t.cdf(tval, df=degrees))
+    return pval
+
+def block_avg_hist(nparray_1d, block_size, in_range='auto', scale=False, *args, **kwargs):
+    '''Creates histograms for each block and averages them to generate block
+    a single block averaged historgram.
+    '''
+    if in_range == 'auto':
+        in_range = [min(nparray_1d), max(nparray_1d)]
+    # Number of blocks of block_size
+    nblocks = len(nparray_1d)/block_size
+    # print(nblocks)
+    # Trim the array to just the points to use with the blocking
+    array_trim = nparray_1d[:block_size*nblocks]
+    blocks = [array_trim[i*block_size:(i+1)*block_size] for i in range(nblocks)]
+    # print(len(blocks))
+    # print(len(blocks[0]))
+    # print(len(blocks[1]))
+    counts, edges = np.histogram(blocks[0], *args, range=in_range, **kwargs)
+    # print(counts)
+    c_list = [counts]
+    for i in range(1,nblocks):
+        counts, edges = np.histogram(blocks[i], *args, range=in_range, **kwargs)
+        # print(counts)
+        c_list.append(counts)
+    stacked = np.stack(c_list, axis=1)
+    # print(stacked)
+    avg_count = stacked.mean(axis=1)
+    # print(avg_count)
+    se_count = stacked.std(axis=1)/np.sqrt(nblocks)
+    centers = 0.5*(edges[1:] + edges[:-1])
+    if scale:
+        avg_count /= block_size
+        se_count /= block_size
+    return avg_count, se_count, centers
