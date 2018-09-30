@@ -1,4 +1,4 @@
-name: pybilt
+name: pybilt_27_rtd
 channels:
   - defaults
   - conda-forge
@@ -100,7 +100,7 @@ dependencies:
   - seaborn=0.9.0
   - setuptools=40.2.0
   - singledispatch=3.4.0.3
-  - sip=4.19.12
+  - sip=4.19.8
   - six=1.11.0
   - snowballstemmer=1.2.1
   - sphinx=1.8.1
@@ -121,3 +121,5 @@ dependencies:
     - msgpack==0.5.6
     - recommonmark==0.4.0
     - sphinx-rtd-theme==0.4.1
+prefix: /home/blake/anaconda2/envs/pybilt_27_rtd
+
