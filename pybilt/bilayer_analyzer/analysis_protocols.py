@@ -342,6 +342,10 @@ class AnalysisProtocol(object):
             analysis during the frame loop.
     """
     _pickleable = True
+    _short_description = 'None'
+    analysis_key = 'none'
+    _related = None
+
 
     def __init__(self, args):
         """ Inits the AnalysisProtocol using the input args.
@@ -988,7 +992,7 @@ class APLBoxProtocol(AnalysisProtocol):
         apl = area / nlipids
         time = ba_reps['current_mda_frame'].time
         self.running.push(apl)
-        apl_t = np.zeros(self._return_length)
+        apl_t = np.zeros(4)
         apl_t[0] = time
         apl_t[1] = apl
         apl_t[2] = self.running.mean()
@@ -3105,7 +3109,7 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
         self.running.push(cos_t_avg)
         time = ba_reps['current_mda_frame'].time
         #self.running.push(ap
-        cos_t = np.zeros(self._return_length)
+        cos_t = np.zeros(4)
         cos_t[0] = time
         cos_t[1] = cos_t_avg
         cos_t[2] = self.running.mean()
@@ -3244,7 +3248,7 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
         self.running.push(cos_t_avg)
         time = ba_reps['current_mda_frame'].time
         #self.running.push(ap
-        cos_t = np.zeros(self._return_length)
+        cos_t = np.zeros(4)
         cos_t[0] = time
         cos_t[1] = cos_t_avg
         cos_t[2] = self.running.mean()
