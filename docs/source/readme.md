@@ -49,9 +49,9 @@ To use the PyBILT Jupyter Notebooks:
    * Jupyter - http://jupyter.org/
 
 To build the docs locally requires the following additional packages:
-    * Sphinx - http://www.sphinx-doc.org/en/master/
-    * recommonmark - https://recommonmark.readthedocs.io/en/latest/
-    * sphinx_rtd_theme - https://sphinx-rtd-theme.readthedocs.io/en/latest/
+   * Sphinx - http://www.sphinx-doc.org/en/master/
+   * recommonmark - https://recommonmark.readthedocs.io/en/latest/
+   * sphinx_rtd_theme - https://sphinx-rtd-theme.readthedocs.io/en/latest/
 
 
 

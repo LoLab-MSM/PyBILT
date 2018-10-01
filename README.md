@@ -1,5 +1,5 @@
 ![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
-## *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
+# *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
 ------
 ![Python version badge](https://img.shields.io/badge/python-2.7%2C3.6-blue.svg)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
@@ -25,10 +25,10 @@ The analyses include:
 
 ------
 
-## Install
+# Install
 
 | **! Warning** |
-| --- |
+| :--- |
 |  PyBILT is still under heavy development and may rapidly change. |
 
 #### PyBILT run dependencies
@@ -48,9 +48,9 @@ To use the PyBILT Jupyter Notebooks:
    * Jupyter - http://jupyter.org/
 
 To build the docs locally requires the following additional packages:
-    * Sphinx - http://www.sphinx-doc.org/en/master/
-    * recommonmark - https://recommonmark.readthedocs.io/en/latest/
-    * sphinx_rtd_theme - https://sphinx-rtd-theme.readthedocs.io/en/latest/
+   * Sphinx - http://www.sphinx-doc.org/en/master/
+   * recommonmark - https://recommonmark.readthedocs.io/en/latest/
+   * sphinx_rtd_theme - https://sphinx-rtd-theme.readthedocs.io/en/latest/
 
 
 
@@ -60,9 +60,9 @@ The following section describes the process for setting up the dependencies and
 installing the 'pybilt' package using a conda environment and the setup.py
 script.
 
-#### Setup and install using Anaconda's conda tool
+## Setup and install using Anaconda's conda tool
 
-##### Method 1 (manual package installation)
+### Method 1 (manual package installation)
 First, clone or download the GitHub repo
 ```
 git clone https://github.com/blakeaw/PyBILT.git
@@ -110,7 +110,7 @@ pip install sphinx_rtd_theme
 pip install recommonmark
 ```
 
-##### Method 2 (From environment yaml)
+### Method 2 (From environment yaml)
 
 The files environment_py27.yml and environment_py36.yml have been provided to allow for easy setup of a new conda
 environment with all of the most recently tested versions of dependencies.
@@ -143,7 +143,7 @@ Note that the notebooks have not been updated for Python 3 yet.
 
 ------
 
-## Quick overview of PyBILT
+# Quick overview of PyBILT
 **PyBILT** is composed of 2 primary analysis packages:
   * bilayer_analyzer -- The [bilayer_analyzer](http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.bilayer_analyzer) is an analysis package that
                         is designed to analyze (quasi) planar lipid bilayer
@@ -189,7 +189,7 @@ analysis type. See the [documentation](https://pybilt.readthedocs.io/en/latest/b
 
 ------
 
-## Documentation
+# Documentation
 
 Visit the PyBILT docs on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html).
 Docs can also be viewed offline/locally by opening the [PyBILT/docs/build/html/index.html](docs/build/html/index.html) file from the
@@ -201,7 +201,7 @@ usage (these have not been updated/tested for/with python 3 yet); updates and mo
 
 ------
 
-## Contact
+# Contact
 
 To report problems or bugs please open a
 [GitHub Issue](https://github.com/blakeaw/PyBILT/issues). Additionally, any
@@ -216,7 +216,7 @@ inquiry" in the e-mail subject line.
 
 ------
 
-## Contributing
+# Contributing
 
 If you would like to contribute directly to PyBILT's development please
  1. Fork the repo (https://github.com/blakeaw/PyBILT/fork)
