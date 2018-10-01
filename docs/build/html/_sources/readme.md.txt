@@ -4,7 +4,7 @@
 ------
 
 ![Python version badge](https://img.shields.io/badge/python-2.7-blue.svg)
-[![GitHub license](https://img.shields.io/github/license/Day8/re-frame.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/blakeaw/PyBILT/blob/master/LICENSE)
 [![Code Health](https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/blakeaw/PyBILT/master)
 [![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](https://github.com/blakeaw/PyBILT/blob/master/.docstring-coverage_report.txt)
 
@@ -33,33 +33,34 @@ The analyses include:
 
 **Warning:** PyBILT is still under heavy development and may rapidly change.
 
-Download PyBILT from the github repo (https://github.com/blakeaw/PyBILT.git)
-and then add the path to the PyBILT directory to your PYTHONPATH. From a
-terminal you can type
-```
-export PYTHONPATH="path_to/PyBILT:$PYTHONPATH
-```
-to add it to the current shell environment. For persistence add the line to your
-.bashrc file.
-
-PyBILT has the following major dependencies:
-   * MDAnalysis 0.16.0
-   * NumPy  1.11.3
-   * SciPy 0.18.1,
+#### PyBILT run dependencies
+PyBILT has the following major dependencies that need to be installed before it
+can be run:
+   * MDAnalysis 0.16.2
+   * NumPy 1.11.3
+   * SciPy 0.18.1
    * Matplotlib 2.0.0
    * Seaborn 0.7.1
 
+The versions of the above packages are the latest that the pybilt package has
+been tested with under Anaconda 4.3.1 Python 2.7; these are the package
+versions included in the conda environment.yml file.  Therefore, to reproduce
+the environment that PyBILT has been tested under it is recommended that you
+install [Anaconda Python](https://www.anaconda.com/) version 4.3.1 Python 2.7
+before installing PyBILT. PyBILT has yet to be tested outside of an Anaconda
+environment.
 
-In addition, it is highly recommended that you install
-[Anaconda Python](https://www.continuum.io/)
-version 4.3.1 Python 2.7 before installing PyBILT. PyBILT
-has yet to be tested outside of an Anaconda environment.
+The following section describes the process for setting up the dependencies and
+installing the 'pybilt' package using a conda environment and the setup.py
+script.
 
-------
-
-### Setup using Anaconda's conda tool
+#### Setup and install using Anaconda's conda tool
+First, clone or download the GitHub repo
+```
+git clone https://github.com/blakeaw/PyBILT.git
+```
 The file environment.yml has been provided to allow for easy setup of a new
-environment with all the appropriate dependencies using the conda tool. Run
+environment with all the appropriate dependencies using the conda tool. From the PyBILT root run
 ```
 conda env create -f environment.yml
 ```
@@ -68,13 +69,17 @@ dependencies. Then activate the environment
 ```
 source activate pybilt
 ```
-before running PyBILT modules.
+Next, run the setup.py script with install,
+```
+python setup.py install
+```
+to install the 'pybilt' package into the *pybilt* environment.    
 
 ------
 
 ## Quick overview of PyBILT
 **PyBILT** is composed of 2 primary analysis packages:
-  * bilayer_analyzer -- The bilayer_analyzer is an analysis package that
+  * bilayer_analyzer -- The [bilayer_analyzer](http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.bilayer_analyzer) is an analysis package that
                         is designed to analyze (quasi) planar lipid bilayer
                         systems. It is accessed through the BilayerAnalyzer
                         object, which can be imported via: ```from
@@ -95,27 +100,28 @@ style of the [GridMAT-MD method](http://www.bevanlab.biochem.vt.edu/GridMAT-MD/)
 
 The bilayer_analyzer features various types of analyses and the use of different
 representations is handled internally based the requirements and design of each
-analysis type. See the documentation (coming soon) for more details on
+analysis type. See the [documentation](http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.analysis_protocols) for more details on
 individual analyses and the representations they use.   
 
-  * mda_tools -- This package includes various modules and functions for directly
+  * [mda_tools](http://pybilt.readthedocs.io/en/latest/pybilt.mda_tools.html) -- This package includes various modules and functions for directly
                  analyzing and operating on MDAnalysis trajectories and objects.
                  e.g. functions to compute density profiles.
 
  Additional packages include:
-   * lipid_grid -- The lipid grid module can be used construct "lipid grid" grid
+   * [lipid_grid](http://pybilt.readthedocs.io/en/latest/pybilt.lipid_grid.html) -- The lipid grid module can be used construct "lipid grid" grid
                   representations of lipid bilayers, which can be used to
                   accurately estimate quantities such as area per lipid.
 
-  * com_trajectory -- This module can be used to construct a center of mass
+  * [com_trajectory](http://pybilt.readthedocs.io/en/latest/pybilt.com_trajectory.html) -- This module can be used to construct a center of mass
                       trajectory (COMTraj) out of an MDAnalysis trajectory,
                       which is useful for computing quantities like mean squared
                       displacement. The COMTraj is designed to work with bilayers.
 
-  * plot_generation -- This module has several pre-written plotting functions
+  * [plot_generation](http://pybilt.readthedocs.io/en/latest/pybilt.plot_generation.html) -- This module has several pre-written plotting functions
                        (using matplotlib and seaborn) for some of the properties
                        that can be computed from functions in the other modules.
                        e.g. mean squared displacement and area per lipid.
+
 
 ## Additional Documentation/Tutorials
 
@@ -126,22 +132,26 @@ the pipeline. Although they are also not fully extensive, the
 [tests](https://github.com/blakeaw/PyBILT/tree/master/tests) can serve as a
 useful place to examine some basic usage and functionality.
 
-## Core Developers
-
-* **Blake A Wilson** - Currently a Postdoctoral Fellow at Vanderbilt University
-  * Vandy e-mail: blake.a.wilson@vanderbilt.edu
-  * Gmail: blakeaw1102@gmail.com
-  * [Blake's VU Website]( https://my.vanderbilt.edu/blakeaw/)
-  * Also find me on [LinkedIn](https://www.linkedin.com/in/blakewilson3/) and [Research Gate](https://www.researchgate.net/profile/Blake_Wilson3)
-
 ## Contact
 
-If you have any comments, suggestions, or feature requests for PyBILT please
-feel free to open a [GitHub Issue](https://github.com/blakeaw/PyBILT/issues)
-with those comments, suggestions, or feature requests. Or you can contact Blake
-directly via e-mail at either blake.a.wilson@vanderbilt.edu or
-blakeaw1102@gmail.com. You may also contact Blake with any questions about
-PyBILT use or implementation.
+To report problems or bugs please open a [GitHub Issue](https://github.com/blakeaw/PyBILT/issues).
+Additionally, any comments, suggestions, or feature requests for PyBILT can also be submitted as a [GitHub Issue](https://github.com/blakeaw/PyBILT/issues).
+
+For any other inquiries, including questions about PyBILT use or
+implementation, you can contact Blake directly via e-mail at either
+blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com; please include "PyBILT
+inquiry" in the e-mail subject line.
+
+## Contributing
+
+If you would like to contribute directly to PyBILT's development please
+ 1. Fork the repo (https://github.com/blakeaw/PyBILT/fork)
+ 2. Create a new branch for your feature (git checkout -b feature/foo_bar)
+ 3. Create test code for your feature
+ 4. Once your feature passes its own test, run all the tests using [pytest](https://docs.pytest.org/en/latest/) (python -m pytest)
+ 5. Once your feature passes all the tests, commit your changes (git commit -am 'Add the foo_bar feature.')
+ 6. Push to the branch (git push origin feature/foo_bar)
+ 7. Create a new Pull Request
 
 ## License
 
@@ -168,4 +178,13 @@ this project and for providing me with the space and means to pursue it.
 * [GitHub](https://github.com/) - Development Platform and repository storage
 * [Sphinx](http://www.sphinx-doc.org/en/stable/index.html) - Python documentation generator
 * [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark.
+* [Read the Docs](https://readthedocs.org/) - Documentation hosting
 * [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  A simple audit tool for examining python source files for missing docstrings.
+
+## Core Developers
+
+* **Blake A Wilson** - Currently a Postdoctoral Fellow at Vanderbilt University
+  * Vandy e-mail: blake.a.wilson@vanderbilt.edu
+  * Gmail: blakeaw1102@gmail.com
+  * [Blake's VU Website]( https://my.vanderbilt.edu/blakeaw/)
+  * Also find me on [LinkedIn](https://www.linkedin.com/in/blakewilson3/) and [Research Gate](https://www.researchgate.net/profile/Blake_Wilson3)

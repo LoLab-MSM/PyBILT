@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.mda_tools package &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.mda_tools package &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
-        <link rel="up" title="pybilt package" href="pybilt.html"/>
-        <link rel="next" title="pybilt.plot_generation package" href="pybilt.plot_generation.html"/>
-        <link rel="prev" title="pybilt.lipid_grid package" href="pybilt.lipid_grid.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pybilt.plot_generation package" href="pybilt.plot_generation.html" />
+    <link rel="prev" title="pybilt.lipid_grid package" href="pybilt.lipid_grid.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -62,7 +53,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -70,7 +61,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -97,15 +88,16 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
@@ -134,7 +126,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyBILT</a>
@@ -142,9 +134,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -202,7 +195,7 @@ The are compressibilty modulus is an elastic property that can be computed from 
 dimension) and its fluctuations. The quantity is given by</p>
 <blockquote>
 <div>K_A = kT&lt;A&gt;[ &lt;(A - &lt;A&gt;)^2&gt;]^-1,</div></blockquote>
-<p>where A is the area per lipid, k is Boltzmann&#8217;s constant
+<p>where A is the area per lipid, k is Boltzmann’s constant
 and T is the temperature (in Kelvin).
 See references:
 Coarse Grained Model for Semiquantitative Lipid Simulations
@@ -242,7 +235,7 @@ DOI: 10.1021/jp803414g</p>
 <dl class="exception">
 <dt id="pybilt.mda_tools.mda_density_profile.SizeError">
 <em class="property">exception </em><code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">SizeError</code><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#SizeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.SizeError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">exceptions.Exception</span></code></p>
 </dd></dl>
 
 <dl class="function">
@@ -270,6 +263,11 @@ DOI: 10.1021/jp803414g</p>
 <code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">mass_density_profile_multi_align</code><span class="sig-paren">(</span><em>universe</em>, <em>mda_selections</em>, <em>align_struct_universe</em>, <em>align_sel_string</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em>, <em>nbins=100</em>, <em>reference=0.0</em>, <em>refsel=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#mass_density_profile_multi_align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.mass_density_profile_multi_align" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="pybilt.mda_tools.mda_density_profile.partial_charge_density_profile">
+<code class="descclassname">pybilt.mda_tools.mda_density_profile.</code><code class="descname">partial_charge_density_profile</code><span class="sig-paren">(</span><em>trajectory</em>, <em>mda_selection</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>axis='z'</em>, <em>nbins=100</em>, <em>reference=0.0</em>, <em>refsel=None</em>, <em>valence=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_density_profile.html#partial_charge_density_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_density_profile.partial_charge_density_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-pybilt.mda_tools.mda_deuterium_order_parameter">
 <span id="pybilt-mda-tools-mda-deuterium-order-parameter-module"></span><h2>pybilt.mda_tools.mda_deuterium_order_parameter module<a class="headerlink" href="#module-pybilt.mda_tools.mda_deuterium_order_parameter" title="Permalink to this headline">¶</a></h2>
@@ -280,7 +278,7 @@ DOI: 10.1021/jp803414g</p>
 
 <dl class="function">
 <dt id="pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Moore">
-<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">average_deuterium_order_Moore</code><span class="sig-paren">(</span><em>trajectory</em>, <em>membrane_sel</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#average_deuterium_order_Moore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Moore" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">average_deuterium_order_Moore</code><span class="sig-paren">(</span><em>trajectory</em>, <em>membrane_sel</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em>, <em>make_whole=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#average_deuterium_order_Moore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.average_deuterium_order_Moore" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -299,9 +297,76 @@ DOI: 10.1021/jp803414g</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.deuterium_order_Moore">
-<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">deuterium_order_Moore</code><span class="sig-paren">(</span><em>mda_universe</em>, <em>lipid_segids</em>, <em>lipid_map</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fstep=1</em>, <em>norm_axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#deuterium_order_Moore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.deuterium_order_Moore" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pybilt.mda_tools.mda_deuterium_order_parameter.deuterium_order_parameter">
+<code class="descclassname">pybilt.mda_tools.mda_deuterium_order_parameter.</code><code class="descname">deuterium_order_parameter</code><span class="sig-paren">(</span><em>mda_universe</em>, <em>lipid_segids</em>, <em>lipid_acyl_carbons</em>, <em>lipid_acyl_hydrogens</em>, <em>first_frame=0</em>, <em>last_frame=-1</em>, <em>frame_interval=1</em>, <em>norm_axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/mda_tools/mda_deuterium_order_parameter.html#deuterium_order_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.mda_tools.mda_deuterium_order_parameter.deuterium_order_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the deteurium (or acyl chain) order parameter
+This function computes the average deuterium (or acyl chain) order
+parameter for acyl chain carbons from the trajectory data in a MDAnalysis
+universe object. The lipid are assumed to be in a planar bilayer or
+monolayer and aligned such that the normal to the lipid layer surface
+points along either the x, y, or z axis (z by default). This function
+does not directly account for split molecules due to wrapping. As a patch,
+the function tests the C-H bond distances each frame and if they large,
+suggesting wrapped molecule splitting, that carbon is ignored that frame
+and not added to the average.
+:Parameters: * <strong>mda_universe</strong> (<em>MDAnalysis.Universe</em>) – The MDAnalysis.Universe object</p>
+<blockquote>
+<div><blockquote>
+<div>containing the structure and trajectory of the lipid system to
+be analyzed.</div></blockquote>
+<ul>
+<li><p class="first"><strong>lipid_segids</strong> (<em>dict</em>) – A dictionary keyed by the lipid RESNAMEs and
+and valued with the SEGID for that lipid type.</p>
+</li>
+<li><p class="first"><strong>lipid_acyl_carbons</strong> (<em>dict</em>) – A dictionary keyed by the lipid RESNAMEs.
+The values are dictionaries keyed by integer acyl chain carbon
+positions that you want to include in the analysis for that lipid
+type and has values of the acyl chain carbon name. This variable is
+used to make appropriate atom selections of the acyl chain carbons.
+e.g.: lipid_acyl_carbons = {‘POPC’:{1:’CA1’, 2:’CA2’, …}, …}</p>
+</li>
+<li><p class="first"><strong>lipid_acyl_hydrogens</strong> (<em>dict</em>) – A dictionary keyed by the lipid RESNAMEs.
+The values are dictionaries keyed by integer acyl chain carbon
+positions that you want to include in the analysis for that lipid
+type and has values of a list containing the names of the two
+hydrogens for that acyl chain carbon position. This variable is
+used to make appropriate atom selections of the acyl chain
+hydrogens.
+e.g.: lipid_acyl_hydrogens = {‘POPC’:{1:[‘H1A’, ‘H1B’], …}, …}</p>
+</li>
+<li><p class="first"><strong>first_frame</strong> (<em>int, optional</em>) – Define the first frame of the trajectory
+from which to start the analysis. Default: 0, the first frame in
+mda_universe.trajectory</p>
+</li>
+<li><p class="first"><strong>last_frame</strong> (<em>int, optional</em>) – Define the last frame of the trajectory
+to include in the analysis. Default: -1, the last frame in
+mda_universe.trajectory</p>
+</li>
+<li><p class="first"><strong>frame_interval</strong> (<em>int, optional</em>) – Define an interval for looping over
+the frames in the trajectory. Default: 1, every frame</p>
+</li>
+<li><p class="first"><strong>norm_axis</strong> (<em>str</em>) – Define the axis that is normal to the lipid layer
+surface. Options: ‘x’, ‘y’, or ‘z’. Default: ‘z’.</p>
+</li>
+<li><p class="first"><strong>Returns</strong> –</p>
+<dl class="docutils">
+<dt>(tuple): 2 elements - element 0: (dict): A dictionary with same key</dt>
+<dd><p class="first last">structure as lipid_acyl_carbons but with interior values
+containing the ensemble+time averaged order parameter values.
+element 1: (dict): Same as first element but containing the
+standard deviations of the averages.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>References</strong> –</p>
+<ol class="arabic simple">
+<li>Moore et al. 2001 Biophysical Journal 81(5) 2484-2494</li>
+<li>Vermeer Eur Biophys J (2007) 36:919-931</li>
+</ol>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
 
 <dl class="function">
 <dt id="pybilt.mda_tools.mda_deuterium_order_parameter.vector_to_unit">
@@ -322,12 +387,12 @@ across the the MD trajectory.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
-<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) – A list of 2 element lists or tuples containing pairs of MDAnalsysis
 atom selection objects to compute the distance between.</li>
-<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
-<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
-<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+<li><strong>fstart</strong> (<em>int</em>) – Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) – Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) – Optional, the interval between frames in the analysis when looping from fstart to fend.
 Default: 1 (or every frame)</li>
 </ul>
 </td>
@@ -359,14 +424,14 @@ across the the MD trajectory, but only uses the 1d coordinate of the specified a
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
-<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) – A list of 2 element lists or tuples containing pairs of MDAnalsysis
 atom selection objects to compute the distance between.</li>
-<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
-<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
-<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+<li><strong>fstart</strong> (<em>int</em>) – Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) – Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) – Optional, the interval between frames in the analysis when looping from fstart to fend.
 Default: 1 (or every frame)</li>
-<li><strong>axis</strong> (<em>str</em>) &#8211; Optional, the 1d axis to compute the distance in. Default: &#8216;z&#8217; (or the z axis)</li>
+<li><strong>axis</strong> (<em>str</em>) – Optional, the 1d axis to compute the distance in. Default: ‘z’ (or the z axis)</li>
 </ul>
 </td>
 </tr>
@@ -398,17 +463,17 @@ to some selection of atoms of a reference structure.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
-<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) – A list of 2 element lists or tuples containing pairs of MDAnalsysis
 atom selection objects to compute the distance between.</li>
-<li><strong>align_struct_universe</strong> (<em>MDAnalsysi.Universe</em>) &#8211; The MDAnalsysis universe object of the reference structure to
+<li><strong>align_struct_universe</strong> (<em>MDAnalsysi.Universe</em>) – The MDAnalsysis universe object of the reference structure to
 align the system to.</li>
-<li><strong>align_sel_string</strong> (<em>str</em>) &#8211; A MDAnalysis selection string to use for the structure alignment.</li>
-<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
-<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
-<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+<li><strong>align_sel_string</strong> (<em>str</em>) – A MDAnalysis selection string to use for the structure alignment.</li>
+<li><strong>fstart</strong> (<em>int</em>) – Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) – Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) – Optional, the interval between frames in the analysis when looping from fstart to fend.
 Default: 1 (or every frame)</li>
-<li><strong>axis</strong> (<em>str</em>) &#8211; Optional, the 1d axis to compute the distance in. Default: &#8216;z&#8217; (or the z axis)</li>
+<li><strong>axis</strong> (<em>str</em>) – Optional, the 1d axis to compute the distance in. Default: ‘z’ (or the z axis)</li>
 </ul>
 </td>
 </tr>
@@ -439,14 +504,14 @@ across the the MD trajectory, but only uses the 2d coordinates of the specified 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) &#8211; The MDAnalysis universe object to run the analysis on.</li>
-<li><strong>mda_selection_pairs</strong> (<em>list</em>) &#8211; A list of 2 element lists or tuples containing pairs of MDAnalsysis
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – The MDAnalysis universe object to run the analysis on.</li>
+<li><strong>mda_selection_pairs</strong> (<em>list</em>) – A list of 2 element lists or tuples containing pairs of MDAnalsysis
 atom selection objects to compute the distance between.</li>
-<li><strong>fstart</strong> (<em>int</em>) &#8211; Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
-<li><strong>fend</strong> (<em>int</em>) &#8211; Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
-<li><strong>fstep</strong> (<em>int</em>) &#8211; Optional, the interval between frames in the analysis when looping from fstart to fend.
+<li><strong>fstart</strong> (<em>int</em>) – Optional, the first frame to include in the analysis. Default: 0 (or the first frame)</li>
+<li><strong>fend</strong> (<em>int</em>) – Optional, the last frame to include in the analysis. Default: -1 (or the last frame)</li>
+<li><strong>fstep</strong> (<em>int</em>) – Optional, the interval between frames in the analysis when looping from fstart to fend.
 Default: 1 (or every frame)</li>
-<li><strong>plane</strong> (<em>str</em>) &#8211; Optional, the 2d axis plane to compute the distance in. Default: &#8216;xy&#8217; (or the xy plane)</li>
+<li><strong>plane</strong> (<em>str</em>) – Optional, the 2d axis plane to compute the distance in. Default: ‘xy’ (or the xy plane)</li>
 </ul>
 </td>
 </tr>
@@ -507,9 +572,7 @@ to perform standalone analyses, as well as other operations.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -531,7 +594,7 @@ to perform standalone analyses, as well as other operations.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -549,7 +612,8 @@ to perform standalone analyses, as well as other operations.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -559,23 +623,17 @@ to perform standalone analyses, as well as other operations.</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

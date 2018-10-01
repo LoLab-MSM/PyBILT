@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.bilayer_analyzer.bilayer_analyzer &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.bilayer_analyzer.bilayer_analyzer &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -60,7 +51,7 @@
 
           
             
-            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -68,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -98,11 +89,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
 </ul>
 
@@ -115,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">PyBILT</a>
@@ -123,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -155,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -183,10 +175,15 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># imports</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">object</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">cPickle</span> <span class="k">as</span> <span class="nn">pickle</span>
+    <span class="kn">import</span> <span class="nn">six.moves.cPickle</span> <span class="k">as</span> <span class="nn">pickle</span>
 <span class="k">except</span> <span class="ne">ImportWarning</span> <span class="k">as</span> <span class="n">warn</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pickle</span>
 
@@ -194,21 +191,16 @@
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="c1">#range/xrange fix</span>
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
-<div class="viewcode-block" id="range"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.range">[docs]</a>    <span class="k">def</span> <span class="nf">range</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">xrange</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
 <span class="c1"># PyBILT imports</span>
-<span class="kn">import</span> <span class="nn">com_frame</span> <span class="k">as</span> <span class="nn">cf</span>
-<span class="kn">import</span> <span class="nn">leaflet</span> <span class="k">as</span> <span class="nn">lf</span>
-<span class="kn">import</span> <span class="nn">vector_frame</span> <span class="k">as</span> <span class="nn">vf</span>
-<span class="kn">import</span> <span class="nn">pybilt.lipid_grid.lipid_grid</span> <span class="k">as</span> <span class="nn">lg</span>
-<span class="kn">import</span> <span class="nn">analysis_protocols</span> <span class="k">as</span> <span class="nn">ap</span>
-<span class="kn">import</span> <span class="nn">plot_protocols</span> <span class="k">as</span> <span class="nn">pp</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">com_frame</span> <span class="k">as</span> <span class="n">cf</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">leaflet</span> <span class="k">as</span> <span class="n">lf</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">vector_frame</span> <span class="k">as</span> <span class="n">vf</span>
+<span class="kn">import</span> <span class="nn">pybilt.lipid_grid.lipid_grid_opt</span> <span class="k">as</span> <span class="nn">lg</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">analysis_protocols</span> <span class="k">as</span> <span class="n">ap</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">plot_protocols</span> <span class="k">as</span> <span class="n">pp</span>
 <span class="kn">from</span> <span class="nn">pybilt.common.running_stats</span> <span class="k">import</span> <span class="n">RunningStats</span>
-<span class="kn">import</span> <span class="nn">mda_data</span> <span class="k">as</span> <span class="nn">md</span>
-
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">mda_data</span> <span class="k">as</span> <span class="n">md</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="c1"># import the coordinate wrapping function--for unwrapping</span>
 <span class="kn">from</span> <span class="nn">pybilt.mda_tools.mda_unwrap</span> <span class="k">import</span> <span class="n">wrap_coordinates</span><span class="p">,</span> \
     <span class="n">wrap_coordinates_parallel</span>
@@ -236,12 +228,12 @@
     <span class="k">for</span> <span class="n">a_id</span> <span class="ow">in</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="n">a_key</span> <span class="o">=</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">analysis_key</span>
         <span class="n">descript</span> <span class="o">=</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">short_description</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;analysis_key: </span><span class="si">{}</span><span class="s2"> ---&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a_key</span><span class="p">,</span><span class="n">descript</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;analysis_key: </span><span class="si">{}</span><span class="s2"> ---&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a_key</span><span class="p">,</span><span class="n">descript</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">show_settings</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  with settings:&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="n">setting</span><span class="p">]</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2"> --&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2"> --&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))))</span>
     <span class="k">return</span></div>
 
 <div class="viewcode-block" id="print_analysis_settings"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.print_analysis_settings">[docs]</a><span class="k">def</span> <span class="nf">print_analysis_settings</span><span class="p">(</span><span class="n">analysis_key</span><span class="p">):</span>
@@ -255,20 +247,20 @@
         <span class="k">for</span> <span class="n">a_id</span> <span class="ow">in</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">a_key</span> <span class="o">=</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">analysis_key</span>
             <span class="n">descript</span> <span class="o">=</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">short_description</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;analysis_key: </span><span class="si">{}</span><span class="s2"> ---&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a_key</span><span class="p">,</span><span class="n">descript</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;analysis_key: </span><span class="si">{}</span><span class="s2"> ---&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a_key</span><span class="p">,</span><span class="n">descript</span><span class="p">)))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  with settings:&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">analyses</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="n">setting</span><span class="p">]</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2"> --&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2"> --&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid analysis&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">analysis_key</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a valid analysis&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">analysis_key</span><span class="p">)))</span>
     <span class="k">return</span></div>
 
 <div class="viewcode-block" id="print_available_plots"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.print_available_plots">[docs]</a><span class="k">def</span> <span class="nf">print_available_plots</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Print to std out the valid plotting protocols available to the</span>
 <span class="sd">    BilayerAnalyzer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">valid_plots</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">((</span><span class="n">pp</span><span class="o">.</span><span class="n">valid_plots</span><span class="p">))</span>
     <span class="k">return</span></div>
 
 
@@ -390,6 +382,21 @@
 <span class="sd">                object dictionaries are dumped. Default: &#39;./&#39;</span>
 <span class="sd">            leaflets:update_interval (int): Determines how ofter to update the</span>
 <span class="sd">                leaflet assignments. Default: 1, or every frame.</span>
+<span class="sd">            leaflets:assign_method (str): Set which method is used to assign</span>
+<span class="sd">                lipids to leaflets. There are two options: &#39;avg_norm&#39; which</span>
+<span class="sd">                which compares lipid coms along the bilayer normal dimension</span>
+<span class="sd">                to the average for all lipids, and &#39;orientation&#39; which assigns</span>
+<span class="sd">                a vector to each lipid and uses the orientation of that vector</span>
+<span class="sd">                relative to the bilayer normal to assign the lipids to leaflets.</span>
+<span class="sd">                Default: &#39;avg_norm&#39;</span>
+<span class="sd">            leaflets:orientation_atoms (dict): A dictionary keyed to lipid</span>
+<span class="sd">                resnames which defines the atoms to use for the orientation</span>
+<span class="sd">                vector. Each key (lipid resname) should be assigined a two</span>
+<span class="sd">                element list of tail and head atoms for that lipid type,</span>
+<span class="sd">                specified by the atom names; e.g. {&#39;POPC&#39;:[&#39;C128&#39;, &#39;P&#39;]}.</span>
+<span class="sd">                Default: None.</span>
+<span class="sd">                Note: This option is only used in conjuction with</span>
+<span class="sd">                leaflets:assign_method = &#39;orientation&#39;.</span>
 <span class="sd">            lipid_grid:dump (bool): Determines wheter the LipidGrids objects</span>
 <span class="sd">                built during interations of the analysis loop are dumped to</span>
 <span class="sd">                disc as pickle files. Default: False</span>
@@ -439,6 +446,10 @@
 <span class="sd">            input_file (str): Optional, the path and filename of input setup file.</span>
 <span class="sd">            input_dict (dict): Optional, a dictionary of keyed by valid commands and their input values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Patch for python 2/3 compatibility -- python 2 uses next while</span>
+        <span class="c1"># python 3 uses __next__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__next__</span>
+        
         <span class="c1">#adjustable settings -- used internally in analysis loops and</span>
         <span class="c1">#   are passed to the individual analyses.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -458,14 +469,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;current_mda_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1">#com_frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dump&#39;</span> <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                         <span class="s1">&#39;dump_path&#39;</span> <span class="p">:</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span>
-                                         <span class="s1">&#39;name_dict&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dump&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                         <span class="s1">&#39;dump_path&#39;</span><span class="p">:</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span>
+                                         <span class="s1">&#39;name_dict&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                         <span class="s1">&#39;multi_bead&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                         <span class="s1">&#39;rewrap&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                         <span class="s1">&#39;make_whole&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
         <span class="c1">#leaflets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dump&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                         <span class="s1">&#39;dump_path&#39;</span> <span class="p">:</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span>
-                                         <span class="s1">&#39;update_interval&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+                                         <span class="s1">&#39;dump_path&#39;</span><span class="p">:</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span>
+                                         <span class="s1">&#39;update_interval&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                         <span class="s1">&#39;assign_method&#39;</span><span class="p">:</span> <span class="s1">&#39;avg_norm&#39;</span><span class="p">,</span>
+                                         <span class="s1">&#39;orientation_atoms&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
         <span class="c1">#lipid_grid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dump&#39;</span> <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
@@ -488,11 +504,11 @@
 
         <span class="c1">#input file parsing</span>
         <span class="k">if</span> <span class="n">input_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;parsing input file </span><span class="se">\&#39;</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">input_file</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">...&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;parsing input file </span><span class="se">\&#39;</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">input_file</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\&#39;</span><span class="s2">...&quot;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_input_script</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_script_name</span><span class="p">)</span>
             <span class="c1"># parse &#39;frames&#39; input key--</span>
             <span class="c1"># for setting the frame range of the analysis</span>
-            <span class="k">if</span> <span class="s1">&#39;frames&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s1">&#39;frames&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
                 <span class="n">f_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;frames&#39;</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">f_args</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
                     <span class="n">arg_key</span> <span class="o">=</span> <span class="n">f_args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -505,7 +521,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg_value</span>
 
             <span class="c1"># parse inputs for lipid_grid settings</span>
-            <span class="k">if</span> <span class="s1">&#39;lipid_grid&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s1">&#39;lipid_grid&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
                 <span class="n">lg_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lg_args</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
                     <span class="n">arg_key</span> <span class="o">=</span> <span class="n">lg_args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -525,7 +541,7 @@
 
         <span class="k">elif</span> <span class="n">input_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-            <span class="n">id_keys</span> <span class="o">=</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="n">id_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">input_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_required_commands</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">id_keys</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;key </span><span class="se">\&#39;</span><span class="si">{}</span><span class="se">\&#39;</span><span class="s2"> needs to be included in the input dictionary.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
@@ -534,7 +550,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="c1"># parse &#39;frames&#39; input key--</span>
             <span class="c1"># for setting the frame range of the analysis</span>
-            <span class="k">if</span> <span class="s1">&#39;frames&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s1">&#39;frames&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
                 <span class="n">f_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;frames&#39;</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">f_args</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
                     <span class="n">arg_key</span> <span class="o">=</span> <span class="n">f_args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -547,7 +563,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">arg_value</span><span class="p">)</span>
 
                         <span class="c1"># parse inputs for lipid_grid settings</span>
-            <span class="k">if</span> <span class="s1">&#39;lipid_grid&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s1">&#39;lipid_grid&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
                 <span class="n">lg_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lg_args</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
                     <span class="n">arg_key</span> <span class="o">=</span> <span class="n">lg_args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -563,22 +579,22 @@
 
             <span class="c1"># set up the analysis protocol</span>
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;setting up analysis protocol:&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;analysis&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">analysis_protocol</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">Analyses</span><span class="p">(</span>
+        <span class="k">if</span> <span class="s1">&#39;analysis&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">Analyses</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;analysis&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">analysis_protocol</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">Analyses</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">Analyses</span><span class="p">(</span>
                 <span class="n">default_analysis_commands</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_analysis_protocol</span><span class="p">()</span>
         <span class="c1"># set up the plot protocol</span>
         <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;setting up plot protocol&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;plot&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s2">&quot;plot&quot;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_plot_protocol</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">PlotProtocol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">],</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">analysis_protocol</span><span class="p">)</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_protocol</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">PlotProtocol</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">analysis_protocol</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_protocol</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">PlotProtocol</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
         <span class="c1"># build selection string for the MDAData object</span>
         <span class="n">sel_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;selection&#39;</span><span class="p">]</span>
 
@@ -643,7 +659,7 @@
                     <span class="n">commands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">second_term</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valid_commands</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
                             <span class="n">input_string</span> <span class="o">=</span> <span class="n">word_list_to_string</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
                             <span class="nb">print</span> <span class="p">(</span><span class="n">input_string</span><span class="p">)</span>
                             <span class="n">commands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_string</span><span class="p">)</span>
@@ -653,12 +669,12 @@
                             <span class="nb">print</span><span class="p">(</span><span class="n">input_string</span><span class="p">)</span>
                             <span class="n">commands</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_string</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;input command </span><span class="si">{}</span><span class="s2"> is not a valid&quot;</span>
-                              <span class="s2">&quot; command&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;input command </span><span class="si">{}</span><span class="s2"> is not a valid&quot;</span>
+                              <span class="s2">&quot; command&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)))</span>
                         <span class="n">error_str</span> <span class="o">=</span> <span class="s2">&quot;invalid input command &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">required</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_required_commands</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">required</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">commands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">required</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">commands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
                 <span class="n">error_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_required_command_error_strings</span><span class="p">[</span><span class="n">required</span><span class="p">]</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error_string</span><span class="p">)</span>
 
@@ -666,7 +682,7 @@
 
 <div class="viewcode-block" id="BilayerAnalyzer.print_analysis_protocol"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.print_analysis_protocol">[docs]</a>    <span class="k">def</span> <span class="nf">print_analysis_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print the analysis protocol.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">print_protocol</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">print_protocol</span><span class="p">()</span>
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="BilayerAnalyzer.add_analysis"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.add_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">add_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_in</span><span class="p">):</span>
@@ -676,7 +692,7 @@
 <span class="sd">                analysis key, analysis id, and settings for the new analysis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_protocol</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="n">analysis_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">add_analysis</span><span class="p">(</span><span class="n">analysis_in</span><span class="p">)</span>
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="BilayerAnalyzer.remove_analysis"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.remove_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">remove_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">analysis_id</span><span class="p">):</span>
@@ -748,7 +764,7 @@
 
 <div class="viewcode-block" id="BilayerAnalyzer.print_plot_ids"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.print_plot_ids">[docs]</a>    <span class="k">def</span> <span class="nf">print_plot_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print the ids of initialized plots in the plot protocol.&quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_protocol</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_protocol</span><span class="o">.</span><span class="n">plot_ids</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="BilayerAnalyzer.get_plot_ids"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.get_plot_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_plot_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the ids of the plots in the plot protocol.</span>
@@ -786,16 +802,18 @@
         <span class="k">return</span></div>
 
     <span class="c1"># mda_trajectory data/access</span>
-<div class="viewcode-block" id="BilayerAnalyzer.update_mda_trajectory"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.update_mda_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">update_mda_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_trajectory</span><span class="p">):</span>
+<div class="viewcode-block" id="BilayerAnalyzer.update_mda_trajectory"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.update_mda_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">update_mda_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_trajectory</span><span class="p">,</span> <span class="n">reset_iterator</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set a new trajectory file to read frames from.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            new_trajectory (str): A file path and file name for the new</span>
 <span class="sd">            trajectory.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;updating mda trajectory to:&quot;</span><span class="p">,</span> <span class="n">new_trajectory</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;updating mda trajectory to:&quot;</span><span class="p">,</span> <span class="n">new_trajectory</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">[</span><span class="s1">&#39;trajectory&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_trajectory</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">update_trajectory</span><span class="p">(</span><span class="n">new_trajectory</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reset_iterator</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span></div>
 
     <span class="c1"># buildable objects functions</span>
@@ -867,6 +885,7 @@
 
         <span class="k">if</span> <span class="n">first</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">first</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_frame</span> <span class="o">=</span> <span class="n">first</span>
         <span class="k">if</span> <span class="n">last</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">last</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_last_frame</span> <span class="o">=</span> <span class="n">last</span>
@@ -882,10 +901,10 @@
 
 <div class="viewcode-block" id="BilayerAnalyzer.print_rep_settings"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.print_rep_settings">[docs]</a>    <span class="k">def</span> <span class="nf">print_rep_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">rep</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;represetation: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rep</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;represetation: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rep</span><span class="p">)))</span>
             <span class="k">for</span> <span class="n">setting</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="n">rep</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  setting:value </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="n">rep</span><span class="p">][</span><span class="n">setting</span><span class="p">]))</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;  setting:value </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="n">rep</span><span class="p">][</span><span class="n">setting</span><span class="p">])))</span>
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="BilayerAnalyzer.reset"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -915,184 +934,43 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">_frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="c1">#print(self._current_frame)</span>
             <span class="k">pass</span>
         <span class="k">return</span></div>
 
-    <span class="c1"># analysis</span>
-<div class="viewcode-block" id="BilayerAnalyzer.run_analysis_mp"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.run_analysis_mp">[docs]</a>    <span class="k">def</span> <span class="nf">run_analysis_mp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nprocs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Runs the analysis.</span>
-<span class="sd">        The function performs the loop over the trajectory. At each frame it</span>
-<span class="sd">        builds the necessary objects (e.g. COMFrame) and then executes the</span>
-<span class="sd">        analysis of each analysis that was initialized in the setup.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            nprocs (int): An integer specifying the number of cores to use in</span>
-<span class="sd">            multithreaded parallelelization.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">parallel</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">nprocs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">parallel</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="c1"># now we need to unwrap the coordinates</span>
-        <span class="n">natoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">natoms</span>
-        <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="n">currcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="c1">#first_frame_coord = np.zeros((natoms, 3))</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">bilayer_sel</span><span class="o">.</span><span class="n">indices</span>
-        <span class="n">firstframe</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">first_com</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">n_mda_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">mda_trajectory</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">n_mda_frames</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="c1">#build lists of which analysis protocols can be implemented</span>
-        <span class="c1"># in parallel with multiprocessing (i.e. which can be properly pickled</span>
-        <span class="c1"># and used without the MDAnalysis objects in mda_data</span>
-        <span class="n">run_serial</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">run_parallel</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">a_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">pickleable</span><span class="p">():</span>
-                <span class="n">run_parallel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_id</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">run_serial</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_id</span><span class="p">)</span>
-
-        <span class="c1">#print(run_serial)</span>
-        <span class="c1">#print(run_parallel)</span>
-        <span class="c1"># create process pool</span>
-        <span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">nprocs</span><span class="p">)</span>
-        <span class="c1">#def in_func(input):</span>
-        <span class="c1">#    ap._run_analysis_alias(input)</span>
-
-        <span class="n">in_func</span> <span class="o">=</span> <span class="n">_run_analysis_alias</span>
-        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">mda_trajectory</span><span class="p">[</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span>
-                         <span class="mi">2</span><span class="p">]]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;current_mda_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span>
-            <span class="n">currcoord</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">firstframe</span><span class="p">:</span>
-                <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">currcoord</span><span class="p">)</span>
-                <span class="c1">#first_frame_coord = np.copy(oldcoord)</span>
-                <span class="n">firstframe</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">currcoord</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">abc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-                <span class="c1"># oldcoord = self._oldcoords</span>
-                <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
-                    <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">wrap_coordinates_parallel</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">currcoord</span><span class="p">,</span>
-                                                          <span class="n">oldcoord</span><span class="p">,</span>
-                                                          <span class="n">nprocs</span><span class="o">=</span><span class="n">nprocs</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># oldcoord = self._oldcoords.copy()</span>
-                    <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">wrap_coordinates</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">currcoord</span><span class="p">,</span> <span class="n">oldcoord</span><span class="p">)</span>
-                <span class="c1"># frame._pos[index] = wrapcoord[:]</span>
-                <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">wrapcoord</span><span class="p">)</span>
-                <span class="c1"># self._oldcoords = oldcoord</span>
-                <span class="c1"># print (&quot;wrapped coords:&quot;)</span>
-            <span class="c1"># print (wrapcoord)</span>
-            <span class="c1"># if self.analysis_protocol.use_objects[&#39;com_frame&#39;]:</span>
-            <span class="c1"># now build the COMFrame</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">COMFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">bilayer_sel</span><span class="p">,</span>
-                                         <span class="n">wrapcoord</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;name_dict&#39;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">first_com</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;first_com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span>
-                <span class="n">first_com</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="c1"># now we can assign the lipids to the leaflets</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upper&#39;</span><span class="p">:</span> <span class="n">lf</span><span class="o">.</span><span class="n">Leaflet</span><span class="p">(</span><span class="s1">&#39;upper&#39;</span><span class="p">),</span>
-                             <span class="s1">&#39;lower&#39;</span><span class="p">:</span> <span class="n">lf</span><span class="o">.</span><span class="n">Leaflet</span><span class="p">(</span><span class="s1">&#39;lower&#39;</span><span class="p">)}</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;dump&#39;</span><span class="p">]:</span>
-                <span class="n">ofname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;com_frame_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                    <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-                    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">],</span> <span class="n">ofile</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;dump&#39;</span><span class="p">]:</span>
-                <span class="n">ofname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;leaflets_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                    <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-                    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">],</span> <span class="n">ofile</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">use_objects</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lg</span><span class="o">.</span><span class="n">LipidGrids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">],</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;lateral&#39;</span><span class="p">],</span>
-                                                <span class="n">nxbins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_xbins&#39;</span><span class="p">],</span>
-                                                <span class="n">nybins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;n_ybins&#39;</span><span class="p">])</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;dump&#39;</span><span class="p">]:</span>
-                    <span class="n">ofname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;lipid_grid_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                        <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-                        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">],</span> <span class="n">ofile</span><span class="p">)</span>
-
-                        <span class="c1"># lipid_grid = None</span>
-            <span class="c1"># now do analyses</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_loop_count</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;print_interval&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Frame&quot;</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-            <span class="n">r_analyses</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">analysis_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">analysis_ids</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_loop_count</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;print_interval&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;analysis &quot;</span> <span class="o">+</span> <span class="n">analysis_id</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">a_id</span> <span class="ow">in</span> <span class="n">run_parallel</span><span class="p">:</span>
-                <span class="n">r_analyses</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">],</span> <span class="bp">self</span><span class="p">])</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">in_func</span><span class="p">,</span> <span class="n">r_analyses</span><span class="p">)</span>
-
-            <span class="c1">#print(results)</span>
-            <span class="c1">#extract the results</span>
-            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-                <span class="n">analysis_id</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">analysis_id</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">analysis_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
-            <span class="k">del</span> <span class="n">results</span>
-            <span class="k">for</span> <span class="n">a_id</span> <span class="ow">in</span> <span class="n">run_serial</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">a_id</span><span class="p">]</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_loop_count</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;print_interval&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_index&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_frame_loop_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="c1"># print (&#39;analysis_out:&#39;)</span>
-            <span class="c1"># print (analysis_out)</span>
-        <span class="c1">#close and join the pool</span>
-        <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-        <span class="k">return</span></div>
-
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="BilayerAnalyzer.print_available_analysis"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.print_available_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">print_available_analysis</span><span class="p">():</span>
+<div class="viewcode-block" id="BilayerAnalyzer.print_available_analysis"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.print_available_analysis">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">print_available_analysis</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot;Prints the keys of analysiss that can initialized.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">((</span><span class="nb">list</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
         <span class="k">return</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="BilayerAnalyzer.print_available_plots"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.print_available_plots">[docs]</a>    <span class="k">def</span> <span class="nf">print_available_plots</span><span class="p">():</span>
+<div class="viewcode-block" id="BilayerAnalyzer.print_available_plots"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.print_available_plots">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">print_available_plots</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot;Prints a list of the keys of the available plot types.        &quot;&quot;&quot;</span>
-        <span class="nb">print</span> <span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">((</span><span class="nb">list</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
         <span class="k">return</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="BilayerAnalyzer.available_plots"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.available_plots">[docs]</a>    <span class="k">def</span> <span class="nf">available_plots</span><span class="p">():</span>
+<div class="viewcode-block" id="BilayerAnalyzer.available_plots"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.available_plots">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">available_plots</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot;Returns the list of the keys of the available plot types.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): A list of string keys for available plot types.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">pp</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="BilayerAnalyzer.available_analysis"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.available_analysis">[docs]</a>    <span class="k">def</span> <span class="nf">available_analysis</span><span class="p">():</span>
+<div class="viewcode-block" id="BilayerAnalyzer.available_analysis"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.available_analysis">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">available_analysis</span><span class="p">():</span>
         <span class="sd">&quot;&quot;&quot; Returns the available analysiss.</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            (list): A list of string keys corresponding to the available</span>
 <span class="sd">            analysis.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ap</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">command_protocols</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
     <span class="k">def</span> <span class="nf">_build_leaflets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">com_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span>
@@ -1117,6 +995,41 @@
             <span class="n">l</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">leaflets</span>
 
+    <span class="k">def</span> <span class="nf">_build_leaflets_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">com_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span>
+        <span class="n">leaflets</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upper&#39;</span><span class="p">:</span> <span class="n">lf</span><span class="o">.</span><span class="n">Leaflet</span><span class="p">(</span><span class="s1">&#39;upper&#39;</span><span class="p">),</span>
+                    <span class="s1">&#39;lower&#39;</span><span class="p">:</span> <span class="n">lf</span><span class="o">.</span><span class="n">Leaflet</span><span class="p">(</span><span class="s1">&#39;lower&#39;</span><span class="p">)}</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">lipcom</span> <span class="ow">in</span> <span class="n">com_frame</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">:</span>
+            <span class="n">sel_str</span> <span class="o">=</span> <span class="s2">&quot;resname </span><span class="si">{}</span><span class="s2"> and resid </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lipcom</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">lipcom</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
+            <span class="c1"># residue = self._mda_data.mda_universe.select_atoms(sel_str)</span>
+            <span class="n">resname</span> <span class="o">=</span> <span class="n">lipcom</span><span class="o">.</span><span class="n">type</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="n">lipcom</span><span class="o">.</span><span class="n">resid</span>
+            <span class="n">tail_str</span> <span class="o">=</span> <span class="s2">&quot;resname </span><span class="si">{}</span><span class="s2"> and resid </span><span class="si">{}</span><span class="s2"> and name </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;orientation_atoms&#39;</span><span class="p">][</span><span class="n">resname</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">mda_universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">tail_str</span><span class="p">)</span>
+            <span class="n">tail_v</span> <span class="o">=</span> <span class="n">tail</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+            <span class="n">head_str</span> <span class="o">=</span> <span class="s2">&quot;resname </span><span class="si">{}</span><span class="s2"> and resid </span><span class="si">{}</span><span class="s2"> and name </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;orientation_atoms&#39;</span><span class="p">][</span><span class="n">resname</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">mda_universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">head_str</span><span class="p">)</span>
+            <span class="n">head_v</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+            <span class="c1"># print(tail_v)</span>
+            <span class="c1"># print(head_v)</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">head_v</span> <span class="o">-</span> <span class="n">tail_v</span>
+            <span class="c1"># print(vec)</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;norm&#39;</span><span class="p">]</span>
+            <span class="n">norm_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">norm_vec</span><span class="p">[</span><span class="n">norm</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">norm_vec</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">vec</span><span class="p">))</span>
+            <span class="c1"># print(cost)</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">cost</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="s1">&#39;upper&#39;</span>
+            <span class="k">elif</span> <span class="n">cost</span><span class="o">&lt;</span><span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="s1">&#39;lower&#39;</span>
+            <span class="c1"># add to the chosen leaflet</span>
+            <span class="n">leaflets</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="o">.</span><span class="n">add_member</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">lipcom</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">lipcom</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
+            <span class="n">l</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">leaflets</span>
+
     <span class="k">def</span> <span class="nf">_update_com_frame_leaflet_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">leaflet</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">leaf_lipidcom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="n">leaflet</span><span class="p">]</span><span class="o">.</span><span class="n">get_member_indices</span><span class="p">()</span>
@@ -1129,11 +1042,18 @@
             <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">leaf_lipidvec</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;vector_frame&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lipidvec</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">leaflet</span> <span class="o">=</span> <span class="n">leaflet</span>
         <span class="k">return</span>
+<div class="viewcode-block" id="BilayerAnalyzer.turn_off_representation"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.turn_off_representation">[docs]</a>    <span class="k">def</span> <span class="nf">turn_off_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rep_key</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">use_objects</span><span class="p">[</span><span class="n">rep_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span></div>
+<div class="viewcode-block" id="BilayerAnalyzer.turn_on_representation"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.turn_on_representation">[docs]</a>    <span class="k">def</span> <span class="nf">turn_on_representation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rep_key</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">use_objects</span><span class="p">[</span><span class="n">rep_key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span></div>
 
     <span class="c1">#iterator functions --</span>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
-<div class="viewcode-block" id="BilayerAnalyzer.next"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Runs the analysis as an iterator.</span>
 <span class="sd">        The function performs the loop over the trajectory. At each frame it</span>
 <span class="sd">        builds the necessary objects (e.g. COMFrame) and then executes the</span>
@@ -1170,6 +1090,7 @@
         <span class="c1">#print(self._current_frame)</span>
         <span class="c1">#frame = self.mda_data.mda_trajectory[self._current_frame]</span>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">mda_trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_frame</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_frame</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c1">#print(frame.time/1000.0)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;current_mda_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span>
             <span class="n">currcoord</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">firstframe</span><span class="p">:</span>
@@ -1191,33 +1112,42 @@
                 <span class="c1"># print (&quot;wrapped coords:&quot;)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_oldcoords</span> <span class="o">=</span> <span class="n">oldcoord</span>
             <span class="c1"># print (wrapcoord)</span>
-            <span class="c1">#if self.analysis_protocol.use_objects[&#39;com_frame&#39;]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">use_objects</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]:</span>
             <span class="c1"># now build the COMFrame</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">COMFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">bilayer_sel</span><span class="p">,</span>
-                                         <span class="n">wrapcoord</span><span class="p">,</span>
-                                         <span class="n">name_dict</span> <span class="o">=</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;name_dict&#39;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">first_com</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;first_com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_first_com</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="c1"># now we can assign the lipids to the leaflets</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_leaflet</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_first_leaflet</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_leaflets</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_update_com_frame_leaflet_positions</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_leaflet_counter</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;update_interval&#39;</span><span class="p">])</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_leaflets</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_update_com_frame_leaflet_positions</span><span class="p">()</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;dump&#39;</span><span class="p">]:</span>
-                <span class="n">ofname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;com_frame_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                    <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-                    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">],</span> <span class="n">ofile</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;dump&#39;</span><span class="p">]:</span>
-                <span class="n">ofname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;leaflets_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                    <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
-                    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">],</span> <span class="n">ofile</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">COMFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">bilayer_sel</span><span class="p">,</span>
+                                             <span class="n">wrapcoord</span><span class="p">,</span>
+                                             <span class="n">name_dict</span> <span class="o">=</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;name_dict&#39;</span><span class="p">],</span>
+                                        <span class="n">multi_bead</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;multi_bead&#39;</span><span class="p">],</span>
+                                        <span class="n">rewrap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;rewrap&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">first_com</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;first_com_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_first_com</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">use_objects</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">]:</span>
+                <span class="c1"># now we can assign the lipids to the leaflets</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_leaflet</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_first_leaflet</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;assign_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;avg_norm&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_leaflets</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;assign_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;orientation&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_leaflets_orientation</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_update_com_frame_leaflet_positions</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_leaflet_counter</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;update_interval&#39;</span><span class="p">])</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;assign_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;avg_norm&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_leaflets</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;assign_method&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;orientation&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_leaflets_orientation</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_update_com_frame_leaflet_positions</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;dump&#39;</span><span class="p">]:</span>
+                    <span class="n">ofname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;com_frame_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                        <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+                        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">],</span> <span class="n">ofile</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;dump&#39;</span><span class="p">]:</span>
+                    <span class="n">ofname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_settings</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;leaflets_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                        <span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pickle&quot;</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofile</span><span class="p">:</span>
+                        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">],</span> <span class="n">ofile</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">use_objects</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;lipid_grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lg</span><span class="o">.</span><span class="n">LipidGrids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;com_frame&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">[</span><span class="s1">&#39;leaflets&#39;</span><span class="p">],</span>
@@ -1237,11 +1167,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_update_vector_frame_leaflet_positions</span><span class="p">()</span>
             <span class="c1"># now do analyses</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_loop_count</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;print_interval&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Frame: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Frame: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">frame</span><span class="p">)))</span>
             <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">analysis_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">analysis_ids</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_loop_count</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;print_interval&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;  analysis: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">analysis_id</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;  analysis: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">analysis_id</span><span class="p">)))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_analysis_protocol</span><span class="o">.</span><span class="n">command_protocol</span><span class="p">[</span><span class="n">analysis_id</span><span class="p">]</span><span class="o">.</span><span class="n">run_analysis</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="p">)</span>
                 <span class="c1"># comp_out = analysis.run_analysis(self)</span>
@@ -1255,13 +1185,59 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_leaflet_counter</span><span class="o">+=</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_frame</span><span class="o">+=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_frame</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_frame</span><span class="p">:</span>
-            <span class="k">return</span></div></div>
+            <span class="k">return</span>
+
+
+<div class="viewcode-block" id="BilayerAnalyzer.unwrap_coordinates_up_to"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.bilayer_analyzer.BilayerAnalyzer.unwrap_coordinates_up_to">[docs]</a>    <span class="k">def</span> <span class="nf">unwrap_coordinates_up_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">):</span>
+        <span class="c1"># now we need to unwrap the coordinates</span>
+        <span class="n">natoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">natoms</span>
+        <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">currcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="c1">#first_frame_coord = np.zeros((natoms, 3))</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">bilayer_sel</span><span class="o">.</span><span class="n">indices</span>
+        <span class="n">firstframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_frame</span>
+        <span class="n">parallel</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1">#first_com = self._first_com</span>
+        <span class="c1">#print(&quot;first com: &quot;,first_com)</span>
+        <span class="c1">#print(&quot;first frame: &quot;, firstframe)</span>
+        <span class="c1">#self.settings[&#39;frame_index&#39;] = self.settings[&#39;frame_range&#39;][0]</span>
+        <span class="c1">#for frame in self.mda_data.mda_trajectory[</span>
+        <span class="c1">#             self._current_frame:self._current_frame+self.frame_range[2]:self.frame_range[</span>
+        <span class="c1">#                 2]]:</span>
+        <span class="c1">#with self.mda_data.mda_trajectory[self._current_frame] as frame:</span>
+        <span class="c1">#print(self._current_frame)</span>
+        <span class="c1">#frame = self.mda_data.mda_trajectory[self._current_frame]</span>
+        <span class="n">last_frame</span> <span class="o">=</span> <span class="n">frame_index</span>
+        <span class="n">frame_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;frame_range&#39;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">last_frame</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">last_frame</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">mda_trajectory</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_data</span><span class="o">.</span><span class="n">mda_trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">last_frame</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">frame_step</span><span class="p">]:</span>
+            <span class="c1"># self.reps[&#39;current_mda_frame&#39;] = frame</span>
+            <span class="n">currcoord</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">firstframe</span><span class="p">:</span>
+                <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">currcoord</span><span class="p">)</span>
+                <span class="c1">#first_frame_coord = np.copy(oldcoord)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_first_frame</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">firstframe</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">currcoord</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">abc</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+                <span class="n">oldcoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oldcoords</span>
+                <span class="k">if</span> <span class="n">parallel</span><span class="p">:</span>
+                    <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">wrap_coordinates_parallel</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">currcoord</span><span class="p">,</span>
+                                                          <span class="n">oldcoord</span><span class="p">,</span>
+                                                          <span class="n">nprocs</span><span class="o">=</span><span class="n">nprocs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">wrapcoord</span> <span class="o">=</span> <span class="n">wrap_coordinates</span><span class="p">(</span><span class="n">abc</span><span class="p">,</span> <span class="n">currcoord</span><span class="p">,</span> <span class="n">oldcoord</span><span class="p">)</span>
+                <span class="c1"># frame._pos[index] = wrapcoord[:]</span>
+                <span class="n">oldcoord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">wrapcoord</span><span class="p">)</span>
+                <span class="c1"># print (&quot;wrapped coords:&quot;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_oldcoords</span> <span class="o">=</span> <span class="n">oldcoord</span></div></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1274,7 +1250,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1292,7 +1268,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -1302,23 +1279,17 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -11,6 +11,7 @@ Welcome to PyBILT's documentation!
    :caption: Contents:
 
    readme
+   ba_analyses
    modules
 
 Indices and tables

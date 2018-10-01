@@ -156,7 +156,8 @@ latex_documents = [
     (master_doc, 'PyBILT.tex', u'PyBILT Documentation',
      u'Blake A. Wilson', 'manual'),
 ]
-
+# This is a hack to fake out the sphinx latex build for RTD which fails
+latex_documents = []
 
 # -- Options for manual page output ---------------------------------------
 

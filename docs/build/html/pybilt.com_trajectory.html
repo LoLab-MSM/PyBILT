@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.com_trajectory package &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.com_trajectory package &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
-        <link rel="up" title="pybilt package" href="pybilt.html"/>
-        <link rel="next" title="pybilt.common package" href="pybilt.common.html"/>
-        <link rel="prev" title="pybilt.bilayer_analyzer package" href="pybilt.bilayer_analyzer.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pybilt.common package" href="pybilt.common.html" />
+    <link rel="prev" title="pybilt.bilayer_analyzer package" href="pybilt.bilayer_analyzer.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -62,7 +53,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -70,7 +61,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -97,15 +88,16 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
@@ -134,7 +126,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyBILT</a>
@@ -142,9 +134,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -202,7 +195,7 @@
 bilayer trajectory. This module assumes the structure and trajectory are initiallaly stored in MDAnalysis
 objects and therefore processes MDAnalysis objects. The lipids constituting the bilayer are read in from
 the MDAnalysis objects and are converted to center of mass (COM) representations. Lipids are partitioned
-into an &#8216;upper&#8217; and a &#8216;lower&#8217; leaflet based on the z-position of the COM. The built-in analysis functions
+into an ‘upper’ and a ‘lower’ leaflet based on the z-position of the COM. The built-in analysis functions
 then operate on the COM representations to compute quantities such as the lateral mean squared displacement.
 Many analysis functions allow specification of the leaflet and type of lipid to perform the the analysis on.
 The primary (parent class) is the MemSys class. The analysis functions are members of the MemSys class.</p>
@@ -212,11 +205,78 @@ The primary (parent class) is the MemSys class. The analysis functions are membe
 <dl class="class">
 <dt id="pybilt.com_trajectory.COMTraj.COMTraj">
 <em class="property">class </em><code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">COMTraj</code><span class="sig-paren">(</span><em>mda_traj</em>, <em>mem_sel</em>, <em>plane='xy'</em>, <em>fstart=0</em>, <em>fend=-1</em>, <em>fskip=1</em>, <em>frame_path='Default'</em>, <em>frame_save=False</em>, <em>nprocs=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#COMTraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.COMTraj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>This is the main class object.
 An instance of this class reads in the trajectory and a selection (both MDAnalysis objects)
 and creates/reduces the lipids to center of mass (COM) representations; i.e. a center of mass trajectory. There are several member
 functions to perform various types of analyses based on the COM representations.</p>
+<p>COMTraj initialization.</p>
+<p>Each lipid in the system is assumed to be its own residue. It is also assumed that the coordinates
+in the MDAnalysis trajectory are wrapped, so when this object is initialized it computes COMs using
+the wrapped coordinates. It then unwraps the raw coordinates and removes the system COM motion before
+recomputing another set of lipid COMs (now based on the unwrapped coordinates).
+Both representations are stored and are used in the various analyses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mda_traj</strong> (<em>MDAnalysi.Universe.trajectory</em>) – The MDAnalysis trajectory object containg the
+the molecular dynamics trajectory data for the system.</li>
+<li><strong>mem_sel</strong> (<em>MDAnalysis.AtomGroup</em>) – The MDAnalysis atom selection (AtomGroup) containing
+the bilayer lipids.</li>
+<li><strong>plane</strong> (<em>str, optional</em>) – Defines the lateral plane of the bilayer. The default is ‘xy’.
+The other options are ‘yz’ or ‘xz’, or their equivalent ‘zy’ or ‘zx’.</li>
+<li><strong>fstart</strong> (<em>int, optional</em>) – The index of the initial frame to use from the MDAnalysis trajectory.
+The default is 0.</li>
+<li><strong>fstart</strong> (<em>int, optional</em>) – The index of the final frame to use from the MDAnalysis trajectory.
+The default is -1 (i.e. the last frame).</li>
+<li><strong>fskip</strong> (<em>int, optional</em>) – Use every fskip frame in mda_traj.
+The default is 1 (i.e. use all frames in mda_traj).</li>
+<li><strong>frame_path</strong> (<em>str, optional</em>) – Path in which to store the Shelf database of the Frame objects
+created for the COM representations. The default is ‘Default’ which uses the ‘/tmp/’ dir.</li>
+<li><strong>frame_save</strong> (<em>bool, optional</em>) – Preserve the Shelf database files of Frame objects for this
+MemSys after deletion. The default is False (i.e. the Shelf database files are deleted).
+If True then the Shelf database files are not removed when this MemSys object is deleted.</li>
+<li><strong>nprocs</strong> (<em>int, optional</em>) – Define the number of processors to use when unwrapping the coordinates.
+The default is 1 (i.e. no paralellization). Greater than 1 uses a parallelized version
+of the unwrap function when uwrapping coordinates. nprocs should not exceed the
+the number of cores on your machine.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Atrributes:</dt>
+<dd><dl class="first docutils">
+<dt>plane (list of int): A two element list of the integer indices corresponding to the bilayer lateral</dt>
+<dd>coordinate planes (0 for x,1 for y, and 2 for z). Determined by the value of Args:plane.</dd>
+<dt>norm (int): The integer index corresponding to the bilayer normal coordinate plane</dt>
+<dd>(0 for x,1 for y, or 2 for z). Determined by the value of Args:plane.</dd>
+<dt>leaflets (dict of Leaflet): A dict containing the Leaflet instances used to define the upper and lower</dt>
+<dd>bilayer leaflets for this system. This dict will contain the two keys, ‘upper’ and ‘lower’, upper
+and lower Leaflet objects respectively.</dd>
+<dt>com_leaflet (list of str): A list of leaflet name strings that maps the lipid index</dt>
+<dd>to the Leaflet (‘upper’ or ‘lower’) it has been assigned to.
+E.g.
+&gt;&gt;&gt; com_leaf[0]
+&gt;&gt;&gt; ‘upper’
+means lipid index 0 was assigned to the ‘upper’ leaflet.</dd>
+<dt>nlipids (int): The number of lipids in the system. Each MDAnalysis residue in Args:mem_sel is</dt>
+<dd>treated as a lipid.</dd>
+<dt>clusters (list of list of list int): This is initialized as an empty list. It is used by the function</dt>
+<dd><dl class="first last docutils">
+<dt>CheckClustering() as a persistent container to store the list of clusters for each frame. clusters is</dt>
+<dd>overwritten after each call to CheckClustering().</dd>
+</dl>
+</dd>
+<dt>frame (obj:frames): An instance of the Frame container object (frames) to hold the COM trajectory data</dt>
+<dd>for this system.</dd>
+</dl>
+<p class="last">nframes (int): The total number of frames processed and stored for the MemSys instance.</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="pybilt.com_trajectory.COMTraj.COMTraj.calc_area_per_lipid_box">
 <code class="descname">calc_area_per_lipid_box</code><span class="sig-paren">(</span><em>leaflet='both'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#COMTraj.calc_area_per_lipid_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.COMTraj.calc_area_per_lipid_box" title="Permalink to this definition">¶</a></dt>
@@ -229,9 +289,9 @@ leaflet.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>leaflet</strong> (<em>str, optional</em>) &#8211; A string designating which Leaflet to include in the computation.
-Default is &#8216;both&#8217;: the area per lipid is averaged over the two leaflets.</li>
-<li><strong>group</strong> (<em>str, optional</em>) &#8211; A string with the name of a specific LipidGroup to in the computation.</li>
+<li><strong>leaflet</strong> (<em>str, optional</em>) – A string designating which Leaflet to include in the computation.
+Default is ‘both’: the area per lipid is averaged over the two leaflets.</li>
+<li><strong>group</strong> (<em>str, optional</em>) – A string with the name of a specific LipidGroup to in the computation.</li>
 </ul>
 </td>
 </tr>
@@ -268,8 +328,8 @@ over the configuration.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>leaflet</strong> (<em>str, optional</em>) &#8211; A string designating which Leaflet to include in the computation.</li>
-<li><strong>group</strong> (<em>str, optional</em>) &#8211; A string with the name of a specific LipidGroup to in the computation.</li>
+<li><strong>leaflet</strong> (<em>str, optional</em>) – A string designating which Leaflet to include in the computation.</li>
+<li><strong>group</strong> (<em>str, optional</em>) – A string with the name of a specific LipidGroup to in the computation.</li>
 </ul>
 </td>
 </tr>
@@ -346,7 +406,7 @@ This function passes the thickness_frames fucntion to the multiprocessor threads
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nprocs</strong> (<em>int</em>) &#8211; The number processors (threads) to use in the computation.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nprocs</strong> (<em>int</em>) – The number processors (threads) to use in the computation.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
 <dt>This is a two element tuple containing numpy arrays of the computation results.</dt>
@@ -384,7 +444,7 @@ For i in range((fend-fstar) + 1) and For j in range(nlipids).</div></blockquote>
 <code class="descname">calc_msd</code><span class="sig-paren">(</span><em>leaflet='both'</em>, <em>group='all'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#COMTraj.calc_msd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.COMTraj.calc_msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the configurational average mean squared displacement for select lipids in a select leaflet(s).</p>
 <p>This function allows the mean squared displacement (MSD) to be computed
-for a specified leaflet (&#8216;upper&#8217;, &#8216;lower&#8217;, or &#8216;both&#8217;) and for a specified LipidGroup within the
+for a specified leaflet (‘upper’, ‘lower’, or ‘both’) and for a specified LipidGroup within the
 chosen Leaflet. This calculation is over the whole trajectory and assumes the first frame is the
 reference frame for computing the displacement.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -392,8 +452,8 @@ reference frame for computing the displacement.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>leaflet</strong> (<em>str</em>) &#8211; A string designating which Leaflet to include in the computation.</li>
-<li><strong>group</strong> (<em>str</em>) &#8211; A string with the name of a specific LipidGroup to in the computation.</li>
+<li><strong>leaflet</strong> (<em>str</em>) – A string designating which Leaflet to include in the computation.</li>
+<li><strong>group</strong> (<em>str</em>) – A string with the name of a specific LipidGroup to in the computation.</li>
 </ul>
 </td>
 </tr>
@@ -420,7 +480,7 @@ For i in range( nframes ).</p>
 <code class="descname">calc_msd_parallel</code><span class="sig-paren">(</span><em>leaflet='both'</em>, <em>group='all'</em>, <em>nprocs=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#COMTraj.calc_msd_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.COMTraj.calc_msd_parallel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parallelized version of calc_msd</p>
 <p>This function allows the mean squared displacement (MSD) to be computed
-for a specified leaflet (&#8216;upper&#8217;, &#8216;lower&#8217;, or &#8216;both&#8217;) and for a specified LipidGroup within the
+for a specified leaflet (‘upper’, ‘lower’, or ‘both’) and for a specified LipidGroup within the
 chosen Leaflet. This calculation is over the whole trajectory and assumes the first frame is the
 reference frame for computing the displacement. The calculation is parallized over the
 number of frames in the trejectory using the multiprocessor module.</p>
@@ -429,8 +489,8 @@ number of frames in the trejectory using the multiprocessor module.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>leaflet</strong> (<em>str</em>) &#8211; A string designating which Leaflet to include in the computation.</li>
-<li><strong>group</strong> (<em>str</em>) &#8211; A string with the name of a specific LipidGroup to in the computation.</li>
+<li><strong>leaflet</strong> (<em>str</em>) – A string designating which Leaflet to include in the computation.</li>
+<li><strong>group</strong> (<em>str</em>) – A string with the name of a specific LipidGroup to in the computation.</li>
 </ul>
 </td>
 </tr>
@@ -457,7 +517,7 @@ For i in range( nframes ).</p>
 <code class="descname">check_clustering</code><span class="sig-paren">(</span><em>leaflet='both'</em>, <em>group='all'</em>, <em>dist=15.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#COMTraj.check_clustering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.COMTraj.check_clustering" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine physical cluster for select lipid COMs in a select leaflet(s).</p>
 <p>This function determines physical clusters based on Cartesian distance criteria
-in a specified leaflet (&#8216;upper&#8217;, &#8216;lower&#8217;, or &#8216;both&#8217;) and for a specified LipidGroup within the
+in a specified leaflet (‘upper’, ‘lower’, or ‘both’) and for a specified LipidGroup within the
 chosen Leaflet. The routine determines the physical clusters for each frame in the trajectory
 and computes properties of these clusters, e.g. number of clusters, which are time averaged over the trajectory.
 The information on the clusters is stored in MemSys.clusters which can then be used by other functions
@@ -467,9 +527,9 @@ The information on the clusters is stored in MemSys.clusters which can then be u
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>leaflet</strong> (<em>str, optional</em>) &#8211; A string designating which Leaflet to include in the computation.</li>
-<li><strong>group</strong> (<em>str, optional</em>) &#8211; A string with the name of a specific LipidGroup to in the computation.</li>
-<li><strong>dist</strong> (<em>float, optional</em>) &#8211; The distance cutoff for determining clusters.</li>
+<li><strong>leaflet</strong> (<em>str, optional</em>) – A string designating which Leaflet to include in the computation.</li>
+<li><strong>group</strong> (<em>str, optional</em>) – A string with the name of a specific LipidGroup to in the computation.</li>
+<li><strong>dist</strong> (<em>float, optional</em>) – The distance cutoff for determining clusters.</li>
 </ul>
 </td>
 </tr>
@@ -507,7 +567,7 @@ cluster_results[i,4] = the current standard deviation of the running time averag
 <code class="descname">export_clusters_for_plotting</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#COMTraj.export_clusters_for_plotting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.COMTraj.export_clusters_for_plotting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine physical cluster for select lipid COMs in a select leaflet(s).</p>
 <p>This function determines physical clusters based on Cartesian distance criteria
-in a specified leaflet (&#8216;upper&#8217;, &#8216;lower&#8217;, or &#8216;both&#8217;) and for a specified LipidGroup within the
+in a specified leaflet (‘upper’, ‘lower’, or ‘both’) and for a specified LipidGroup within the
 chosen Leaflet. The routine determines the physical clusters for each frame in the trajectory
 and computes properties of these clusters, e.g. number of clusters, which are time averaged over the trajectory.
 The information on the clusters is stored in MemSys.clusters which can then be used by other functions
@@ -517,9 +577,9 @@ The information on the clusters is stored in MemSys.clusters which can then be u
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>leaflet</strong> (<em>str, optional</em>) &#8211; A string designating which Leaflet to include in the computation.</li>
-<li><strong>group</strong> (<em>str, optional</em>) &#8211; A string with the name of a specific LipidGroup to in the computation.</li>
-<li><strong>dist</strong> (<em>float, optional</em>) &#8211; The distance cutoff for determining clusters.</li>
+<li><strong>leaflet</strong> (<em>str, optional</em>) – A string designating which Leaflet to include in the computation.</li>
+<li><strong>group</strong> (<em>str, optional</em>) – A string with the name of a specific LipidGroup to in the computation.</li>
+<li><strong>dist</strong> (<em>float, optional</em>) – The distance cutoff for determining clusters.</li>
 </ul>
 </td>
 </tr>
@@ -563,7 +623,7 @@ int: The number of uniquely named LipidGroup objects.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>leaflet</strong> (<em>str</em>) &#8211; A string designating which Leaflet to include.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>leaflet</strong> (<em>str</em>) – A string designating which Leaflet to include.</td>
 </tr>
 </tbody>
 </table>
@@ -594,8 +654,25 @@ int: The number of uniquely named LipidGroup objects.</p>
 <dl class="class">
 <dt id="pybilt.com_trajectory.COMTraj.Frame">
 <em class="property">class </em><code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">Frame</code><span class="sig-paren">(</span><em>nlipids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#Frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.Frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>A molecular dynamics style Frame object.</p>
+<p>Frame initialization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nlipids</strong> (<em>int</em>) – The number of lipids (LipidCOM objects) that this frame will hold</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Atrributes:</dt>
+<dd>lipidcom (list of obj:LipidCOM): A list of the LipidCOM objects assigned to the Frame.
+box (np.array): A 3 element vector containing the (rectangular) xyz box edge lengths.
+time (float): The simulation time that this Frame represents.
+number (int): The frame number of this Frame.
+mdnumber (int): The corresponding frame number in the original MD trajectory</dd>
+</dl>
 <dl class="method">
 <dt id="pybilt.com_trajectory.COMTraj.Frame.com">
 <code class="descname">com</code><span class="sig-paren">(</span><em>wrapped=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#Frame.com"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.Frame.com" title="Permalink to this definition">¶</a></dt>
@@ -606,13 +683,13 @@ Frame using the LipidCOM object coordinates and masses.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wrapped</strong> (<em>bool, optional</em>) &#8211; Define which set of coordinates to use in the computation.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>wrapped</strong> (<em>bool, optional</em>) – Define which set of coordinates to use in the computation.
 True (default) - The wrapped LipidCOM coordinates are used to compute
 the COM of the frame.
 False - The unwrapped LipidCOM coordinates are used to compute
 the COM of the frame.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A 3 element vector containing the xyz coordinates of the Frame&#8217;s COM</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A 3 element vector containing the xyz coordinates of the Frame’s COM</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
@@ -628,7 +705,7 @@ the COM of the frame.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box_lengths</strong> (<em>numpy.array</em>) &#8211; A 1d, 3 element numpy.array containing the x,y,z box sizes (or edge lengths)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box_lengths</strong> (<em>numpy.array</em>) – A 1d, 3 element numpy.array containing the x,y,z box sizes (or edge lengths)</td>
 </tr>
 </tbody>
 </table>
@@ -642,7 +719,7 @@ the COM of the frame.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>time</strong> (<em>float</em>) &#8211; The simulation time to assign to this Frame.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>time</strong> (<em>float</em>) – The simulation time to assign to this Frame.</td>
 </tr>
 </tbody>
 </table>
@@ -658,26 +735,126 @@ the COM of the frame.</td>
 <dl class="class">
 <dt id="pybilt.com_trajectory.COMTraj.FrameShelve">
 <em class="property">class </em><code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">FrameShelve</code><span class="sig-paren">(</span><em>prefix='/tmp/'</em>, <em>save=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#FrameShelve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>Container for Frame objects
 This class object serves as a container to store a set of Frame objects
 corresponding to a molecular dynamics trajectory. This class saves the Frame objects
 on disk using the shelve module and provides an interface to access instances of
 those saved Frames. The Frames are saved in the shelve database with integer index keys
 0 -&gt; (nframes-1) and can accessed by indexing the instance of the frames object.</p>
+<p>Initialization of the frames object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>prefix</strong> (<em>str, optional</em>) – The location/path to store the “shelve”d Frame data.
+‘/tmp/’ (default) - The data is stored in the unix/linux tmp directory.</li>
+<li><strong>save</strong> (<em>bool, optional</em>) – Set whether to save the shelved Frame data after frames object deletion.
+False (default) - the shelved Frame data is deleted upon calling __del__
+True  - the shelved Frame data is not deleted when __del__ is called</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.FrameShelve.nframes">
+<code class="descname">nframes</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve.nframes" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number Frame objects being stored.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.FrameShelve.pid">
+<code class="descname">pid</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve.pid" title="Permalink to this definition">¶</a></dt>
+<dd><p>The process id that the frames object is created in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.FrameShelve.path">
+<code class="descname">path</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path to where the shelved Frame data is stored.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.FrameShelve.save">
+<code class="descname">save</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set whether to save the shelved Frame data after frames object deletion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.FrameShelve.fs_name">
+<code class="descname">fs_name</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve.fs_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base name of the shelve database file used to store Frame objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.FrameShelve.frame_shelf">
+<code class="descname">frame_shelf</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve.frame_shelf" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Shelf that will hold the Frame objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">shelve.Shelf</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="pybilt.com_trajectory.COMTraj.FrameShelve.append">
 <code class="descname">append</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#FrameShelve.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.FrameShelve.append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append a Frame.</p>
-<p>The new Frame is added to the shelve database with a key &#8216;self.nframes&#8217;,
+<p>The new Frame is added to the shelve database with a key ‘self.nframes’,
 which is then incremented (self.nframe+=1).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item (obj</strong> &#8211; Frame): The instance of a Frame object to be appended.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item (obj</strong> – Frame): The instance of a Frame object to be appended.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code> &#8211; If item is not an instance of Frame.</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code> – If item is not an instance of Frame.</td>
 </tr>
 </tbody>
 </table>
@@ -688,22 +865,82 @@ which is then incremented (self.nframe+=1).</p>
 <dl class="class">
 <dt id="pybilt.com_trajectory.COMTraj.Leaflet">
 <em class="property">class </em><code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">Leaflet</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#Leaflet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.Leaflet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>Create a bilayer Leaflet representation.
 This class object is used to group lipids together according to their bilayer leaflet. It is primarily meant to
 store the indices of LipidCOMs as they are in a Frame.lipidcom list. This class also
 creates sub-groups within the Leaflet based on the LipidCOM.type using LipidGroup objects. Instances of Leaflet
 are created by the MemSys class.</p>
+<p>Initializes an instance of a Leaflet object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – The name of the bilayer leaflet being initialized (‘upper’ and ‘lower’ are used by the MemSys class).</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.Leaflet.name">
+<code class="descname">name</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.Leaflet.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the Leaflet (e.g. ‘upper’ or ‘lower’).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.Leaflet.members">
+<code class="descname">members</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.Leaflet.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list containing the integer indices associated with the LipidCOM objects within
+a Frame that are assigned to the Leaflet instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list of int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">groups (list of obj</code></dt>
+<dd><p>LipidGroup): A list of the LipidGroup objects (uniquely named) that are created by the Leaflet instance
+as new members are added.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.Leaflet.group_dict">
+<code class="descname">group_dict</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.Leaflet.group_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>A dictionary keyed according to the names of the LipidGroup objects created, which stores the
+corresponding index of that LipidGroup in self.groups.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="pybilt.com_trajectory.COMTraj.Leaflet.add_member">
 <code class="descname">add_member</code><span class="sig-paren">(</span><em>index</em>, <em>resname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#Leaflet.add_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.Leaflet.add_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add new lipids to the Leaflet.</p>
 <p>This function is meant to be used to add new lipids according to their Frame.lipidcom index
 to the Leaflet and to a LipidGroup according resname/type/name.
-:Parameters: * <strong>index</strong> (<em>int</em>) &#8211; The index of the lipid being added to the Leaflet.</p>
+:Parameters: * <strong>index</strong> (<em>int</em>) – The index of the lipid being added to the Leaflet.</p>
 <blockquote>
 <div><ul class="simple">
-<li><strong>resname</strong> (<em>str</em>) &#8211; The resname (or LipidCOM.type) of the lipid being added.</li>
+<li><strong>resname</strong> (<em>str</em>) – The resname (or LipidCOM.type) of the lipid being added.</li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -715,9 +952,9 @@ to the Leaflet and to a LipidGroup according resname/type/name.
 <p>Args:
 group_name (string): The name of the LipidGroup pull LipidCOM indices from.</p>
 <blockquote>
-<div>Passing the string &#8216;all&#8217; will return indices of all the lipids assigned to
+<div>Passing the string ‘all’ will return indices of all the lipids assigned to
 the Leaflet instance. If the group_name is not recognised (i.e. is not in the group_dict)
-The function defaults to &#8216;all&#8217;.</div></blockquote>
+The function defaults to ‘all’.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -767,7 +1004,7 @@ This member function Returns: the list of indices for the lipids grouped in the 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> (<em>str</em>) &#8211; The name to checked against the names of existing LipidGroup objects.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>group_name</strong> (<em>str</em>) – The name to checked against the names of existing LipidGroup objects.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if there is a LipidGroup with name group_name, and False otherwise.</td>
 </tr>
@@ -790,12 +1027,69 @@ int: The number of unique LipidGroups.</p>
 <dl class="class">
 <dt id="pybilt.com_trajectory.COMTraj.LipidCOM">
 <em class="property">class </em><code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">LipidCOM</code><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#LipidCOM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidCOM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>A lipid center of mass (COM) object.</p>
 <p>This object stores the COM coordinates of a lipid (or other molecule or group
 of atoms) computed from both the wrapped and unwrapped atomic coordinates. This
 object also stores information about the type of lipid as well as the total mass
 of the lipid.</p>
+<p>LipidCOM initialization</p>
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.LipidCOM.type">
+<code class="descname">type</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidCOM.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The lipid type (e.g. the lipid could be typed b resname).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.LipidCOM.com">
+<code class="descname">com</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidCOM.com" title="Permalink to this definition">¶</a></dt>
+<dd><p>The length three vector holding the wrapped xyz coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.LipidCOM.com_unwrap">
+<code class="descname">com_unwrap</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidCOM.com_unwrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>The length three vector holding the unwrapped xyz coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.LipidCOM.mass">
+<code class="descname">mass</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidCOM.mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>The total mass of the atoms used to define LipidCOM.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="pybilt.com_trajectory.COMTraj.LipidCOM.extract">
 <code class="descname">extract</code><span class="sig-paren">(</span><em>mda_residue</em>, <em>unwrap=False</em>, <em>box=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#LipidCOM.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidCOM.extract" title="Permalink to this definition">¶</a></dt>
@@ -807,9 +1101,9 @@ to compute the center of mass of the atoms constituting the residue.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mda_residue</strong> (<em>MDAnalysis.residue</em>) &#8211; An MDAnalysis residue object from which to extract
+<li><strong>mda_residue</strong> (<em>MDAnalysis.residue</em>) – An MDAnalysis residue object from which to extract
 a center of masss coordinates.</li>
-<li><strong>unwrap</strong> (<em>bool, optional</em>) &#8211; Define which com container to store coordiates in.
+<li><strong>unwrap</strong> (<em>bool, optional</em>) – Define which com container to store coordiates in.
 False (default) - The COM coordinates are stored in the
 container designated for the wrapped coordinate representation.
 True - The COM coordinates are stored in the container designated
@@ -826,9 +1120,47 @@ for the unwrapped coordinate representation.</li>
 <dl class="class">
 <dt id="pybilt.com_trajectory.COMTraj.LipidGroup">
 <em class="property">class </em><code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">LipidGroup</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#LipidGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>Object to group lipid indices by type/resname/name.
 Instances of this object are created by the Leaflet class.</p>
+<p>Initializes LipidGroup object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – The name/type/resname of the lipids being grouped in this object.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.LipidGroup.lg_members">
+<code class="descname">lg_members</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidGroup.lg_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list to hold the indices of lipids added to this
+this LipidGroup.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list of int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybilt.com_trajectory.COMTraj.LipidGroup.lg_name">
+<code class="descname">lg_name</code><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidGroup.lg_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name/type/resname of the lipids being grouped in this object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="pybilt.com_trajectory.COMTraj.LipidGroup.add_member">
 <code class="descname">add_member</code><span class="sig-paren">(</span><em>new_mem</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#LipidGroup.add_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.LipidGroup.add_member" title="Permalink to this definition">¶</a></dt>
@@ -837,7 +1169,7 @@ Instances of this object are created by the Leaflet class.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_mem</strong> (<em>int</em>) &#8211; The index of the lipid being added to this LipidGroup.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_mem</strong> (<em>int</em>) – The index of the lipid being added to this LipidGroup.</td>
 </tr>
 </tbody>
 </table>
@@ -864,13 +1196,18 @@ Instances of this object are created by the Leaflet class.</p>
 <dl class="class">
 <dt id="pybilt.com_trajectory.COMTraj.ParFrames">
 <em class="property">class </em><code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">ParFrames</code><span class="sig-paren">(</span><em>nframes</em>, <em>fs_name</em>, <em>frame_shelve</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#ParFrames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.ParFrames" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>Read-Only version of frames object
 This class is effectively used to generate read-only copies of the frames class, which can be passed
 to functions that do parallelized computations over the number of frames.  Unlike frames ParFrames
 does not create a new Shelf database. It must be passed an existing Shelf of Frame objects. ParFrames
 also does not have any functions defined to modify the Shelf (add/remove Frame objects). This is to
 avoid conflicts from multiple processor accesses to the Shelf database.</p>
+<p>Initialize the ParFrames object</p>
+<p>Args:
+nframes (int): The number of Frames stored in the shelve database.
+fs_name (string): The base name (prefix) of the shelve database files.
+frame_shelve (shelve.Shelf): The Shelf object containing the Frame objects.</p>
 </dd></dl>
 
 <dl class="function">
@@ -891,12 +1228,12 @@ as a function to be passed to the multiprocessor threads.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>frames (obj</strong> &#8211; frames or obj:ParFrames): The object containing all the Frames of the trajectory.</li>
-<li><strong>fstart</strong> (<em>int</em>) &#8211; The index of the first frame to start the analysis on.</li>
-<li><strong>fend</strong> (<em>int</em>) &#8211; The index of the last frame to analyze.</li>
-<li><strong>indices</strong> (<em>list of int</em>) &#8211; List of integer indices of the LipidCOMs to include in the computation.</li>
-<li><strong>refframe</strong> (<em>int</em>) &#8211; The index of the frame that is to be taken as the reference for the MSD computation.</li>
-<li><strong>plane</strong> (<em>list of int</em>) &#8211; The list of the indices corresponding to the coordinate planes (x: 0,y 1,z :2)
+<li><strong>frames (obj</strong> – frames or obj:ParFrames): The object containing all the Frames of the trajectory.</li>
+<li><strong>fstart</strong> (<em>int</em>) – The index of the first frame to start the analysis on.</li>
+<li><strong>fend</strong> (<em>int</em>) – The index of the last frame to analyze.</li>
+<li><strong>indices</strong> (<em>list of int</em>) – List of integer indices of the LipidCOMs to include in the computation.</li>
+<li><strong>refframe</strong> (<em>int</em>) – The index of the frame that is to be taken as the reference for the MSD computation.</li>
+<li><strong>plane</strong> (<em>list of int</em>) – The list of the indices corresponding to the coordinate planes (x: 0,y 1,z :2)
 to be included in the MSD computation.</li>
 </ul>
 </td>
@@ -920,11 +1257,6 @@ for i in range( (fend-fstart)+1 ).</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pybilt.com_trajectory.COMTraj.range">
-<code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">range</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.range" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="pybilt.com_trajectory.COMTraj.thickness_frames">
 <code class="descclassname">pybilt.com_trajectory.COMTraj.</code><code class="descname">thickness_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>fstart</em>, <em>fend</em>, <em>leaflets</em>, <em>nlipids</em>, <em>plane</em>, <em>norm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/com_trajectory/COMTraj.html#thickness_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.com_trajectory.COMTraj.thickness_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the bilayer thickness for a range of Frame objects in frames.
@@ -937,16 +1269,16 @@ as a function to be passed to the multiprocessor threads.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>frames (obj</strong> &#8211; frames or obj:ParFrames): Object containing all the Frame objects of the trajectory.</li>
-<li><strong>fstart</strong> (<em>int</em>) &#8211; The index of the first frame to start the analysis on.</li>
-<li><strong>fend</strong> (<em>int</em>) &#8211; The index of the last frame to analyze.</li>
-<li><strong>leaflets</strong> (<em>dict of Leaflet</em>) &#8211; A dict containing the Leaflet instances used to define the upper and lower
-bilayer leaflets for this calculation. This dict should contain the two keys, &#8216;upper&#8217; and &#8216;lower&#8217;, corresponding
+<li><strong>frames (obj</strong> – frames or obj:ParFrames): Object containing all the Frame objects of the trajectory.</li>
+<li><strong>fstart</strong> (<em>int</em>) – The index of the first frame to start the analysis on.</li>
+<li><strong>fend</strong> (<em>int</em>) – The index of the last frame to analyze.</li>
+<li><strong>leaflets</strong> (<em>dict of Leaflet</em>) – A dict containing the Leaflet instances used to define the upper and lower
+bilayer leaflets for this calculation. This dict should contain the two keys, ‘upper’ and ‘lower’, corresponding
 to instances of the Leaflet class.</li>
-<li><strong>nlipids</strong> (<em>int</em>) &#8211; The total number of LipidCOMs (or lipids) in the two Leaflet instances.</li>
-<li><strong>plane</strong> (<em>list of int</em>) &#8211; A list of the integer indices corresponding to the bilayer lateral
+<li><strong>nlipids</strong> (<em>int</em>) – The total number of LipidCOMs (or lipids) in the two Leaflet instances.</li>
+<li><strong>plane</strong> (<em>list of int</em>) – A list of the integer indices corresponding to the bilayer lateral
 coordinate planes (0 for x,1 for y, and 2 for z)</li>
-<li><strong>norm</strong> (<em>int</em>) &#8211; The integer index corresponding to the bilayer normal coordinate plane
+<li><strong>norm</strong> (<em>int</em>) – The integer index corresponding to the bilayer normal coordinate plane
 (0 for x,1 for y, or 2 for z).</li>
 </ul>
 </td>
@@ -993,9 +1325,7 @@ For i in range((fend-fstar) + 1) and For j in range(nlipids).</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1017,7 +1347,7 @@ For i in range((fend-fstar) + 1) and For j in range(nlipids).</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1035,7 +1365,8 @@ For i in range((fend-fstar) + 1) and For j in range(nlipids).</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -1045,23 +1376,17 @@ For i in range((fend-fstar) + 1) and For j in range(nlipids).</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
