@@ -22,11 +22,14 @@ The analyses include:
 
 ------
 ![alt text](./_images/7percentCL_sideview_b.jpg "Lipid Bilayer")
+
 ------
 
 ## Install
 
-**Warning:** PyBILT is still under heavy development and may rapidly change.
+| **! Warning** |
+| --- |
+|  PyBILT is still under heavy development and may rapidly change. |
 
 #### PyBILT run dependencies
 PyBILT has the following major dependencies:
@@ -38,8 +41,18 @@ PyBILT has the following major dependencies:
    * six - https://pypi.org/project/six/
    * future - http://python-future.org/
 
+To run the pybilt test suite:
+   * pytest - https://docs.pytest.org/en/latest/
+
 To use the PyBILT Jupyter Notebooks:
    * Jupyter - http://jupyter.org/
+
+To build the docs locally requires the following additional packages:
+    * Sphinx - http://www.sphinx-doc.org/en/master/
+    * recommonmark - https://recommonmark.readthedocs.io/en/latest/
+    * sphinx_rtd_theme - https://sphinx-rtd-theme.readthedocs.io/en/latest/
+
+
 
 The pybilt package has been tested using [Anaconda Python](https://www.anaconda.com/) 2.7 and Python 3.6;
 
@@ -69,7 +82,7 @@ conda install python=2.7
  conda install python=3.6
  ```
 
-Then install all the dependencies:
+Then install all the pybilt run dependencies:
 ```
 conda install numpy scipy matplotlib seaborn six future
 conda install -c conda-forge MDAnalysis
@@ -79,12 +92,23 @@ Then install pybilt:
 python PyBILT/setup.py install
 ```
 
+If you want to run the pybilt tests you can install pytest:
+```
+conda install pytest
+```
+
 If you want to run the pybilt Jupyter notebooks (PyBILT/jupyter_notebooks), then install Jupyter:
 ```
 conda install jupyter
 ```
 Note that the notebooks have not been updated for Python 3 yet.
 
+If you want to build local versions of doc pages install the following packages:
+```
+conda install sphinx
+pip install sphinx_rtd_theme
+pip install recommonmark
+```
 
 ##### Method 2 (From environment yaml)
 
@@ -142,8 +166,7 @@ style of the [GridMAT-MD method](http://www.bevanlab.biochem.vt.edu/GridMAT-MD/)
 
 The bilayer_analyzer features various types of analyses and the use of different
 representations is handled internally based the requirements and design of each
-analysis type. See the [documentation](http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.analysis_protocols) for more details on
-individual analyses and the representations they use.   
+analysis type. See the [documentation](https://pybilt.readthedocs.io/en/latest/ba_analyses.html) for list of analyses that can be added to intances of the BilayerAnalyzer.   
 
   * [mda_tools](http://pybilt.readthedocs.io/en/latest/pybilt.mda_tools.html) -- This package includes various modules and functions for directly
                  analyzing and operating on MDAnalysis trajectories and objects.
@@ -168,12 +191,13 @@ individual analyses and the representations they use.
 
 ## Documentation
 
-PyBILT now has some documentation! Visit them on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html). In addition
-to the docs, there are currently a few Jupyter IPython
+Visit the PyBILT docs on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html).
+Docs can also be viewed offline/locally by opening the [PyBILT/docs/build/html/index.html](docs/build/html/index.html) file from the
+repo in a web browser; however, this build of the docs is not updated often.
+In addition
+to the doc pages, there are currently a few Jupyter IPython
 [notebooks](jupyter_notebooks) that provide some examples and show some basic
-usage. More of these are in the pipeline. Although they are also not fully
-extensive, the [tests](tests) can serve as a useful place to examine some basic
-usage and functionality.
+usage (these have not been updated/tested for/with python 3 yet); updates and more of these are in the pipeline.
 
 ------
 
