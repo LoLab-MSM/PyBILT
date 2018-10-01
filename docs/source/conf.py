@@ -157,7 +157,7 @@ latex_documents = [
      u'Blake A. Wilson', 'manual'),
 ]
 # This is a hack to fake out the sphinx latex build for RTD which fails
-latex_documents = []
+# latex_documents = []
 
 # -- Options for manual page output ---------------------------------------
 
