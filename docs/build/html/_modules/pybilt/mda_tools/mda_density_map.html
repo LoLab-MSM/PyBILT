@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.mda_tools.mda_density_map &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.mda_tools.mda_density_map &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -60,7 +51,7 @@
 
           
             
-            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -68,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -98,11 +89,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
 </ul>
 
@@ -115,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">PyBILT</a>
@@ -123,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -155,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -168,8 +160,12 @@
            <div itemprop="articleBody">
             
   <h1>Source code for pybilt.mda_tools.mda_density_map</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="k">import</span> <span class="n">align</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
 
 <span class="k">def</span> <span class="nf">_adjust_frame_range_for_slicing</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fend</span><span class="p">,</span> <span class="n">nframes</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">fend</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -253,12 +249,12 @@
 
     <span class="n">x_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">x_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_edges</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_nedges</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_nedges</span><span class="p">):</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">x_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_incr_h</span>
     <span class="n">y_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">y_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_edges</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_nedges</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_nedges</span><span class="p">):</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">y_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_incr_h</span>
 
@@ -344,7 +340,7 @@
         <span class="n">system_x</span> <span class="o">=</span> <span class="n">system_com</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">system_y</span> <span class="o">=</span> <span class="n">system_com</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="c1">#now do the alignment and get new com and axis coordinates</span>
-        <span class="n">align</span><span class="o">.</span><span class="n">alignto</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">align_struct_universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">align_sel_string</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">align</span><span class="o">.</span><span class="n">alignto</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">align_struct_universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">align_sel_string</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">)</span>
         <span class="n">system_com_a</span> <span class="o">=</span> <span class="n">system_sel</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
         <span class="n">system_x_a</span> <span class="o">=</span> <span class="n">system_com_a</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">system_y_a</span> <span class="o">=</span> <span class="n">system_com_a</span><span class="p">[</span><span class="n">lat_ind</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
@@ -390,12 +386,12 @@
 
     <span class="n">x_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">x_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_edges</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_nedges</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_nedges</span><span class="p">):</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">x_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_incr_h</span>
     <span class="n">y_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">y_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_edges</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_nedges</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_nedges</span><span class="p">):</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">y_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_incr_h</span>
 
@@ -413,7 +409,7 @@
     <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">fstart</span><span class="p">:</span><span class="n">fend</span><span class="p">:</span><span class="n">fstep</span><span class="p">]:</span>
 
         <span class="c1"># now do the alignment</span>
-        <span class="n">align</span><span class="o">.</span><span class="n">alignto</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">align_struct_universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">align_sel_string</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">align</span><span class="o">.</span><span class="n">alignto</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">align_struct_universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">align_sel_string</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mda_selections</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="n">mda_selections</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">indices</span>
@@ -531,12 +527,12 @@
 
     <span class="n">x_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">x_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_edges</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_nedges</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x_nedges</span><span class="p">):</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">x_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_incr_h</span>
     <span class="n">y_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbins</span><span class="p">)</span>
     <span class="n">y_nedges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_edges</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_nedges</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">y_nedges</span><span class="p">):</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">y_centers</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_edges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">y_incr_h</span>
 
@@ -614,9 +610,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -629,7 +623,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -647,7 +641,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -657,23 +652,17 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

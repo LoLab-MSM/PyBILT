@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to PyBILT’s documentation! &mdash; PyBILT 0.0.1 documentation</title>
+  <title>Welcome to PyBILT’s documentation! &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,26 +24,18 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="#"/>
-        <link rel="next" title="Python based lipid BILayer molecular simulation analysis Toolkit" href="readme.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Python based lipid BILayer molecular simulation analysis Toolkit" href="readme.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -60,7 +52,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -68,7 +60,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -98,11 +90,13 @@
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">pybilt</a></li>
 </ul>
 
@@ -115,7 +109,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="#">PyBILT</a>
@@ -123,9 +117,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -148,7 +143,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Welcome to PyBILT&#8217;s documentation!</li>
+      <li>Welcome to PyBILT’s documentation!</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,22 +163,54 @@
            <div itemprop="articleBody">
             
   <div class="section" id="welcome-to-pybilt-s-documentation">
-<h1>Welcome to PyBILT&#8217;s documentation!<a class="headerlink" href="#welcome-to-pybilt-s-documentation" title="Permalink to this headline">¶</a></h1>
+<h1>Welcome to PyBILT’s documentation!<a class="headerlink" href="#welcome-to-pybilt-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="readme.html#setup-using-anaconda-s-conda-tool">Setup using Anaconda&#8217;s conda tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#pybilt-run-dependencies">PyBILT run dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#setup-and-install-using-anaconda-s-conda-tool">Setup and install using Anaconda’s conda tool</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/ac_rst.html">ac - Isothermal area compressibility.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/acm_rst.html">acm - Area compressibility modulus.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/ald_rst.html">ald - Average lateral displacement.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/apl_box_rst.html">apl_box - Area per lipid using box dimensions.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/apl_grid_rst.html">apl_grid - Area per lipid using 2D lipid grids.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/area_fluctuation_rst.html">area_fluctuation - Bilayer lateral box area fluctuation.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/bilayer_thickness_rst.html">bilayer_thickness - Bilayer thickness using lipid_grid.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/com_lateral_rdf_rst.html">com_lateral_rdf - Lipid-lipid RDF in the bilayer lateral plane.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/dc_cluster_rst.html">dc_cluster - Hiearchical clustering of lipids based on distance.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/disp_vec_corr_avg_rst.html">disp_vec_corr_avg - Weighted average of displacement vector correlations.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/disp_vec_corr_rst.html">disp_vec_corr - Displacement vector correlation matrix.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/disp_vec_nncorr_rst.html">disp_vec_nncorr - Displacement vector nearest neigbor correlations.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/disp_vec_rst.html">disp_vec - Displacement vectors.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/flip_flop_rst.html">flip_flop - Count lipid flip flops.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/halperin_nelson_rst.html">halperin_nelson - Halperin and Nelson’s rotational invariant.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/lipid_collinearity_rst.html">lipid_collinearity - Lipid-lipid collinearity.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/lipid_length_rst.html">lipid_length - Lipid length using the lipid vectors.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/lipid_tilt_rst.html">lipid_tilt - Lipid tilt using the lipid vectors.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/loa_rst.html">loa - Lateral lipid orientation angle.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/lop_rst.html">lop - Lateral lipid orientation parameter.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/mass_dens_rst.html">mass_dens - Mass density profile.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/msd_multi_rst.html">msd_multi - Multiple time origin mean squared displacement.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/msd_rst.html">msd - Single time origin mean squared displacement.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/ndcorr_rst.html">ndcorr - Correlation between bilayer surface curvature and lipid clustering.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/nnf_rst.html">nnf - Lateral order nearest neighbor fraction.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/spatial_velocity_corr_rst.html">spatial_velocity_corr - Weighted average of displacement vector correlations.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ba_analyses/vcm_rst.html">vcm - Volume compressibility modulus.</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">pybilt</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pybilt.html">pybilt package</a></li>
 </ul>
@@ -202,9 +229,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -224,7 +249,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -242,7 +267,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -252,23 +278,17 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Python based lipid BILayer molecular simulation analysis Toolkit &mdash; PyBILT 0.0.1 documentation</title>
+  <title>Python based lipid BILayer molecular simulation analysis Toolkit &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
-        <link rel="next" title="pybilt" href="modules.html"/>
-        <link rel="prev" title="Welcome to PyBILT’s documentation!" href="index.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Analyses available to the BilayerAnalyzer" href="ba_analyses.html" />
+    <link rel="prev" title="Welcome to PyBILT’s documentation!" href="index.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -61,7 +53,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -69,7 +61,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -97,16 +89,19 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#install">Install</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#setup-using-anaconda-s-conda-tool">Setup using Anaconda&#8217;s conda tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pybilt-run-dependencies">PyBILT run dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup-and-install-using-anaconda-s-conda-tool">Setup and install using Anaconda’s conda tool</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">pybilt</a></li>
 </ul>
 
@@ -119,7 +114,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyBILT</a>
@@ -127,9 +122,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -176,7 +172,7 @@
 <span id="python-based-lipid-bilayer-molecular-simulation-analysis-toolkit"></span><h1><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit<a class="headerlink" href="#python-based-lipid-bilayer-molecular-simulation-analysis-toolkit" title="Permalink to this headline">¶</a></h1>
 <hr class="docutils" />
 <p><img alt="Python version badge" src="https://img.shields.io/badge/python-2.7-blue.svg" />
-<a class="reference external" href="LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/Day8/re-frame.svg" /></a>
+<a class="reference external" href="https://github.com/blakeaw/PyBILT/blob/master/LICENSE"><img alt="license" src="https://img.shields.io/github/license/mashape/apistatus.svg" /></a>
 <a class="reference external" href="https://landscape.io/github/blakeaw/PyBILT/master"><img alt="Code Health" src="https://landscape.io/github/blakeaw/PyBILT/master/landscape.svg?style=flat" /></a>
 <a class="reference external" href="https://github.com/blakeaw/PyBILT/blob/master/.docstring-coverage_report.txt"><img alt="docstring-coverage badge" src="https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg" /></a></p>
 <hr class="docutils" />
@@ -200,40 +196,49 @@
 <div class="section" id="install">
 <span id="install"></span><h1>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h1>
 <p><strong>Warning:</strong> PyBILT is still under heavy development and may rapidly change.</p>
-<p>Download PyBILT from the github repo (https://github.com/blakeaw/PyBILT.git)
-and then add the path to the PyBILT directory to your PYTHONPATH. From a
-terminal you can type</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;path_to/PyBILT:$PYTHONPATH</span>
-</pre></div>
-</div>
-<p>to add it to the current shell environment. For persistence add the line to your
-.bashrc file.</p>
-<p>PyBILT has the following major dependencies:</p>
+<div class="section" id="pybilt-run-dependencies">
+<span id="pybilt-run-dependencies"></span><h2>PyBILT run dependencies<a class="headerlink" href="#pybilt-run-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>PyBILT has the following major dependencies that need to be installed before it
+can be run:</p>
 <ul class="simple">
-<li>MDAnalysis 0.16.0</li>
-<li>NumPy  1.11.3</li>
-<li>SciPy 0.18.1,</li>
+<li>MDAnalysis 0.16.2</li>
+<li>NumPy 1.11.3</li>
+<li>SciPy 0.18.1</li>
 <li>Matplotlib 2.0.0</li>
 <li>Seaborn 0.7.1</li>
 </ul>
-<p>In addition, it is highly recommended that you install
-<a class="reference external" href="https://www.continuum.io/">Anaconda Python</a>
-version 4.3.1 Python 2.7 before installing PyBILT. PyBILT
-has yet to be tested outside of an Anaconda environment.</p>
-<hr class="docutils" />
-<div class="section" id="setup-using-anaconda-s-conda-tool">
-<span id="setup-using-anaconda-s-conda-tool"></span><h2>Setup using Anaconda&#8217;s conda tool<a class="headerlink" href="#setup-using-anaconda-s-conda-tool" title="Permalink to this headline">¶</a></h2>
+<p>The versions of the above packages are the latest that the pybilt package has
+been tested with under Anaconda 4.3.1 Python 2.7; these are the package
+versions included in the conda environment.yml file.  Therefore, to reproduce
+the environment that PyBILT has been tested under it is recommended that you
+install <a class="reference external" href="https://www.anaconda.com/">Anaconda Python</a> version 4.3.1 Python 2.7
+before installing PyBILT. PyBILT has yet to be tested outside of an Anaconda
+environment.</p>
+<p>The following section describes the process for setting up the dependencies and
+installing the ‘pybilt’ package using a conda environment and the setup.py
+script.</p>
+</div>
+<div class="section" id="setup-and-install-using-anaconda-s-conda-tool">
+<span id="setup-and-install-using-anaconda-s-conda-tool"></span><h2>Setup and install using Anaconda’s conda tool<a class="headerlink" href="#setup-and-install-using-anaconda-s-conda-tool" title="Permalink to this headline">¶</a></h2>
+<p>First, clone or download the GitHub repo</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">blakeaw</span><span class="o">/</span><span class="n">PyBILT</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
 <p>The file environment.yml has been provided to allow for easy setup of a new
-environment with all the appropriate dependencies using the conda tool. Run</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
+environment with all the appropriate dependencies using the conda tool. From the PyBILT root run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
 </pre></div>
 </div>
 <p>which will create a new conda environment named <em>pybilt</em> with the appropriate
 dependencies. Then activate the environment</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">activate</span> <span class="n">pybilt</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">activate</span> <span class="n">pybilt</span>
 </pre></div>
 </div>
-<p>before running PyBILT modules.</p>
+<p>Next, run the setup.py script with install,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>to install the ‘pybilt’ package into the <em>pybilt</em> environment.</p>
 </div>
 </div>
 <hr class="docutils" />
@@ -241,10 +246,10 @@ dependencies. Then activate the environment</p>
 <span id="quick-overview-of-pybilt"></span><h1>Quick overview of PyBILT<a class="headerlink" href="#quick-overview-of-pybilt" title="Permalink to this headline">¶</a></h1>
 <p><strong>PyBILT</strong> is composed of 2 primary analysis packages:</p>
 <ul class="simple">
-<li>bilayer_analyzer &#8211; The bilayer_analyzer is an analysis package that
+<li>bilayer_analyzer – The <a class="reference external" href="http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.bilayer_analyzer">bilayer_analyzer</a> is an analysis package that
 is designed to analyze (quasi) planar lipid bilayer
 systems. It is accessed through the BilayerAnalyzer
-object, which can be imported via: <code class="docutils literal"><span class="pre">from</span> <span class="pre">pybilt.bilayer_analyzer</span> <span class="pre">import</span> <span class="pre">BilayerAnalyzer</span></code>. The
+object, which can be imported via: <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pybilt.bilayer_analyzer</span> <span class="pre">import</span> <span class="pre">BilayerAnalyzer</span></code>. The
 BilayerAnalyzer features automatic dynamic unwrapping of
 coordinates and leaflet detection. The bilayer_analyzer
 works on a multiple-representation model, whereby the
@@ -253,9 +258,9 @@ representations of the bilayer lipids. Bilayer lipids
 can be represented using the following four
 representations:<ul>
 <li>All atom</li>
-<li>Centers-of-mass &#8211; Each lipid (or selection of atoms from each lipid) is reduced to a
+<li>Centers-of-mass – Each lipid (or selection of atoms from each lipid) is reduced to a
 center-of-mass.</li>
-<li>Grid (or lipid grid) &#8211; The lipids are mapped to two-dimensional grids (one for each leaflet) in the
+<li>Grid (or lipid grid) – The lipids are mapped to two-dimensional grids (one for each leaflet) in the
 style of the <a class="reference external" href="http://www.bevanlab.biochem.vt.edu/GridMAT-MD/">GridMAT-MD method</a></li>
 <li>Vectors - Each lipid is converted to a vector representation using select reference atoms (or sets of reference atoms) that are used to compute the head and tail of the vector; e.g., a lipid tail atom to lipid head atom, or P-N vectors.</li>
 </ul>
@@ -263,23 +268,23 @@ style of the <a class="reference external" href="http://www.bevanlab.biochem.vt.
 </ul>
 <p>The bilayer_analyzer features various types of analyses and the use of different
 representations is handled internally based the requirements and design of each
-analysis type. See the documentation (coming soon) for more details on
+analysis type. See the <a class="reference external" href="http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.analysis_protocols">documentation</a> for more details on
 individual analyses and the representations they use.</p>
 <ul class="simple">
-<li>mda_tools &#8211; This package includes various modules and functions for directly
+<li><a class="reference external" href="http://pybilt.readthedocs.io/en/latest/pybilt.mda_tools.html">mda_tools</a> – This package includes various modules and functions for directly
 analyzing and operating on MDAnalysis trajectories and objects.
 e.g. functions to compute density profiles.</li>
 </ul>
 <p>Additional packages include:</p>
 <ul class="simple">
-<li>lipid_grid &#8211; The lipid grid module can be used construct &#8220;lipid grid&#8221; grid
+<li><a class="reference external" href="http://pybilt.readthedocs.io/en/latest/pybilt.lipid_grid.html">lipid_grid</a> – The lipid grid module can be used construct “lipid grid” grid
 representations of lipid bilayers, which can be used to
 accurately estimate quantities such as area per lipid.</li>
-<li>com_trajectory &#8211; This module can be used to construct a center of mass
+<li><a class="reference external" href="http://pybilt.readthedocs.io/en/latest/pybilt.com_trajectory.html">com_trajectory</a> – This module can be used to construct a center of mass
 trajectory (COMTraj) out of an MDAnalysis trajectory,
 which is useful for computing quantities like mean squared
 displacement. The COMTraj is designed to work with bilayers.</li>
-<li>plot_generation &#8211; This module has several pre-written plotting functions
+<li><a class="reference external" href="http://pybilt.readthedocs.io/en/latest/pybilt.plot_generation.html">plot_generation</a> – This module has several pre-written plotting functions
 (using matplotlib and seaborn) for some of the properties
 that can be computed from functions in the other modules.
 e.g. mean squared displacement and area per lipid.</li>
@@ -294,26 +299,27 @@ the pipeline. Although they are also not fully extensive, the
 <a class="reference external" href="https://github.com/blakeaw/PyBILT/tree/master/tests">tests</a> can serve as a
 useful place to examine some basic usage and functionality.</p>
 </div>
-<div class="section" id="core-developers">
-<span id="core-developers"></span><h1>Core Developers<a class="headerlink" href="#core-developers" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><strong>Blake A Wilson</strong> - Currently a Postdoctoral Fellow at Vanderbilt University<ul>
-<li>Vandy e-mail: blake.a.wilson&#64;vanderbilt.edu</li>
-<li>Gmail: blakeaw1102&#64;gmail.com</li>
-<li><a class="reference external" href="https://my.vanderbilt.edu/blakeaw/">Blake&#8217;s VU Website</a></li>
-<li>Also find me on <a class="reference external" href="https://www.linkedin.com/in/blakewilson3/">LinkedIn</a> and <a class="reference external" href="https://www.researchgate.net/profile/Blake_Wilson3">Research Gate</a></li>
-</ul>
-</li>
-</ul>
-</div>
 <div class="section" id="contact">
 <span id="contact"></span><h1>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h1>
-<p>If you have any comments, suggestions, or feature requests for PyBILT please
-feel free to open a <a class="reference external" href="https://github.com/blakeaw/PyBILT/issues">GitHub Issue</a>
-with those comments, suggestions, or feature requests. Or you can contact Blake
-directly via e-mail at either blake.a.wilson&#64;vanderbilt.edu or
-blakeaw1102&#64;gmail.com. You may also contact Blake with any questions about
-PyBILT use or implementation.</p>
+<p>To report problems or bugs please open a <a class="reference external" href="https://github.com/blakeaw/PyBILT/issues">GitHub Issue</a>.
+Additionally, any comments, suggestions, or feature requests for PyBILT can also be submitted as a <a class="reference external" href="https://github.com/blakeaw/PyBILT/issues">GitHub Issue</a>.</p>
+<p>For any other inquiries, including questions about PyBILT use or
+implementation, you can contact Blake directly via e-mail at either
+blake.a.wilson&#64;vanderbilt.edu or blakeaw1102&#64;gmail.com; please include “PyBILT
+inquiry” in the e-mail subject line.</p>
+</div>
+<div class="section" id="contributing">
+<span id="contributing"></span><h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<p>If you would like to contribute directly to PyBILT’s development please</p>
+<ol class="simple">
+<li>Fork the repo (https://github.com/blakeaw/PyBILT/fork)</li>
+<li>Create a new branch for your feature (git checkout -b feature/foo_bar)</li>
+<li>Create test code for your feature</li>
+<li>Once your feature passes its own test, run all the tests using <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a> (python -m pytest)</li>
+<li>Once your feature passes all the tests, commit your changes (git commit -am ‘Add the foo_bar feature.’)</li>
+<li>Push to the branch (git push origin feature/foo_bar)</li>
+<li>Create a new Pull Request</li>
+</ol>
 </div>
 <div class="section" id="license">
 <span id="license"></span><h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
@@ -343,21 +349,32 @@ this project and for providing me with the space and means to pursue it.</li>
 <li><a class="reference external" href="https://github.com/">GitHub</a> - Development Platform and repository storage</li>
 <li><a class="reference external" href="http://www.sphinx-doc.org/en/stable/index.html">Sphinx</a> - Python documentation generator</li>
 <li><a class="reference external" href="https://github.com/rtfd/recommonmark">recommonmark</a> - A docutils-compatibility bridge to CommonMark.</li>
+<li><a class="reference external" href="https://readthedocs.org/">Read the Docs</a> - Documentation hosting</li>
 <li><a class="reference external" href="https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home">docstring-coverage</a> -  A simple audit tool for examining python source files for missing docstrings.</li>
+</ul>
+</div>
+<div class="section" id="core-developers">
+<span id="core-developers"></span><h1>Core Developers<a class="headerlink" href="#core-developers" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><strong>Blake A Wilson</strong> - Currently a Postdoctoral Fellow at Vanderbilt University<ul>
+<li>Vandy e-mail: blake.a.wilson&#64;vanderbilt.edu</li>
+<li>Gmail: blakeaw1102&#64;gmail.com</li>
+<li><a class="reference external" href="https://my.vanderbilt.edu/blakeaw/">Blake’s VU Website</a></li>
+<li>Also find me on <a class="reference external" href="https://www.linkedin.com/in/blakewilson3/">LinkedIn</a> and <a class="reference external" href="https://www.researchgate.net/profile/Blake_Wilson3">Research Gate</a></li>
+</ul>
+</li>
 </ul>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="modules.html" class="btn btn-neutral float-right" title="pybilt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ba_analyses.html" class="btn btn-neutral float-right" title="Analyses available to the BilayerAnalyzer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral" title="Welcome to PyBILT’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -373,7 +390,7 @@ this project and for providing me with the space and means to pursue it.</li>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -391,7 +408,8 @@ this project and for providing me with the space and means to pursue it.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -401,23 +419,17 @@ this project and for providing me with the space and means to pursue it.</li>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

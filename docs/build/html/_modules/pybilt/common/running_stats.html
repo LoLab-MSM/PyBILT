@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.common.running_stats &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.common.running_stats &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -60,7 +51,7 @@
 
           
             
-            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -68,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -98,11 +89,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
 </ul>
 
@@ -115,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">PyBILT</a>
@@ -123,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -155,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -175,7 +167,13 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">object</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
 
 <span class="c1"># Running Statistics</span>
 <div class="viewcode-block" id="RunningStats"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.RunningStats">[docs]</a><span class="k">class</span> <span class="nc">RunningStats</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -266,7 +264,7 @@
     <span class="n">averager</span> <span class="o">=</span> <span class="n">RunningStats</span><span class="p">()</span>
     <span class="n">nele</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">onednparray</span><span class="p">)</span>
     <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nele</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">nele</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nele</span><span class="p">):</span>
         <span class="n">averager</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">onednparray</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="n">run_avg</span> <span class="o">=</span> <span class="n">averager</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="n">run_dev</span> <span class="o">=</span> <span class="n">averager</span><span class="o">.</span><span class="n">deviation</span><span class="p">()</span>
@@ -408,6 +406,75 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_running</span><span class="p">()</span></div>
 
+    <span class="k">def</span> <span class="nf">_aob_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the block average quantities from interanl RunningStats</span>
+<span class="sd">        objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="c1">#print &quot;block.n &quot;,block.n, &quot; min_p &quot;,self._min_points_in_block</span>
+            <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">means</span>
+
+    <span class="k">def</span> <span class="nf">_aob_np</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the block average quantities from internally stored numpy</span>
+<span class="sd">        arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">block</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">means</span>
+
+<div class="viewcode-block" id="BlockAverager.averages_of_blocks"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.averages_of_blocks">[docs]</a>    <span class="k">def</span> <span class="nf">averages_of_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the block average and standard error.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Returns a length two tuple with the block average and standard error estimates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(self._blocks)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aob_np</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aob_running</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_sob_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the block average quantities from interanl RunningStats</span>
+<span class="sd">        objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="c1">#print &quot;block.n &quot;,block.n, &quot; min_p &quot;,self._min_points_in_block</span>
+            <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">deviation</span><span class="p">())</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">means</span>
+
+    <span class="k">def</span> <span class="nf">_sob_np</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the block average quantities from internally stored numpy</span>
+<span class="sd">        arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">block</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">means</span>
+
+<div class="viewcode-block" id="BlockAverager.standards_of_blocks"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.standards_of_blocks">[docs]</a>    <span class="k">def</span> <span class="nf">standards_of_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the block average and standard error.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Returns a length two tuple with the block average and standard error estimates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#print(self._blocks)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sob_np</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sob_running</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="BlockAverager.number_of_blocks"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.number_of_blocks">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the current number of blocks.</span>
@@ -427,13 +494,132 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">n</span></div></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_points_per_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_blocks</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">n</span></div>
+
+<div class="viewcode-block" id="BlockAverager.n_block"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.BlockAverager.n_block">[docs]</a>    <span class="k">def</span> <span class="nf">n_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_store_data</span><span class="p">:</span>
+            <span class="n">n_block</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                    <span class="n">n_block</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">n_block</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_block</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+                <span class="c1">#print &quot;block.n &quot;,block.n, &quot; min_p &quot;,self._min_points_in_block</span>
+                <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_points_in_block</span><span class="p">:</span>
+                    <span class="n">n_block</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">n_block</span></div></div>
+
+<div class="viewcode-block" id="binned_average"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.binned_average">[docs]</a><span class="k">def</span> <span class="nf">binned_average</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">position_range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute averages over a quantized range of histogram like bins.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (np.array): A 1d numpy array of values.</span>
+<span class="sd">        positions (np.array): A 1d numpy array of positions corresponding to</span>
+<span class="sd">            the values in data. These are used to assign the values to the</span>
+<span class="sd">            histogram like bins for averaging.</span>
+<span class="sd">        n_bins (Optional[int]): Set the target number of bins to quantize the</span>
+<span class="sd">            position_range up into. Defaults to 25</span>
+<span class="sd">        position_range (Optional[tuple]): A two element tuple containing the</span>
+<span class="sd">            lower and upper range to bin the postions over; i.e.</span>
+<span class="sd">            (position_lower, postion_upper). Defaults to None, which uses</span>
+<span class="sd">            positions.min() and positions.max().</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: returns a tuple with two numpy arrays of form (bins, averages)</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The function automatically filters out bins that have a zero count,</span>
+<span class="sd">        so the final value of the number of bins and values will be</span>
+<span class="sd">        len(bins) &lt;= n_bins.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lower</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">position_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">lower</span> <span class="o">=</span> <span class="n">position_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="n">position_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lower</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">n_bins</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">sums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">))</span>
+    <span class="n">n_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="c1"># Loop over the data points.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_data</span><span class="p">):</span>
+        <span class="n">c_val</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">bin_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Select which bin (if any) the value corresponds to.</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">edges</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                <span class="n">bin_index</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">bin_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">counts</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">sums</span><span class="p">[</span><span class="n">bin_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">c_val</span>
+
+    <span class="c1"># Filter out the bins that had zero entries.</span>
+    <span class="n">keep_bins</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">keep_bins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="c1"># Return the filtered bins and averages (i.e. without NaNs).</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="n">keep_bins</span><span class="p">]</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span><span class="n">keep_bins</span><span class="p">]</span>
+    <span class="n">sums</span> <span class="o">=</span> <span class="n">sums</span><span class="p">[</span><span class="n">keep_bins</span><span class="p">]</span>
+    <span class="n">averages</span> <span class="o">=</span> <span class="n">sums</span> <span class="o">/</span> <span class="n">counts</span>
+    <span class="k">return</span> <span class="n">bins</span><span class="p">,</span> <span class="n">averages</span></div>
+
+<span class="c1">#pair t-test for comparison of the difference of two means - null is zero difference</span>
+<div class="viewcode-block" id="pair_ttest"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.pair_ttest">[docs]</a><span class="k">def</span> <span class="nf">pair_ttest</span><span class="p">(</span><span class="n">mean_1</span><span class="p">,</span> <span class="n">std_err_1</span><span class="p">,</span> <span class="n">n_1</span><span class="p">,</span> <span class="n">mean_2</span><span class="p">,</span> <span class="n">std_err_2</span><span class="p">,</span> <span class="n">n_2</span><span class="p">):</span>
+    <span class="n">m_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mean_1</span> <span class="o">-</span> <span class="n">mean_2</span><span class="p">)</span>
+    <span class="n">diff_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">std_err_1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">std_err_2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">degrees</span> <span class="o">=</span> <span class="n">n_1</span> <span class="o">+</span> <span class="n">n_2</span> <span class="o">-</span> <span class="mi">2</span>
+    <span class="n">tval</span> <span class="o">=</span> <span class="n">m_diff</span> <span class="o">/</span> <span class="n">diff_err</span>
+    <span class="n">pval</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">tval</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">degrees</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">pval</span></div>
+
+<div class="viewcode-block" id="block_avg_hist"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.running_stats.block_avg_hist">[docs]</a><span class="k">def</span> <span class="nf">block_avg_hist</span><span class="p">(</span><span class="n">nparray_1d</span><span class="p">,</span> <span class="n">block_size</span><span class="p">,</span> <span class="n">in_range</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Creates histograms for each block and averages them to generate block</span>
+<span class="sd">    a single block averaged historgram.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">in_range</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+        <span class="n">in_range</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">nparray_1d</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">nparray_1d</span><span class="p">)]</span>
+    <span class="c1"># Number of blocks of block_size</span>
+    <span class="n">nblocks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nparray_1d</span><span class="p">)</span><span class="o">/</span><span class="n">block_size</span>
+    <span class="c1"># print(nblocks)</span>
+    <span class="c1"># Trim the array to just the points to use with the blocking</span>
+    <span class="n">array_trim</span> <span class="o">=</span> <span class="n">nparray_1d</span><span class="p">[:</span><span class="n">block_size</span><span class="o">*</span><span class="n">nblocks</span><span class="p">]</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">array_trim</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">block_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">block_size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nblocks</span><span class="p">)]</span>
+    <span class="c1"># print(len(blocks))</span>
+    <span class="c1"># print(len(blocks[0]))</span>
+    <span class="c1"># print(len(blocks[1]))</span>
+    <span class="n">counts</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">in_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="c1"># print(counts)</span>
+    <span class="n">c_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">counts</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nblocks</span><span class="p">):</span>
+        <span class="n">counts</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">in_range</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># print(counts)</span>
+        <span class="n">c_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+    <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">c_list</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># print(stacked)</span>
+    <span class="n">avg_count</span> <span class="o">=</span> <span class="n">stacked</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># print(avg_count)</span>
+    <span class="n">se_count</span> <span class="o">=</span> <span class="n">stacked</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nblocks</span><span class="p">)</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+        <span class="n">avg_count</span> <span class="o">/=</span> <span class="n">block_size</span>
+        <span class="n">se_count</span> <span class="o">/=</span> <span class="n">block_size</span>
+    <span class="k">return</span> <span class="n">avg_count</span><span class="p">,</span> <span class="n">se_count</span><span class="p">,</span> <span class="n">centers</span></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -446,7 +632,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -464,7 +650,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -474,23 +661,17 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

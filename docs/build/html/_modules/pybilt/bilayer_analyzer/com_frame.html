@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.bilayer_analyzer.com_frame &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.bilayer_analyzer.com_frame &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -60,7 +51,7 @@
 
           
             
-            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -68,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -98,11 +89,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
 </ul>
 
@@ -115,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">PyBILT</a>
@@ -123,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -155,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -169,15 +161,16 @@
             
   <h1>Source code for pybilt.bilayer_analyzer.com_frame</h1><div class="highlight"><pre>
 <span></span><span class="c1">#imports</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="nb">object</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
 
-<span class="c1">#range/xrange fix</span>
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
-<div class="viewcode-block" id="range"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.com_frame.range">[docs]</a>    <span class="k">def</span> <span class="nf">range</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">xrange</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LipidCOM"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.com_frame.LipidCOM">[docs]</a><span class="k">class</span> <span class="nc">LipidCOM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A lipid center of mass (COM) object.</span>
@@ -209,7 +202,7 @@
         <span class="k">return</span>
     <span class="c1"># The name of this function could be changed to be more desriptive, e.g.</span>
     <span class="c1"># extract_com_mda_residue</span>
-<div class="viewcode-block" id="LipidCOM.extract"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.com_frame.LipidCOM.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_residue</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LipidCOM.extract"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.com_frame.LipidCOM.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_residue</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">make_whole</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Get the center of mass coordinates from an MDAnalysis residue</span>
 
 <span class="sd">        This function calls the MDAnalysis member function center_of_mass() of the residue</span>
@@ -228,19 +221,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">resid</span> <span class="o">=</span> <span class="n">mda_residue</span><span class="o">.</span><span class="n">resid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atom_names</span> <span class="o">=</span> <span class="n">mda_residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
         <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda_residue</span><span class="o">.</span><span class="n">atoms</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
 
             <span class="n">names</span> <span class="o">=</span> <span class="n">name_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">atom_names</span> <span class="o">=</span> <span class="n">names</span>
-            <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
             <span class="n">n_names</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+            <span class="n">atom_group</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+            <span class="c1">#if (not unwrap) and (n_names &gt; 1):</span>
+            <span class="c1">#    mda.lib.mdamath.make_whole(mda_residue.atoms, reference_atom=atom_group)</span>
+
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_names</span><span class="p">):</span>
                 <span class="n">atom_group</span><span class="o">+=</span><span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;mda_residue.atoms.&quot;</span><span class="o">+</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
+        <span class="c1">#else:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">unwrap</span><span class="p">)</span> <span class="ow">and</span> <span class="n">make_whole</span><span class="p">:</span>
+            <span class="n">mda</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">mdamath</span><span class="o">.</span><span class="n">make_whole</span><span class="p">(</span><span class="n">mda_residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">unwrap</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">com_unwrap</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
 
         <span class="k">else</span><span class="p">:</span>
+
             <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">com</span> <span class="o">=</span> <span class="n">atom_group</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">com_unwrap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">com</span><span class="p">[:]</span>
@@ -267,7 +269,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># does not check that nlipids is an int</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_frame</span><span class="p">,</span> <span class="n">mda_bilayer_selection</span><span class="p">,</span> <span class="n">unwrap_coords</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_frame</span><span class="p">,</span> <span class="n">mda_bilayer_selection</span><span class="p">,</span> <span class="n">unwrap_coords</span><span class="p">,</span>
+                 <span class="n">name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multi_bead</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">rewrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">make_whole</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Frame initialization.</span>
 
 <span class="sd">        Args:</span>
@@ -289,6 +293,23 @@
         <span class="c1"># frame number in the MD trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mdnumber</span> <span class="o">=</span> <span class="n">mda_frame</span><span class="o">.</span><span class="n">frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mdnumber</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multi_bead</span> <span class="o">=</span> <span class="n">multi_bead</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name_dict</span> <span class="o">=</span> <span class="n">name_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rewrapped</span> <span class="o">=</span> <span class="n">rewrap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_make_whole</span> <span class="o">=</span> <span class="n">make_whole</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">name_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">multi_bead</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_multi_bead</span><span class="p">(</span><span class="n">mda_frame</span><span class="p">,</span> <span class="n">mda_bilayer_selection</span><span class="p">,</span>
+                                   <span class="n">unwrap_coords</span><span class="p">,</span> <span class="n">name_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_single_bead</span><span class="p">(</span><span class="n">mda_frame</span><span class="p">,</span> <span class="n">mda_bilayer_selection</span><span class="p">,</span>
+                                    <span class="n">unwrap_coords</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="n">name_dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rewrap</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rewrap</span><span class="p">()</span>
+
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_build_single_bead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_frame</span><span class="p">,</span> <span class="n">mda_bilayer_selection</span><span class="p">,</span>
+                           <span class="n">unwrap_coords</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">nlipids</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span>
         <span class="c1"># initialize all the LipidCOM objects</span>
         <span class="k">for</span> <span class="n">dummy_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlipids</span><span class="p">):</span>
@@ -301,7 +322,7 @@
         <span class="n">r</span><span class="o">=</span><span class="mi">0</span>
         <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
             <span class="c1">#print(res,&quot; &quot;,res.center_of_mass())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="n">name_dict</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="n">name_dict</span><span class="p">,</span> <span class="n">make_whole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_whole</span><span class="p">)</span>
             <span class="c1">#self.lipidcom[r].mass = res.total_mass()</span>
             <span class="n">r</span><span class="o">+=</span><span class="mi">1</span>
         <span class="c1">#now unwrapped coordinates</span>
@@ -310,15 +331,103 @@
         <span class="n">mda_frame</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">unwrap_coords</span><span class="p">[:]</span>
         <span class="c1">#now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)</span>
         <span class="c1"># to remove center of mass motion of the membrane</span>
-        <span class="n">mem_com</span> <span class="o">=</span> <span class="n">mda_frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total_mass</span> <span class="o">=</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">mem_com_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">mda_frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">total_mass</span>
+        <span class="n">mem_com_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">mda_frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">][:,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">total_mass</span>
+        <span class="n">mem_com_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">mda_frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">total_mass</span>
+        <span class="n">mem_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mem_com_x</span><span class="p">,</span> <span class="n">mem_com_y</span><span class="p">,</span> <span class="n">mem_com_z</span><span class="p">])</span>
         <span class="n">mda_frame</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">mem_com</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mem_com</span> <span class="o">=</span> <span class="n">mem_com</span>
         <span class="n">r</span><span class="o">=</span><span class="mi">0</span>
         <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="n">name_dict</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="n">name_dict</span><span class="p">,</span> <span class="n">make_whole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_whole</span><span class="p">)</span>
             <span class="n">r</span><span class="o">+=</span><span class="mi">1</span>
-
         <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_build_multi_bead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mda_frame</span><span class="p">,</span> <span class="n">mda_bilayer_selection</span><span class="p">,</span> <span class="n">unwrap_coords</span><span class="p">,</span> <span class="n">name_dict</span><span class="p">):</span>
+        <span class="n">nlipids</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span>
+
+        <span class="c1">#atom indices in mda selection/frame</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">indices</span>
+        <span class="c1"># loop over the residues (lipids) and get the centers of mass</span>
+        <span class="c1">## do the wrapped coordinates</span>
+
+        <span class="n">r</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+            <span class="c1">#print(res,&quot; &quot;,res.center_of_mass())</span>
+            <span class="n">resname</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">resname</span>
+            <span class="c1"># initialize all the LipidCOM objects</span>
+            <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">name_dict</span><span class="p">[</span><span class="n">resname</span><span class="p">]:</span>
+                <span class="n">name_dict_single</span> <span class="o">=</span> <span class="p">{</span><span class="n">resname</span><span class="p">:[</span><span class="n">atom</span><span class="p">]}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LipidCOM</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="n">name_dict_single</span><span class="p">,</span> <span class="n">make_whole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_whole</span><span class="p">)</span>
+            <span class="c1">#self.lipidcom[r].mass = res.total_mass()</span>
+                <span class="n">r</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="c1">#now unwrapped coordinates</span>
+
+
+        <span class="n">mda_frame</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">unwrap_coords</span><span class="p">[:]</span>
+        <span class="c1">#now we need to adjust for the center of mass motion of the membrane -- for simplicity set all frames to (0,0,0)</span>
+        <span class="c1"># to remove center of mass motion of the membrane</span>
+        <span class="n">total_mass</span> <span class="o">=</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">mem_com_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">mda_frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">][:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">total_mass</span>
+        <span class="n">mem_com_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">mda_frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">][:,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">total_mass</span>
+        <span class="n">mem_com_z</span> <span class="o">=</span> <span class="p">(</span><span class="n">mda_frame</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">][:,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">total_mass</span>
+        <span class="n">mem_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mem_com_x</span><span class="p">,</span> <span class="n">mem_com_y</span><span class="p">,</span> <span class="n">mem_com_z</span><span class="p">])</span>
+        <span class="n">mda_frame</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">-=</span> <span class="n">mem_com</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mem_com</span> <span class="o">=</span> <span class="n">mem_com</span>
+        <span class="n">r</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">mda_bilayer_selection</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+
+            <span class="c1">#print(res,&quot; &quot;,res.center_of_mass())</span>
+            <span class="n">resname</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">resname</span>
+            <span class="c1"># initialize all the LipidCOM objects</span>
+            <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">name_dict</span><span class="p">[</span><span class="n">resname</span><span class="p">]:</span>
+                <span class="n">name_dict_single</span> <span class="o">=</span> <span class="p">{</span><span class="n">resname</span><span class="p">:[</span><span class="n">atom</span><span class="p">]}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name_dict</span><span class="o">=</span><span class="n">name_dict_single</span><span class="p">,</span> <span class="n">make_whole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_whole</span><span class="p">)</span>
+            <span class="c1">#self.lipidcom[r].mass = res.total_mass()</span>
+                <span class="n">r</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span>
+
+    <span class="k">def</span> <span class="nf">_rewrap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ncom</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">)</span>
+        <span class="n">box_low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">box_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span>
+        <span class="c1"># print(box_low)</span>
+        <span class="c1"># print(box_high)</span>
+        <span class="c1"># print(self.box)</span>
+        <span class="c1"># print(self.mem_com)</span>
+        <span class="n">n_re</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncom</span><span class="p">):</span>
+            <span class="n">pos_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">com_unwrap</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mem_com</span>
+            <span class="n">pos_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">pos_c</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">com</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">diff</span><span class="p">))</span>
+            <span class="c1"># is_wrap = False</span>
+            <span class="k">if</span> <span class="n">dist</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
+                <span class="n">n_re</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                    <span class="n">p_i</span> <span class="o">=</span> <span class="n">pos_c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">b_l</span> <span class="o">=</span> <span class="n">box_low</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">b_h</span> <span class="o">=</span> <span class="n">box_high</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                    <span class="k">while</span> <span class="n">p_i</span> <span class="o">&lt;</span> <span class="n">b_l</span><span class="p">:</span>
+                        <span class="n">p_i</span> <span class="o">+=</span> <span class="n">b</span>
+                        <span class="c1"># is_wrap = True</span>
+                    <span class="k">while</span> <span class="n">p_i</span> <span class="o">&gt;</span> <span class="n">b_h</span><span class="p">:</span>
+                        <span class="n">p_i</span> <span class="o">-=</span> <span class="n">b</span>
+                        <span class="c1"># is_wrap = True</span>
+                    <span class="n">pos_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_i</span>
+                <span class="c1"># print(r, pos_c, pos_n)</span>
+                <span class="c1"># print(&#39;com&#39;, self.lipidcom[r].com)</span>
+                <span class="c1"># print(&#39;com_u&#39;, self.lipidcom[r].com_unwrap)</span>
+                <span class="c1"># print(&#39;bl bh&#39;,box_low, box_high)</span>
+                <span class="c1"># print(&#39;mc b&#39;, self.mem_com, self.box)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">com</span> <span class="o">=</span> <span class="n">pos_n</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s1">&#39;n_re&#39;</span><span class="p">,</span> <span class="n">n_re</span><span class="p">))</span>
+        <span class="k">return</span>
+
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;COMFrame for frame </span><span class="si">%s</span><span class="s1"> with </span><span class="si">%s</span><span class="s1"> lipids&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">))</span>
 
@@ -385,6 +494,34 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">com_out</span><span class="o">+=</span><span class="n">lipid</span><span class="o">.</span><span class="n">com_unwrap</span><span class="o">*</span><span class="n">lipid</span><span class="o">.</span><span class="n">mass</span>
                 <span class="n">total_mass</span><span class="o">+=</span><span class="n">lipid</span><span class="o">.</span><span class="n">mass</span>
+        <span class="n">com_out</span><span class="o">/=</span><span class="n">total_mass</span>
+        <span class="k">return</span> <span class="n">com_out</span></div>
+
+<div class="viewcode-block" id="COMFrame.cog"><a class="viewcode-back" href="../../../pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.com_frame.COMFrame.cog">[docs]</a>    <span class="k">def</span> <span class="nf">cog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Computes the center of geometry (COG) for the Frame</span>
+
+<span class="sd">        This member function is used to compute the overall center of geometry (COG) of the</span>
+<span class="sd">        COMFrame using the LipidCOM object coordinates.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            wrapped (bool, optional): Define which set of coordinates to use in the computation.</span>
+<span class="sd">                True (default) - The wrapped LipidCOM coordinates are used to compute</span>
+<span class="sd">                the COG of the frame.</span>
+<span class="sd">                False - The unwrapped LipidCOM coordinates are used to compute</span>
+<span class="sd">                the COG of the frame.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            np.array: A 3 element vector containing the xyz coordinates of the Frame&#39;s COG</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">com_out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">total_mass</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lipidcom</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wrapped</span><span class="p">:</span>
+                <span class="n">com_out</span><span class="o">+=</span><span class="n">lipid</span><span class="o">.</span><span class="n">com</span>
+                <span class="n">total_mass</span><span class="o">+=</span><span class="mf">1.0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">com_out</span><span class="o">+=</span><span class="n">lipid</span><span class="o">.</span><span class="n">com_unwrap</span>
+                <span class="n">total_mass</span><span class="o">+=</span><span class="mf">1.0</span>
         <span class="n">com_out</span><span class="o">/=</span><span class="n">total_mass</span>
         <span class="k">return</span> <span class="n">com_out</span></div>
 
@@ -466,9 +603,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -481,7 +616,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -499,7 +634,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -509,23 +645,17 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

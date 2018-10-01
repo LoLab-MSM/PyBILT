@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.common.distance_cutoff_clustering &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.common.distance_cutoff_clustering &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -60,7 +51,7 @@
 
           
             
-            <img src="../../../_static/PyBILT_logo_b.png" class="logo" />
+            <img src="../../../_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -68,7 +59,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -98,11 +89,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pybilt</a></li>
 </ul>
 
@@ -115,7 +108,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">PyBILT</a>
@@ -123,9 +116,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -155,8 +149,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -170,7 +162,11 @@
   <h1>Source code for pybilt.common.distance_cutoff_clustering</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Function to compute hiearchical distance cutoff clusters.&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
 
 
 <div class="viewcode-block" id="distance_euclidean"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.distance_cutoff_clustering.distance_euclidean">[docs]</a><span class="k">def</span> <span class="nf">distance_euclidean</span><span class="p">(</span><span class="n">v_a</span><span class="p">,</span> <span class="n">v_b</span><span class="p">):</span>
@@ -218,8 +214,11 @@
     <span class="c1"># shift center to zero for minimum image</span>
     <span class="n">v_a</span> <span class="o">=</span> <span class="n">v_a</span> <span class="o">-</span> <span class="n">center</span>
     <span class="n">v_b</span> <span class="o">=</span> <span class="n">v_b</span> <span class="o">-</span> <span class="n">center</span>
+    <span class="c1">#print(v_a)</span>
+    <span class="c1">#print(v_b)</span>
     <span class="c1"># difference</span>
     <span class="n">d_v</span> <span class="o">=</span> <span class="n">v_a</span> <span class="o">-</span> <span class="n">v_b</span>
+    <span class="c1">#print(d_v)</span>
     <span class="n">d_v_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">d_v</span><span class="p">)</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">v_a</span><span class="p">)</span>
     <span class="c1"># check for minimum image</span>
@@ -229,9 +228,63 @@
         <span class="n">box_i_h</span> <span class="o">=</span> <span class="n">box_i</span><span class="o">/</span><span class="mf">2.0</span>
         <span class="k">if</span> <span class="n">v_i</span> <span class="o">&gt;</span> <span class="n">box_i_h</span><span class="p">:</span>
             <span class="n">d_v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">box_i</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v_a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v_b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="c1">#print(d_v)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d_v</span><span class="p">,</span> <span class="n">d_v</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">r</span></div>
 
+
+<div class="viewcode-block" id="vector_difference_pbc"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.distance_cutoff_clustering.vector_difference_pbc">[docs]</a><span class="k">def</span> <span class="nf">vector_difference_pbc</span><span class="p">(</span><span class="n">v_a</span><span class="p">,</span> <span class="n">v_b</span><span class="p">,</span> <span class="n">box_lengths</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the Euclidean distance between two vectors under periodic boundaries.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        v_a (numpy.array, array like): The first input vector.</span>
+<span class="sd">        v_b (numpy.array, array like): The second input vector.</span>
+<span class="sd">        box_lengths (numpy.array, array like): The periodic boundary box</span>
+<span class="sd">            lengths for each dimension.</span>
+<span class="sd">        center (Optional[str, array like]): Set the coordinate center of the</span>
+<span class="sd">            periodic box dimensions. Defaults to &#39;zero&#39;, which sets the</span>
+<span class="sd">            center to numpy.zeros(len(box_lengths)). Also accepts the string</span>
+<span class="sd">            value &#39;box_half&#39;, which sets the center to 0.5*box_lengths.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: The Euclidean distance between the two vectors.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The two vectors should have the same size and dimension, while</span>
+<span class="sd">            box_lengths should have the length of the vector dimension.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;zero&#39;</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v_a</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;box_half&#39;</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">box_lengths</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
+    <span class="c1"># shift center to zero for minimum image</span>
+    <span class="n">v_a</span> <span class="o">=</span> <span class="n">v_a</span> <span class="o">-</span> <span class="n">center</span>
+    <span class="n">v_b</span> <span class="o">=</span> <span class="n">v_b</span> <span class="o">-</span> <span class="n">center</span>
+    <span class="c1">#print(v_a)</span>
+    <span class="c1">#print(v_b)</span>
+    <span class="c1"># difference</span>
+    <span class="n">d_v</span> <span class="o">=</span> <span class="n">v_b</span> <span class="o">-</span> <span class="n">v_a</span>
+    <span class="c1">#print(d_v)</span>
+    <span class="n">d_v_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">d_v</span><span class="p">)</span>
+
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">v_a</span><span class="p">)</span>
+    <span class="c1"># check for minimum image</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+        <span class="n">v_i</span> <span class="o">=</span> <span class="n">d_v_a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">box_i</span> <span class="o">=</span> <span class="n">box_lengths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">box_i_h</span> <span class="o">=</span> <span class="n">box_i</span><span class="o">/</span><span class="mf">2.0</span>
+        <span class="k">if</span> <span class="n">v_i</span> <span class="o">&gt;</span> <span class="n">box_i_h</span><span class="p">:</span>
+            <span class="n">d_v_p</span> <span class="o">=</span> <span class="n">box_i</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v_a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v_b</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">d_v_aa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">d_v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">d_v_p</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">d_v_aa</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">):</span>
+                <span class="n">d_v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_v_p</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="n">d_v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">d_v_aa</span><span class="p">)</span>
+
+    <span class="c1">#print(d_v)</span>
+
+    <span class="c1">#d_v_pbc = d_v * d_v_n</span>
+    <span class="c1">#r = np.sqrt(np.dot(d_v, d_v))</span>
+    <span class="k">return</span> <span class="n">d_v</span></div>
 
 <div class="viewcode-block" id="distance_cutoff_clustering"><a class="viewcode-back" href="../../../pybilt.common.html#pybilt.common.distance_cutoff_clustering.distance_cutoff_clustering">[docs]</a><span class="k">def</span> <span class="nf">distance_cutoff_clustering</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">dist_func</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                <span class="o">*</span><span class="n">df_args</span><span class="p">,</span> <span class="o">**</span><span class="n">df_kwargs</span><span class="p">):</span>
@@ -315,9 +368,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -330,7 +381,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -348,7 +399,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -358,23 +410,17 @@
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

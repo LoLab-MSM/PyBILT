@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
-        <link rel="next" title="pybilt package" href="pybilt.html"/>
-        <link rel="prev" title="Python based lipid BILayer molecular simulation analysis Toolkit" href="readme.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pybilt package" href="pybilt.html" />
+    <link rel="prev" title="BilayerAnalyzer analysis: vcm - Volume compressibility modulus." href="ba_analyses/vcm.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -61,7 +53,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -69,7 +61,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -96,15 +88,16 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pybilt</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pybilt.html">pybilt package</a></li>
 </ul>
@@ -120,7 +113,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyBILT</a>
@@ -128,9 +121,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -249,9 +243,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -260,7 +252,7 @@
         <a href="pybilt.html" class="btn btn-neutral float-right" title="pybilt package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="readme.html" class="btn btn-neutral" title="Python based lipid BILayer molecular simulation analysis Toolkit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="ba_analyses/vcm.html" class="btn btn-neutral" title="BilayerAnalyzer analysis: vcm - Volume compressibility modulus." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -273,7 +265,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -291,7 +283,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -301,23 +294,17 @@
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

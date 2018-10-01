@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.diffusion package &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.diffusion package &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
-        <link rel="up" title="pybilt package" href="pybilt.html"/>
-        <link rel="next" title="pybilt.lipid_grid package" href="pybilt.lipid_grid.html"/>
-        <link rel="prev" title="pybilt.common package" href="pybilt.common.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pybilt.lipid_grid package" href="pybilt.lipid_grid.html" />
+    <link rel="prev" title="pybilt.common package" href="pybilt.common.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -62,7 +53,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -70,7 +61,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -97,15 +88,16 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
@@ -134,7 +126,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyBILT</a>
@@ -142,9 +134,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -215,12 +208,12 @@ displacement approximation (Einstein relation):</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>times</strong> (<em>numpy.array</em>) &#8211; Array of the simulation times of each MSD point.</li>
-<li><strong>msd_vals</strong> (<em>numpy.array</em>) &#8211; Array of the MSD values.</li>
-<li><strong>dim</strong> (<em>Optional[int]</em>) &#8211; Set the dimension of the data and fit function: 1
+<li><strong>times</strong> (<em>numpy.array</em>) – Array of the simulation times of each MSD point.</li>
+<li><strong>msd_vals</strong> (<em>numpy.array</em>) – Array of the MSD values.</li>
+<li><strong>dim</strong> (<em>Optional[int]</em>) – Set the dimension of the data and fit function: 1
 for 1-dimensional , 2 for 2-dimensional, or 3 for 3-dimensional.
 Defaults to 2.</li>
-<li><strong>time_range</strong> (<em>Optional[list]</em>) &#8211; Specify a time range via a list with
+<li><strong>time_range</strong> (<em>Optional[list]</em>) – Specify a time range via a list with
 format [time_start, time_end]; the range should be given in the
 same units as the time data in the Arg times. Defaults to None,
 which uses the whole time range in Args times.</li>
@@ -269,12 +262,12 @@ Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495,
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>times</strong> (<em>numpy.array</em>) &#8211; Array of the simulation times of each MSD point.</li>
-<li><strong>msd_vals</strong> (<em>numpy.array</em>) &#8211; Array of the MSD values.</li>
-<li><strong>dim</strong> (<em>Optional[int]</em>) &#8211; Set the dimension of the data and fit function: 1
+<li><strong>times</strong> (<em>numpy.array</em>) – Array of the simulation times of each MSD point.</li>
+<li><strong>msd_vals</strong> (<em>numpy.array</em>) – Array of the MSD values.</li>
+<li><strong>dim</strong> (<em>Optional[int]</em>) – Set the dimension of the data and fit function: 1
 for 1-dimensional , 2 for 2-dimensional, or 3 for 3-dimensional.
 Defaults to 2.</li>
-<li><strong>time_range</strong> (<em>Optional[list]</em>) &#8211; Specify a time range via a list with
+<li><strong>time_range</strong> (<em>Optional[list]</em>) – Specify a time range via a list with
 format [time_start, time_end]; the range should be given in the
 same units as the time data in the Arg times. Defaults to None,
 which uses the whole time range in Args times.</li>
@@ -319,12 +312,12 @@ D.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>times</strong> (<em>numpy.array</em>) &#8211; Array of the simulation times of each MSD point.</li>
-<li><strong>msd_vals</strong> (<em>numpy.array</em>) &#8211; Array of the MSD values.</li>
-<li><strong>dim</strong> (<em>Optional[int]</em>) &#8211; Set the dimension of the data and fit function: 1
+<li><strong>times</strong> (<em>numpy.array</em>) – Array of the simulation times of each MSD point.</li>
+<li><strong>msd_vals</strong> (<em>numpy.array</em>) – Array of the MSD values.</li>
+<li><strong>dim</strong> (<em>Optional[int]</em>) – Set the dimension of the data and fit function: 1
 for 1-dimensional , 2 for 2-dimensional, or 3 for 3-dimensional.
 Defaults to 2.</li>
-<li><strong>time_range</strong> (<em>Optional[list]</em>) &#8211; Specify a time range via a list with
+<li><strong>time_range</strong> (<em>Optional[list]</em>) – Specify a time range via a list with
 format [time_start, time_end]; the range should be given in the
 same units as the time data in the Arg times. Defaults to None,
 which uses the whole time range in Args times.</li>
@@ -363,9 +356,7 @@ Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495;
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -387,7 +378,7 @@ Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495;
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -405,7 +396,8 @@ Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495;
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -415,23 +407,17 @@ Issue 5, 2001, Pages 2484-2494, ISSN 0006-3495;
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

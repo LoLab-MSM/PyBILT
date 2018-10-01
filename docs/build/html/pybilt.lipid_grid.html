@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.lipid_grid package &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.lipid_grid package &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
-        <link rel="up" title="pybilt package" href="pybilt.html"/>
-        <link rel="next" title="pybilt.mda_tools package" href="pybilt.mda_tools.html"/>
-        <link rel="prev" title="pybilt.diffusion package" href="pybilt.diffusion.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pybilt.mda_tools package" href="pybilt.mda_tools.html" />
+    <link rel="prev" title="pybilt.diffusion package" href="pybilt.diffusion.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -62,7 +53,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -70,7 +61,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -97,15 +88,16 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
@@ -134,7 +126,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyBILT</a>
@@ -142,9 +134,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -210,7 +203,7 @@ the handling of an embedded proteins.</p>
 <dl class="class">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d">
 <em class="property">class </em><code class="descclassname">pybilt.lipid_grid.lipid_grid.</code><code class="descname">LipidGrid2d</code><span class="sig-paren">(</span><em>com_frame</em>, <em>com_frame_indices</em>, <em>plane</em>, <em>nxbins=50</em>, <em>nybins=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrid2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <p>A 2d lipid grid object.</p>
 <p>This object is used by the LipidGrids object to construct a 2d grid for
 a bilayer leaflet and assign lipids to it using the coordinates derived
@@ -218,119 +211,278 @@ from a COMFrame representation object.</p>
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.frame">
 <code class="descname">frame</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.frame" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>COMFrame</em> &#8211; Stores a local copy of the COMFrame object from
+<dd><p>Stores a local copy of the COMFrame object from
 which the the coordinate data and lipid type data is derived from.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pybilt.bilayer_analyzer.html#pybilt.bilayer_analyzer.com_frame.COMFrame" title="pybilt.bilayer_analyzer.com_frame.COMFrame">COMFrame</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_nbins">
 <code class="descname">x_nbins</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_nbins" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> &#8211; The number of grid bins in the &#8216;x&#8217; dimension.</p>
+<dd><p>The number of grid bins in the ‘x’ dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_nbins">
 <code class="descname">y_nbins</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_nbins" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> &#8211; The number of grid bins in the &#8216;y&#8217; dimension.</p>
+<dd><p>The number of grid bins in the ‘y’ dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_min">
 <code class="descname">x_min</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_min" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> &#8211; The lower boundary of the grid range in the &#8216;x&#8217;
+<dd><p>The lower boundary of the grid range in the ‘x’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_max">
 <code class="descname">x_max</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_max" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> &#8211; The upper boundary of the grid range in the &#8216;x&#8217;
+<dd><p>The upper boundary of the grid range in the ‘x’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_incr">
 <code class="descname">x_incr</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_incr" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> &#8211; The size of grid boxes (or spacing between grid
-points) in the &#8216;x&#8217; dimension.</p>
+<dd><p>The size of grid boxes (or spacing between grid
+points) in the ‘x’ dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_centers">
 <code class="descname">x_centers</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_centers" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.array</em> &#8211; The center points of the grid boxes in the &#8216;x&#8217;
+<dd><p>The center points of the grid boxes in the ‘x’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_edges">
 <code class="descname">x_edges</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.x_edges" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.array</em> &#8211; The edges of the grid boxes in the &#8216;x&#8217; dimension.</p>
+<dd><p>The edges of the grid boxes in the ‘x’ dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">x_centers</code></dt>
-<dd><p><em>np.array</em> &#8211; The centers of the grid boxes in the &#8216;x&#8217;
+<dd><p>The centers of the grid boxes in the ‘x’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_min">
 <code class="descname">y_min</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_min" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> &#8211; The lower boundary of the grid range in the &#8216;y&#8217;
+<dd><p>The lower boundary of the grid range in the ‘y’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_max">
 <code class="descname">y_max</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_max" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> &#8211; The upper boundary of the grid range in the &#8216;y&#8217;
+<dd><p>The upper boundary of the grid range in the ‘y’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_incr">
 <code class="descname">y_incr</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_incr" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> &#8211; The size of grid boxes (or spacing between grid
-points) in the &#8216;y&#8217; dimension.</p>
+<dd><p>The size of grid boxes (or spacing between grid
+points) in the ‘y’ dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_centers">
 <code class="descname">y_centers</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_centers" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.array</em> &#8211; The center points of the grid boxes in the &#8216;y&#8217;
+<dd><p>The center points of the grid boxes in the ‘y’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_edges">
 <code class="descname">y_edges</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.y_edges" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.array</em> &#8211; The edges of the grid boxes in the &#8216;y&#8217; dimension.</p>
+<dd><p>The edges of the grid boxes in the ‘y’ dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">y_centers</code></dt>
-<dd><p><em>np.array</em> &#8211; The centers of the grid boxes in the &#8216;y&#8217;
+<dd><p>The centers of the grid boxes in the ‘y’
 dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.lipid_grid">
 <code class="descname">lipid_grid</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.lipid_grid" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.array</em> &#8211; A 2d array of size x_nbins*y_nbins that stores
+<dd><p>A 2d array of size x_nbins*y_nbins that stores
 the index of lipids from the COMFrame that are assigned to each
 grid box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.lipid_grid_z">
 <code class="descname">lipid_grid_z</code><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.lipid_grid_z" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>np.array</em> &#8211; A 2d array of size x_nbins*y_nbins that stores
+<dd><p>A 2d array of size x_nbins*y_nbins that stores
 the z coordinate of the lipids assigned to each grid box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
+<p>Initialize the LipidGrid2d object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>com_frame</strong> (<em>COMFrame</em>) – The instance of COMFrame from which to
+pull the coordinates for lipids to use when building the grid.</li>
+<li><strong>com_frame_indices</strong> (<em>list</em>) – A list COMFrame lipid indices to
+include when building the grid.</li>
+<li><strong>plane</strong> (<em>list</em>) – The indices from the 3d coordinates for the
+coordinates that correspond to the bilayer lateral plane.</li>
+<li><strong>nxbins</strong> (<em>Optional[int]</em>) – The number of bins along the ‘x’
+dimension, i.e. along the dimension corresponding to plane[0].
+Defaults to 50.</li>
+<li><strong>nybins</strong> (<em>Optional[int</em>) – The number of bins along the ‘y’
+dimension, i.e. along the dimension corresponding to
+plane[1]. Defaults to 50.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrid2d.get_index_at">
 <code class="descname">get_index_at</code><span class="sig-paren">(</span><em>ix</em>, <em>iy</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrid2d.get_index_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrid2d.get_index_at" title="Permalink to this definition">¶</a></dt>
@@ -341,8 +493,8 @@ in the lipid_grid.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ix</strong> (<em>int</em>) &#8211; The &#8216;x&#8217; index in the lipid_grid.</li>
-<li><strong>iy ()</strong> &#8211; The &#8216;y&#8217; index in the lipid_grid.</li>
+<li><strong>ix</strong> (<em>int</em>) – The ‘x’ index in the lipid_grid.</li>
+<li><strong>iy ()</strong> – The ‘y’ index in the lipid_grid.</li>
 </ul>
 </td>
 </tr>
@@ -366,8 +518,8 @@ in the lipid_grid.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ix</strong> (<em>int</em>) &#8211; The &#8216;x&#8217; index in the lipid_grid.</li>
-<li><strong>iy ()</strong> &#8211; The &#8216;y&#8217; index in the lipid_grid.</li>
+<li><strong>ix</strong> (<em>int</em>) – The ‘x’ index in the lipid_grid.</li>
+<li><strong>iy ()</strong> – The ‘y’ index in the lipid_grid.</li>
 </ul>
 </td>
 </tr>
@@ -389,7 +541,7 @@ in the lipid_grid.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xyz_name</strong> (<em>str</em>) &#8211; File path and name for the output file.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xyz_name</strong> (<em>str</em>) – File path and name for the output file.</td>
 </tr>
 </tbody>
 </table>
@@ -416,7 +568,7 @@ in the lipid_grid.</p>
 <dl class="class">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrids">
 <em class="property">class </em><code class="descclassname">pybilt.lipid_grid.lipid_grid.</code><code class="descname">LipidGrids</code><span class="sig-paren">(</span><em>com_frame</em>, <em>leaflets</em>, <em>plane</em>, <em>nxbins=50</em>, <em>nybins=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrids.area_per_lipid">
 <code class="descname">area_per_lipid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrids.area_per_lipid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrids.area_per_lipid" title="Permalink to this definition">¶</a></dt>
@@ -429,7 +581,7 @@ in the lipid_grid.</p>
 
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrids.curvature">
-<code class="descname">curvature</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrids.curvature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrids.curvature" title="Permalink to this definition">¶</a></dt>
+<code class="descname">curvature</code><span class="sig-paren">(</span><em>use_gaussian_filter=True</em>, <em>filter_sigma=10.0</em>, <em>filter_mode='nearest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrids.curvature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrids.curvature" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -458,9 +610,58 @@ in the lipid_grid.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pybilt.lipid_grid.lipid_grid.LipidGrids.surface_area">
+<code class="descname">surface_area</code><span class="sig-paren">(</span><em>use_gaussian_filter=True</em>, <em>filter_sigma=10.0</em>, <em>filter_mode='nearest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrids.surface_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrids.surface_area" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrids.thickness_grid">
 <code class="descname">thickness_grid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrids.thickness_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrids.thickness_grid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="pybilt.lipid_grid.lipid_grid.LipidGrids.write_pdb">
+<code class="descname">write_pdb</code><span class="sig-paren">(</span><em>pdb_name</em>, <em>leaflet='both'</em>, <em>z_grid_upper=None</em>, <em>z_grid_lower=None</em>, <em>beta_grid_upper=None</em>, <em>beta_grid_lower=None</em>, <em>use_gaussian_filter=False</em>, <em>filter_sigma=10.0</em>, <em>filter_mode='nearest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#LipidGrids.write_pdb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.LipidGrids.write_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write out the lipid grid as an PDB coordinate file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pdb_name</strong> (<em>str</em>) – File path and name for the output file.</li>
+<li><strong>leaflet</strong> (<em>Optional[str]</em>) – Specify which leaflets to write to the PDB
+file. The options are ‘both’, ‘upper’, or ‘lower’. Defaults to
+‘both’.</li>
+<li><strong>z_grid_upper</strong> (<em>Optional[np.array]</em>) – A 2d grid of values corresponding
+to the elements of the upper leaflet of the lipid grid that are
+to be written as the z-coordinate in the PDB file for upper
+leaflet members. Defaults to None.</li>
+<li><strong>z_grid_lower</strong> (<em>Optional[np.array]</em>) – A 2d grid of values corresponding
+to the elements of the lower leaflet of the lipid grid that are
+to be written as the z-coordinate in the PDB file for lower
+leaflet members. Defaults to None.</li>
+<li><strong>beta_grid_upper</strong> (<em>Optional[np.array]</em>) – A 2d grid of values corresponding
+to the elements of the upper leaflet of the lipid grid that are
+to be written in the Beta column of the PDB file for upper
+leaflet members. Defaults to None.</li>
+<li><strong>beta_grid_lower</strong> (<em>Optional[np.array]</em>) – A 2d grid of values corresponding
+to the elements of the lower leaflet of the lipid grid that are
+to be written in the Beta column of the PDB file for upper
+leaflet members. Defaults to None.</li>
+<li><strong>use_gaussian_filter</strong> (<em>Optional[bool]</em>) – Use SciPy’s Gaussian filter
+to filter the z-coordinates before outputting the PDB file.
+Defaults to False. This option overrides inputs for
+z_grid_upper and z_grid_lower.</li>
+<li><strong>filter_sigma</strong> (<em>Optional[bool]</em>) – Set the sigma value for the Gaussian
+filter. Defaults to 10.0</li>
+<li><strong>filter_mode</strong> (<em>Optional[‘str’]</em>) – Set the mode for Gaussian filter.
+Defaults to ‘nearest’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid.LipidGrids.write_xyz">
@@ -470,24 +671,69 @@ in the lipid_grid.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pybilt.lipid_grid.lipid_grid.range">
-<code class="descclassname">pybilt.lipid_grid.lipid_grid.</code><code class="descname">range</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.range" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pybilt.lipid_grid.lipid_grid.grid_curvature">
+<code class="descclassname">pybilt.lipid_grid.lipid_grid.</code><code class="descname">grid_curvature</code><span class="sig-paren">(</span><em>x_vals</em>, <em>y_vals</em>, <em>zgrid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#grid_curvature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.grid_curvature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Mean and Gaussian curvature across a grid.
+:Parameters: * <strong>x_vals</strong> (<em>np.array</em>) – The bin labels along the x-axis of the gridded data.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>y_vals</strong> (<em>np.arrray</em>) – The bin labels along the y-axis of the gridded data.</li>
+<li><strong>zgrid</strong> (<em>np.array</em>) – The 2d grid of bin values.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>Returns a 2 item tuple with the 2d numpy arrays of the curvatures with</dt>
+<dd>format (mean curvature, Gaussian curvature).</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.lipid_grid.lipid_grid.grid_surface_area">
+<code class="descclassname">pybilt.lipid_grid.lipid_grid.</code><code class="descname">grid_surface_area</code><span class="sig-paren">(</span><em>x_vals</em>, <em>y_vals</em>, <em>zgrid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid.html#grid_surface_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid.grid_surface_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the surface area across a regular 2d grid.
+:Parameters: * <strong>x_vals</strong> (<em>np.array</em>) – The bin labels along the x-axis of the gridded data.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>y_vals</strong> (<em>np.arrray</em>) – The bin labels along the y-axis of the gridded data.</li>
+<li><strong>zgrid</strong> (<em>np.array</em>) – The 2d grid of bin values.</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Returns a the surface area estimate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="pybilt-lipid-grid-lipid-grid-curv-module">
 <h2>pybilt.lipid_grid.lipid_grid_curv module<a class="headerlink" href="#pybilt-lipid-grid-lipid-grid-curv-module" title="Permalink to this headline">¶</a></h2>
-<p>clustering of lipid molecules&#8221; of Koldso H, Shorthouse D, He lie J, Sansom MSP (2014)
+<p>clustering of lipid molecules” of Koldso H, Shorthouse D, He lie J, Sansom MSP (2014)
 Lipid Clustering Correlates with Membrane Curvature as Revealed by Molecular Simulations of
 Complex Lipid Bilayers. PLoS Comput Biol 10(10): e1003911. doi:10.1371/journal.pcbi.1003911
-However, this implementation currently uses the z position (or normal position) of the lipids&#8217; centers of mass, while
-their implementaion uses &#8220;the z coordinate of the interface between the head groups of the
+However, this implementation currently uses the z position (or normal position) of the lipids’ centers of mass, while
+their implementaion uses “the z coordinate of the interface between the head groups of the
 lipids (excluding the current species being calculated and tails in
-that box.&#8221;</p>
+that box.”</p>
 <dl class="class">
 <dt id="pybilt.lipid_grid.lipid_grid_curv.LipidGrid_2d">
 <em class="property">class </em><code class="descclassname">pybilt.lipid_grid.lipid_grid_curv.</code><code class="descname">LipidGrid_2d</code><span class="sig-paren">(</span><em>com_frame</em>, <em>com_frame_indices</em>, <em>plane</em>, <em>nxbins=20</em>, <em>nybins=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_curv.html#LipidGrid_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_curv.LipidGrid_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid_curv.LipidGrid_2d.get_index_at">
 <code class="descname">get_index_at</code><span class="sig-paren">(</span><em>ix</em>, <em>iy</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_curv.html#LipidGrid_2d.get_index_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_curv.LipidGrid_2d.get_index_at" title="Permalink to this definition">¶</a></dt>
@@ -503,7 +749,7 @@ that box.&#8221;</p>
 <dl class="class">
 <dt id="pybilt.lipid_grid.lipid_grid_curv.LipidGrids">
 <em class="property">class </em><code class="descclassname">pybilt.lipid_grid.lipid_grid_curv.</code><code class="descname">LipidGrids</code><span class="sig-paren">(</span><em>com_frame</em>, <em>leaflets</em>, <em>plane</em>, <em>nxbins=3</em>, <em>nybins=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_curv.html#LipidGrids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_curv.LipidGrids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid_curv.LipidGrids.norm_displacement_cross_correlation">
 <code class="descname">norm_displacement_cross_correlation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_curv.html#LipidGrids.norm_displacement_cross_correlation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_curv.LipidGrids.norm_displacement_cross_correlation" title="Permalink to this definition">¶</a></dt>
@@ -522,7 +768,7 @@ However, I have currently left out several bits of the extra functionality, e.g.
 <dl class="class">
 <dt id="pybilt.lipid_grid.lipid_grid_mda.LipidGrid_2d">
 <em class="property">class </em><code class="descclassname">pybilt.lipid_grid.lipid_grid_mda.</code><code class="descname">LipidGrid_2d</code><span class="sig-paren">(</span><em>mda_frame</em>, <em>mda_universe</em>, <em>mda_frame_resids</em>, <em>plane</em>, <em>nxbins=50</em>, <em>nybins=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_mda.html#LipidGrid_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_mda.LipidGrid_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid_mda.LipidGrid_2d.get_index_at">
 <code class="descname">get_index_at</code><span class="sig-paren">(</span><em>ix</em>, <em>iy</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_mda.html#LipidGrid_2d.get_index_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_mda.LipidGrid_2d.get_index_at" title="Permalink to this definition">¶</a></dt>
@@ -543,7 +789,7 @@ However, I have currently left out several bits of the extra functionality, e.g.
 <dl class="class">
 <dt id="pybilt.lipid_grid.lipid_grid_mda.LipidGrids">
 <em class="property">class </em><code class="descclassname">pybilt.lipid_grid.lipid_grid_mda.</code><code class="descname">LipidGrids</code><span class="sig-paren">(</span><em>mda_frame</em>, <em>mda_universe</em>, <em>leaflets</em>, <em>plane</em>, <em>nxbins=50</em>, <em>nybins=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_mda.html#LipidGrids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_mda.LipidGrids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">future.types.newobject.newobject</span></code></p>
 <dl class="method">
 <dt id="pybilt.lipid_grid.lipid_grid_mda.LipidGrids.area_per_lipid">
 <code class="descname">area_per_lipid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/lipid_grid/lipid_grid_mda.html#LipidGrids.area_per_lipid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.lipid_grid.lipid_grid_mda.LipidGrids.area_per_lipid" title="Permalink to this definition">¶</a></dt>
@@ -604,9 +850,7 @@ However, I have currently left out several bits of the extra functionality, e.g.
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -628,7 +872,7 @@ However, I have currently left out several bits of the extra functionality, e.g.
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -646,7 +890,8 @@ However, I have currently left out several bits of the extra functionality, e.g.
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -656,23 +901,17 @@ However, I have currently left out several bits of the extra functionality, e.g.
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>pybilt.plot_generation package &mdash; PyBILT 0.0.1 documentation</title>
+  <title>pybilt.plot_generation package &mdash; PyBILT 0.1.0 documentation</title>
   
 
   
@@ -24,27 +24,18 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PyBILT 0.0.1 documentation" href="index.html"/>
-        <link rel="up" title="pybilt package" href="pybilt.html"/>
-        <link rel="prev" title="pybilt.mda_tools package" href="pybilt.mda_tools.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pybilt.mda_tools package" href="pybilt.mda_tools.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -61,7 +52,7 @@
 
           
             
-            <img src="_static/PyBILT_logo_b.png" class="logo" />
+            <img src="_static/PyBILT_logo_b.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -69,7 +60,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.1.0
               </div>
             
           
@@ -96,15 +87,16 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html"><em>Py</em>thon based lipid <em>BIL</em>ayer molecular simulation analysis <em>T</em>oolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#alt-text"></a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#install">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#quick-overview-of-pybilt">Quick overview of PyBILT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#additional-documentation-tutorials">Additional Documentation/Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#contact">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#contributing">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#license">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#acknowledgments">Acknowledgments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="readme.html#built-with">Built With</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#core-developers">Core Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ba_analyses.html">Analyses available to the BilayerAnalyzer</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pybilt</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pybilt.html">pybilt package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="pybilt.html#subpackages">Subpackages</a><ul class="current">
@@ -133,7 +125,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">PyBILT</a>
@@ -141,9 +133,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -200,24 +193,44 @@
 These functions use matplotlib (<a class="reference external" href="http://matplotlib.org/index.html">http://matplotlib.org/index.html</a>) along with Seaborn (
 <a class="reference external" href="https://stanford.edu/~mwaskom/software/seaborn/index.html">https://stanford.edu/~mwaskom/software/seaborn/index.html</a>).</p>
 <dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.gen_step_vector_ghost_tails">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">gen_step_vector_ghost_tails</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>length=5</em>, <em>periodic_cut=75.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#gen_step_vector_ghost_tails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.gen_step_vector_ghost_tails" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.gen_step_vector_net_ghost_tails">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">gen_step_vector_net_ghost_tails</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>length=6</em>, <em>group_size=2</em>, <em>periodic_cut=75.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#gen_step_vector_net_ghost_tails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.gen_step_vector_net_ghost_tails" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.gen_step_vector_smooth_ghost_tails">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">gen_step_vector_smooth_ghost_tails</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>length=9</em>, <em>window=3</em>, <em>periodic_cut=75.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#gen_step_vector_smooth_ghost_tails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.gen_step_vector_smooth_ghost_tails" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.gen_step_vector_smooth_ghost_tails_forwards">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">gen_step_vector_smooth_ghost_tails_forwards</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>length_back=9</em>, <em>length_forward=9</em>, <em>window=3</em>, <em>periodic_cut=75.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#gen_step_vector_smooth_ghost_tails_forwards"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.gen_step_vector_smooth_ghost_tails_forwards" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="pybilt.plot_generation.plot_generation_functions.plot">
-<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>dat_list</em>, <em>yerr_list=None</em>, <em>name_list=None</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>marker=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>dat_list</em>, <em>yerr_list=None</em>, <em>name_list=None</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>xlabel=None</em>, <em>ylabel=None</em>, <em>marker=None</em>, <em>linestyle=None</em>, <em>xticks=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic plotting function for (multiple) xy datasets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dat_list</strong> (<em>list or list like</em>) &#8211; List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), ... ]</li>
-<li><strong>yerr_list</strong> (<em>list or list like</em>) &#8211; List of the yerr vectors. e.g. [y_0_err, y_1_err, ... ]</li>
-<li><strong>name_list</strong> (<em>list or list like, Optional</em>) &#8211; List of string legend names to assign the curves being plotted.</li>
-<li><strong>filename</strong> (<em>str, Optional</em>) &#8211; The string containing the path and filename for the exported plot file.</li>
-<li><strong>save</strong> (<em>bool, Optional</em>) &#8211; Set whether to save the generated plot to disc with filename. Default: True</li>
-<li><strong>show</strong> (<em>bool, Optional</em>) &#8211; Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+<li><strong>dat_list</strong> (<em>list or list like</em>) – List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), … ]</li>
+<li><strong>yerr_list</strong> (<em>list or list like</em>) – List of the yerr vectors. e.g. [y_0_err, y_1_err, … ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) – List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) – The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) – Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) – Set whether to show the generated plot in an interactive window (i.e. plt.show()).
 Default: False</li>
-<li><strong>xlabel</strong> (<em>str, Optional</em>) &#8211; Specify a x-axis label.</li>
-<li><strong>ylabel</strong> (<em>str, Optional</em>) &#8211; Specify a y-axis label</li>
-<li><strong>marker</strong> (<em>str, Optional</em>) &#8211; Specify a matplotlib marker type for data points.</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) – Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) – Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) – Specify a matplotlib marker type for data points.</li>
 </ul>
 </td>
 </tr>
@@ -265,45 +278,45 @@ Takes outputs from:</p>
 <dt id="pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number">
 <code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_dc_cluster_dat_number</code><span class="sig-paren">(</span><em>clust_dat_list</em>, <em>name_list=None</em>, <em>filename='clust_number.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>save=True</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_dc_cluster_dat_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_number" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a plot of the average number of clusters (vs. time)
-This function generates a plot of the average number of clusters vs. time for data output with key &#8216;nclusters&#8217;</p>
+This function generates a plot of the average number of clusters vs. time for data output with key ‘nclusters’</p>
 <blockquote>
-<div>from the &#8216;dc_cluster&#8217; analysis in the BilayerAnalyzer, which corresponds to the</div></blockquote>
+<div>from the ‘dc_cluster’ analysis in the BilayerAnalyzer, which corresponds to the</div></blockquote>
 <p>bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.
-:Parameters: * <strong>clust_dat_list</strong> (<em>list</em>) &#8211; This is a list of all data to plot and should be a list of tuples/lists where</p>
+:Parameters: * <strong>clust_dat_list</strong> (<em>list</em>) – This is a list of all data to plot and should be a list of tuples/lists where</p>
 <blockquote>
 <div><blockquote>
 <div>each element tuple has the data arrays for each time series curve to include in the plot: e.g.
 [ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]</div></blockquote>
 <ul>
-<li><p class="first"><strong>name_list</strong> (<em>list, optional</em>) &#8211; This is a list of string names to assign each curve included in the plot. It
+<li><p class="first"><strong>name_list</strong> (<em>list, optional</em>) – This is a list of string names to assign each curve included in the plot. It
 should have len(name_list) == len(clust_dat_list) = True.</p>
 <blockquote>
 <div><p>Default: None</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>filename</strong> (<em>str, optional</em>) &#8211; This a string containing the filename for the output plot if save is set to True.
-Default: &#8216;clust_number.pdf&#8217;</p>
+<li><p class="first"><strong>filename</strong> (<em>str, optional</em>) – This a string containing the filename for the output plot if save is set to True.
+Default: ‘clust_number.pdf’</p>
 </li>
-<li><p class="first"><strong>time_in</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units of values in the input arrays. Acceptible values
-are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond.</p>
+<li><p class="first"><strong>time_in</strong> (<em>str, optional</em>) – This is a string specifying the time units of values in the input arrays. Acceptible values
+are ‘ps’ for picosecond and ‘ns’ nanosecond.</p>
 <blockquote>
-<div><p>Default: &#8216;ps&#8217;</p>
+<div><p>Default: ‘ps’</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>time_out</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units to use in the output plot. Acceptible values
-are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond. If this is different than the value for time_in then the time
+<li><p class="first"><strong>time_out</strong> (<em>str, optional</em>) – This is a string specifying the time units to use in the output plot. Acceptible values
+are ‘ps’ for picosecond and ‘ns’ nanosecond. If this is different than the value for time_in then the time
 values will be scaled accordingly.</p>
 <blockquote>
-<div><p>Default: &#8216;ns&#8217;</p>
+<div><p>Default: ‘ns’</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>save</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not to save the generated plot to disc.
+<li><p class="first"><strong>save</strong> (<em>bool, optional</em>) – This is boolean switch to set whether or not to save the generated plot to disc.
 plt.savefig is called.</p>
 <blockquote>
 <div><p>Default: True</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>show</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not the generated plot is displayed in interactive
+<li><p class="first"><strong>show</strong> (<em>bool, optional</em>) – This is boolean switch to set whether or not the generated plot is displayed in interactive
 mode using plt.show.</p>
 <blockquote>
 <div><p>Default: False</p>
@@ -327,44 +340,44 @@ using output data from:</p>
 <dt id="pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size">
 <code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_dc_cluster_dat_size</code><span class="sig-paren">(</span><em>clust_dat_list</em>, <em>name_list=None</em>, <em>filename='clust_number.pdf'</em>, <em>time_in='ps'</em>, <em>time_out='ns'</em>, <em>save=True</em>, <em>show=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_dc_cluster_dat_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_dc_cluster_dat_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a plot of the average cluster size (vs. time)
-This function generates a plot of the average cluster size vs. time for data output with key &#8216;avg_size&#8217; from the
-&#8216;dc_cluster&#8217; analysis in the BilayerAnalyzer, which corresponds to the
+This function generates a plot of the average cluster size vs. time for data output with key ‘avg_size’ from the
+‘dc_cluster’ analysis in the BilayerAnalyzer, which corresponds to the
 bilayer_analyzer.analysis_protocols.DCClusterProtocol analysis protocol class.
-:Parameters: * <strong>clust_dat_list</strong> (<em>list</em>) &#8211; This is a list of all data to plot and should be a list of tuples/lists where</p>
+:Parameters: * <strong>clust_dat_list</strong> (<em>list</em>) – This is a list of all data to plot and should be a list of tuples/lists where</p>
 <blockquote>
 <div><blockquote>
 <div>each element tuple has the data arrays for each time series curve to include in the plot: e.g.
 [ (times_1, means_1, stds_1), (times_2, means_2, stds_2) ]</div></blockquote>
 <ul>
-<li><p class="first"><strong>name_list</strong> (<em>list, optional</em>) &#8211; This is a list of string names to assign each curve included in the plot. It
+<li><p class="first"><strong>name_list</strong> (<em>list, optional</em>) – This is a list of string names to assign each curve included in the plot. It
 should have len(name_list) == len(clust_dat_list) = True.</p>
 <blockquote>
 <div><p>Default: None</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>filename</strong> (<em>str, optional</em>) &#8211; This a string containing the filename for the output plot if save is set to True.
-Default: &#8216;clust_number.pdf&#8217;</p>
+<li><p class="first"><strong>filename</strong> (<em>str, optional</em>) – This a string containing the filename for the output plot if save is set to True.
+Default: ‘clust_number.pdf’</p>
 </li>
-<li><p class="first"><strong>time_in</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units of values in the input arrays. Acceptible values
-are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond.</p>
+<li><p class="first"><strong>time_in</strong> (<em>str, optional</em>) – This is a string specifying the time units of values in the input arrays. Acceptible values
+are ‘ps’ for picosecond and ‘ns’ nanosecond.</p>
 <blockquote>
-<div><p>Default: &#8216;ps&#8217;</p>
+<div><p>Default: ‘ps’</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>time_out</strong> (<em>str, optional</em>) &#8211; This is a string specifying the time units to use in the output plot. Acceptible values
-are &#8216;ps&#8217; for picosecond and &#8216;ns&#8217; nanosecond. If this is different than the value for time_in then the time
+<li><p class="first"><strong>time_out</strong> (<em>str, optional</em>) – This is a string specifying the time units to use in the output plot. Acceptible values
+are ‘ps’ for picosecond and ‘ns’ nanosecond. If this is different than the value for time_in then the time
 values will be scaled accordingly.</p>
 <blockquote>
-<div><p>Default: &#8216;ns&#8217;</p>
+<div><p>Default: ‘ns’</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>save</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not to save the generated plot to disc.
+<li><p class="first"><strong>save</strong> (<em>bool, optional</em>) – This is boolean switch to set whether or not to save the generated plot to disc.
 plt.savefig is called.</p>
 <blockquote>
 <div><p>Default: True</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>show</strong> (<em>bool, optional</em>) &#8211; This is boolean switch to set whether or not the generated plot is displayed in interactive
+<li><p class="first"><strong>show</strong> (<em>bool, optional</em>) – This is boolean switch to set whether or not the generated plot is displayed in interactive
 mode using plt.show.</p>
 <blockquote>
 <div><p>Default: False</p>
@@ -404,11 +417,11 @@ in the mda_density_profile module.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dp_out_list</strong> (<em>list of tuples</em>) &#8211; A list of the tuple outputs of the profile calculation functions</li>
-<li><strong>save</strong> (<em>bool, optional</em>) &#8211; Default is True. Saves the plot output as an image file if True.</li>
-<li><strong>filename</strong> (<em>str, optional</em>) &#8211; The name out the image file that will be created if save=True.</li>
-<li><strong>show</strong> (<em>bool, optional</em>) &#8211; Default is False. Display the plot (plt.show) if True.</li>
-<li><strong>label_list (list of str</strong> &#8211; None, optional): Default is None. Allows a list of strings used to
+<li><strong>dp_out_list</strong> (<em>list of tuples</em>) – A list of the tuple outputs of the profile calculation functions</li>
+<li><strong>save</strong> (<em>bool, optional</em>) – Default is True. Saves the plot output as an image file if True.</li>
+<li><strong>filename</strong> (<em>str, optional</em>) – The name out the image file that will be created if save=True.</li>
+<li><strong>show</strong> (<em>bool, optional</em>) – Default is False. Display the plot (plt.show) if True.</li>
+<li><strong>label_list (list of str</strong> – None, optional): Default is None. Allows a list of strings used to
 label the plot lines.</li>
 </ul>
 </td>
@@ -421,6 +434,32 @@ label the plot lines.</li>
 <dt id="pybilt.plot_generation.plot_generation_functions.plot_displacement_lipid_type_cross_correlation">
 <code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_displacement_lipid_type_cross_correlation</code><span class="sig-paren">(</span><em>analyzer_data</em>, <em>filename='normal_displacement_lipid_type_cross_correlation.pdf'</em>, <em>show=False</em>, <em>save=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_displacement_lipid_type_cross_correlation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_displacement_lipid_type_cross_correlation" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_ebar_hists">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_ebar_hists</code><span class="sig-paren">(</span><em>center_count_err</em>, <em>name_list=None</em>, <em>filename='ebar_hist.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>xlabel=None</em>, <em>ylabel='Counts'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_ebar_hists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_ebar_hists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic plotting function for (multiple) xy datasets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dat_list</strong> (<em>list or list like</em>) – List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), … ]</li>
+<li><strong>yerr_list</strong> (<em>list or list like</em>) – List of the yerr vectors. e.g. [y_0_err, y_1_err, … ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) – List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) – The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) – Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) – Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+Default: False</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) – Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) – Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) – Specify a matplotlib marker type for data points.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pybilt.plot_generation.plot_generation_functions.plot_grid_as_scatter">
@@ -454,8 +493,118 @@ MemSys.CalcMSD_parallel</div></blockquote>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_spark">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_spark</code><span class="sig-paren">(</span><em>xdat</em>, <em>ydat</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>color='#47d147'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_spark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_spark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic plotting function for (multiple) xy datasets.
+Based on matplotlib spark_line function defined here:
+<a class="reference external" href="https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/">https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/</a>
+:Parameters: * <strong>dat_list</strong> (<em>list or list like</em>) – List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), … ]</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>yerr_list</strong> (<em>list or list like</em>) – List of the yerr vectors. e.g. [y_0_err, y_1_err, … ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) – List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) – The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) – Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) – Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+Default: False</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) – Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) – Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) – Specify a matplotlib marker type for data points.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_spark_error">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_spark_error</code><span class="sig-paren">(</span><em>xdat</em>, <em>ydat</em>, <em>error</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>color='#47d147'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_spark_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_spark_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic plotting function for (multiple) xy datasets.
+Based on matplotlib spark_line function defined here:
+<a class="reference external" href="https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/">https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/</a>
+:Parameters: * <strong>dat_list</strong> (<em>list or list like</em>) – List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), … ]</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>yerr_list</strong> (<em>list or list like</em>) – List of the yerr vectors. e.g. [y_0_err, y_1_err, … ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) – List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) – The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) – Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) – Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+Default: False</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) – Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) – Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) – Specify a matplotlib marker type for data points.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_spark_error_marker">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_spark_error_marker</code><span class="sig-paren">(</span><em>xdat</em>, <em>ydat</em>, <em>error</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>color='#47d147'</em>, <em>marker='s'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_spark_error_marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_spark_error_marker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic plotting function for (multiple) xy datasets.
+Based on matplotlib spark_line function defined here:
+<a class="reference external" href="https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/">https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/</a>
+:Parameters: * <strong>dat_list</strong> (<em>list or list like</em>) – List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), … ]</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>yerr_list</strong> (<em>list or list like</em>) – List of the yerr vectors. e.g. [y_0_err, y_1_err, … ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) – List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) – The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) – Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) – Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+Default: False</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) – Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) – Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) – Specify a matplotlib marker type for data points.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_spark_marker">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_spark_marker</code><span class="sig-paren">(</span><em>xdat</em>, <em>ydat</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>color='#47d147'</em>, <em>marker='s'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_spark_marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_spark_marker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic plotting function for (multiple) xy datasets.
+Based on matplotlib spark_line function defined here:
+<a class="reference external" href="https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/">https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/</a>
+:Parameters: * <strong>dat_list</strong> (<em>list or list like</em>) – List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), … ]</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>yerr_list</strong> (<em>list or list like</em>) – List of the yerr vectors. e.g. [y_0_err, y_1_err, … ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) – List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) – The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) – Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) – Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+Default: False</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) – Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) – Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) – Specify a matplotlib marker type for data points.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_spark_multi">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_spark_multi</code><span class="sig-paren">(</span><em>xdats</em>, <em>ydats</em>, <em>filename='plot.eps'</em>, <em>save=True</em>, <em>show=False</em>, <em>colors=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_spark_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_spark_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic plotting function for (multiple) xy datasets.
+Based on matplotlib spark_line function defined here:
+<a class="reference external" href="https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/">https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/</a>
+:Parameters: * <strong>dat_list</strong> (<em>list or list like</em>) – List of tuples of data vectors in the format [(x_0, y_0), (x_1. y_1), … ]</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>yerr_list</strong> (<em>list or list like</em>) – List of the yerr vectors. e.g. [y_0_err, y_1_err, … ]</li>
+<li><strong>name_list</strong> (<em>list or list like, Optional</em>) – List of string legend names to assign the curves being plotted.</li>
+<li><strong>filename</strong> (<em>str, Optional</em>) – The string containing the path and filename for the exported plot file.</li>
+<li><strong>save</strong> (<em>bool, Optional</em>) – Set whether to save the generated plot to disc with filename. Default: True</li>
+<li><strong>show</strong> (<em>bool, Optional</em>) – Set whether to show the generated plot in an interactive window (i.e. plt.show()).
+Default: False</li>
+<li><strong>xlabel</strong> (<em>str, Optional</em>) – Specify a x-axis label.</li>
+<li><strong>ylabel</strong> (<em>str, Optional</em>) – Specify a y-axis label</li>
+<li><strong>marker</strong> (<em>str, Optional</em>) – Specify a matplotlib marker type for data points.</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
 <dt id="pybilt.plot_generation.plot_generation_functions.plot_step_vectors">
-<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_step_vectors</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>filename='step_vectors.pdf'</em>, <em>save=True</em>, <em>show=False</em>, <em>scaled=False</em>, <em>wrapped=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_step_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_step_vectors" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_step_vectors</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>filename='step_vectors.pdf'</em>, <em>save=True</em>, <em>show=False</em>, <em>scaled=False</em>, <em>wrapped=False</em>, <em>ghost_tails=None</em>, <em>ghost_tail_alpha=0.5</em>, <em>ghost_tail_arrow=False</em>, <em>ylim=None</em>, <em>xlim=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_step_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_step_vectors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a single plot with the lipid displacement vectors (or step vectors)
 Takes a single frame of the output from:</p>
 <blockquote>
@@ -480,8 +629,16 @@ generated using:</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="pybilt.plot_generation.plot_generation_functions.range">
-<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">range</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.range" title="Permalink to this definition">¶</a></dt>
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_step_vectors_stroboscopic">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_step_vectors_stroboscopic</code><span class="sig-paren">(</span><em>vectors_resnames</em>, <em>index=0</em>, <em>filename='step_vectors_stroboscopic.pdf'</em>, <em>save=True</em>, <em>show=False</em>, <em>scaled=False</em>, <em>wrapped=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_step_vectors_stroboscopic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_step_vectors_stroboscopic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a stroboscopic trajectory plot with the displacement vectors
+(or step vectors) of a single lipid.
+Takes the output from the ‘disp_vec’ analysis of the bilayer_analyzer:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pybilt.plot_generation.plot_generation_functions.plot_xygrid_as_imshow">
+<code class="descclassname">pybilt.plot_generation.plot_generation_functions.</code><code class="descname">plot_xygrid_as_imshow</code><span class="sig-paren">(</span><em>x_centers</em>, <em>y_centers</em>, <em>grid</em>, <em>filename='grid.pdf'</em>, <em>save=True</em>, <em>show=False</em>, <em>colorbar=False</em>, <em>colorbarlabel=None</em>, <em>cmap=None</em>, <em>vmin=None</em>, <em>vmax=None</em>, <em>interpolation='none'</em>, <em>xlabel=None</em>, <em>ylabel=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybilt/plot_generation/plot_generation_functions.html#plot_xygrid_as_imshow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybilt.plot_generation.plot_generation_functions.plot_xygrid_as_imshow" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -492,9 +649,7 @@ generated using:</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -514,7 +669,7 @@ generated using:</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -532,7 +687,8 @@ generated using:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.0.1',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -542,23 +698,17 @@ generated using:</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
