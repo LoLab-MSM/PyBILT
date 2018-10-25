@@ -429,7 +429,7 @@ def block_avg_hist(nparray_1d, block_size, in_range='auto', scale=False, *args, 
     if in_range == 'auto':
         in_range = [min(nparray_1d), max(nparray_1d)]
     # Number of blocks of block_size
-    nblocks = len(nparray_1d)/block_size
+    nblocks = int(len(nparray_1d)/block_size)
     # print(nblocks)
     # Trim the array to just the points to use with the blocking
     array_trim = nparray_1d[:block_size*nblocks]
