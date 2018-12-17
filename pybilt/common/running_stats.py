@@ -349,7 +349,7 @@ class BlockAverager(object):
                     n_block += 1
             return n_block
 
-def binned_average(data, positions, n_bins=25, position_range=None):
+def binned_average(data, positions, n_bins=25, position_range=None, min_count=0):
     """Compute averages over a quantized range of histogram like bins.
 
     Args:
