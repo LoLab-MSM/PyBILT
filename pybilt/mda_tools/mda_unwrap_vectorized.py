@@ -28,58 +28,65 @@ def wrap_coordinates(abc, coord, refcoord):
     #compute the difference in the z coordinate
     dzs = coord[:,2] - refcoord[:,2]
     #compute the required shift
-    i = 0
-    for dz in dzs:
-        shift = 0
-        if    dz > Ch:
-            shift-=1
-            while (dz+shift*C)>Ch:
-                shift-=1
-        elif dz < -Ch:
-            shift+=1
-            while (dz+shift*C)<-Ch:
-                shift+=1
-        sCs[i]=shift
-        i+=1
+
+    #greater than
+    sCs = np.zeros(natoms)
+    dzsgtf = dzs > Ch
+    dzsgt = dzsgtf.copy()
+    while dzsgt.any():
+        sCs[dzsgt] -= 1.0
+        dz = dzs+sCs*C
+        dzsgt = dz > Ch
+    #less than
+    dzsltf = dzs < -Ch
+    dzslt = dzsltf.copy()
+    while dzslt.any():
+        sCs[dzslt] += 1.0
+        dz = dzs+sCs*C
+        dzslt = dz < -Ch
 
     #apply shift
     wrapcoord[:,2] += (sCs*C)
     #compute the difference in the y coordinate
     dys = coord[:,1] - refcoord[:,1]
     #compute the required shift
-    i = 0
-    for dy in dys:
-        shift = 0
-        if    dy > Bh:
-            shift-=1
-            while (dy+shift*B)>Bh:
-                shift-=1
-        elif dy < -Bh:
-            shift+=1
-            while (dy+shift*B)<-Bh:
-                shift+=1
-        sBs[i]=shift
-        i+=1
-    # print(len(sBs[sBs > 0.0]))
-    # print(len(sBs[sBs < 0.0]))
+
+    #greater than
+    dysgtf = dys > Bh
+    dysgt = dysgtf.copy()
+    while dysgt.any():
+        sBs[dysgt] -= 1.0
+        dy = dys+sBs*B
+        dysgt = dy > Bh
+    #less than
+    dysltf = dys < -Bh
+    dyslt = dysltf.copy()
+    while dyslt.any():
+        sBs[dyslt] += 1.0
+        dy = dys+sBs*B
+        dyslt = dy < -Bh
+
     #apply shift
     wrapcoord[:,1] += (sBs*B)
     #compute the difference in the x coordinate
     dxs = coord[:,0] - refcoord[:,0]
     #compute the required shift
-    i = 0
-    for dx in dxs:
-        shift = 0
-        if    dx > Ah:
-            shift-=1
-            while (dx+shift*A)>Ah:
-                shift-=1
-        elif dx < -Ah:
-            shift+=1
-            while (dx+shift*A)<-Ah:
-                shift+=1
-        sAs[i]=shift
-        i+=1
+
+    #greater than
+    # sAsb = np.zeros(natoms)
+    dxsgtf = dxs > Ah
+    dxsgt = dxsgtf.copy()
+    while dxsgt.any():
+        sAs[dxsgt] -= 1.0
+        dx = dxs+sAs*A
+        dxsgt = dx > Ah
+    #less than
+    dxsltf = dxs < -Ah
+    dxslt = dxsltf.copy()
+    while dxslt.any():
+        sAs[dxslt] += 1.0
+        dx = dxs+sAs*A
+        dxslt = dx < -Ah
     print(len(sAs[sAs > 0.0]))
     print(len(sAs[sAs < 0.0]))
     #apply shift
