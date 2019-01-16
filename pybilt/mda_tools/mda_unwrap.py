@@ -80,8 +80,6 @@ def wrap_coordinates(abc, coord, refcoord):
                 shift+=1
         sAs[i]=shift
         i+=1
-    print(len(sAs[sAs > 0.0]))
-    print(len(sAs[sAs < 0.0]))
     #apply shift
     wrapcoord[:,0] += (sAs*A)
     return wrapcoord

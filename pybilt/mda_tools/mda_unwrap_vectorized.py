@@ -87,8 +87,7 @@ def wrap_coordinates(abc, coord, refcoord):
         sAs[dxslt] += 1.0
         dx = dxs+sAs*A
         dxslt = dx < -Ah
-    print(len(sAs[sAs > 0.0]))
-    print(len(sAs[sAs < 0.0]))
+
     #apply shift
     wrapcoord[:,0] += (sAs*A)
     return wrapcoord
