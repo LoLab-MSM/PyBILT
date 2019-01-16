@@ -40,8 +40,9 @@ from pybilt.common.running_stats import RunningStats
 from . import mda_data as md
 import MDAnalysis as mda
 # import the coordinate wrapping function--for unwrapping
-from pybilt.mda_tools.mda_unwrap import wrap_coordinates, \
+from pybilt.mda_tools.mda_unwrap_vectorized import wrap_coordinates, \
     wrap_coordinates_parallel
+
 
 default_analysis_commands = ['msd msd_1']
 
@@ -287,7 +288,7 @@ class BilayerAnalyzer(object):
         # Patch for python 2/3 compatibility -- python 2 uses next while
         # python 3 uses __next__
         self.next = self.__next__
-        
+
         #adjustable settings -- used internally in analysis loops and
         #   are passed to the individual analyses.
         self.settings = dict()
