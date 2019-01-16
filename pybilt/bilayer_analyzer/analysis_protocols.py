@@ -4688,7 +4688,7 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
         self._costheta = []
         self._distances = []
         self.analysis_output = []
-        self._first_frame = True
+        self._first_comp = True
         #self._running = RunningStats()
         self.last_com_frame = None
         self.last_frame = 0
@@ -5057,3 +5057,315 @@ command_protocols['spatial_velocity_corr'] = SpatialVelocityCorrelationFunctionP
 #
 #
 # command_protocols['disp_vec'] = DispVecProtocol
+
+# define a new analysis
+valid_analysis.append('msd_dist')
+analysis_obj_name_dict['msd_dist'] = 'com_frame'
+
+class MSDDistProtocol(AnalysisProtocol):
+    """Compute the MSD over a set time interval as function of nearest distance.
+
+    This protocol is identified by the analysis key: 'disp_vec'
+
+    Args:
+        args (list): list of string keys and arguments
+
+    Settings (parsed from args to settings dict):
+        leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer
+            leaflet to include in the estimate. Default: 'both'
+        resname (str): Specify the resname of the lipid type to include in
+            this analysis. Default: 'all', includes all lipid types.
+        wrapped (bool): Specify whether to use the wrapped ('True') or
+            un-wrapped ('False') coordintes for the base of the vectors.
+            Default: False
+        interval (int): Sets the frame interval over which to compute the
+                displacement vectors.
+        resname_1 (str): Specify the resname of the reference lipid type to
+            include in this analysis. Special names are 'first' and 'all',
+            which use the first and all lipid types respectively. Default:
+            'first', the first lipid in the list pulled from the com_frame
+            representation.
+        resname_2 (str): Specify the resname of the target lipid type to
+            include in this analysis. Special names are 'first' and 'all',
+            which use the first and all lipid types respectively. Default:
+            'first', the first lipid in the list pulled from the com_frame
+            representation.
+        n_bins (int): Specifies the number of bins to use when estimating
+            the RDF. Default: 25
+        range_inner (float): Specify the inner distance cutoff for the RDF.
+            Default: 0.0
+        range_outer (float): Specify the outer distance cutoff for the RDF.
+            Default: 25.0
+
+    Note:
+        The anlysis is centered on lipids of the type specified by the
+        ```resname_1```. The real frame ```interval``` setting needs to be a multiple of the
+        frame looping interval set within the BilayerAnalyzer instance
+        (i.e., analyzer.frame_range[2]) for this analysis to work properly.
+
+    References:
+        None
+    """
+
+    _short_description = "Mean squared displacement as a function of distance."
+    # self._return_length = 4
+    analysis_key = 'msd_dist'
+    _related = list(['disp_vec', 'msd'])
+
+    def __init__(self, args):
+        """Initialize an instance of DispVecProtocol."""
+        # required
+        self.analysis_id = 'none'
+
+        #default settings
+        self.settings = dict()
+        self.settings['leaflet'] = 'both'
+        self.settings['interval'] = 5
+        self.settings['resname_1'] = 'first'
+        self.settings['resname_2'] = 'first'
+        self.settings['n_bins'] = 25
+        self.settings['range_inner'] = 0.0
+        self.settings['range_outer'] = 25.0
+        self.settings['dist_avg'] = False
+        self._valid_settings = list(self.settings.keys())
+        #self.leaflet = 'both'
+        #self.group = 'all'
+        #self.wrapped = False
+        #self.interval = 10
+        # parse input arguments
+        self._parse_args(args)
+
+        # default function settings
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        # storage for output
+        self._r1_indices = list()
+        self._r2_indices =list()
+        self._ocd_prev = None
+        # storage for output
+        self._sds = []
+        self._distances = []
+        self.analysis_output = []
+        self._first_comp = True
+        #self._running = RunningStats()
+        self.last_com_frame = None
+        self.last_frame = 0
+        self._processed_output = None
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+
+        for arg_key in arg_dict.keys():
+            arg_arg = arg_dict[arg_key]
+            if arg_key in self._valid_settings:
+                if arg_key == 'interval':
+                    arg_dict[arg_key] = int(arg_arg)
+                if arg_key == 'n_bins':
+                    arg_dict[arg_key] = int(arg_arg)
+                if arg_key == 'range_inner':
+                    arg_dict[arg_key] = float(arg_arg)
+                if arg_key == 'range_outer':
+                    arg_dict[arg_key] = float(arg_arg)
+                if arg_key == 'dist_avg':
+                    arg_arg = arg_arg in ['True', 'true']
+                    arg_dict[arg_key] = arg_arg
+
+            elif arg_key == 'analysis_id':
+                pass
+            else:
+                warnings.warn(
+                    "ignoring invalid argument key " + arg_key + " for analysis" + self.analysis_id)
+        return arg_dict
+
+
+    def reset(self):
+        # storage for output
+        self._sds = []
+        self._distances = []
+        self._r1_indices = list()
+        self._r2_indices =list()
+        self._ocd_prev = None
+        self.analysis_output = []
+        self._first_comp = True
+        # self._running = RunningStats()
+        self.last_com_frame = None
+        self.last_frame = 0
+        self._processed_output = None
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        do_leaflet = []
+        if self.settings['leaflet'] == 'both':
+            do_leaflet = ['upper', 'lower']
+        else:
+            do_leaflet = [self.settings['leaflet']]
+        if self._first_comp:
+            self.last_com_frame = ba_reps['com_frame']
+            self._first_comp = False
+            self.last_frame = ba_settings['frame_range'][0]
+            # build group/resname/lipid type list
+            lipid_types = []
+            nlipids = 0
+            for leaflet_name in do_leaflet:
+                leaflet = ba_reps['leaflets'][leaflet_name]
+                groups = leaflet.get_group_names()
+                nlipids += len(leaflet.get_member_indices())
+                for group in groups:
+                    if group not in lipid_types:
+                        lipid_types.append(group)
+            if self.settings['resname_1'] == 'first':
+                self.settings['resname_1'] =  lipid_types[0]
+            if self.settings['resname_2'] == 'first':
+                self.settings['resname_2'] = lipid_types[0]
+            indices = []
+            r2_indices = []
+            if self.settings['leaflet'] == "both":
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(self.settings['resname_1'])
+                    r2_indices += curr_leaf.get_group_indices(self.settings['resname_2'])
+            elif self.settings['leaflet'] == "upper":
+                curr_leaf = ba_reps['leaflets']['upper']
+                indices = curr_leaf.get_group_indices(self.settings['resname_1'])
+                r2_indices = curr_leaf.get_group_indices(self.settings['resname_2'])
+
+            elif self.settings['leaflet'] == "lower":
+                curr_leaf = ba_reps['leaflets']['lower']
+                indices = curr_leaf.get_group_indices(self.settings['resname_1'])
+                r2_indices = curr_leaf.get_group_indices(self.settings['resname_2'])
+            else:
+                # unknown option--use default "both"
+                warnings.warn(
+                    "bad setting for \'leaflet\' in " + self.analysis_id + ". Using default \'both\'")
+                self.settings['leaflet'] = 'both'
+                for leaflets in ba_reps['leaflets']:
+                    curr_leaf = ba_reps['leaflets'][leaflets]
+                    indices += curr_leaf.get_group_indices(self.settings['resname_1'])
+                    r2_indices = curr_leaf.get_group_indices(self.settings['resname_2'])
+            self._r1_indices = indices
+            self._r2_indices = r2_indices
+            self._ocd_prev = self._ordered_com_dists(ba_reps['com_frame'], indices,
+                                          r2_indices, ba_settings['lateral'])
+            return
+        current_frame = ba_reps['current_mda_frame'].frame
+        #print(self.settings['leaflet'])
+        #print(self.settings['scale'])
+        interval = (current_frame) - (self.last_frame)
+        #print (interval, " ", self.settings['interval'])
+        if interval == self.settings['interval']:
+            indices = self._r1_indices
+            r2_indices = self._r2_indices
+
+            n_com = len(indices)
+
+            # get the current frame
+            curr_frame = ba_reps['com_frame']
+            prev_frame = self.last_com_frame
+
+            # vec_ends = []
+
+            for i in indices:
+                com_i = curr_frame.lipidcom[i].com_unwrap[
+                    ba_settings['lateral']]
+                com_j = prev_frame.lipidcom[i].com_unwrap[
+                    ba_settings['lateral']]
+                disp = com_i - com_j
+                sd = np.dot(disp, disp)
+                self._sds.append(sd)
+            ocd_prev = self._ocd_prev
+            ocd_curr = self._ordered_com_dists(ba_reps['com_frame'], indices,
+                                          r2_indices, ba_settings['lateral'])
+            for key in ocd_prev.keys():
+                dist = ocd_prev[key][0][1]
+                if self.settings['resname_1'] == self.settings['resname_2']:
+                    dist = ocd_prev[key][1][1]
+                if self.settings['dist_avg']:
+                    dist_curr = ocd_curr[key][0][1]
+                    if self.settings['resname_1'] == self.settings['resname_2']:
+                        dist_curr = ocd_curr[key][1][1]
+                    # print(dist,dist_curr)
+                    dist += dist_curr
+                    dist /= 2.0
+                self._distances.append(dist)
+
+            # self.analysis_output.append([vec_ends, resnames])
+            self.last_com_frame = ba_reps['com_frame']
+            self.last_frame = current_frame
+            self._ocd_prev = ocd_curr
+            return
+        return
+
+    def _process_output(self):
+        if self._processed_output is None:
+            sds = np.array(self._sds)
+            positions = np.array(self._distances)
+            print(sds)
+            print(positions)
+            pos_range = [self.settings['range_inner'], self.settings['range_outer']]
+            self._processed_output = binned_average(sds, positions,
+                                                    n_bins=self.settings['n_bins'],
+                                                    position_range=pos_range, min_count=0)
+        return
+
+    def get_data(self):
+        """Returns the analysis_output of this protocol. """
+        self._process_output()
+        return self._processed_output
+
+
+    @staticmethod
+    def _ordered_com_dists(com_frame, r1_indices, r2_indices, plane):
+        # get the x and y indices
+        ix = plane[0]
+        iy = plane[1]
+        iz = [i for i in [0, 1, 2] if i not in plane][0]
+        # get the box dimemsions
+        box = com_frame.box[plane]
+        boxx = box[ix]
+        boxy = box[iy]
+        l_box = np.array([boxx, boxy])
+        n_ind = len(r1_indices)
+        # initialize knn dict
+        knn = {key: [] for key in r1_indices}
+        nn_k = 24
+        for i in range(len(r1_indices)):
+            i_i = r1_indices[i]
+            pos_a = com_frame.lipidcom[i_i].com[[ix, iy]]
+            for j in range(len(r2_indices)):
+                j_j = r2_indices[j]
+                pos_b = com_frame.lipidcom[j_j].com[[ix, iy]]
+                dist = distance_euclidean_pbc(pos_a, pos_b, l_box,
+                                              center='box_half')
+
+                #ltype = ba_reps['com_frame'].lipidcom[j].type
+                #print "ltype: ",ltype," dist ",dist
+                knn[i_i].append([j_j, dist])
+                #knn[j_j].append([i_i, dist])
+        for key in knn.keys():
+            neighbors = knn[key]
+            neighbors.sort(key=lambda x: x[1])
+            #nn_neighbors = neighbors[:nn_k]
+            #knn[key] = nn_neighbors
+
+        return knn
+
+    def save_data(self, path=None):
+        save_file = self.save_file_name
+        if path is not None:
+            save_file = path+self.save_file_name
+        output = self.get_data()
+        with open(save_file, 'wb') as outfile:
+            pickle.dump(output, outfile)
+        save_file = "raw_"+self.save_file_name
+        if path is not None:
+            save_file = path+"raw_"+self.save_file_name
+        output = [self._sds, self._distances]
+        with open(save_file, 'wb') as outfile:
+            pickle.dump(output, outfile)
+
+        return
+
+
+
+command_protocols['msd_dist'] = MSDDistProtocol
