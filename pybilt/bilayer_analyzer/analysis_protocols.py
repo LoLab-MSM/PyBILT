@@ -1619,14 +1619,16 @@ analysis_obj_name_dict['nnf'] = 'com_frame'
 
 
 class NNFProtocol(AnalysisProtocol):
-    """Estimate the nearest neighbor fraction for one lipid type with another.
+    """Estimate the fraction of one lipid type within the nearest neighbors of another.
 
     This analysis picks a specified number (n_neighbors) of nearest neighbors
     centered on a lipid of reference lipid type and then counts the number of
     lipids (M) of target lipid type and estimates the fraction,
         nnf =  <M/n_neighbors> ,
     where angle brackets denote averaging over lipids of specified by settings
-    resname_1. This metric is also referred to as 'fractional interations'.
+    resname_1. This is the nearest neighbor analysis described in Ref. 1, and
+    subsequently used in Ref. 2. This metric isn't exactly the same but is
+    similar to the 'fractional interations' analysis of Ref. 3.
 
     This protocol is identified by the analysis key: 'nnf'
 
