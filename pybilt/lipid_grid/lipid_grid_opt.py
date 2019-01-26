@@ -406,6 +406,25 @@ class LipidGrid2d(object):
         xyz_out.close()
         return
 
+    def average_per_lipid_type(self, input_grid):
+        vals_per_type = dict()
+        for i,x in enumerate(self.x_centers):
+            for j,y in enumerate(self.y_centers):
+                    l_com_ind = self.lipid_grid[i,j]
+                    ltype = self.frame.lipidcom[l_com_ind].type
+                    l_val = input_grid[i,j]
+                    # print(ltype)
+                    if ltype not in vals_per_type.keys():
+                        vals_per_type[ltype] = [l_val]
+                    else:
+                        vals_per_type[ltype].append(l_val)
+        avgs_per_lipid_type = dict()
+        for key in vals_per_type.keys():
+            avg = np.array(vals_per_type[key]).mean()
+            avgs_per_lipid_type[key] = avg
+
+        return avgs_per_lipid_type
+
     @staticmethod
     def _knn(com_frame, com_frame_indices, plane):
         # get the x and y indices
