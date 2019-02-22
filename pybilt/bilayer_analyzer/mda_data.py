@@ -23,6 +23,10 @@ class MDAData(object):
         self.natoms = len(self.bilayer_sel)
         self.indices = self.bilayer_sel.indices
         self.residues = self.bilayer_sel.residues
+        # make sure each lipid residue has a unique resid
+        # for i, residue in enumerate(self.residues):
+        #    residue.resid = i
+
         self.n_residues = len(self.residues)
         print((list(self.__dict__.keys())))
 

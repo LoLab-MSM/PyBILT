@@ -54,7 +54,7 @@ sns.set_style("ticks")
 _color_list = ['blue', 'green','orange','purple', 'black', 'red', 'yellow', 'gray']
 
 
-def plot(dat_list,yerr_list=None, name_list=None,filename='plot.eps', save=True, show=False, xlabel=None, ylabel=None,
+def plot(dat_list,yerr_list=None, xerr_list=None, name_list=None,filename='plot.eps', save=True, show=False, xlabel=None, ylabel=None,
          marker=None, linestyle=None, xticks=None):
     """Generic plotting function for (multiple) xy datasets.
 

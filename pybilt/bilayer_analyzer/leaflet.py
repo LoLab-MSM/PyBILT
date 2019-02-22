@@ -71,7 +71,7 @@ class Leaflet(object):
             self.groups[0].add_member(com_index)
             self.group_dict.update({resname: 0})
         else:
-            self.members.append([com_index, resname])
+            self.members.append([com_index, resname, resid])
             addgroup = True
             group_ind = 0
             for rn in self.groups:
@@ -117,6 +117,39 @@ class Leaflet(object):
 
         return list(indices)
 
+    def get_group_indices_per_resid(self, group_name):
+        """ Get the indices of lipids in the Leaflet belonging to a specific LipidGroup.
+
+        Args:
+        group_name (string): The name of the LipidGroup pull LipidCOM indices from.
+            Passing the string 'all' will return indices of all the lipids assigned to
+            the Leaflet instance. If the group_name is not recognised (i.e. is not in the group_dict)
+            The function defaults to 'all'.
+
+        Returns:
+            list of int: A list containing the integer indices of lipids in the Leaflet that
+                belong to the specified LipidGroup.
+        """
+        ret_indices = {}
+        if group_name == "all":
+            indices = self.get_member_indices()
+        elif group_name in self.group_dict:
+            gindex = self.group_dict[group_name]
+            indices = self.groups[gindex].lg_members
+
+        else:
+            #unkwown group name- print warning and use the default "all"
+            print("!! Warning - request for unknown Lipid Group \'",group_name,"\' from the ",self.name," leaflet")
+            print("!! using the default \"all\"")
+            return self.get_member_indices()
+        for i in indices:
+            resid = self.get_member_resid_from_index(i)
+            if resid not in ret_indices.keys():
+                ret_indices[resid] = [i]
+            else:
+                ret_indices[resid].append(i)
+        return ret_indices
+
     def get_member_indices(self):
         """ Get the indices of all lipids (LipidCOM) in the Leaflet.
         This member function Returns: the list of indices for the lipids grouped in the Leaflet instance.
@@ -153,6 +186,14 @@ class Leaflet(object):
         if resid in resids:
             index = resids.index(resid)
             return self.get_member_resnames()[index]
+        else:
+            raise ValueError('resid is not in this leaflet')
+
+    def get_member_resid_from_index(self, index):
+        indices = self.get_member_indices()
+        if index in indices:
+            ind = indices.index(index)
+            return self.get_member_resids()[ind]
         else:
             raise ValueError('resid is not in this leaflet')
 
