@@ -153,7 +153,7 @@ class LipidGrid2d(object):
 
     """
     def __init__(self, com_frame, com_frame_indices, plane, nxbins=50,
-                 nybins=50):
+                 nybins=50, area_per_bin=None):
         """Initialize the LipidGrid2d object.
         This version of the LipidGrid2d object uses a k-neareset neighbors
         (knn) based algorithm to assign lipids to grid points. The method runs
@@ -189,6 +189,13 @@ class LipidGrid2d(object):
         box = com_frame.box[plane]
         boxx = box[ix]
         boxy = box[iy]
+        # adjust bin counts for fixed resolution
+        if area_per_bin is not None:
+            nbins = np.sqrt((boxx*boxy)/area_per_bin)
+            x2y = boxx/boxy
+            x2y_sr = np.sqrt(x2y)
+            nxbins = int(nbins*x2y_sr)
+            nybins = int(nbins/x2y_sr)
         # save the numbers of bins
         self.x_nbins = nxbins
         self.y_nbins = nybins
@@ -461,7 +468,7 @@ class LipidGrid2d(object):
         return knn
 
 class LipidGrids(object):
-    def __init__(self, com_frame, leaflets, plane, nxbins=50, nybins=50):
+    def __init__(self, com_frame, leaflets, plane, nxbins=50, nybins=50, area_per_bin=None):
         #store the frame and leaflet
         self.frame = com_frame
         self.leaflets = leaflets
@@ -476,12 +483,14 @@ class LipidGrids(object):
         upper_indices = leaflets['upper'].get_member_indices()
         self.leaf_grid['upper'] = LipidGrid2d(com_frame, upper_indices,
                                               plane, nxbins=nxbins,
-                                              nybins=nybins)
+                                              nybins=nybins,
+                                              area_per_bin=area_per_bin)
         #lower
         lower_indices = leaflets['lower'].get_member_indices()
         self.leaf_grid['lower'] = LipidGrid2d(com_frame, lower_indices,
                                               plane, nxbins=nxbins,
-                                              nybins=nybins)
+                                              nybins=nybins,
+                                              area_per_bin=area_per_bin)
         return
 
     def thickness_grid(self):

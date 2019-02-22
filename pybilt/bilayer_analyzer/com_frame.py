@@ -405,7 +405,7 @@ class COMFrame(object):
                 output.append(lipid.type)
         return output
 
-    def write_xyz(self, xyz_name, wrapped=True):
+    def write_xyz(self, xyz_name, wrapped=True, name_by_leaflet=False):
         # Open up the file to write to
         xyz_out = open(xyz_name, "w")
 
@@ -429,7 +429,8 @@ class COMFrame(object):
 
             #get the lipid resname
             oname = self.lipidcom[i].type
-
+            if name_by_leaflet:
+                oname = self.lipidcom[i].leaflet
             #write to file
             line = str(oname)+" "+str(x)+" "+str(y)+" "+str(z)
             xyz_out.write(line)

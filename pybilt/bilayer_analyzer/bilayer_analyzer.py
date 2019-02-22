@@ -326,7 +326,8 @@ class BilayerAnalyzer(object):
         self.rep_settings['lipid_grid'] = {'dump' : False,
                                            'dump_path' : "./",
                                            'n_xbins' : 10,
-                                           'n_ybins' : 10}
+                                           'n_ybins' : 10,
+                                           'area_per_bin': None}
         #com_frame
         self.reps['vector_frame'] = None
         self.rep_settings['vector_frame'] = {'dump' : False,
@@ -846,6 +847,7 @@ class BilayerAnalyzer(object):
             resid = lipcom.resid
             tail_str = "resname {} and resid {} and name {}".format(resname, resid,self.rep_settings['leaflets']['orientation_atoms'][resname][0])
             tail = self._mda_data.mda_universe.select_atoms(tail_str)
+            # print(tail, len(tail))
             tail_v = tail.center_of_mass()
             head_str = "resname {} and resid {} and name {}".format(resname, resid,self.rep_settings['leaflets']['orientation_atoms'][resname][1])
             head = self._mda_data.mda_universe.select_atoms(head_str)
@@ -858,7 +860,9 @@ class BilayerAnalyzer(object):
             norm_vec = np.zeros(3)
             norm_vec[norm] = 1.0
             cost = np.dot(vec, norm_vec)/np.sqrt(np.dot(vec, vec))
-            # print(cost)
+            # print(tail_str, head_str)
+            # print(tail_v, head_v, cost)
+            # print(" ")
             pos = ""
             if cost > 0.0:
                 pos = 'upper'
@@ -992,7 +996,8 @@ class BilayerAnalyzer(object):
                 self.reps['lipid_grid'] = lg.LipidGrids(self.reps['com_frame'], self.reps['leaflets'],
                                                 self.settings['lateral'],
                                                 nxbins=self.rep_settings['lipid_grid']['n_xbins'],
-                                                nybins=self.rep_settings['lipid_grid']['n_ybins'])
+                                                nybins=self.rep_settings['lipid_grid']['n_ybins'],
+                                                area_per_bin=self.rep_settings['lipid_grid']['area_per_bin'])
                 if self.rep_settings['lipid_grid']['dump']:
                     ofname = self.rep_settings['lipid_grid']['dump_path'] + "lipid_grid_" + str(
                         frame.frame) + ".pickle"
