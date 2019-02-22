@@ -213,6 +213,15 @@ class BilayerAnalyzer(object):
                 specific lipid types and containing a list of atom names to be
                 used when computing the centers-of-mass of lipids of that type.
                 Default: None
+            com_frame:multi_bead (bool): A boolean that is used to determine
+                if the COMFrame assigns a separate bead to each reference atom
+                supplied in the name_dict option. Default: False
+            com_frame:make_whole (bool): A boolean that used to determine if
+                each lipid should be made whole (if they broken by atom
+                wrapping). If True this option calls the make_whole function
+                from MDAnalysis and thus requires that the structure file
+                include bonds (e.g. a psf file instead of a pdb file).
+                Default: False
             leaflets:dump (bool): Determines whether the leaflets are dumped
                 to disc (as pickles) after each frame in the analysis loop.
                 Default: False
@@ -245,6 +254,11 @@ class BilayerAnalyzer(object):
                 use in the 'x' dimension of the LipidGrid objects. Default: 10
             lipid_grid:nybins (int): An integer defining the number of bins to
                 use in the 'y' dimension of the LipidGrid objects. Default: 10
+            lipid_grid:area_per_bin (float): Option to set a fixed area per
+                grid element (i.e. the number of bins will auto adjust each
+                frame to keep the element area appproximately constant). If set,
+                this option overides the nxbins and nybins options. 
+                Default: None
             vector_frame:dump (bool): Determines wheter the VectorFrame objects
                 built during interations of the analysis loop are dumped to
                 disc as pickle files. Default: False
