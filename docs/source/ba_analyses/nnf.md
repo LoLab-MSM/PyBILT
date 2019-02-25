@@ -2,14 +2,16 @@
  
 ## Description
  
-Estimate the nearest neighbor fraction for one lipid type with another.
+Estimate the fraction of one lipid type within the nearest neighbors of another.
 
 This analysis picks a specified number (n_neighbors) of nearest neighbors
 centered on a lipid of reference lipid type and then counts the number of
 lipids (M) of target lipid type and estimates the fraction,
 nnf =  <M/n_neighbors> ,
 where angle brackets denote averaging over lipids of specified by settings
-resname_1. This metric is also referred to as 'fractional interations'.
+resname_1. This is the nearest neighbor analysis described in Ref. 1, and
+subsequently used in Ref. 2. This metric isn't exactly the same but is
+similar to the 'fractional interations' analysis of Ref. 3.
 
 This protocol is identified by the analysis key: 'nnf'
 
@@ -28,8 +30,8 @@ nnf analysis-ID keyword value
 * keyword value = settings keyword value pairs 
     * leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer leaflet to include in the estimate. Default: 'both'
     * n_neighbors (int): Specifies the number of nearest neighbors to to include in computation. Default: 5
-    * resname_1 (str): Specify the resname of the reference lipid type to include in this analysis. Default: 'first', the first lipid in the list pulled from the com_frame representation.
     * resname_2 (str): Specify the resname of the target lipid type to include in this analysis. Default: 'first', the first lipid in the list pulled from the com_frame representation.
+    * resname_1 (str): Specify the resname of the reference lipid type to include in this analysis. Default: 'first', the first lipid in the list pulled from the com_frame representation.
 
 ### Examples
 Construct analyzer:
@@ -70,7 +72,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('nnf_1')
 ```
  
-The output is type ```<class 'numpy.ndarray'>```
+The output is type ```<type 'numpy.ndarray'>```
  
 <div class="admonition note"> 
 <p class="admonition-title">Note</p> 

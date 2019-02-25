@@ -58,7 +58,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('area_fluctuation_1')
 ```
  
-The output is type ```<class 'numpy.ndarray'>```
+The output is type ```<type 'numpy.ndarray'>```
  
 ## Related analyses
 * [acm](acm.html)

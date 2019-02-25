@@ -58,7 +58,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('apl_grid_1')
 ```
  
-The output is type ```<class 'dict'>```
+The output is type ```<type 'dict'>```
  
 ## Related analyses
 * [apl_box](apl_box.html)

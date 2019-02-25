@@ -67,7 +67,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('apl_box_1')
 ```
  
-The output is type ```<class 'numpy.ndarray'>```
+The output is type ```<type 'numpy.ndarray'>```
  
 ## Related analyses
 * [apl_grid](apl_grid.html)

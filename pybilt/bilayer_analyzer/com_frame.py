@@ -363,13 +363,22 @@ class COMFrame(object):
         com_out/=total_mass
         return com_out
 
-    def coordinates(self, wrapped=True):
+    def coordinates(self, wrapped=True, leaflet=None):
         coords = []
-        for item in self.lipidcom:
-            if wrapped:
-                coords.append(item.com)
-            else:
-                coords.append(item.com_unwrap)
+        if leaflet is None:
+
+            for item in self.lipidcom:
+                if wrapped:
+                    coords.append(item.com)
+                else:
+                    coords.append(item.com_unwrap)
+        else:
+            for item in self.lipidcom:
+                if item.leaflet == leaflet:
+                    if wrapped:
+                        coords.append(item.com)
+                    else:
+                        coords.append(item.com_unwrap)            
         return np.array(coords)
 
     def masses(self):

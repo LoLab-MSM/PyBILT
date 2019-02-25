@@ -66,7 +66,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('dc_cluster_1')
 ```
  
-The output is type ```<class 'dict'>```
+The output is type ```<type 'dict'>```
  
 <div class="admonition note"> 
 <p class="admonition-title">Note</p> 

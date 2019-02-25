@@ -58,7 +58,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('flip_flop_1')
 ```
  
-The output is type ```<class 'dict'>```
+The output is type ```<type 'dict'>```
  
 ## Related analyses
 * None

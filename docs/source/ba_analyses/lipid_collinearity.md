@@ -23,9 +23,9 @@ lipid_collinearity analysis-ID keyword value
 * analysis-ID = The unique name/ID being assigned to this analysis.
 * keyword value = settings keyword value pairs 
     * leaflet (str: 'upper', or 'lower'): Specifies the bilayer leaflet to include in the estimate. Default: 'upper'
-    * resname_1 (str): Specify the resname of the reference lipid type to include in this analysis. Default: 'first', the first lipid in the list pulled from the com_frame representation.
-    * resname_2 (str): Specify the resname of the target lipid type to include in this analysis. Default: 'first', the first lipid in the list pulled from the com_frame representation.
     * style (str: 'angle', 'order'): Specify whether to compute the tilt angle ('angle') or the tilt angle order parameter ('order'). Default: 'angle'
+    * resname_2 (str): Specify the resname of the target lipid type to include in this analysis. Default: 'first', the first lipid in the list pulled from the com_frame representation.
+    * resname_1 (str): Specify the resname of the reference lipid type to include in this analysis. Default: 'first', the first lipid in the list pulled from the com_frame representation.
 
 ### Examples
 Construct analyzer:
@@ -66,7 +66,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('lipid_collinearity_1')
 ```
  
-The output is type ```<class 'numpy.ndarray'>```
+The output is type ```<type 'numpy.ndarray'>```
  
 ## Related analyses
 * [lipid_tilt](lipid_tilt.html)

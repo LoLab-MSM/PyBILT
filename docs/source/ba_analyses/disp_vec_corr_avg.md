@@ -27,8 +27,8 @@ disp_vec_corr_avg analysis-ID keyword value
 * keyword value = settings keyword value pairs 
     * leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer leaflet to include in the estimate. Default: 'both'
     * resname (str): Specify the resname of the lipid type to include in this analysis. Default: 'all', includes all lipid types.
-    * wrapped (bool): Specify whether to use the wrapped ('True') or un-wrapped ('False') coordintes for the base of the vectors. Default: False
     * interval (int): Sets the frame interval over which to compute the displacement vectors.
+    * wrapped (bool): Specify whether to use the wrapped ('True') or un-wrapped ('False') coordintes for the base of the vectors. Default: False
 
 ### Examples
 Construct analyzer:
@@ -69,7 +69,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('disp_vec_corr_avg_1')
 ```
  
-The output is type ```<class 'numpy.ndarray'>```
+The output is type ```<type 'numpy.ndarray'>```
  
 ## Related analyses
 * [disp_vec](disp_vec.html)
