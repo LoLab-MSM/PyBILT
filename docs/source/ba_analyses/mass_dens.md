@@ -24,8 +24,8 @@ mass_dens analysis-ID keyword value
 * mass_dens = analysis-Key - keyword/name for this analysis.
 * analysis-ID = The unique name/ID being assigned to this analysis.
 * keyword value = settings keyword value pairs 
-    * selection_string (str): Provide the MDAnalysis compatible selection for the atoms to include in this analysis. Default: 'BILAYER', use all the lipids of the bilayer as recovered from the selection given to the external BilayerAnalyzer.
     * n_bins (int): Set the number of bins to divide the normal dimensions into for binning. Defalt: 25
+    * selection_string (str): Provide the MDAnalysis compatible selection for the atoms to include in this analysis. Default: 'BILAYER', use all the lipids of the bilayer as recovered from the selection given to the external BilayerAnalyzer.
 
 ### Examples
 Construct analyzer:
@@ -42,17 +42,17 @@ analyzer.add_analysis('mass_dens mass_dens_1')
  
 Add by string - adjust a setting: 
 ```python
-analyzer.add_analysis('mass_dens mass_dens_1 selection_string BILAYER')
+analyzer.add_analysis('mass_dens mass_dens_1 n_bins 25')
 ```
  
 Add by list:
 ```python
-analyzer.add_analysis(list(['mass_dens', 'mass_dens_1', dict({'selection_string':'BILAYER'})]))
+analyzer.add_analysis(list(['mass_dens', 'mass_dens_1', dict({'n_bins':25})]))
 ```
  
 Add by dict: 
 ```python
-analyzer.add_analysis(dict({'analysis_key': 'mass_dens', 'analysis_id': 'mass_dens_1','analysis_settings':dict({'selection_string':'BILAYER'})}))
+analyzer.add_analysis(dict({'analysis_key': 'mass_dens', 'analysis_id': 'mass_dens_1','analysis_settings':dict({'n_bins':25})}))
 ```
  
 To remove from analyzer: 
@@ -66,7 +66,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('mass_dens_1')
 ```
  
-The output is type ```<class 'tuple'>```
+The output is type ```<type 'tuple'>```
  
 ## Related analyses
 * None

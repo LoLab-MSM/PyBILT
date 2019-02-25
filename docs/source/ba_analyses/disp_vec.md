@@ -20,11 +20,11 @@ disp_vec analysis-ID keyword value
 * disp_vec = analysis-Key - keyword/name for this analysis.
 * analysis-ID = The unique name/ID being assigned to this analysis.
 * keyword value = settings keyword value pairs 
-    * leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer leaflet to include in the estimate. Default: 'both'
-    * resname (str): Specify the resname of the lipid type to include in this analysis. Default: 'all', includes all lipid types.
-    * wrapped (bool): Specify whether to use the wrapped ('True') or un-wrapped ('False') coordintes for the base of the vectors. Default: False
-    * interval (int): Sets the frame interval over which to compute the displacement vectors.
     * scale (bool): Specify whether to scale the coordinates by the box dimensions of the reference frame. Default: False
+    * interval (int): Sets the frame interval over which to compute the displacement vectors.
+    * leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer leaflet to include in the estimate. Default: 'both'
+    * wrapped (bool): Specify whether to use the wrapped ('True') or un-wrapped ('False') coordintes for the base of the vectors. Default: False
+    * resname (str): Specify the resname of the lipid type to include in this analysis. Default: 'all', includes all lipid types.
     * scale_to_max (bool): Specify whether to scale the coordinates by the box dimensions of the maximum box size in the anlysis. Default: False.
 
 ### Examples
@@ -42,17 +42,17 @@ analyzer.add_analysis('disp_vec disp_vec_1')
  
 Add by string - adjust a setting: 
 ```python
-analyzer.add_analysis('disp_vec disp_vec_1 leaflet both')
+analyzer.add_analysis('disp_vec disp_vec_1 scale False')
 ```
  
 Add by list:
 ```python
-analyzer.add_analysis(list(['disp_vec', 'disp_vec_1', dict({'leaflet':'both'})]))
+analyzer.add_analysis(list(['disp_vec', 'disp_vec_1', dict({'scale':False})]))
 ```
  
 Add by dict: 
 ```python
-analyzer.add_analysis(dict({'analysis_key': 'disp_vec', 'analysis_id': 'disp_vec_1','analysis_settings':dict({'leaflet':'both'})}))
+analyzer.add_analysis(dict({'analysis_key': 'disp_vec', 'analysis_id': 'disp_vec_1','analysis_settings':dict({'scale':False})}))
 ```
  
 To remove from analyzer: 
@@ -66,7 +66,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('disp_vec_1')
 ```
  
-The output is type ```<class 'list'>```
+The output is type ```<type 'list'>```
  
 <div class="admonition note"> 
 <p class="admonition-title">Note</p> 

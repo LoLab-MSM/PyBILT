@@ -26,8 +26,8 @@ lop analysis-ID keyword value
 * keyword value = settings keyword value pairs 
     * leaflet (str: 'both', 'upper', or 'lower'): Specifies the bilayer leaflet to include in the estimate. Default: 'both'
     * resname (str): Specify the resname of the lipid type to include in this analysis. Default: 'first', the first lipid type as stored in the com_frame.
-    * ref_atom_1 (str): The atom name of the reference atom to use as the base of the lipid orientation vector.
     * ref_atom_2 (str): The atom name of the reference atom to use as the head of the lipid orientation vector.
+    * ref_atom_1 (str): The atom name of the reference atom to use as the base of the lipid orientation vector.
 
 ### Examples
 Construct analyzer:
@@ -68,7 +68,7 @@ Retrieve output after running analyses:
 output = analyzer.get_analysis_data('lop_1')
 ```
  
-The output is type ```<class 'numpy.ndarray'>```
+The output is type ```<type 'numpy.ndarray'>```
  
 <div class="admonition note"> 
 <p class="admonition-title">Note</p> 
