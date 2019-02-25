@@ -70,7 +70,7 @@ git clone https://github.com/blakeaw/PyBILT.git
 Then create a new conda environment for pybilt and activate it:
 ```
 conda create --name pybilt
-source activate pybilt
+conda activate pybilt
 ```
 The install the preferred python version:
  * for Python 2.7
@@ -127,7 +127,7 @@ conda env create -f environment_py27.yml
 which will create a new conda environment named *pybilt* with the appropriate
 dependencies. Then activate the environment
 ```
-source activate pybilt
+conda activate pybilt
 ```
 Next, run the setup.py script with install,
 ```
