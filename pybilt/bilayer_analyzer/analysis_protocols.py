@@ -1365,7 +1365,7 @@ class PeakToPeakProtocol(AnalysisProtocol):
         self.__dict__ = in_dict
 
 
-command_protocols['peak_distance'] = PeakToPeakProtocol
+command_protocols['thickness_peak_distance'] = PeakToPeakProtocol
 
 # define a new analysis
 valid_analysis.append('thickness_mass_weighted_std')
@@ -1398,8 +1398,8 @@ class MassWeightedStdDistProtocol(AnalysisProtocol):
         the phosphorous atoms as the reference atoms (e.g. with selection: name P).
 
     References:
-        1.  R. Guixà-González; I. Rodríguez-Espigares; J. M. Ramírez-Anguita; P.
-            Carrió-Gaspar; H. Martinez-Seara; T. Giorgino; J. Selent. MEMBPLUGIN: studying
+        1.  R. Guixa-Gonzalez; I. Rodriguez-Espigares; J. M. Ramirez-Anguita; P.
+            Carrio-Gaspar; H. Martinez-Seara; T. Giorgino; J. Selent. MEMBPLUGIN: studying
             membrane complexity in VMD. Bioinformatics 2014; vol. 30 (10) p. 1478-1480
             doi:10.1093/bioinformatics/btu037
     """
@@ -5183,7 +5183,7 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
         else:
             do_leaflet = [self.settings['leaflet']]
 
-        if self._first_frame:
+        if self._first_comp:
             self.last_com_frame = ba_reps['com_frame']
 
             # build group/resname/lipid type list
@@ -5200,7 +5200,7 @@ class SpatialVelocityCorrelationFunctionProtocol(AnalysisProtocol):
                 self.settings['resname_1'] =  lipid_types[0]
             if self.settings['resname_2'] == 'first':
                 self.settings['resname_2'] = lipid_types[0]
-            self._first_frame = False
+            self._first_comp = False
         current_frame = ba_reps['current_mda_frame'].frame
 
         interval = (current_frame) - (self.last_frame)
