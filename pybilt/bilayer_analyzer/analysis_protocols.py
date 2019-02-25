@@ -1022,7 +1022,7 @@ class BTGridProtocol(AnalysisProtocol):
     thickness. This is done by measuring the difference in 'z' position between
     corresponding grid points  of opposing bilayer leaflets.
 
-    This protocol is identified by the analysis key: 'bilayer_thickness'
+    This protocol is identified by the analysis key: 'thickness_grid'
 
     Args:
         args (list): list of string keys and arguments
@@ -1042,7 +1042,8 @@ class BTGridProtocol(AnalysisProtocol):
     _short_description = "Bilayer thickness using lipid_grid."
     # self._return_length = 4
     analysis_key = 'thickness_grid'
-    _related = list(['lipid_length'])
+    _related = list(['lipid_length', 'thickness_leaflet_distance',
+                     'thickness_peak_distance', 'thickness_mass_weighted_std'])
 
     def __init__(self, args):
         """Initialize an instance of BTGridProtocol."""
@@ -1099,7 +1100,7 @@ class LeaftoLeafDistProtocol(AnalysisProtocol):
     frame the centers-of-mass of each leaflet is computed and the distance along
     the bilayer normal is computed. This is another to estimate the bilayer thickness.
 
-    This protocol is identified by the analysis key: 'leaflet_distance'
+    This protocol is identified by the analysis key: 'thickness_leaflet_distance'
 
     Args:
         args (list): list of string keys and arguments
@@ -1115,10 +1116,11 @@ class LeaftoLeafDistProtocol(AnalysisProtocol):
         None
     """
 
-    _short_description = "Distance between the leaflets' centers along the normal."
+    _short_description = "Distance between the leaflets' centers of mass along the normal."
     # self._return_length = 4
     analysis_key = 'thickness_leaflet_distance'
-    _related = list(['lipid_length', 'bilayer_thickness'])
+    _related = list(['lipid_length', 'thickness_grid',
+                     'thickness_peak_distance', 'thickness_mass_weighted_std'])
 
     def __init__(self, args):
         """Initialize an instance of LeaftoLeafDistProtocol."""
@@ -1164,7 +1166,7 @@ class LeaftoLeafDistProtocol(AnalysisProtocol):
         return
 
 
-command_protocols['leaflet_distance'] = LeaftoLeafDistProtocol
+command_protocols['thickness_leaflet_distance'] = LeaftoLeafDistProtocol
 
 
 # define a new analysis
@@ -1175,10 +1177,10 @@ analysis_obj_name_dict['thickness_peak_distance'] = 'mda_frame'
 class PeakToPeakProtocol(AnalysisProtocol):
     """Estimate the mass density profile for the specified selection.
 
-    This protocol is used to estimate the 1-dimensional mass density profile
-    for a selection of atoms along the bilayer normal. The profile is
-    automatically centered on the bilayer's center of mass along the bilayer
-    normal.
+    This protocol is used to estimate the bilayer thickness by computing the
+    1-dimensional mass density profile (with two peaks) for a selection of
+    atoms along the bilayer normal and then estimating the distance between
+    between the two peaks.
 
     This protocol is identified by the analysis key: 'thickness_peak_distance'
 
@@ -1192,6 +1194,13 @@ class PeakToPeakProtocol(AnalysisProtocol):
             selection given to the external BilayerAnalyzer.
         n_bins (int): Set the number of bins to divide the normal dimensions
             into for binning. Defalt: 25
+
+    Note:
+        The P-P distance can be estimated for phospholipids by assigning
+        the phosphorous atoms as the reference atoms for the mass density
+        profile.
+        The mass density profile must have two symmetric peaks or this
+        metric will yield spurious results.
 
     References:
         None
@@ -1366,7 +1375,7 @@ analysis_obj_name_dict['thickness_mass_weighted_std'] = 'mda_frame'
 class MassWeightedStdDistProtocol(AnalysisProtocol):
     """Estimate the thickness via the mass weighted standard deviation along the normal dimension.
     This protocol is used to estimate the thickness by computing the standard
-    deviation of the reference atom (e.g. phosphorous atoms) coordinates along
+    deviation of the reference atoms (e.g. phosphorous atoms) coordinates along
     the bilayer normal dimension weighted by their masses:
         thickness = 2xmass_weighted_std
     This is same method used by MEMBPLUGIN to estimate bilayer thickness
@@ -1383,6 +1392,10 @@ class MassWeightedStdDistProtocol(AnalysisProtocol):
             for the atoms to include in this analysis. Default: 'BILAYER',
             use all the lipids of the bilayer as recovered from the
             selection given to the external BilayerAnalyzer.
+
+    Note:
+        The P-P distance can be estimated for phospholipids by assigning
+        the phosphorous atoms as the reference atoms (e.g. with selection: name P).
 
     References:
         1.  R. Guixà-González; I. Rodríguez-Espigares; J. M. Ramírez-Anguita; P.
@@ -1517,7 +1530,7 @@ class MassWeightedStdDistProtocol(AnalysisProtocol):
         return np.sqrt(var)
 
 
-command_protocols['thickness_mass_weighted'] = MassWeightedStdDistProtocol
+command_protocols['thickness_mass_weighted_std'] = MassWeightedStdDistProtocol
 
 # define a new analysis 'apl_grid'
 valid_analysis.append('apl_grid')
