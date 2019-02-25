@@ -417,14 +417,14 @@ def area_per_lipid(structure_file, trajectory_file, selection_string,
     return
 
 
-def bilayer_thickness(structure_file, trajectory_file, selection_string,
+def thickness_grid(structure_file, trajectory_file, selection_string,
                       frame_start=0, frame_end=-1, frame_interval=1,
                       dump_path="./", name_dict=None, n_xbins=100, n_ybins=100,
                       plot_grid_map=True):
     """Protocol to compute the bilayer thickness.
 
     This function uses the BilayerAnalyzer with the analysis
-    'bilayer_thickness' to estimate the the thickness of the bilayer via the
+    'thickness_grid' to estimate the the thickness of the bilayer via the
     lipid grid approach. Reports of data are printed to standard out, while
     pickled data (numpy array) is dumped to disk and plots are generated and
     also dumped to disk. The generated files have the prefix 'bt' and the grid
@@ -478,14 +478,14 @@ def bilayer_thickness(structure_file, trajectory_file, selection_string,
     # use a subselection of atoms instead of full lipid center of mass, if given
     analyzer.rep_settings['com_frame']['name_dict'] = name_dict
     # add the analysis
-    analyzer.add_analysis("bilayer_thickness bt")
+    analyzer.add_analysis("thickness_grid bt")
     # adjust the number of bins for gridding
     analyzer.rep_settings['lipid_grid']['n_xbins'] = n_xbins
     analyzer.rep_settings['lipid_grid']['n_ybins'] = n_ybins
 
     analyzer.print_analysis_protocol()
     # add the plot
-    analyzer.add_plot("bilayer_thickness bt_p bt None")
+    analyzer.add_plot("thickness_grid bt_p bt None")
 
     analyzer.print_plot_protocol()
 

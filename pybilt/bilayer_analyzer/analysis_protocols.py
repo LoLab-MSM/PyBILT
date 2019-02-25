@@ -57,7 +57,7 @@ import warnings
 import sys
 import cmath
 import copy as cp
-
+import matplotlib.pyplot as plt
 
 # PyBILT imports
 from pybilt.common.running_stats import RunningStats, binned_average
@@ -1010,8 +1010,8 @@ class APLBoxProtocol(AnalysisProtocol):
 command_protocols['apl_box'] = APLBoxProtocol
 
 # define a new analysis 'apl_box'
-valid_analysis.append('bilayer_thickness')
-analysis_obj_name_dict['bilayer_thickness'] = 'lipid_grid'
+valid_analysis.append('thickness_grid')
+analysis_obj_name_dict['thickness_grid'] = 'lipid_grid'
 
 
 class BTGridProtocol(AnalysisProtocol):
@@ -1041,7 +1041,7 @@ class BTGridProtocol(AnalysisProtocol):
 
     _short_description = "Bilayer thickness using lipid_grid."
     # self._return_length = 4
-    analysis_key = 'bilayer_thickness'
+    analysis_key = 'thickness_grid'
     _related = list(['lipid_length'])
 
     def __init__(self, args):
@@ -1085,7 +1085,439 @@ class BTGridProtocol(AnalysisProtocol):
         return
 
 
-command_protocols['bilayer_thickness'] = BTGridProtocol
+command_protocols['thickness_grid'] = BTGridProtocol
+
+# define a new analysis 'apl_box'
+valid_analysis.append('thickness_leaflet_distance')
+analysis_obj_name_dict['thickness_leaflet_distance'] = 'com_frame'
+
+
+class LeaftoLeafDistProtocol(AnalysisProtocol):
+    """Estimate the bilayer thickness using the distance between the COMs of each leaflet.
+
+    This analysis uses the COM postions from the com_frame representation. At each
+    frame the centers-of-mass of each leaflet is computed and the distance along
+    the bilayer normal is computed. This is another to estimate the bilayer thickness.
+
+    This protocol is identified by the analysis key: 'leaflet_distance'
+
+    Args:
+        args (list): list of string keys and arguments
+
+    Settings (parsed from args to settings dict):
+        None
+
+    Note:
+        The P-P distance can be estimated for phospholipids by assigning
+        the phosphorous atoms as the reference atoms to the com_frame.
+
+    References:
+        None
+    """
+
+    _short_description = "Distance between the leaflets' centers along the normal."
+    # self._return_length = 4
+    analysis_key = 'thickness_leaflet_distance'
+    _related = list(['lipid_length', 'bilayer_thickness'])
+
+    def __init__(self, args):
+        """Initialize an instance of LeaftoLeafDistProtocol."""
+        # required
+        self.analysis_id = 'none'
+        # define adjustable settings
+        self.settings = dict()
+        self.settings['none'] = None
+        self._valid_settings = list(self.settings.keys())
+        # parse input arguments if given
+        self._parse_args(args)
+
+        # default function settings
+        self.save_file_name = self.analysis_id + ".pickle"
+
+        # storage for output
+        self.running = RunningStats()
+        self.analysis_output = []
+        return
+
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        norm_ind = ba_settings['norm']
+        com_u = ba_reps['com_frame'].coordinates(leaflet='upper').mean(axis=0)
+        com_l = ba_reps['com_frame'].coordinates(leaflet='lower').mean(axis=0)
+        current_thickness = np.abs(com_u - com_l)[norm_ind]
+        # print (current_thickness)
+        time = ba_reps['current_mda_frame'].time
+        # print (time)
+        self.running.push(current_thickness)
+        bt_t = np.zeros(4)
+        bt_t[0] = time
+        bt_t[1] = current_thickness
+        bt_t[2] = self.running.mean()
+        bt_t[3] = self.running.deviation()
+        self.analysis_output.append(bt_t)
+
+        return
+
+    def reset(self):
+        self.running.reset()
+        self.analysis_output = []
+        return
+
+
+command_protocols['leaflet_distance'] = LeaftoLeafDistProtocol
+
+
+# define a new analysis
+valid_analysis.append('thickness_peak_distance')
+analysis_obj_name_dict['thickness_peak_distance'] = 'mda_frame'
+
+
+class PeakToPeakProtocol(AnalysisProtocol):
+    """Estimate the mass density profile for the specified selection.
+
+    This protocol is used to estimate the 1-dimensional mass density profile
+    for a selection of atoms along the bilayer normal. The profile is
+    automatically centered on the bilayer's center of mass along the bilayer
+    normal.
+
+    This protocol is identified by the analysis key: 'thickness_peak_distance'
+
+    Args:
+        args (list): list of string keys and arguments
+
+    Settings (parsed from args to settings dict):
+        selection_string (str): Provide the MDAnalysis compatible selection
+            for the atoms to include in this analysis. Default: 'BILAYER',
+            use all the lipids of the bilayer as recovered from the
+            selection given to the external BilayerAnalyzer.
+        n_bins (int): Set the number of bins to divide the normal dimensions
+            into for binning. Defalt: 25
+
+    References:
+        None
+    """
+
+    _pickleable = False
+    _short_description = "Estimate the bilayer thickness using distance between corresponding peaks in a mass density profile."
+    # self._return_length = None
+    analysis_key = 'thickness_peak_distance'
+    _related = None
+
+    def __init__(self, args):
+        """Initialize an instance of MassDensProtocol."""
+        # required
+        self.analysis_id = 'none'
+
+        # default settings
+        self.settings = dict()
+        self.settings['selection_string'] = "name P"
+        self.settings['n_bins'] = 25
+        self._valid_settings = list(self.settings.keys())
+        #self.selection_string = 'all'
+        #self.n_bins = 25
+
+        #parse input arguments/settings
+        self._parse_args(args)
+
+        self.save_file_name = self.analysis_id + ".pickle"
+
+
+        # storage for output
+        self.centers = None
+        self.n_frames = 0
+        self.analysis_output = []
+        self.running = RunningStats()
+        self.first_comp = True
+        self.selection = None
+
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+        #in this case the casting is taken care of in _parse_str_to_dict
+        return arg_dict
+
+    # needed to overwrite the string parser to handle the selection string
+    def _parse_str_to_dict(self, args):
+        # print args
+        arg_dict = dict()
+        args = args.split()
+        nargs = len(args)
+        arg_dict['analysis_id'] = args[0]
+        read_sel_string = False
+        n_bins_arg = False
+        for i in range(1, nargs, 1):
+            arg_key = args[i]
+
+            #print ('arg_key: ', arg_key)
+            if arg_key in self._valid_settings:
+                if arg_key == 'n_bins':
+                    arg_arg = args[i + 1]
+                    arg_dict['n_bins'] = int(arg_arg)
+                    read_sel_string = False
+                    n_bins_arg = True
+                elif arg_key == 'selection':
+                    selection_words = [args[j] for j in range(i + 1, nargs) if
+                                       (args[j] not in self._valid_settings)]
+                    i += len(selection_words)
+                    selection_string = ""
+                    for word in selection_words:
+                        selection_string += " " + word
+                    arg_dict['selection_string'] = selection_string
+                    read_sel_string = True
+                    n_bins_arg = False
+            elif not (read_sel_string or n_bins_arg):
+                warnings.warn(
+                    "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_id)
+        return arg_dict
+
+
+    def reset(self):
+        self.centers = None
+        self.n_frames = 0
+        self.analysis_output = []
+        self.first_comp = True
+        self.selection = None
+        self.running.reset()
+
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        first = self.first_comp
+        if self.first_comp:
+            print(self.settings['selection_string'])
+            if self.settings['selection_string'] == "BILAYER":
+                print("bilayer_sel")
+                self.selection = ba_mda_data.bilayer_sel
+            else:
+                print("non-bilayer")
+                self.selection = ba_mda_data.mda_universe.select_atoms(
+                    self.settings['selection_string'])
+                # print(self.selection)
+                # quit()
+            self.first_comp = False
+
+        # print "there are ",len(indices)," members"
+
+        norm_axis = ba_settings['normal_dimension']
+        ref_sel = ba_mda_data.bilayer_sel
+        # mda_density_profile
+        print(ba_settings['frame_index'], ba_settings['frame_index']+1)
+        centers_density = mda_dp.mass_density_profile(
+            ba_mda_data.mda_trajectory, self.selection,
+            fstart=ba_settings['frame_index'],
+            fend=ba_settings['frame_index'] + 1, axis=norm_axis,
+            nbins=self.settings['n_bins'], refsel=ref_sel)
+        #if first:
+        #    self.centers = centers_density[0]
+            #self.analysis_output = np.zeros(len(self.centers))
+        density = centers_density[1]
+        centers = centers_density[0]
+        dist = self._peak_to_peak_distance(centers, density)
+        time = ba_reps['current_mda_frame'].time
+        # print (time)
+        current_thickness = dist
+        print(time, dist)
+        self.running.push(current_thickness)
+        bt_t = np.zeros(4)
+        bt_t[0] = time
+        bt_t[1] = current_thickness
+        bt_t[2] = self.running.mean()
+        bt_t[3] = self.running.deviation()
+        print(bt_t)
+        self.analysis_output.append(bt_t)
+
+        return
+
+    def _peak_to_peak_distance(self, positions, density):
+        # split in half
+        npoints = len(density)
+        half_point = int(npoints/2)
+        # plt.plot(positions, density)
+        # plt.show()
+        print(half_point)
+        d_left = density[:half_point]
+        p_left = positions[:half_point]
+        d_right = density[half_point:]
+        p_right = positions[half_point:]
+        mp_left = p_left[np.argmax(d_left)]
+        mp_right = p_right[np.argmax(d_right)]
+        return np.abs(mp_right - mp_left)
+
+
+    def __getstate__(self):
+        odict = dict()
+        for key in self.__dict__.keys():
+            odict[key] = self.__dict__[key]
+        odict['selection'] = None
+        return odict
+
+    def __setstate__(self, in_dict):
+        self.__dict__ = in_dict
+
+
+command_protocols['peak_distance'] = PeakToPeakProtocol
+
+# define a new analysis
+valid_analysis.append('thickness_mass_weighted_std')
+analysis_obj_name_dict['thickness_mass_weighted_std'] = 'mda_frame'
+
+
+class MassWeightedStdDistProtocol(AnalysisProtocol):
+    """Estimate the thickness via the mass weighted standard deviation along the normal dimension.
+    This protocol is used to estimate the thickness by computing the standard
+    deviation of the reference atom (e.g. phosphorous atoms) coordinates along
+    the bilayer normal dimension weighted by their masses:
+        thickness = 2xmass_weighted_std
+    This is same method used by MEMBPLUGIN to estimate bilayer thickness
+    (Blake: I had to examine the MEMBPLUGIN source code to see that this is
+    what it actually does.).
+
+    This protocol is identified by the analysis key: 'mass_weighted_std_thickness'
+
+    Args:
+        args (list): list of string keys and arguments
+
+    Settings (parsed from args to settings dict):
+        selection_string (str): Provide the MDAnalysis compatible selection
+            for the atoms to include in this analysis. Default: 'BILAYER',
+            use all the lipids of the bilayer as recovered from the
+            selection given to the external BilayerAnalyzer.
+
+    References:
+        1.  R. Guixà-González; I. Rodríguez-Espigares; J. M. Ramírez-Anguita; P.
+            Carrió-Gaspar; H. Martinez-Seara; T. Giorgino; J. Selent. MEMBPLUGIN: studying
+            membrane complexity in VMD. Bioinformatics 2014; vol. 30 (10) p. 1478-1480
+            doi:10.1093/bioinformatics/btu037
+    """
+
+    _pickleable = False
+    _short_description = "Estimates the thickness using two times the mass-weighted standard deviation of coordinates along the normal."
+    # self._return_length = None
+    analysis_key = 'thickness_mass_weighted_std'
+    _related = None
+
+    def __init__(self, args):
+        """Initialize an instance of MassDensProtocol."""
+        # required
+        self.analysis_id = 'none'
+
+        # default settings
+        self.settings = dict()
+        self.settings['selection_string'] = "name P"
+        self._valid_settings = list(self.settings.keys())
+        #self.selection_string = 'all'
+        #self.n_bins = 25
+
+        #parse input arguments/settings
+        self._parse_args(args)
+
+        self.save_file_name = self.analysis_id + ".pickle"
+
+
+        # storage for output
+        self.centers = None
+        self.n_frames = 0
+        self.analysis_output = []
+        self.running = RunningStats()
+        self.first_comp = True
+        self.selection = None
+
+        return
+
+    # required- function to parse the input arguments from string
+    def _cast_settings(self, arg_dict):
+        #in this case the casting is taken care of in _parse_str_to_dict
+        return arg_dict
+
+    # needed to overwrite the string parser to handle the selection string
+    def _parse_str_to_dict(self, args):
+        # print args
+        arg_dict = dict()
+        args = args.split()
+        nargs = len(args)
+        arg_dict['analysis_id'] = args[0]
+        read_sel_string = False
+        n_bins_arg = False
+        for i in range(1, nargs, 1):
+            arg_key = args[i]
+
+            #print ('arg_key: ', arg_key)
+            if arg_key in self._valid_settings:
+                if arg_key == 'n_bins':
+                    arg_arg = args[i + 1]
+                    arg_dict['n_bins'] = int(arg_arg)
+                    read_sel_string = False
+                    n_bins_arg = True
+                elif arg_key == 'selection':
+                    selection_words = [args[j] for j in range(i + 1, nargs) if
+                                       (args[j] not in self._valid_settings)]
+                    i += len(selection_words)
+                    selection_string = ""
+                    for word in selection_words:
+                        selection_string += " " + word
+                    arg_dict['selection_string'] = selection_string
+                    read_sel_string = True
+                    n_bins_arg = False
+            elif not (read_sel_string or n_bins_arg):
+                warnings.warn(
+                    "ignoring invalid argument key " + arg_key + " for analysis " + self.analysis_id)
+        return arg_dict
+
+
+    def reset(self):
+        self.centers = None
+        self.n_frames = 0
+        self.analysis_output = []
+        self.first_comp = True
+        self.selection = None
+        self.running.reset()
+
+        return
+
+    def run_analysis(self, ba_settings, ba_reps, ba_mda_data):
+        first = self.first_comp
+        if self.first_comp:
+            print(self.settings['selection_string'])
+            if self.settings['selection_string'] == "BILAYER":
+                print("bilayer_sel")
+                self.selection = ba_mda_data.bilayer_sel
+            else:
+                print("non-bilayer")
+                self.selection = ba_mda_data.mda_universe.select_atoms(
+                    self.settings['selection_string'])
+                # print(self.selection)
+                # quit()
+            self.first_comp = False
+
+        # print "there are ",len(indices)," members"
+
+        norm_axis = ba_settings['norm']
+        npos = self.selection.positions[:,norm_axis]
+        masses = self.selection.masses
+        dist = 2.0*self._mass_weighted_std(npos, masses)
+        time = ba_reps['current_mda_frame'].time
+        # print (time)
+        current_thickness = dist
+        print(time, dist)
+        self.running.push(current_thickness)
+        bt_t = np.zeros(4)
+        bt_t[0] = time
+        bt_t[1] = current_thickness
+        bt_t[2] = self.running.mean()
+        bt_t[3] = self.running.deviation()
+        print(bt_t)
+        self.analysis_output.append(bt_t)
+
+        return
+
+    def _mass_weighted_std(self, pos, masses):
+        avgpos = np.average(pos, weights=masses)
+        var = np.average((pos-avgpos)**2, weights=masses)
+        return np.sqrt(var)
+
+
+command_protocols['thickness_mass_weighted'] = MassWeightedStdDistProtocol
 
 # define a new analysis 'apl_grid'
 valid_analysis.append('apl_grid')

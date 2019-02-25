@@ -365,6 +365,7 @@ def mass_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axi
     a=0
     for atom in mda_selection:
         masses[a]=atom.mass
+        # print(masses[a])
         a+=1
 
     nframes = len(trajectory)
@@ -384,14 +385,25 @@ def mass_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axi
     bzm=0.0
     nframes = 0
     sel_z = []
+    mizcm = 0.0
+    mazcm = 0.0
     for frame in trajectory[fstart:fend:fstep]:
         bzc = frame.dimensions[dir_ind]
+        z_coords = mda_selection.positions[:,2]
+        mizc = min(z_coords)
+        mazc = max(z_coords)
         if bzc>bzm:
             bzm=bzc
+        if mizc < mizcm:
+            mizcm = mizc
+        if mazc > mazcm:
+            mazcm = mazc
+
         ref_sel_z = 0.0
         if refsel is not None:
             ref_com = refsel.center_of_mass()
             ref_sel_z = ref_com[dir_ind]
+            # print(ref_sel_z)
             sel_z.append(-ref_sel_z)
         nframes+=1
     shiftzmax = 0.0
@@ -401,8 +413,9 @@ def mass_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axi
         shiftzmax = min(sel_z)
         shiftzmin = max(sel_z)
     #build the profile axis
-    minz = 0.0+shiftzmin
-    maxz = bzm+shiftzmax
+    center = (mazcm + mizcm)/2.0
+    minz = center - (bzm/2.0)+ shiftzmin
+    maxz = center + (bzm/2.0)+ shiftzmax
     edges = np.linspace(minz,maxz,(nbins+1),endpoint=True)
     incr = edges[1]-edges[0]
     incr_h = incr/2.0
@@ -427,8 +440,10 @@ def mass_density_profile(trajectory,mda_selection, fstart=0,fend=-1,fstep=1, axi
         sel_pos = frame.positions[indices]
         zpos = sel_pos[:,dir_ind]
         sel_z_curr = sel_z[f]
+        #print()
         zpos+= sel_z_curr
         push_index = (zpos-minz)/incr
+        #print(minz)
         j=0
         for i in push_index:
             ii = int(np.floor(i))

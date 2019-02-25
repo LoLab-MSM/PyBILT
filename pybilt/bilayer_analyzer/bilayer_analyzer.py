@@ -257,7 +257,7 @@ class BilayerAnalyzer(object):
             lipid_grid:area_per_bin (float): Option to set a fixed area per
                 grid element (i.e. the number of bins will auto adjust each
                 frame to keep the element area appproximately constant). If set,
-                this option overides the nxbins and nybins options. 
+                this option overides the nxbins and nybins options.
                 Default: None
             vector_frame:dump (bool): Determines wheter the VectorFrame objects
                 built during interations of the analysis loop are dumped to
@@ -939,7 +939,7 @@ class BilayerAnalyzer(object):
         first_com = self._first_com
         #print("first com: ",first_com)
         #print("first frame: ", firstframe)
-        self.settings['frame_index'] = self.settings['frame_range'][0]
+        self.settings['frame_index'] = self._current_frame
         #for frame in self.mda_data.mda_trajectory[
         #             self._current_frame:self._current_frame+self.frame_range[2]:self.frame_range[
         #                 2]]:
@@ -1038,10 +1038,11 @@ class BilayerAnalyzer(object):
                 i += 1
         if self._frame_loop_count % self.settings['print_interval'] == 0:
             print(" ")
-        self.settings['frame_index'] += self.settings['frame_range'][2]
+        #self.settings['frame_index'] += self.settings['frame_range'][2]
         self._frame_loop_count+=1
         self._leaflet_counter+=1
         self._current_frame+=self.settings['frame_range'][2]
+        print('frame_index', self.settings['frame_index'])
         if self._current_frame <= self._last_frame:
             return
 
