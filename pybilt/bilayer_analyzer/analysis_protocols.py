@@ -1462,7 +1462,7 @@ class MassWeightedStdDistProtocol(AnalysisProtocol):
                     arg_dict['n_bins'] = int(arg_arg)
                     read_sel_string = False
                     n_bins_arg = True
-                elif arg_key == 'selection':
+                elif arg_key == 'selection_string':
                     selection_words = [args[j] for j in range(i + 1, nargs) if
                                        (args[j] not in self._valid_settings)]
                     i += len(selection_words)
