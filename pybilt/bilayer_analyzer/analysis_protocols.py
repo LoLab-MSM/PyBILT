@@ -562,6 +562,7 @@ class MSDProtocol(AnalysisProtocol):
         self.settings = dict()
         self.settings['leaflet'] = 'both'
         self.settings['resname'] = 'all'
+        # self.settings['time_block'] = None
         self._valid_settings = list(self.settings.keys())
         #self.leaflet = 'both'
         #self.resname = 'all'
@@ -614,12 +615,11 @@ class MSDProtocol(AnalysisProtocol):
             count += 1
 
         # initialize a numpy array to hold the msd for the selection
-        msd = np.zeros(2)
+        msd = np.zeros(3)
         # initialize a running stats object to do the averaging over resids
         drs_stat = RunningStats()
 
         ref_coords = np.zeros((n_com, 2))
-
 
         if self._first_frame:
             count = 0
@@ -636,12 +636,20 @@ class MSDProtocol(AnalysisProtocol):
             ref_coords = self._ref_coords
             # get the current com frame list
         tc = ba_reps['com_frame'].time
-        if (tc - self._ref_time) >= 50000.0:
-            self._ref_coords = selcoords[:]
-            ref_coords = selcoords[:]
-            self._ref_time = tc
-            print("updating ref_coords at time {}".format(tc))
+#        if (tc - self._ref_time) >= 50000.0:
+#            self._ref_coords = selcoords[:]
+#            ref_coords = selcoords[:]
+#            self._ref_time = tc
+#            print("updating ref_coords at time {}".format(tc))
             # quit()
+#        if len(self.analysis_output) > 1:
+#            tp = self.analysis_output[-1][0]
+#            ic = ba_reps['com_frame'].number
+#            ip = self.analysis_output[-1][2]
+#            difft = tc - tp
+#            if difft > 200.0:
+#                print('diffhigh ', tc, tp, difft, ic, ip)
+                #quit()
         dt = tc
         dr = selcoords - ref_coords
         drs = dr * dr
@@ -654,6 +662,7 @@ class MSDProtocol(AnalysisProtocol):
         msdcurr = drs_stat.mean()
         msd[0] = dt
         msd[1] = msdcurr
+        msd[2] = ba_reps['com_frame'].number
         self.analysis_output.append(msd)
         return
 
