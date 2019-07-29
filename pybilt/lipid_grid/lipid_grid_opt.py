@@ -493,9 +493,14 @@ class LipidGrids(object):
                                               area_per_bin=area_per_bin)
         return
 
-    def thickness_grid(self):
+    def thickness_grid(self, use_gaussian_filter=False, filter_sigma=10.0, filter_mode='nearest'):
         tgrid = np.zeros((self.nbins_x, self.nbins_y))
-        tgrid = self.leaf_grid['upper'].lipid_grid_z - self.leaf_grid['lower'].lipid_grid_z
+        if use_gaussian_filter:
+            upper = gaussian_filter(self.leaf_grid['upper'].lipid_grid_z, filter_sigma, mode=filter_mode)
+            lower = gaussian_filter(self.leaf_grid['lower'].lipid_grid_z, filter_sigma, mode=filter_mode)
+            tgrid = upper - lower
+        else:
+            tgrid = self.leaf_grid['upper'].lipid_grid_z - self.leaf_grid['lower'].lipid_grid_z
         # for ix in range(self.nbins_x):
         #     for iy in range(self.nbins_y):
         #         zu = self.leaf_grid['upper'].get_z_at(ix, iy)
