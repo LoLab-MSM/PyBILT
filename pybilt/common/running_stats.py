@@ -349,6 +349,18 @@ class BlockAverager(object):
                     n_block += 1
             return n_block
 
+def block_average_bse_v_size(data):
+    n_dat = len(data)
+    max_size = int(n_dat/3)
+    output = list()
+    for i in range(1, max_size+1, 1):
+        block_averager = BlockAverager(points_per_block=i, min_points_in_block=i)
+        block_averager.push_container(data)
+        avg, std_error = block_averager.get()
+        print(i/10, avg, std_error)
+        output.append([i, avg, std_error])
+    return np.array(output)
+
 def binned_average(data, positions, n_bins=25, position_range=None, min_count=0):
     """Compute averages over a quantized range of histogram like bins.
 

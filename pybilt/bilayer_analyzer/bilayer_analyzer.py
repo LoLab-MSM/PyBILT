@@ -668,6 +668,7 @@ class BilayerAnalyzer(object):
         self._mda_data.update_trajectory(new_trajectory)
         if reset_iterator:
             self._current_frame = self.settings['frame_range'][0]
+            self._last_frame = self._mda_data.nframes
         return
 
     # buildable objects functions

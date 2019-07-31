@@ -23,7 +23,7 @@ def test_ba_com_lateral_rdf():
     ba.set_frame_range(first=0, last=-1, interval=100)
     ba.rep_settings['com_frame']['name_dict'] = {'DOPE':['P'],'POPC':['P'],'TLCL2':['C2']}
     ba.settings['print_interval'] = 1
-    print "frame_range: ",ba.settings['frame_range']
+    print("frame_range: ",ba.settings['frame_range'])
     ba.run_analysis()
     print('com_lateral_rdf: ')
     rdf, bins = ba.get_analysis_data('com_lateral_rdf')
