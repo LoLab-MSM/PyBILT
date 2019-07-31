@@ -37,8 +37,8 @@ sfig_params = {
     'savefig.format' : 'eps'
     }
 mpl.rcParams.update(sfig_params)
-#params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
-params = {'figure.figsize': [14.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
+params = {'figure.figsize': [8.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
+#params = {'figure.figsize': [14.75, 7.25], 'font.size': 22, 'axes.labelsize': 32,
     'legend.fontsize': 26,
     'xtick.labelsize': 28,
     'ytick.labelsize': 28,
@@ -53,6 +53,9 @@ sns.set_style("ticks")
 
 _color_list = ['blue', 'green','orange','purple', 'black', 'red', 'yellow', 'gray']
 
+def update_rcparams(rcparams):
+    mpl.rcParams.update(rcparams)
+    return
 
 def plot(dat_list,yerr_list=None, xerr_list=None, name_list=None,filename='plot.eps', save=True, show=False, xlabel=None, ylabel=None,
          marker=None, linestyle=None, xticks=None):

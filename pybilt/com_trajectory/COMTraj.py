@@ -2179,10 +2179,10 @@ class COMTraj(object):
                 curr_leaf = self.leaflets[leaflets]
                 indices+=curr_leaf.get_group_indices(group)
         #n_com = len(indices)
-
+        nprocs = int(nprocs)
         frame_ranges = []
         total_frames = self.nframes
-        frames_per_proc_base = total_frames/nprocs
+        frames_per_proc_base = int(total_frames/nprocs)
         left_over = total_frames % (frames_per_proc_base * nprocs)
         #assign base ranges
         for i in range(nprocs):
