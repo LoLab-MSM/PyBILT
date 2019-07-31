@@ -145,7 +145,7 @@ class Analyses(object):
                 the calling BilayerAnalyzer class object.
 
         """
-        self.use_objects = use_objects
+        self.use_objects = use_objects.copy()
         self.in_commands = analysis_commands
         self.arguments = []
         self.analysis_keys = []
@@ -615,7 +615,7 @@ class MSDProtocol(AnalysisProtocol):
             count += 1
 
         # initialize a numpy array to hold the msd for the selection
-        msd = np.zeros(3)
+        msd = np.zeros(2)
         # initialize a running stats object to do the averaging over resids
         drs_stat = RunningStats()
 
@@ -662,7 +662,7 @@ class MSDProtocol(AnalysisProtocol):
         msdcurr = drs_stat.mean()
         msd[0] = dt
         msd[1] = msdcurr
-        msd[2] = ba_reps['com_frame'].number
+        #msd[2] = ba_reps['com_frame'].number
         self.analysis_output.append(msd)
         return
 
