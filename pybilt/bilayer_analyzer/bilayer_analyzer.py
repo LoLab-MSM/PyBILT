@@ -28,6 +28,7 @@ except ImportWarning as warn:
 import os
 import multiprocessing
 import sys
+import ast
 
 # PyBILT imports
 from . import com_frame as cf
@@ -509,7 +510,7 @@ class BilayerAnalyzer(object):
                 if key in ['structure', 'trajectory', 'selection']:
                     second_term = line.replace(key, '', 1).strip()
                     if key == 'selection':
-                        second_term = eval(second_term)
+                        second_term = ast.literal_eval(second_term)
                     commands[key] = second_term
                 else:
                     if key in self._valid_commands:
