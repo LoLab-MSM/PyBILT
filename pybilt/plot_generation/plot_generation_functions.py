@@ -86,47 +86,47 @@ def plot(dat_list,yerr_list=None, xerr_list=None, name_list=None,filename='plot.
         if (yerr_list is None and xerr_list is None):
             if name_list is not None:
                 if marker is None:
-                    plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
             else:
                 if marker is None:
-                    plt.plot(dat[0], dat[1], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.plot(dat[0], dat[1], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.plot(dat[0], dat[1], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.plot(dat[0], dat[1], marker=marker, linestyle=ls, color=next(_colors))
         elif (yerr_list is not None) and (xerr_list is None):
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle=ls, color=next(_colors))
         elif (yerr_list is None) and (xerr_list is not None):
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], marker=marker, linestyle=ls, color=next(_colors))
         else:
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], linestyle=ls, marker=_marker.next(), color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], marker=marker, linestyle=ls, color=_colors.next())
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], marker=marker, linestyle=ls, color=next(_colors))
         i+=1
     if xticks is not None:
         plt.xticks(xticks)
@@ -430,7 +430,7 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True,
         color_dict = {}
         color_names = {'POPC':'green', 'DOPE':'blue', 'TLCL2':'gold'}
         for res in resnames:
-            color_dict[res] = _colors.next()
+            color_dict[res] = next(_colors)
         #color_dict['POPC'] = '#1e8449'
         colors = []
         for residue in vectors_resnames[1]:
@@ -1403,12 +1403,12 @@ def plot_ebar_hists(center_count_err, name_list=None, filename='ebar_hist.eps',
     i = 0
     for cce in center_count_err:
         if name_list is not None:
-            plt.errorbar(cce[0], cce[1], yerr=cce[2], marker=_marker.next(),
-                         drawstyle='steps-mid', color=_colors.next(),
+            plt.errorbar(cce[0], cce[1], yerr=cce[2], marker=next(_marker),
+                         drawstyle='steps-mid', color=next(_colors),
                          label=name_list[i])
         else:
-            plt.errorbar(cce[0], cce[1], yerr=cce[2], marker=_marker.next(),
-                         drawstyle='steps-mid', color=_colors.next())
+            plt.errorbar(cce[0], cce[1], yerr=cce[2], marker=next(_marker),
+                         drawstyle='steps-mid', color=next(_colors))
         i += 1
     if xlabel is not None:
         plt.xlabel(xlabel)
@@ -1499,8 +1499,8 @@ def plot_spark_multi(xdats,ydats,filename='plot.eps', save=True, show=False, col
         try:
             color = colors[i]
         except:
-            color = _colors.next()
-        ax.plot(xdat, ydat, color=color, marker=_marker.next(), linestyle='-')
+            color = next(_colors)
+        ax.plot(xdat, ydat, color=color, marker=next(_marker), linestyle='-')
         ax.fill_between(xdat, ydat, min(ydats[2]), alpha=0.2, color=color)
     for k,v in ax.spines.items():
         v.set_visible(False)
