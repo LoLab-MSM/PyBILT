@@ -26,7 +26,6 @@ except ImportWarning as warn:
     import pickle
 
 import os
-import multiprocessing
 import sys
 import ast
 
@@ -39,7 +38,7 @@ from . import analysis_protocols as ap
 from . import plot_protocols as pp
 from pybilt.common.running_stats import RunningStats
 from . import mda_data as md
-import MDAnalysis as mda
+
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap_vectorized import wrap_coordinates, \
     wrap_coordinates_parallel
