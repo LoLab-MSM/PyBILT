@@ -156,13 +156,13 @@ If you would like to contribute directly to PyBILT's development please
 
 ------
 
-## License
+# License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ------
 
-## Acknowledgments
+# Acknowledgments
 
 * A special thanks to James Pino (https://github.com/JamesPino) for his inciteful comments and suggestions that have helped improve the quality of this code, and thanks to him for pointing out some very useful coding tools.   
 * Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing this project and for providing me with the space and means to pursue it.  
