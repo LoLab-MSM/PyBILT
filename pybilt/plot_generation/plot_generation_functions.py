@@ -15,7 +15,7 @@ from six.moves import range
 # solution based on answer by eitanrich
 # https://stackoverflow.com/questions/8257385/automatic-detection-of-display-availability-with-matplotlib
 if os.name == 'posix' and "DISPLAY" not in os.environ:
-    matplotlib.use('Agg')
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
