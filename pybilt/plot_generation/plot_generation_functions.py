@@ -5,7 +5,6 @@ https://stanford.edu/~mwaskom/software/seaborn/index.html).
 
 '''
 
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -13,17 +12,11 @@ import os
 import matplotlib as mpl
 from six.moves import range
 #check for display and swith mpl backend to Agg is there is none
-# solution based on answer by Jindra Helcl on
+# solution based on answer by eitanrich
 # https://stackoverflow.com/questions/8257385/automatic-detection-of-display-availability-with-matplotlib
-_havedisplay = "DISPLAY" in os.environ
-if not _havedisplay:
-    exitval = os.system('python -c "import matplotlib.pyplot as plt; plt.figure()"')
-    _havedisplay = (exitval == 0)
-if not _havedisplay:
+if os.name == 'posix' and "DISPLAY" not in os.environ:
     mpl.use('Agg')
 import matplotlib.pyplot as plt
-#import matplotlib.cm as cm
-#import matplotlib.colors as colors
 import seaborn as sns
 import numpy as np
 import sys
@@ -86,47 +79,77 @@ def plot(dat_list,yerr_list=None, xerr_list=None, name_list=None,filename='plot.
         if (yerr_list is None and xerr_list is None):
             if name_list is not None:
                 if marker is None:
-                    plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.plot(dat[0], dat[1],label=name_list[i], linestyle=ls,
+                             marker=next(_marker), color=next(_colors))
                 else:
-                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.plot(dat[0], dat[1],label=name_list[i], marker=marker,
+                             linestyle=ls, color=next(_colors))
             else:
                 if marker is None:
-                    plt.plot(dat[0], dat[1], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.plot(dat[0], dat[1], linestyle=ls,
+                             marker=next(_marker), color=next(_colors))
                 else:
-                    plt.plot(dat[0], dat[1], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.plot(dat[0], dat[1], marker=marker, linestyle=ls,
+                             color=next(_colors))
         elif (yerr_list is not None) and (xerr_list is None):
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],
+                                 label=name_list[i], linestyle=ls,
+                                 marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],
+                                 label=name_list[i], marker=marker,
+                                 linestyle=ls, color=next(_colors))
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],
+                                 linestyle=ls, marker=next(_marker),
+                                 color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], yerr=yerr_list[i],
+                                 marker=marker, linestyle=ls,
+                                 color=next(_colors))
         elif (yerr_list is None) and (xerr_list is not None):
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 label=name_list[i], linestyle=ls,
+                                 marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 label=name_list[i], marker=marker,
+                                 linestyle=ls, color=next(_colors))
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 linestyle=ls, marker=next(_marker),
+                                 color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 marker=marker, linestyle=ls,
+                                 color=next(_colors))
         else:
             if name_list is not None:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], label=name_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 yerr=yerr_list[i], label=name_list[i],
+                                 linestyle=ls, marker=next(_marker),
+                                 color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i],label=name_list[i], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 yerr=yerr_list[i],label=name_list[i],
+                                 marker=marker, linestyle=ls,
+                                 color=next(_colors))
             else:
                 if marker is None:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], linestyle=ls, marker=next(_marker), color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 yerr=yerr_list[i], linestyle=ls,
+                                 marker=next(_marker), color=next(_colors))
                 else:
-                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i], yerr=yerr_list[i], marker=marker, linestyle=ls, color=next(_colors))
+                    plt.errorbar(dat[0], dat[1], xerr=xerr_list[i],
+                                 yerr=yerr_list[i], marker=marker,
+                                 linestyle=ls, color=next(_colors))
         i+=1
     if xticks is not None:
         plt.xticks(xticks)
@@ -197,7 +220,8 @@ def gen_step_vector_ghost_tails(vectors_resnames, length=5, periodic_cut=75.0):
             tails[i].append((xk, yk))
     return tails
 
-def gen_step_vector_net_ghost_tails(vectors_resnames, length=6, group_size=2, periodic_cut=75.0):
+def gen_step_vector_net_ghost_tails(vectors_resnames, length=6, group_size=2,
+                                    periodic_cut=75.0):
     n_traj = len(vectors_resnames)
     n_vecs = len(vectors_resnames[0][0])
     tails = []
@@ -227,8 +251,6 @@ def gen_step_vector_net_ghost_tails(vectors_resnames, length=6, group_size=2, pe
                 ny = y[l+1]
                 dx = np.abs(nx - cx)
                 dy = np.abs(ny - cy)
-                #dist = np.sqrt(dx**2 + dy**2)
-                #print(dx, dy)
                 if dx < periodic_cut and dy < periodic_cut:
                     xx.append(cx)
                     yy.append(cy)
@@ -238,7 +260,7 @@ def gen_step_vector_net_ghost_tails(vectors_resnames, length=6, group_size=2, pe
 
             xx.append(x[n_p-1])
             yy.append(y[n_p-1])
-            #print(xx)
+            # print(xx)
             xk = np.array(xx)
             yk = np.array(yy)
             tails[i].append((xk, yk))
@@ -334,9 +356,9 @@ def gen_step_vector_smooth_ghost_tails_forwards(vectors_resnames, length_back=9,
     n_vecs = len(vectors_resnames[0][0])
     smooth_delta = (window -1)/2
     tails = []
-    #first do tails back
+    # first do tails back
     for i in range(n_traj):
-        back_index = i - length
+        back_index = i - length_back
         while back_index < 0:
             back_index += 1
         tails.append([])
@@ -419,24 +441,24 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True,
     vx = vectors_resnames[0][:,2]
     vy = vectors_resnames[0][:,3]
     with plt.rc_context({'figure.figsize': [8.00, 7.25], 'font.size': 16, 'axes.labelsize': 22,
-        'legend.fontsize': 20,
-        'xtick.labelsize': 16,
-        'ytick.labelsize': 16}):
+                         'legend.fontsize': 20,
+                         'xtick.labelsize': 16,
+                         'ytick.labelsize': 16}):
         plt.figure()
-        #plt.style.use('figure.figsize': [14.75, 7.25])
+        # plt.style.use('figure.figsize': [14.75, 7.25])
         resnames = sorted(set(vectors_resnames[1]))
         resnames = ['POPC', 'DOPE', 'TLCL2']
-        i = 0
+        # i = 0
         color_dict = {}
         color_names = {'POPC':'green', 'DOPE':'blue', 'TLCL2':'gold'}
         for res in resnames:
             color_dict[res] = next(_colors)
-        #color_dict['POPC'] = '#1e8449'
+        # color_dict['POPC'] = '#1e8449'
         colors = []
         for residue in vectors_resnames[1]:
             colors.append(color_dict[residue])
         #print(x)
-       # Q = plt.quiver(x,y,vx,vy,color=colors)
+        # Q = plt.quiver(x,y,vx,vy,color=colors)
         #vector = np.array([vx[0], vy[1]])
         #print("vector 0 length is: {}".format(np.sqrt(np.dot(vector,vector))))
         # plot tails first
@@ -479,8 +501,6 @@ def plot_step_vectors(vectors_resnames, filename='step_vectors.pdf',save=True,
         #else:
         #    plt.quiver(x,y,vx,vy)
         #plt.title('Lateral Displacement Vectors')
-
-
         if scaled:
             plt.xlabel("x (scaled coordinates)")
             plt.ylabel("y (scaled coordinates)")
@@ -544,9 +564,7 @@ def plot_step_vectors_stroboscopic(vectors_resnames, index=0,
     (or step vectors) of a single lipid.
     Takes the output from the 'disp_vec' analysis of the bilayer_analyzer:
     '''
-    color_list = _color_list
     sns.set_style("whitegrid")
-
     plt.figure()
     x = []
     y = []
@@ -557,8 +575,7 @@ def plot_step_vectors_stroboscopic(vectors_resnames, index=0,
     #print(x)
     #print(y)
     Q = plt.plot(x, y)
-    label_string = ""
-
+    # label_string = ""
     #else:
     #    plt.quiver(x,y,vx,vy)
     #plt.title('Lateral Displacement Vectors')
@@ -1595,7 +1612,9 @@ def plot_spark_marker(xdat,ydat,filename='plot.eps', save=True, show=False, colo
     plt.close()
     return
 
-def plot_spark_error_marker(xdat,ydat, error, filename='plot.eps', save=True, show=False, color='#47d147', marker='s'):
+def plot_spark_error_marker(xdat,ydat, error, filename='plot.eps',
+                            save=True, show=False, color='#47d147',
+                            marker='s'):
     """Generic plotting function for (multiple) xy datasets.
     Based on matplotlib spark_line function defined here:
     https://markhneedham.com/blog/2017/09/23/python-3-create-sparklines-using-matplotlib/
@@ -1612,8 +1631,8 @@ def plot_spark_error_marker(xdat,ydat, error, filename='plot.eps', save=True, sh
         marker (str, Optional): Specify a matplotlib marker type for data points.
 
     """
-    _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
-    _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
+    # _colors = itertools.cycle(('#47d147', '#2929a3', '#e6b800', '#e65c00', '#cc33ff', '#33ccff', '#009999', '#996633', '#666699'))
+    # _marker = itertools.cycle(('s', 'o', 'v', 'p', 'D', '^', '8', '>', '<'))
 
     fig, ax = plt.subplots(1, 1)
     ax.plot(xdat, ydat, color=color, marker=marker, markersize=40)
@@ -1629,7 +1648,6 @@ def plot_spark_error_marker(xdat,ydat, error, filename='plot.eps', save=True, sh
     plt.tight_layout()
     if save:
         plt.savefig(filename, transparent=True, bbox_inches='tight')
-
     if show:
         return plt.show()
     plt.close()

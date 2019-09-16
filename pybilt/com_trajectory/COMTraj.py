@@ -28,10 +28,8 @@ import shelve
 import multiprocessing as mp
 from scipy.spatial import Voronoi
 from scipy.spatial import Delaunay
-#import copy
-
-#import running stats class
-from pybilt.common.running_stats import *
+# import running stats class
+from pybilt.common.running_stats import RunningStats, gen_running_average
 # import the coordinate wrapping function--for unwrapping
 from pybilt.mda_tools.mda_unwrap import wrap_coordinates,wrap_coordinates_parallel
 from six.moves import range
@@ -834,7 +832,7 @@ def thickness_frames(frames, fstart, fend, leaflets, nlipids, plane, norm):
             comclo = fr.lipidcom[idl].com
             distxy = 10000.0
             distz = 0.0
-            mindex = 0
+            # mindex = 0
             zlom = 0.0
             zhim = 0.0
             xavgm = 0.0
@@ -1344,7 +1342,7 @@ class COMTraj(object):
                 comclo = fr.lipidcom[idl].com
                 distxy = 10000.0
                 distz = 0.0
-                mindex = 0
+                # mindex = 0
                 zlom = 0.0
                 zhim = 0.0
                 xavgm = 0.0
@@ -1509,7 +1507,7 @@ class COMTraj(object):
                     #get neighbors of the start
                     #mindex=0
                     for j in range(len(masterlistf)):
-                    #for elem in masterlistf:
+                        #for elem in masterlistf:
                         elem = masterlistf[j]
                         incluster = elem[1]
                         #    print "second incluster ",incluster

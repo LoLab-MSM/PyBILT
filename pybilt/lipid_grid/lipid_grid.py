@@ -16,14 +16,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from builtins import object
+from six.moves import range
 import numpy as np
-import sys
 from scipy.ndimage.filters import gaussian_filter
 # pybilt imports
 from pybilt.common.running_stats import RunningStats
-from six.moves import range
-
-
 
 def grid_curvature(x_vals, y_vals, zgrid):
     """Compute the Mean and Gaussian curvature across a grid.
@@ -654,7 +651,7 @@ class LipidGrids(object):
 
         # Open up the file to write to
         pdb_out = open(pdb_name, "w")
-        npoints = (self.nbins_x*self.nbins_y)*len(do_leaflet)
+        # npoints = (self.nbins_x*self.nbins_y)*len(do_leaflet)
         # First line to write is the box dimensions
         box = self.frame.box
         box_data = "CRYST1  {:06.3f}  {:06.3f}  {:06.3f}".format(box[0],

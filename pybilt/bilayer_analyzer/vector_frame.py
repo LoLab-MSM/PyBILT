@@ -5,10 +5,6 @@ from __future__ import print_function
 from builtins import object
 import MDAnalysis as mda
 import numpy as np
-from mpl_toolkits.mplot3d import axes3d
-import pybilt.plot_generation.plot_generation_functions as pgf
-import matplotlib.pyplot as plt
-import sys
 from six.moves import range
 
 class LipidVec(object):
@@ -152,8 +148,8 @@ class VectorFrame(object):
         # initialize all the LipidVec objects
         for dummy_i in range(nlipids):
             self.lipidvec.append(LipidVec())
-        #atom indices in mda selection/frame
-        index = mda_bilayer_selection.indices
+        # atom indices in mda selection/frame
+        # index = mda_bilayer_selection.indices
         # loop over the residues (lipids) and get the centers of mass
         ## do the wrapped coordinates
 

@@ -378,7 +378,7 @@ class COMFrame(object):
                     if wrapped:
                         coords.append(item.com)
                     else:
-                        coords.append(item.com_unwrap)            
+                        coords.append(item.com_unwrap)
         return np.array(coords)
 
     def masses(self):
