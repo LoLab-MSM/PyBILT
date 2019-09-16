@@ -136,10 +136,10 @@ usage (these have not been updated/tested for/with python 3 yet); updates and mo
 # Contact
 
 To report problems or bugs please open a
-[GitHub Issue](https://github.com/blakeaw/PyBILT/issues). Additionally, any
+[GitHub Issue](https://github.com/LoLab-VU/PyBILT/issues). Additionally, any
 comments, suggestions, or feature requests for PyBILT can also be submitted as
 a
-[GitHub Issue](https://github.com/blakeaw/PyBILT/issues).
+[GitHub Issue](https://github.com/LoLab-VU/PyBILT/issues).
 
 ------
 
@@ -190,5 +190,7 @@ Reference can be exported from the [seaborn Zeondo DOI entry](https://doi.org/10
 See: https://github.com/jupyter/jupyter/issues/190
 
 #### IPython
+
 See: https://ipython.org/citing.html
+
 ------
