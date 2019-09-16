@@ -1,11 +1,8 @@
 from __future__ import print_function
 from pybilt.bilayer_analyzer import BilayerAnalyzer
 import numpy as np
-from pybilt.plot_generation import plot_generation_functions as pgf
-from pybilt.plot_generation.plot_generation_functions import _color_list
 import pybilt.lipid_grid.lipid_grid as lg
 import pybilt.lipid_grid.lipid_grid_opt as lgo
-
 
 def test_lipid_grid_opt():
     sel_string = "resname POPC DOPE TLCL2"
@@ -21,8 +18,6 @@ def test_lipid_grid_opt():
     #analyzer.rep_settings['lipid_grid']['n_xbins'] = nbins
     #analyzer.rep_settings['lipid_grid']['n_ybins'] = nbins
     analyzer.set_frame_range(0,1,1)
-    i =0
-    zgrid = None
     for _frame in analyzer:
         lipid_grid = lg.LipidGrids(analyzer.reps['com_frame'], analyzer.reps['leaflets'], [0,1], nxbins=nbins, nybins=nbins)
         lipid_grid_opt = lgo.LipidGrids(analyzer.reps['com_frame'], analyzer.reps['leaflets'], [0,1], nxbins=nbins, nybins=nbins)
