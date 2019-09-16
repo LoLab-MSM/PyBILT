@@ -18,17 +18,13 @@ from __future__ import division
 from __future__ import print_function
 from builtins import object
 import numpy as np
-import warnings
 from six.moves import range
 try:
     import six.moves.cPickle as pickle
 except ImportWarning as warn:
     import pickle
-
 import os
-import sys
 import ast
-
 # PyBILT imports
 from . import com_frame as cf
 from . import leaflet as lf
@@ -856,28 +852,19 @@ class BilayerAnalyzer(object):
                     'lower': lf.Leaflet('lower')}
         l = 0
         for lipcom in com_frame.lipidcom:
-            sel_str = "resname {} and resid {}".format(lipcom.type, lipcom.resid)
-            # residue = self._mda_data.mda_universe.select_atoms(sel_str)
             resname = lipcom.type
             resid = lipcom.resid
             tail_str = "resname {} and resid {} and name {}".format(resname, resid,self.rep_settings['leaflets']['orientation_atoms'][resname][0])
             tail = self._mda_data.mda_universe.select_atoms(tail_str)
-            # print(tail, len(tail))
             tail_v = tail.center_of_mass()
             head_str = "resname {} and resid {} and name {}".format(resname, resid,self.rep_settings['leaflets']['orientation_atoms'][resname][1])
             head = self._mda_data.mda_universe.select_atoms(head_str)
             head_v = head.center_of_mass()
-            # print(tail_v)
-            # print(head_v)
             vec = head_v - tail_v
-            # print(vec)
             norm = self.settings['norm']
             norm_vec = np.zeros(3)
             norm_vec[norm] = 1.0
             cost = np.dot(vec, norm_vec)/np.sqrt(np.dot(vec, vec))
-            # print(tail_str, head_str)
-            # print(tail_v, head_v, cost)
-            # print(" ")
             pos = ""
             if cost > 0.0:
                 pos = 'upper'
@@ -916,10 +903,6 @@ class BilayerAnalyzer(object):
         The function performs the loop over the trajectory. At each frame it
         builds the necessary objects (e.g. COMFrame) and then executes the
         analysis of each analysis that was initialized in the setup.
-
-        Args:
-            nprocs (int): An integer specifying the number of cores to use in
-            multithreaded parallelelization.
 
         """
         if self._current_frame > self._last_frame:
@@ -971,7 +954,7 @@ class BilayerAnalyzer(object):
             self._oldcoords = oldcoord
             # print (wrapcoord)
             if self._analysis_protocol.use_objects['com_frame']:
-            # now build the COMFrame
+                # now build the COMFrame
                 self.reps['com_frame'] = cf.COMFrame(frame, self._mda_data.bilayer_sel,
                                              wrapcoord,
                                              name_dict =
