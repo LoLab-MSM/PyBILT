@@ -4,6 +4,8 @@
 ![Python version badge](https://img.shields.io/badge/python-2.7%2C3.6%2C3.7-blue.svg)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2d6da71328a24ef6930ad8f554074292)](https://www.codacy.com/manual/blakeaw1102/PyBILT?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LoLab-VU/PyBILT&amp;utm_campaign=Badge_Grade)
+![version](https://img.shields.io/badge/version-0.2.0-orange.svg)
+[![release](https://img.shields.io/github/release-pre/LoLab-VU/PyBILT.svg)](https://github.com/LoLab-VU/PyBILT/releases/tag/v0.2.0)
 [![Documentation Status](https://readthedocs.org/projects/pybilt/badge/?version=latest)](http://pybilt.readthedocs.io/en/latest/?badge=latest)
 
 ------
