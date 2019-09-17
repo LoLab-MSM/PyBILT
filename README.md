@@ -6,6 +6,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2d6da71328a24ef6930ad8f554074292)](https://www.codacy.com/manual/blakeaw1102/PyBILT?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LoLab-VU/PyBILT&amp;utm_campaign=Badge_Grade)
 ![version](https://img.shields.io/badge/version-0.2.0-orange.svg)
 [![release](https://img.shields.io/github/release-pre/LoLab-VU/PyBILT.svg)](https://github.com/LoLab-VU/PyBILT/releases/tag/v0.2.0)
+[![Anaconda-Server Badge](https://anaconda.org/blakeaw/pybilt/badges/version.svg)](https://anaconda.org/blakeaw/pybilt)
 [![Documentation Status](https://readthedocs.org/projects/pybilt/badge/?version=latest)](http://pybilt.readthedocs.io/en/latest/?badge=latest)
 
 ------
@@ -56,6 +57,18 @@ However, this will not automatically install the core dependencies. You will hav
 pip install MDAnalysis numpy scipy matplotlib seaborn six future
 ```
 
+### conda install
+First make sure you have the `conda-forge` channel in your channel list; that is the channel from which MDAnalysis is installed. You can use the following command to add it to the bottom of your channel list:
+```
+conda config --append channels conda-forge
+```
+
+Then you can install the `pybilt` package from the `blakeaw` Anaconda Cloud channel,
+```
+conda install -c blakeaw pybilt
+```
+The core dependencies will be automatically installed.
+
 ### Recommended additional software
 
 The following software is not required for the basic operation of **PyBILT**, but provides extra capabilities and features when installed.
@@ -68,7 +81,7 @@ The pybilt test suite is designed to be run with [pytest](https://docs.pytest.or
 
 Note that the notebooks have not been updated for Python 3 yet.
 
-#### Want to build doc pages locally?
+#### sphinx, sphinx_rtd_theme, and recommonmark
 If you want to build local versions of doc pages install the following additional packages:
   * [sphinx](http://www.sphinx-doc.org/en/master/)
   * [sphinx_rtd_theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/)
@@ -77,7 +90,9 @@ If you want to build local versions of doc pages install the following additiona
 
 ------
 
-# Quick overview of PyBILT
+# Documentation and Usage
+
+## Quick overview of PyBILT
 **PyBILT** is composed of 2 primary analysis packages:
   * bilayer_analyzer -- The [bilayer_analyzer](http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.bilayer_analyzer) is an analysis package that
                         is designed to analyze (quasi) planar lipid bilayer
@@ -120,16 +135,14 @@ analysis type. See the [documentation](https://pybilt.readthedocs.io/en/latest/b
                        (using matplotlib and seaborn) for some of the properties
                        that can be computed from functions in the other modules.
                        e.g. mean squared displacement and area per lipid.
-
-------
-
-# Documentation
-
+## Docs
 Visit the PyBILT docs on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html).
 Docs can also be viewed offline/locally by opening the [PyBILT/docs/build/html/index.html](docs/build/html/index.html) file from the
 repo in a web browser; however, this build of the docs is not updated often.
+
+## Jupyter IPython notebooks
 In addition
-to the doc pages, there are currently a few Jupyter IPython
+to the Docs, there are currently a few Jupyter IPython
 [notebooks](jupyter_notebooks) that provide some examples and show some basic
 usage (these have not been updated/tested for/with python 3 yet); updates and more of these are in the pipeline.
 
