@@ -1,11 +1,14 @@
 ![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
 # *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
 ------
-![Python version badge](https://img.shields.io/badge/python-2.7%2C3.6-blue.svg)
+![Python version badge](https://img.shields.io/badge/python-2.7%2C3.6%2C3.7-blue.svg)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
-[![Code Health](https://landscape.io/github/LoLab-VU/PyBILT/master/landscape.svg?style=flat)](https://landscape.io/github/LoLab-VU/PyBILT/master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2d6da71328a24ef6930ad8f554074292)](https://www.codacy.com/manual/blakeaw1102/PyBILT?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LoLab-VU/PyBILT&amp;utm_campaign=Badge_Grade)
+![version](https://img.shields.io/badge/version-0.2.0-orange.svg)
+[![release](https://img.shields.io/github/release-pre/LoLab-VU/PyBILT.svg)](https://github.com/LoLab-VU/PyBILT/releases/tag/v0.2.0)
+[![Anaconda-Server Badge](https://anaconda.org/blakeaw/pybilt/badges/version.svg)](https://anaconda.org/blakeaw/pybilt)
 [![Documentation Status](https://readthedocs.org/projects/pybilt/badge/?version=latest)](http://pybilt.readthedocs.io/en/latest/?badge=latest)
-[![docstring-coverage badge](https://img.shields.io/badge/docstring--coverage-49.5%25-orange.svg)](.docstring-coverage_report.txt)
+
 ------
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
 
@@ -27,123 +30,69 @@ The analyses include:
 
 # Install
 
-| **! Warning** |
-| :--- |
-|  PyBILT is still under heavy development and may rapidly change. |
+### Core dependencies
+PyBILT has the following core dependencies:
+   * [MDAnalysis](https://www.mdanalysis.org/)
+   * [NumPy](http://www.numpy.org/)
+   * [SciPy](https://www.scipy.org/)
+   * [Matplotlib](https://matplotlib.org/)
+   * [Seaborn](https://seaborn.pydata.org/)
+   * [six](https://pypi.org/project/six/)
+   * [future](http://python-future.org/)
 
-#### PyBILT run dependencies
-PyBILT has the following major dependencies:
-   * MDAnalysis - https://www.mdanalysis.org/
-   * NumPy - http://www.numpy.org/
-   * SciPy - https://www.scipy.org/
-   * Matplotlib - https://matplotlib.org/
-   * Seaborn - https://seaborn.pydata.org/
-   * six - https://pypi.org/project/six/
-   * future - http://python-future.org/
+### Python version support
+The pybilt package has been tested using [Anaconda Python](https://www.anaconda.com/) 2.7, 3.6, and 3.7.
 
-To run the pybilt test suite:
-   * pytest - https://docs.pytest.org/en/latest/
+#### Sunsetting of Python 2
+Please be aware that Python 2 is scheduled to be sunset on January 1 2020. You can read about it here: [https://www.python.org/doc/sunset-python-2/](https://www.python.org/doc/sunset-python-2/)
+Parallel to the sunsetting of Python 2 many open source packages are also dropping support for Python 2 ([https://python3statement.org/](https://python3statement.org/)), including some of PyBILT's core dependencies. As such, after January 1, 2020, PyBILT will also likely sunset its support for Python 2.7.  
 
-To use the PyBILT Jupyter Notebooks:
-   * Jupyter - http://jupyter.org/
-
-To build the docs locally requires the following additional packages:
-   * Sphinx - http://www.sphinx-doc.org/en/master/
-   * recommonmark - https://recommonmark.readthedocs.io/en/latest/
-   * sphinx_rtd_theme - https://sphinx-rtd-theme.readthedocs.io/en/latest/
-
-
-
-The pybilt package has been tested using [Anaconda Python](https://www.anaconda.com/) 2.7 and Python 3.6;
-
-The following section describes the process for setting up the dependencies and
-installing the 'pybilt' package using a conda environment and the setup.py
-script.
-
-## Setup and install using Anaconda's conda tool
-
-### Method 1 (manual package installation)
-First, clone or download the GitHub repo
+### pip install
+You can install the latest version of the `pybilt` package using `pip` sourced from the GitHub repo:
 ```
-git clone https://github.com/blakeaw/PyBILT.git
+pip install -e git+https://github.com/LoLab-VU/PyBILT#egg=pybilt
 ```
-Then create a new conda environment for pybilt and activate it:
+However, this will not automatically install the core dependencies. You will have to do that separately:
 ```
-conda create --name pybilt
-conda activate pybilt
-```
-The install the preferred python version:
- * for Python 2.7
-```
-conda install python=2.7
-```
- * for Python 3.6
- ```
- conda install python=3.6
- ```
-
-Then install all the pybilt run dependencies:
-```
-conda install numpy scipy matplotlib seaborn six future
-conda install -c conda-forge MDAnalysis
-```
-Then install pybilt:
-```
-python PyBILT/setup.py install
+pip install MDAnalysis numpy scipy matplotlib seaborn six future
 ```
 
-If you want to run the pybilt tests you can install pytest:
+### conda install
+First make sure you have the `conda-forge` channel in your channel list; that is the channel from which MDAnalysis is installed. You can use the following command to add it to the bottom of your channel list:
 ```
-conda install pytest
+conda config --append channels conda-forge
 ```
 
-If you want to run the pybilt Jupyter notebooks (PyBILT/jupyter_notebooks), then install Jupyter:
+Then you can install the `pybilt` package from the `blakeaw` Anaconda Cloud channel,
 ```
-conda install jupyter
+conda install -c blakeaw pybilt
 ```
+The core dependencies will be automatically installed.
+
+### Recommended additional software
+
+The following software is not required for the basic operation of **PyBILT**, but provides extra capabilities and features when installed.
+
+#### pytest
+The pybilt test suite is designed to be run with [pytest](https://docs.pytest.org/en/latest/), so if you want to run the tests then you will need to install pytest.
+
+#### Jupyter
+ PyBILT comes with a set of [Jupyter IPython notebooks](./jupyter_notebooks) which supplement the doc pages. If you want to run these notebooks locally then you will need to intall [Jupyter](https://jupyter.org/) (or at least the IPython kernel).
+
 Note that the notebooks have not been updated for Python 3 yet.
 
-If you want to build local versions of doc pages install the following packages:
-```
-conda install sphinx
-pip install sphinx_rtd_theme
-pip install recommonmark
-```
+#### sphinx, sphinx_rtd_theme, and recommonmark
+If you want to build local versions of doc pages install the following additional packages:
+  * [sphinx](http://www.sphinx-doc.org/en/master/)
+  * [sphinx_rtd_theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/)
+  * [recommonmark](https://recommonmark.readthedocs.io/en/latest/)
 
-### Method 2 (From environment yaml)
-
-The files environment_py27.yml and environment_py36.yml have been provided to allow for easy setup of a new conda
-environment with all of the most recently tested versions of dependencies.
-Run:
- * For Python 2.7:
-```
-conda env create -f environment_py27.yml
-```
- * For Python 3.6
- ```
- conda env create -f environment_py36.yml
- ```
-
-which will create a new conda environment named *pybilt* with the appropriate
-dependencies. Then activate the environment
-```
-conda activate pybilt
-```
-Next, run the setup.py script with install,
-```
-python PyBILT/setup.py install
-```
-to install the 'pybilt' package into the *pybilt* environment.  
-
-If you want to run the pybilt Jupyter notebooks (PyBILT/jupyter_notebooks), then install Jupyter:
-```
-conda install jupyter
-```
-Note that the notebooks have not been updated for Python 3 yet.
 
 ------
 
-# Quick overview of PyBILT
+# Documentation and Usage
+
+## Quick overview of PyBILT
 **PyBILT** is composed of 2 primary analysis packages:
   * bilayer_analyzer -- The [bilayer_analyzer](http://pybilt.readthedocs.io/en/latest/pybilt.bilayer_analyzer.html#module-pybilt.bilayer_analyzer.bilayer_analyzer) is an analysis package that
                         is designed to analyze (quasi) planar lipid bilayer
@@ -186,16 +135,14 @@ analysis type. See the [documentation](https://pybilt.readthedocs.io/en/latest/b
                        (using matplotlib and seaborn) for some of the properties
                        that can be computed from functions in the other modules.
                        e.g. mean squared displacement and area per lipid.
-
-------
-
-# Documentation
-
+## Docs
 Visit the PyBILT docs on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html).
 Docs can also be viewed offline/locally by opening the [PyBILT/docs/build/html/index.html](docs/build/html/index.html) file from the
 repo in a web browser; however, this build of the docs is not updated often.
+
+## Jupyter IPython notebooks
 In addition
-to the doc pages, there are currently a few Jupyter IPython
+to the Docs, there are currently a few Jupyter IPython
 [notebooks](jupyter_notebooks) that provide some examples and show some basic
 usage (these have not been updated/tested for/with python 3 yet); updates and more of these are in the pipeline.
 
@@ -204,22 +151,17 @@ usage (these have not been updated/tested for/with python 3 yet); updates and mo
 # Contact
 
 To report problems or bugs please open a
-[GitHub Issue](https://github.com/blakeaw/PyBILT/issues). Additionally, any
+[GitHub Issue](https://github.com/LoLab-VU/PyBILT/issues). Additionally, any
 comments, suggestions, or feature requests for PyBILT can also be submitted as
 a
-[GitHub Issue](https://github.com/blakeaw/PyBILT/issues).
-
-For any other inquiries, including questions about PyBILT use or
-implementation, you can contact Blake directly via e-mail at either
-blake.a.wilson@vanderbilt.edu or blakeaw1102@gmail.com; please include "PyBILT
-inquiry" in the e-mail subject line.
+[GitHub Issue](https://github.com/LoLab-VU/PyBILT/issues).
 
 ------
 
 # Contributing
 
 If you would like to contribute directly to PyBILT's development please
- 1. Fork the repo (https://github.com/blakeaw/PyBILT/fork)
+ 1. Fork the repo (https://github.com/LoLab-VU/PyBILT/fork)
  2. Create a new branch for your feature (git checkout -b feature/foo_bar)
  3. Create test code for your feature
  4. Once your feature passes its own test, run all the tests using [pytest](https://docs.pytest.org/en/latest/) (python -m pytest)
@@ -229,42 +171,41 @@ If you would like to contribute directly to PyBILT's development please
 
 ------
 
-## License
+# License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ------
 
-## Acknowledgments
+# Acknowledgments
 
 * A special thanks to James Pino (https://github.com/JamesPino) for his inciteful comments and suggestions that have helped improve the quality of this code, and thanks to him for pointing out some very useful coding tools.   
 * Thanks to my advisors, Carlos F. Lopez and Arvind Ramanathan, for catalyzing this project and for providing me with the space and means to pursue it.  
 
 ------
 
-## Built With
+# Citing
 
-* [ANACONDA](https://www.continuum.io/) - ANACONDA Python distribution and CONDA package and environment manager
-* [PyCharm](https://www.jetbrains.com/pycharm/) - Text Editor/IDE
-* [ATOM](https://atom.io/) - Text Editor/IDE
-* [Sublime Text](https://www.sublimetext.com/) - Text Editor used in earlier work
-* [Landscape](https://landscape.io/) - Code quality analysis and tracking
-* [Git](https://git-scm.com/) - Version control
-* [GitHub](https://github.com/) - Development Platform and repository storage
-* [Sphinx](http://www.sphinx-doc.org/en/stable/index.html) - Python documentation generator
-* [recommonmark](https://github.com/rtfd/recommonmark) - A docutils-compatibility bridge to CommonMark
-* [Read the Docs](https://readthedocs.org/) - Documentation hosting
-* [docstring-coverage](https://bitbucket.org/DataGreed/docstring-coverage/wiki/Home) -  A simple audit tool for examining python source files for missing docstrings.
-* [Python-Modernize](https://python-modernize.readthedocs.io/en/latest/) - Automatic modernization of Python 2 code for dual Python 2 and 3 support.
+If you use the **PyBILT** software as a part of your research, please cite the GitHub repo.
 
-------
+Also, please cite the following references as appropriate for scientific/research software used with/via **PyBILT**:
 
-## Core Developers
+#### MDAnalysis
+See: https://www.mdanalysis.org/pages/citations/
 
-* **Blake A Wilson** - Currently a Postdoctoral Fellow at Vanderbilt University
-  * Vandy e-mail: blake.a.wilson@vanderbilt.edu
-  * Gmail: blakeaw1102@gmail.com
-  * [Blake's VU Website]( https://my.vanderbilt.edu/blakeaw/)
-  * Also find me on [LinkedIn](https://www.linkedin.com/in/blakewilson3/) and [Research Gate](https://www.researchgate.net/profile/Blake_Wilson3)
+#### Packages from the SciPy ecosystem
+
+These include NumPy, SciPy, and Matplotlib for which references can be obtained from:
+https://www.scipy.org/citing.html
+
+#### seaborn
+Reference can be exported from the [seaborn Zeondo DOI entry](https://doi.org/10.5281/zenodo.592845)
+
+#### Jupyter
+See: https://github.com/jupyter/jupyter/issues/190
+
+#### IPython
+
+See: https://ipython.org/citing.html
 
 ------

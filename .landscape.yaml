@@ -1,9 +1,0 @@
-ignore-patterns:
-    - __init__.py
-
-ignore-paths:
-    - _images
-    - jupyter_notebooks
-
-python-targets:
-    - 2
