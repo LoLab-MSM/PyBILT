@@ -8,6 +8,7 @@
 [![release](https://img.shields.io/github/release-pre/LoLab-VU/PyBILT.svg)](https://github.com/LoLab-VU/PyBILT/releases/tag/v0.2.0)
 [![Anaconda-Server Badge](https://anaconda.org/blakeaw/pybilt/badges/version.svg)](https://anaconda.org/blakeaw/pybilt)
 [![Documentation Status](https://readthedocs.org/projects/pybilt/badge/?version=latest)](http://pybilt.readthedocs.io/en/latest/?badge=latest)
+[![DOI](https://zenodo.org/badge/85123567.svg)](https://zenodo.org/badge/latestdoi/85123567)
 
 ------
 #### PyBILT is a Python toolkit developed to analyze molecular simulation trajectories of lipid bilayers systems. The toolkit includes a variety of analyses from various lipid bilayer molecular simulation publications.
@@ -31,7 +32,7 @@ The analyses include:
 # Install
 
 ### Core dependencies
-PyBILT has the following core dependencies:
+**PyBILT** has the following core dependencies:
    * [MDAnalysis](https://www.mdanalysis.org/)
    * [NumPy](http://www.numpy.org/)
    * [SciPy](https://www.scipy.org/)
@@ -41,11 +42,11 @@ PyBILT has the following core dependencies:
    * [future](http://python-future.org/)
 
 ### Python version support
-The pybilt package has been tested using [Anaconda Python](https://www.anaconda.com/) 2.7, 3.6, and 3.7.
+The `pybilt` package has been tested using [Anaconda Python](https://www.anaconda.com/) 2.7, 3.6, and 3.7.
 
 #### Sunsetting of Python 2
 Please be aware that Python 2 is scheduled to be sunset on January 1 2020. You can read about it here: [https://www.python.org/doc/sunset-python-2/](https://www.python.org/doc/sunset-python-2/)
-Parallel to the sunsetting of Python 2 many open source packages are also dropping support for Python 2 ([https://python3statement.org/](https://python3statement.org/)), including some of PyBILT's core dependencies. As such, after January 1, 2020, PyBILT will also likely sunset its support for Python 2.7.  
+Parallel to the sunsetting of Python 2 many open source packages are also dropping support for Python 2 ([https://python3statement.org/](https://python3statement.org/)), including some of **PyBILT**'s core dependencies. As such, after January 1, 2020, **PyBILT** will also likely sunset its support for Python 2.7.  
 
 ### pip install
 You can install the latest version of the `pybilt` package using `pip` sourced from the GitHub repo:
@@ -74,10 +75,10 @@ The core dependencies will be automatically installed.
 The following software is not required for the basic operation of **PyBILT**, but provides extra capabilities and features when installed.
 
 #### pytest
-The pybilt test suite is designed to be run with [pytest](https://docs.pytest.org/en/latest/), so if you want to run the tests then you will need to install pytest.
+The `pybilt` test suite is designed to be run with [pytest](https://docs.pytest.org/en/latest/), so if you want to run the tests then you will need to install pytest.
 
 #### Jupyter
- PyBILT comes with a set of [Jupyter IPython notebooks](./jupyter_notebooks) which supplement the doc pages. If you want to run these notebooks locally then you will need to intall [Jupyter](https://jupyter.org/) (or at least the IPython kernel).
+ **PyBILT** comes with a set of [Jupyter IPython notebooks](./jupyter_notebooks) which supplement the doc pages. If you want to run these notebooks locally then you will need to intall [Jupyter](https://jupyter.org/) (or at least the IPython kernel).
 
 Note that the notebooks have not been updated for Python 3 yet.
 
@@ -136,7 +137,7 @@ analysis type. See the [documentation](https://pybilt.readthedocs.io/en/latest/b
                        that can be computed from functions in the other modules.
                        e.g. mean squared displacement and area per lipid.
 ## Docs
-Visit the PyBILT docs on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html).
+Visit the **PyBILT** docs on [Read the Docs](http://pybilt.readthedocs.io/en/latest/index.html).
 Docs can also be viewed offline/locally by opening the [PyBILT/docs/build/html/index.html](docs/build/html/index.html) file from the
 repo in a web browser; however, this build of the docs is not updated often.
 
@@ -152,7 +153,7 @@ usage (these have not been updated/tested for/with python 3 yet); updates and mo
 
 To report problems or bugs please open a
 [GitHub Issue](https://github.com/LoLab-VU/PyBILT/issues). Additionally, any
-comments, suggestions, or feature requests for PyBILT can also be submitted as
+comments, suggestions, or feature requests for **PyBILT** can also be submitted as
 a
 [GitHub Issue](https://github.com/LoLab-VU/PyBILT/issues).
 
@@ -160,7 +161,7 @@ a
 
 # Contributing
 
-If you would like to contribute directly to PyBILT's development please
+If you would like to contribute directly to **PyBILT**'s development please
  1. Fork the repo (https://github.com/LoLab-VU/PyBILT/fork)
  2. Create a new branch for your feature (git checkout -b feature/foo_bar)
  3. Create test code for your feature
@@ -186,7 +187,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 # Citing
 
-If you use the **PyBILT** software as a part of your research, please cite the GitHub repo.
+If you use the **PyBILT** software as a part of your research, please cite the its use. You can export the **PyBILT** software citation in your preferred format from its [Zenodo DOI](https://doi.org/10.5281/zenodo.3426128) entry.
 
 Also, please cite the following references as appropriate for scientific/research software used with/via **PyBILT**:
 
