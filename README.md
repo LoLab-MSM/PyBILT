@@ -50,7 +50,7 @@ Parallel to the sunsetting of Python 2 many open source packages are also droppi
 ### pip install
 You can install the latest version of the `pybilt` package using `pip` sourced from the GitHub repo:
 ```
-pip install -e git+https://github.com/LoLab-VU/PyBILT#egg=pybilt
+pip install -e git+https://github.com/LoLab-VU/PyBILT@v0.2.0#egg=pybilt
 ```
 However, this will not automatically install the core dependencies. You will have to do that separately:
 ```
