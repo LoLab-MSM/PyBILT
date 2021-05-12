@@ -1,7 +1,7 @@
 ![alt text](./_images/PyBILT_logo.png "PyBILT Logo")
 # *Py*thon based lipid *BIL*ayer molecular simulation analysis *T*oolkit
 ------
-![Python version badge](https://img.shields.io/badge/python-2.7%2C3.6%2C3.7-blue.svg)
+![Python version badge](https://img.shields.io/badge/python-3.7-blue.svg)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2d6da71328a24ef6930ad8f554074292)](https://www.codacy.com/manual/blakeaw1102/PyBILT?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LoLab-VU/PyBILT&amp;utm_campaign=Badge_Grade)
 ![version](https://img.shields.io/badge/version-0.3.0-orange.svg)
@@ -42,11 +42,7 @@ The analyses include:
    * [future](http://python-future.org/)
 
 ### Python version support
-The `pybilt` package has been tested using [Anaconda Python](https://www.anaconda.com/) 2.7, 3.6, and 3.7.
-
-#### Sunsetting of Python 2
-Please be aware that Python 2 is scheduled to be sunset on January 1 2020. You can read about it here: [https://www.python.org/doc/sunset-python-2/](https://www.python.org/doc/sunset-python-2/)
-Parallel to the sunsetting of Python 2 many open source packages are also dropping support for Python 2 ([https://python3statement.org/](https://python3statement.org/)), including some of **PyBILT**'s core dependencies. As such, after January 1, 2020, **PyBILT** will also likely sunset its support for Python 2.7.  
+The `pybilt` package has been tested using [Anaconda Python](https://www.anaconda.com/) 3.7 and MDAnalysis=1.1.1.
 
 ### pip install
 You can install the latest version of the `pybilt` package using `pip` sourced from the GitHub repo:
