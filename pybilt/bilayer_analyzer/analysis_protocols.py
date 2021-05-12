@@ -3548,12 +3548,14 @@ class LateralOrientationParameterProtocol(AnalysisProtocol):
         residues = self.selection.residues
         cos_run = RunningStats()
         for residue in residues:
-            atom_1 = eval("residue.{}".format(self.settings['ref_atom_1']))
-            atom_2 = eval("residue.{}".format(self.settings['ref_atom_2']))
+            #atom_1 = eval("residue.{}".format(self.settings['ref_atom_1']))
+            #atom_2 = eval("residue.{}".format(self.settings['ref_atom_2']))
+            atom_1 = residue.atoms.select_atoms('name {}'.format(self.settings['ref_atom_1']))
+            atom_2 = residue.atoms.select_atoms('name {}'.format(self.settings['ref_atom_2']))
             #atom_1 = ast.literal_eval("residue.{}".format(self.settings['ref_atom_1']))
             #atom_2 = ast.literal_eval("residue.{}".format(self.settings['ref_atom_2']))
-            atom_1_i = atom_1.index
-            atom_2_i = atom_2.index
+            atom_1_i = atom_1.indices[0]
+            atom_2_i = atom_2.indices[0]
             atom_1_coord = ba_reps['current_mda_frame'].positions[atom_1_i]
             atom_2_coord = ba_reps['current_mda_frame'].positions[atom_2_i]
             diff = atom_2_coord - atom_1_coord
@@ -3687,10 +3689,10 @@ class LateralOrientationAngleProtocol(AnalysisProtocol):
         residues = self.selection.residues
         cos_run = RunningStats()
         for residue in residues:
-            atom_1 = eval("residue."+self.settings['ref_atom_1'])
-            atom_2 = eval("residue."+self.settings['ref_atom_2'])
-            atom_1_i = atom_1.index
-            atom_2_i = atom_2.index
+            atom_1 = residue.atoms.select_atoms('name {}'.format(self.settings['ref_atom_1']))
+            atom_2 = residue.atoms.select_atoms('name {}'.format(self.settings['ref_atom_2']))
+            atom_1_i = atom_1.indices[0]
+            atom_2_i = atom_2.indices[0]
             atom_1_coord = ba_reps['current_mda_frame'].positions[atom_1_i]
             atom_2_coord = ba_reps['current_mda_frame'].positions[atom_2_i]
             diff = atom_2_coord - atom_1_coord
