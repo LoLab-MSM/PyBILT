@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='pybilt',
-      version='0.2.0',
+      version='0.3.0',
       description='Lipid bilayer analysis toolkit.',
       author='Blake A. Wilson',
       author_email='blake.a.wilson@vanderbilt.edu',
@@ -11,5 +11,5 @@ setup(name='pybilt',
                 'pybilt.lipid_grid', 'pybilt.mda_tools',
                 'pybilt.plot_generation'],
       license='MIT',
-      keywords=['lipid bilayer', 'molecular dynamics', 'analysis']            
+      keywords=['lipid bilayer', 'molecular dynamics', 'analysis']
      )
