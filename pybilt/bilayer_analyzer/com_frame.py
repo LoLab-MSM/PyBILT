@@ -66,12 +66,15 @@ class LipidCOM(object):
 
             self.atom_names = names
             n_names = len(names)
-            atom_group = mda.core.AtomGroup.AtomGroup([eval("mda_residue.atoms."+names[0])])
+            #print(mda_residue.atoms.select_atoms('name {}'.format(names[0])))
+            #atom_group = mda.core.groups.AtomGroup([eval("mda_residue.atoms."+names[0])])
+            atom_group = mda_residue.atoms.select_atoms('name {}'.format(names[0]))
             #if (not unwrap) and (n_names > 1):
             #    mda.lib.mdamath.make_whole(mda_residue.atoms, reference_atom=atom_group)
 
             for i in range(1, n_names):
-                atom_group+=eval("mda_residue.atoms."+names[i])
+                #atom_group+=eval("mda_residue.atoms."+names[i])
+                atom_group += mda_residue.atoms.select_atoms('name {}'.format(names[i]))
 
         #else:
         if (not unwrap) and make_whole:
